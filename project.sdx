@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="ASCII"?>
+<openclProject:OpenCLProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:openclProject="http://www.xilinx.com/openclproject" name="Poisson" location="/home/faraz/workspace/Poisson" platform="/opt/xilinx/platforms/xilinx_vcu1525_xdma_201830_1/xilinx_vcu1525_xdma_201830_1.xpfm" platformUID="xilinx:vcu1525:xdma:201830.1" systemProject="Poisson_system" sysConfig="Linux" cpu="" cpuInstance="" os="linux">
+  <configuration name="Emulation-SW" id="com.xilinx.sdx.opencl.config.sw_emu.262267279" dirty="true">
+    <configBuildOptions xsi:type="openclProject:OpenCLOptions" kernelDebug="true">
+      <binaryContainers name="ops_poisson_kernels">
+        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true">
+          <computeUnits name="ops_poisson_kernel_populate_1" slr="">
+            <args name="arg0" memory=""/>
+            <args name="arg1" memory=""/>
+            <args name="arg3" master="true" memory=""/>
+            <args name="arg4" master="true" memory=""/>
+            <args name="arg5" master="true" memory=""/>
+            <args name="dx" memory=""/>
+            <args name="dy" memory=""/>
+            <args name="base3" memory=""/>
+            <args name="base4" memory=""/>
+            <args name="base5" memory=""/>
+            <args name="arg_idx0" memory=""/>
+            <args name="arg_idx1" memory=""/>
+            <args name="size0" memory=""/>
+            <args name="size1" memory=""/>
+            <args name="xdim3_poisson_kernel_populate" memory=""/>
+            <args name="xdim4_poisson_kernel_populate" memory=""/>
+            <args name="xdim5_poisson_kernel_populate" memory=""/>
+          </computeUnits>
+          <args name="arg0"/>
+          <args name="arg1"/>
+          <args name="arg3" master="true"/>
+          <args name="arg4" master="true"/>
+          <args name="arg5" master="true"/>
+          <args name="dx"/>
+          <args name="dy"/>
+          <args name="base3"/>
+          <args name="base4"/>
+          <args name="base5"/>
+          <args name="arg_idx0"/>
+          <args name="arg_idx1"/>
+          <args name="size0"/>
+          <args name="size1"/>
+          <args name="xdim3_poisson_kernel_populate"/>
+          <args name="xdim4_poisson_kernel_populate"/>
+          <args name="xdim5_poisson_kernel_populate"/>
+        </kernels>
+      </binaryContainers>
+    </configBuildOptions>
+    <lastBuildOptions xsi:type="openclProject:OpenCLOptions" kernelDebug="true">
+      <binaryContainers name="ops_poisson_kernels">
+        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true">
+          <computeUnits name="ops_poisson_kernel_populate_1" slr="">
+            <args name="arg0" memory=""/>
+            <args name="arg1" memory=""/>
+            <args name="arg3" master="true" memory=""/>
+            <args name="arg4" master="true" memory=""/>
+            <args name="arg5" master="true" memory=""/>
+            <args name="dx" memory=""/>
+            <args name="dy" memory=""/>
+            <args name="base3" memory=""/>
+            <args name="base4" memory=""/>
+            <args name="base5" memory=""/>
+            <args name="arg_idx0" memory=""/>
+            <args name="arg_idx1" memory=""/>
+            <args name="size0" memory=""/>
+            <args name="size1" memory=""/>
+            <args name="xdim3_poisson_kernel_populate" memory=""/>
+            <args name="xdim4_poisson_kernel_populate" memory=""/>
+            <args name="xdim5_poisson_kernel_populate" memory=""/>
+          </computeUnits>
+          <args name="arg0"/>
+          <args name="arg1"/>
+          <args name="arg3" master="true"/>
+          <args name="arg4" master="true"/>
+          <args name="arg5" master="true"/>
+          <args name="dx"/>
+          <args name="dy"/>
+          <args name="base3"/>
+          <args name="base4"/>
+          <args name="base5"/>
+          <args name="arg_idx0"/>
+          <args name="arg_idx1"/>
+          <args name="size0"/>
+          <args name="size1"/>
+          <args name="xdim3_poisson_kernel_populate"/>
+          <args name="xdim4_poisson_kernel_populate"/>
+          <args name="xdim5_poisson_kernel_populate"/>
+        </kernels>
+      </binaryContainers>
+    </lastBuildOptions>
+  </configuration>
+  <configuration name="Emulation-HW" id="com.xilinx.sdx.opencl.config.hw_emu.2144567038" dirty="true">
+    <configBuildOptions xsi:type="openclProject:OpenCLOptions" kernelDebug="true" target="hw_emu">
+      <binaryContainers name="ops_poisson_kernels">
+        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true">
+          <computeUnits name="ops_poisson_kernel_populate_1" slr="">
+            <args name="arg0" memory=""/>
+            <args name="arg1" memory=""/>
+            <args name="arg3" master="true" memory=""/>
+            <args name="arg4" master="true" memory=""/>
+            <args name="arg5" master="true" memory=""/>
+            <args name="dx" memory=""/>
+            <args name="dy" memory=""/>
+            <args name="base3" memory=""/>
+            <args name="base4" memory=""/>
+            <args name="base5" memory=""/>
+            <args name="arg_idx0" memory=""/>
+            <args name="arg_idx1" memory=""/>
+            <args name="size0" memory=""/>
+            <args name="size1" memory=""/>
+          </computeUnits>
+          <args name="arg0"/>
+          <args name="arg1"/>
+          <args name="arg3" master="true"/>
+          <args name="arg4" master="true"/>
+          <args name="arg5" master="true"/>
+          <args name="dx"/>
+          <args name="dy"/>
+          <args name="base3"/>
+          <args name="base4"/>
+          <args name="base5"/>
+          <args name="arg_idx0"/>
+          <args name="arg_idx1"/>
+          <args name="size0"/>
+          <args name="size1"/>
+        </kernels>
+      </binaryContainers>
+    </configBuildOptions>
+    <lastBuildOptions xsi:type="openclProject:OpenCLOptions" kernelDebug="true" target="hw_emu">
+      <binaryContainers name="ops_poisson_kernels">
+        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true">
+          <computeUnits name="ops_poisson_kernel_populate_1" slr="">
+            <args name="arg0" memory=""/>
+            <args name="arg1" memory=""/>
+            <args name="arg3" master="true" memory=""/>
+            <args name="arg4" master="true" memory=""/>
+            <args name="arg5" master="true" memory=""/>
+            <args name="dx" memory=""/>
+            <args name="dy" memory=""/>
+            <args name="base3" memory=""/>
+            <args name="base4" memory=""/>
+            <args name="base5" memory=""/>
+            <args name="arg_idx0" memory=""/>
+            <args name="arg_idx1" memory=""/>
+            <args name="size0" memory=""/>
+            <args name="size1" memory=""/>
+          </computeUnits>
+          <args name="arg0"/>
+          <args name="arg1"/>
+          <args name="arg3" master="true"/>
+          <args name="arg4" master="true"/>
+          <args name="arg5" master="true"/>
+          <args name="dx"/>
+          <args name="dy"/>
+          <args name="base3"/>
+          <args name="base4"/>
+          <args name="base5"/>
+          <args name="arg_idx0"/>
+          <args name="arg_idx1"/>
+          <args name="size0"/>
+          <args name="size1"/>
+        </kernels>
+      </binaryContainers>
+    </lastBuildOptions>
+  </configuration>
+  <configuration name="System" id="com.xilinx.sdx.opencl.config.hw.1631457947" dirty="true">
+    <configBuildOptions xsi:type="openclProject:OpenCLOptions" target="hw">
+      <binaryContainers name="ops_poisson_kernels">
+        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true">
+          <computeUnits name="ops_poisson_kernel_populate_1" slr=""/>
+        </kernels>
+      </binaryContainers>
+    </configBuildOptions>
+    <lastBuildOptions xsi:type="openclProject:OpenCLOptions" target="hw">
+      <binaryContainers name="ops_poisson_kernels">
+        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" numComputeUnits="5">
+          <computeUnits name="ops_poisson_kernel_populate_1" slr=""/>
+          <computeUnits name="ops_poisson_kernel_populate_2" slr=""/>
+          <computeUnits name="ops_poisson_kernel_populate_3" slr=""/>
+          <computeUnits name="ops_poisson_kernel_populate_4" slr=""/>
+          <computeUnits name="ops_poisson_kernel_populate_5" slr=""/>
+        </kernels>
+      </binaryContainers>
+    </lastBuildOptions>
+  </configuration>
+</openclProject:OpenCLProject>
