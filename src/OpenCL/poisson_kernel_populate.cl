@@ -65,8 +65,9 @@
 	OPS_ACCS(ref, 0,0) = sin(M_PI*x)*cos(2.0*M_PI*y);
 }*/
 
-__kernel __attribute__ ((reqd_work_group_size(32, 32, 1)))
+__kernel __attribute__ ((reqd_work_group_size(8, 1, 1)))
 __kernel __attribute__((vec_type_hint(double)))
+__kernel __attribute__((xcl_zero_global_work_offset))
 
 __kernel void ops_poisson_kernel_populate(
 		const int arg0,
@@ -105,122 +106,35 @@ __kernel void ops_poisson_kernel_populate(
 		int index5;
 
 		__attribute__((xcl_pipeline_workitems)){
-			index3 = base3 + idx_x * 1*1 + idx_y * 1*1 * xdim3_poisson_kernel_populate;
-			index4 = base4 + idx_x * 1*1 + idx_y * 1*1 * xdim4_poisson_kernel_populate;
-			index5 = base5 + idx_x * 1*1 + idx_y * 1*1 * xdim5_poisson_kernel_populate;
+			index3 = base3 + idx_y * xdim3_poisson_kernel_populate;
+			index4 = base4 + idx_y * xdim4_poisson_kernel_populate;
+			index5 = base5 + idx_y * xdim5_poisson_kernel_populate;
 		}
 
 		if (idx_x < size0 && idx_y < size1) {
-
-//				ptr_double ptr3 = { &arg3[index3], xdim3_poisson_kernel_populate};
-//				ptr_double ptr4 = { &arg4[index4], xdim4_poisson_kernel_populate};
-//				ptr_double ptr5 = { &arg5[index5], xdim5_poisson_kernel_populate};
+//
+//			__global double* restrict ptr3 = &arg3[index];
+//			__global double* restrict ptr4 = &arg4[index];
+//			__global double* restrict ptr5 = &arg5[index];
 
 				double x = dx * (double)(arg_idx[0]+arg0);
 				double y = dy * (double)(arg_idx[1]+arg1);
 
-			__attribute__((xcl_pipeline_workitems)){
-//				OPS_ACCS(ptr3, 0,0) = myfun(sin(M_PI*x),cos(2.0*M_PI*y))-1.0;
-//				OPS_ACCS(ptr4, 0,0) = -5.0*M_PI*M_PI*sin(M_PI*x)*cos(2.0*M_PI*y);
-//				OPS_ACCS(ptr5, 0,0) = sin(M_PI*x)*cos(2.0*M_PI*y);
-				double sin_x = sin(M_PI*x);
-				double cos_y = cos(2.0*M_PI*y);
 
+				double f3, f4, f5;
+				__attribute__((xcl_dataflow)){
+					f3 = myfun(sin(M_PI*x),cos(2.0*M_PI*y))-1.0;
+					f4 = -5.0*M_PI*M_PI*sin(M_PI*x)*cos(2.0*M_PI*y);
+					f5 = sin(M_PI*x)*cos(2.0*M_PI*y);
+				}
 
-				arg3[index3] = myfun(sin_x,cos_y)-1.0;
-				arg4[index4] = -5.0*M_PI*M_PI*sin_x*cos_y;
-				arg5[index5] = sin_x*cos_y;
+			/*__attribute__((xcl_pipeline_workitems))*/{
+
+				arg3[index3+idx_x] = f3;
+				arg4[index4+idx_x] = f4;
+				arg5[index5+idx_x] = f5;
 		    }
 
-
-
 		  }
-
-
-
-//	local double mem_xy3[x_len * y_len];
-//	local double mem_xy4[x_len * y_len];
-//	local double mem_xy5[x_len * y_len];
-//
-//
-//	local int ptr_xy3[x_len * y_len];
-//	local int ptr_xy4[x_len * y_len];
-//	local int ptr_xy5[x_len * y_len];
-//
-//	__attribute__((xcl_pipeline_loop))
-//	__attribute__((opencl_unroll_hint(2)))
-//	for(unsigned char j = 0; j < y_len; j++){
-//		__attribute__((xcl_pipeline_workitems)) {
-//			int y_offset = j * y_len;
-//			int offset3 = base3 + (idx_x* x_len) + (idx_y * y_len + j) * xdim4_poisson_kernel_populate;
-//			int offset4 = base4 + (idx_x* x_len) + (idx_y * y_len + j) * xdim4_poisson_kernel_populate;
-//			int offset5 = base5 + (idx_x* x_len) + (idx_y * y_len + j) * xdim5_poisson_kernel_populate;
-//
-//
-////			__attribute__((xcl_pipeline_loop))
-////			__attribute__((opencl_unroll_hint(1)))
-//			for(unsigned char i = 0; i < x_len; i++){
-//				int arg_idx[2];
-//				arg_idx[0] = arg_idx0+ idx_x * x_len + i;
-//				arg_idx[1] = arg_idx1+ idx_y * y_len + j;
-//
-//				if (idx_x*x_len+i < size0 && idx_y*y_len+j < size1) {
-//
-//					double x = dx * (double)(arg_idx[0]+arg0);
-//					double y = dy * (double)(arg_idx[1]+arg1);
-//
-//					mem_xy3[y_offset + i] = myfun(sin(M_PI*x),cos(2.0*M_PI*y))-1.0;
-//					mem_xy4[y_offset + i] = -5.0*M_PI*M_PI*sin(M_PI*x)*cos(2.0*M_PI*y);
-//					mem_xy5[y_offset + i] = sin(M_PI*x)*cos(2.0*M_PI*y);
-//
-//					ptr_xy3[y_offset + i] = offset3 + i;
-//					ptr_xy4[y_offset + i] = offset4 + i;
-//					ptr_xy5[y_offset + i] = offset5 + i;
-//				}
-//			}
-//		}
-//	}
-//
-//	__attribute__((xcl_pipeline_workitems)){
-//
-//		for(unsigned char j = 0; j < y_len; j++){
-//			__attribute__((xcl_pipeline_workitems)) {
-//
-//			int y_offset = j * y_len;
-//			__attribute__((xcl_pipeline_loop))
-//			__attribute__((opencl_unroll_hint(1)))
-//			for(unsigned char i = 0; i < x_len; i++){
-//				ptr_double ptr3 = { &arg3[ptr_xy3[y_offset + i]], xdim3_poisson_kernel_populate};
-//				OPS_ACCS(ptr3, 0,0) = mem_xy3[y_offset + i];
-//				}
-//			}
-//		}
-//
-//		for(unsigned char j = 0; j < y_len; j++){
-//			__attribute__((xcl_pipeline_workitems)) {
-//
-//			int y_offset = j * y_len;
-//			__attribute__((xcl_pipeline_loop))
-//			__attribute__((opencl_unroll_hint(1)))
-//			for(unsigned char i = 0; i < x_len; i++){
-//				ptr_double ptr4 = { &arg4[ptr_xy4[y_offset + i]], xdim4_poisson_kernel_populate};
-//				OPS_ACCS(ptr4, 0,0) = mem_xy3[y_offset + i];
-//				}
-//			}
-//		}
-//
-//		for(unsigned char j = 0; j < y_len; j++){
-//			__attribute__((xcl_pipeline_workitems)) {
-//
-//			int y_offset = j * y_len;
-//			__attribute__((xcl_pipeline_loop))
-//			__attribute__((opencl_unroll_hint(1)))
-//			for(unsigned char i = 0; i < x_len; i++){
-//				ptr_double ptr5 = { &arg5[ptr_xy3[y_offset + i]], xdim5_poisson_kernel_populate};
-//				OPS_ACCS(ptr5, 0,0) = mem_xy5[y_offset + i];
-//				}
-//			}
-//		}
-//	}
 
 }
