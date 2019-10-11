@@ -65,7 +65,7 @@
 	OPS_ACCS(ref, 0,0) = sin(M_PI*x)*cos(2.0*M_PI*y);
 }*/
 
-__kernel __attribute__ ((reqd_work_group_size(8, 1, 1)))
+__kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 __kernel __attribute__((vec_type_hint(double)))
 __kernel __attribute__((xcl_zero_global_work_offset))
 
@@ -88,53 +88,135 @@ __kernel void ops_poisson_kernel_populate(
 		const int xdim5_poisson_kernel_populate){
 
 
-		int idx_y, idx_x;
-
-		__attribute__((xcl_pipeline_workitems)){
-			idx_y = get_global_id(1);
-			idx_x = get_global_id(0);
-		}
-
-		int arg_idx[2];
-		__attribute__((xcl_pipeline_workitems)){
-			arg_idx[0] = arg_idx0+ idx_x;
-			arg_idx[1] = arg_idx1+ idx_y;
-		}
-
-		int index3;
-		int index4;
-		int index5;
-
-		__attribute__((xcl_pipeline_workitems)){
-			index3 = base3 + idx_y * xdim3_poisson_kernel_populate;
-			index4 = base4 + idx_y * xdim4_poisson_kernel_populate;
-			index5 = base5 + idx_y * xdim5_poisson_kernel_populate;
-		}
-
-		if (idx_x < size0 && idx_y < size1) {
+//		int idx_y, idx_x;
 //
-//			__global double* restrict ptr3 = &arg3[index];
-//			__global double* restrict ptr4 = &arg4[index];
-//			__global double* restrict ptr5 = &arg5[index];
+//		__attribute__((xcl_pipeline_workitems)){
+//			idx_y = get_global_id(1);
+//			idx_x = get_global_id(0);
+//		}
+//
+//		int arg_idx[2];
+//
+//
+//		int index3;
+//		int index4;
+//		int index5;
+//
+//		__attribute__((xcl_pipeline_workitems)){
+//			index3 = base3 + idx_y * xdim3_poisson_kernel_populate;
+//			index4 = base4 + idx_y * xdim4_poisson_kernel_populate;
+//			index5 = base5 + idx_y * xdim5_poisson_kernel_populate;
+//		}
+//
+//		if (idx_x < size0 && idx_y < size1) {
+//
+//
+//
+//				double f3, f4, f5;
+//				__attribute__((xcl_dataflow)){
+//					f3 = myfun(sin(M_PI*x),cos(2.0*M_PI*y))-1.0;
+//					f4 = -5.0*M_PI*M_PI*sin(M_PI*x)*cos(2.0*M_PI*y);
+//					f5 = sin(M_PI*x)*cos(2.0*M_PI*y);
+//				}
+//
+//			/*__attribute__((xcl_pipeline_workitems))*/{
+//				arg3[index3+idx_x] = f3;
+//				arg4[index4+idx_x] = f4;
+//				arg5[index5+idx_x] = f5;
+//		    }
+//
+//		  }
 
-				double x = dx * (double)(arg_idx[0]+arg0);
-				double y = dy * (double)(arg_idx[1]+arg1);
 
 
-				double f3, f4, f5;
-				__attribute__((xcl_dataflow)){
-					f3 = myfun(sin(M_PI*x),cos(2.0*M_PI*y))-1.0;
-					f4 = -5.0*M_PI*M_PI*sin(M_PI*x)*cos(2.0*M_PI*y);
-					f5 = sin(M_PI*x)*cos(2.0*M_PI*y);
+		int X, Y, tile_per_col, tile_per_row, Y_g, index;
+		int arg_idx[2];
+		local double mem[OPS_block_size_x];
+
+		__attribute__((xcl_pipeline_workitems(1))){
+			X = (size0/OPS_block_size_x +1)*OPS_block_size_x;
+			Y = (size1/OPS_block_size_y +1)*OPS_block_size_y;
+
+			tile_per_col = X/OPS_block_size_y;
+			tile_per_row = Y/OPS_block_size_x;
+		}
+
+		rd_loop_i3: for(int i = 0; i < tile_per_col; ++i) {
+			rd_loop_j3: for (int j = 0; j < tile_per_row; ++j) {
+
+				__attribute__((xcl_loop_tripcount(OPS_block_size_y, OPS_block_size_y)))
+				rd_loop_m3: for (int m = 0; m < OPS_block_size_y; ++m) {
+					__attribute__((xcl_pipeline_workitems(1))){
+						Y_g = i*OPS_block_size_y+m;
+						index = base3 + (j*OPS_block_size_x) + (Y_g) * xdim3_poisson_kernel_populate;
+					}
+					__attribute__((xcl_pipeline_loop(1)))
+//					__attribute__((xcl_loop_tripcount(OPS_block_size_x, OPS_block_size_x)))
+					__attribute__((opencl_unroll_hint(OPS_block_size_x)))
+					rd_loop_n3: for (int n = 0; n < OPS_block_size_x; ++n) {
+							int X_g = j*OPS_block_size_x+n;
+							arg_idx[0] = arg_idx0+ X_g;
+							arg_idx[1] = arg_idx1+ Y_g;
+							double x = dx * (double)(arg_idx[0]+arg0);
+							double y = dy * (double)(arg_idx[1]+arg1);
+							double f3 = myfun(sin(M_PI*x),cos(2.0*M_PI*y))-1.0;
+							arg3[index+n] = X_g < size0 && Y_g < size1 ? f3 :arg3[index+n];
+					}
 				}
+			}
+		}
 
-			/*__attribute__((xcl_pipeline_workitems))*/{
+		rd_loop_i4: for(int i = 0; i < tile_per_col; ++i) {
+			rd_loop_j4: for (int j = 0; j < tile_per_row; ++j) {
 
-				arg3[index3+idx_x] = f3;
-				arg4[index4+idx_x] = f4;
-				arg5[index5+idx_x] = f5;
-		    }
+				__attribute__((xcl_loop_tripcount(OPS_block_size_y, OPS_block_size_y)))
+				rd_loop_m4: for (int m = 0; m < OPS_block_size_y; ++m) {
+					__attribute__((xcl_pipeline_workitems(1))){
+						Y_g = i*OPS_block_size_y+m;
+						index = base4 + (j*OPS_block_size_x) + (Y_g) * xdim4_poisson_kernel_populate;
+					}
+					__attribute__((xcl_pipeline_loop(1)))
+//					__attribute__((xcl_loop_tripcount(OPS_block_size_x, OPS_block_size_x)))
+					__attribute__((opencl_unroll_hint(OPS_block_size_x)))
+					rd_loop_n4: for (int n = 0; n < OPS_block_size_x; ++n) {
+							int X_g = j*OPS_block_size_x+n;
+							arg_idx[0] = arg_idx0+ X_g;
+							arg_idx[1] = arg_idx1+ Y_g;
+							double x = dx * (double)(arg_idx[0]+arg0);
+							double y = dy * (double)(arg_idx[1]+arg1);
+							double f4 =  -5.0*M_PI*M_PI*sin(M_PI*x)*cos(2.0*M_PI*y);
+							arg4[index+n] = X_g < size0 && Y_g < size1 ? f4 :arg4[index+n];
+					}
+				}
+			}
+		}
 
-		  }
+		rd_loop_i5: for(int i = 0; i < tile_per_col; ++i) {
+			rd_loop_j5: for (int j = 0; j < tile_per_row; ++j) {
+
+				__attribute__((xcl_loop_tripcount(OPS_block_size_y, OPS_block_size_y)))
+				rd_loop_m5: for (int m = 0; m < OPS_block_size_y; ++m) {
+					__attribute__((xcl_pipeline_workitems(1))){
+						Y_g = i*OPS_block_size_y+m;
+						index = base5 + (j*OPS_block_size_x) + (Y_g) * xdim5_poisson_kernel_populate;
+					}
+					__attribute__((xcl_pipeline_loop(1)))
+//					__attribute__((xcl_loop_tripcount(OPS_block_size_x, OPS_block_size_x)))
+					__attribute__((opencl_unroll_hint(OPS_block_size_x)))
+					rd_loop_n5: for (int n = 0; n < OPS_block_size_x; ++n) {
+							int X_g = j*OPS_block_size_x+n;
+							arg_idx[0] = arg_idx0+ X_g;
+							arg_idx[1] = arg_idx1+ Y_g;
+							double x = dx * (double)(arg_idx[0]+arg0);
+							double y = dy * (double)(arg_idx[1]+arg1);
+							double f5 = sin(M_PI*x)*cos(2.0*M_PI*y);
+							arg5[index+n] = X_g < size0 && Y_g < size1 ? f5 :arg5[index+n];
+					}
+				}
+			}
+		}
+
+
+
 
 }

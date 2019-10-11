@@ -9,3 +9,6 @@
 static inline OPS_FUN_PREFIX double myfun(double a, double b) {
   return a*b+1.0;
 }
+
+#define OPS_block_size_x 32
+#define OPS_block_size_y 32

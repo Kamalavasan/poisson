@@ -18,7 +18,7 @@ extern double dy;
 
 //user kernel files
 //#include "poisson_kernel_populate_cpu_kernel.cpp"
-#include "poisson_kernel_update_cpu_kernel.cpp"
-#include "poisson_kernel_initialguess_cpu_kernel.cpp"
-#include "poisson_kernel_stencil_cpu_kernel.cpp"
-#include "poisson_kernel_error_cpu_kernel.cpp"
+//#include "poisson_kernel_update_cpu_kernel.cpp"
+//#include "poisson_kernel_initialguess_cpu_kernel.cpp"
+//#include "poisson_kernel_stencil_cpu_kernel.cpp"
+//#include "poisson_kernel_error_cpu_kernel.cpp"

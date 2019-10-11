@@ -51,6 +51,9 @@
 	OPS_ACCS(u, 0,0) = 0.0;
 }*/
 
+__kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
+__kernel __attribute__((vec_type_hint(double)))
+__kernel __attribute__((xcl_zero_global_work_offset))
 
 __kernel void ops_poisson_kernel_initial(
 		__global double* restrict arg0,
@@ -63,12 +66,41 @@ __kernel void ops_poisson_kernel_initial(
 	int idx_y = get_global_id(1);
 	int idx_x = get_global_id(0);
 
-	//int xdim0_poisson_kernel_initial = 22;
+	int X, Y, tile_per_col, tile_per_row, Y_g, index;
 
-	if (idx_x < size0 && idx_y < size1) {
-		ptr_double ptr0 = { &arg0[base0 + idx_x * 1*1 + idx_y * 1*1 * xdim0_poisson_kernel_initial], xdim0_poisson_kernel_initial};
-		//poisson_kernel_initial(ptr0);
-		OPS_ACCS(ptr0, 0,0) = 0.0;
+	__attribute__((xcl_pipeline_workitems(1))){
+		X = (size0/OPS_block_size_x +1)*OPS_block_size_x;
+		Y = (size1/OPS_block_size_y +1)*OPS_block_size_y;
+
+		tile_per_col = X/OPS_block_size_y;
+		tile_per_row = Y/OPS_block_size_x;
 	}
+
+
+
+	rd_loop_i: for(int i = 0; i < tile_per_col; ++i) {
+		rd_loop_j: for (int j = 0; j < tile_per_row; ++j) {
+			__attribute__((xcl_loop_tripcount(OPS_block_size_y, OPS_block_size_y)))
+			rd_loop_m: for (int m = 0; m < OPS_block_size_y; ++m) {
+				__attribute__((xcl_pipeline_workitems(1))){
+					Y_g = i*OPS_block_size_y+m;
+					index = base0 + (j*OPS_block_size_x) + (Y_g) * xdim0_poisson_kernel_initial;
+				}
+				__attribute__((xcl_pipeline_loop(1)))
+				__attribute__((xcl_loop_tripcount(OPS_block_size_x, OPS_block_size_x)))
+				rd_loop_n: for (int n = 0; n < OPS_block_size_x; ++n) {
+					int X_g = j*OPS_block_size_x+n;
+					//if(X_g < size0 && Y_g < size1)
+						arg0[index+n] = X_g < size0 && Y_g < size1 ? 0: arg0[index+n];
+				}
+			}
+		}
+	}
+
+//	if (idx_x < size0 && idx_y < size1) {
+//		ptr_double ptr0 = { &arg0[base0 + idx_x * 1*1 + idx_y * 1*1 * xdim0_poisson_kernel_initial], xdim0_poisson_kernel_initial};
+//		//poisson_kernel_initial(ptr0);
+//		OPS_ACCS(ptr0, 0,0) = 0.0;
+//	}
 
 }

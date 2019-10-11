@@ -52,6 +52,9 @@
 	OPS_ACCS(u, 0,0) = OPS_ACCS(u2, 0,0);
 }*/
 
+__kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
+__kernel __attribute__((vec_type_hint(double)))
+__kernel __attribute__((xcl_zero_global_work_offset))
 
 __kernel void ops_poisson_kernel_update(
 		__global const double* restrict arg0,
@@ -63,21 +66,49 @@ __kernel void ops_poisson_kernel_update(
 		const int xdim0_poisson_kernel_update,
 		const int xdim1_poisson_kernel_update){
 
+		int X, Y, tile_per_col, tile_per_row, Y_g, index;
 
-	int idx_y = get_global_id(1);
-	int idx_x = get_global_id(0);
+		__attribute__((xcl_pipeline_workitems(1))){
+			X = (size0/OPS_block_size_x +1)*OPS_block_size_x;
+			Y = (size1/OPS_block_size_y +1)*OPS_block_size_y;
 
-	//int xdim0_poisson_kernel_update = 22;
-	//int xdim1_poisson_kernel_update = 22;
-
-	if (idx_x < size0 && idx_y < size1) {
-		const ptr_double ptr0 = { &arg0[base0 + idx_x * 1*1 + idx_y * 1*1 * xdim0_poisson_kernel_update], xdim0_poisson_kernel_update};
-		ptr_double ptr1 = { &arg1[base1 + idx_x * 1*1 + idx_y * 1*1 * xdim1_poisson_kernel_update], xdim1_poisson_kernel_update};
+			tile_per_col = X/OPS_block_size_y;
+			tile_per_row = Y/OPS_block_size_x;
+		}
 
 
-		/*poisson_kernel_update(ptr0,
-		              ptr1);*/
-		OPS_ACCS(ptr1, 0,0) = OPS_ACCS(ptr0, 0,0);
-	}
+		local double tile[OPS_block_size_y][OPS_block_size_x];
+		rd_loop_i: for(int i = 0; i < tile_per_col; ++i) {
+			rd_loop_j: for (int j = 0; j < tile_per_row; ++j) {
+				__attribute__((xcl_loop_tripcount(OPS_block_size_y, OPS_block_size_y)))
+				rd_buf_loop_m: for (int m = 0; m < OPS_block_size_y; ++m) {
+					__attribute__((xcl_pipeline_workitems(1))){
+						Y_g = i*OPS_block_size_y+m;
+						index = base0 + (j*OPS_block_size_x) + (Y_g) * xdim0_poisson_kernel_update;
+					}
+					__attribute__((xcl_pipeline_loop(1)))
+					__attribute__((xcl_loop_tripcount(OPS_block_size_x, OPS_block_size_x)))
+					rd_buf_loop_n: for (int n = 0; n < OPS_block_size_x; ++n) {
+						int X_g = j*OPS_block_size_x+n;
+						// should burst TILE_WIDTH in WORD beat
+						tile[m][n] = arg0[index+n];
+					}
+				}
+				__attribute__((xcl_loop_tripcount(OPS_block_size_y, OPS_block_size_y)))
+				rd_loop_m: for (int m = 0; m < OPS_block_size_y; ++m) {
+					__attribute__((xcl_pipeline_workitems(1))){
+						Y_g = i*OPS_block_size_y+m;
+						index = base0 + (j*OPS_block_size_x) + (Y_g) * xdim0_poisson_kernel_update;
+					}
+					__attribute__((xcl_pipeline_loop(1)))
+					__attribute__((xcl_loop_tripcount(OPS_block_size_x, OPS_block_size_x)))
+					rd_loop_n: for (int n = 0; n < OPS_block_size_x; ++n) {
+						int X_g = j*OPS_block_size_x+n;
+						//if(X_g < size0 && Y_g < size1)
+							arg1[index+n] = X_g < size0 && Y_g < size1 ? tile[m][n]: arg1[index+n];
+					}
+				}
+			}
+		}
 
 }
