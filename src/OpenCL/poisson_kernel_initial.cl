@@ -51,6 +51,9 @@
 	OPS_ACCS(u, 0,0) = 0.0;
 }*/
 
+__kernel __attribute__ ((reqd_work_group_size(OPS_block_size_x, OPS_block_size_y, 1)))
+__kernel __attribute__((vec_type_hint(double)))
+__kernel __attribute__((xcl_zero_global_work_offset))
 
 __kernel void ops_poisson_kernel_initial(
 		__global double* restrict arg0,

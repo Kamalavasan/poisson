@@ -22,8 +22,6 @@
 extern double dx;
 extern double dy;
 
-#define x_len 16
-#define y_len 16
 
 extern ops_opencl_core OPS_opencl_core;
 
@@ -174,7 +172,7 @@ void buildOpenCLKernels_poisson_kernel_error(int xdim0, int xdim1) {
 
 
 // host stub function
-void n_ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int dim, int* range,
+void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int dim, int* range,
 		ops_arg arg0, ops_arg arg1, ops_arg arg2) {
 
 	//Timing
@@ -362,7 +360,7 @@ void buildOpenCLKernels_poisson_kernel_stencil(int xdim0, int xdim1) {
 
 
 // host stub function
-void n_ops_par_loop_poisson_kernel_stencil(char const *name, ops_block block, int dim, int* range,
+void ops_par_loop_poisson_kernel_stencil(char const *name, ops_block block, int dim, int* range,
 		ops_arg arg0, ops_arg arg1) {
 
 	//Timing
@@ -515,7 +513,7 @@ void buildOpenCLKernels_poisson_kernel_initial(int xdim0) {
 
 
 // host stub function
-void n_ops_par_loop_poisson_kernel_initial(char const *name, ops_block block, int dim, int* range,
+void ops_par_loop_poisson_kernel_initial(char const *name, ops_block block, int dim, int* range,
 		ops_arg arg0) {
 
 	//Timing
@@ -652,7 +650,7 @@ void buildOpenCLKernels_poisson_kernel_update(int xdim0, int xdim1) {
 
 
 // host stub function
-void n_ops_par_loop_poisson_kernel_update(char const *name, ops_block block, int dim, int* range,
+void ops_par_loop_poisson_kernel_update(char const *name, ops_block block, int dim, int* range,
 		ops_arg arg0, ops_arg arg1) {
 
 	//Timing
@@ -880,8 +878,8 @@ void ops_par_loop_poisson_kernel_populate(char const *name, ops_block block, int
 	//set up OpenCL thread blocks
 //	size_t globalWorkSize[3] = {((x_size-1)/OPS_block_size_x+ 1)*OPS_block_size_x, ((y_size-1)/OPS_block_size_y + 1)*OPS_block_size_y, 1};
 //	size_t localWorkSize[3] =  {OPS_block_size_x,OPS_block_size_y,OPS_block_size_z};
-	size_t globalWorkSize[3] = {((x_size-1)/x_len+ 1)*x_len, ((y_size-1)/y_len + 1)*y_len, 1};
-	size_t localWorkSize[3] =  {1,1,1};
+	size_t globalWorkSize[3] = {((x_size-1)/OPS_block_size_x+ 1)*OPS_block_size_x, ((y_size-1)/OPS_block_size_y + 1)*OPS_block_size_y, 1};
+	size_t localWorkSize[3] =  {OPS_block_size_x,OPS_block_size_y,1};
 
 	printf("global worksize is %d %d %d\n", globalWorkSize[0], globalWorkSize[1], globalWorkSize[2]);
 	fflush(stdout);

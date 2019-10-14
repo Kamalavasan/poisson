@@ -53,6 +53,10 @@
 }*/
 
 
+__kernel __attribute__ ((reqd_work_group_size(OPS_block_size_x, OPS_block_size_y, 1)))
+__kernel __attribute__((vec_type_hint(double)))
+__kernel __attribute__((xcl_zero_global_work_offset))
+
 __kernel void ops_poisson_kernel_update(
 		__global const double* restrict arg0,
 		__global double* restrict arg1,
