@@ -45,29 +45,10 @@
 #define INFINITY_ull INFINITY;
 #define ZERO_bool 0;
 
-#define x_len 1
-#define y_len 1
+#define BURST_LEN 256
+#define SHIFT_BITS 8
 
-//user function
-
-/*__attribute__((always_inline)) void poisson_kernel_populate(const int *dispx,
-		const int *dispy,
-		const int *idx,
-		ptr_double u,
-		ptr_double f,
-		ptr_double ref, const double dx, const double dy)
-{
-	double x = dx * (double)(idx[0]+dispx[0]);
-	double y = dy * (double)(idx[1]+dispy[0]);
-
-	OPS_ACCS(u, 0,0) = myfun(sin(M_PI*x),cos(2.0*M_PI*y))-1.0;
-	OPS_ACCS(f, 0,0) = -5.0*M_PI*M_PI*sin(M_PI*x)*cos(2.0*M_PI*y);
-	OPS_ACCS(ref, 0,0) = sin(M_PI*x)*cos(2.0*M_PI*y);
-}*/
-
-__kernel __attribute__ ((reqd_work_group_size(OPS_block_size_x, OPS_block_size_y, 1)))
-__kernel __attribute__((vec_type_hint(double)))
-__kernel __attribute__((xcl_zero_global_work_offset))
+__kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 
 __kernel void ops_poisson_kernel_populate(
 		const int arg0,
@@ -88,53 +69,80 @@ __kernel void ops_poisson_kernel_populate(
 		const int xdim5_poisson_kernel_populate){
 
 
-		int idx_y, idx_x;
 
-		__attribute__((xcl_pipeline_workitems)){
-			idx_y = get_global_id(1);
-			idx_x = get_global_id(0);
-		}
+		int beat_no = size0 >> SHIFT_BITS;
+		local double mem3[BURST_LEN];
+		local double mem4[BURST_LEN];
+		local double mem5[BURST_LEN];
 
 		int arg_idx[2];
-		__attribute__((xcl_pipeline_workitems)){
-			arg_idx[0] = arg_idx0+ idx_x;
-			arg_idx[1] = arg_idx1+ idx_y;
+		double x, y;
+
+
+		for(int i  = 0; i < size1; i++){
+			for(int j = 0; j < beat_no; j++){
+				int base_index3 = base3 + (j<<SHIFT_BITS) + i* xdim3_poisson_kernel_populate;
+				int base_index4 = base4 + (j<<SHIFT_BITS) + i* xdim4_poisson_kernel_populate;
+				int base_index5 = base5 + (j<<SHIFT_BITS) + i* xdim5_poisson_kernel_populate;
+
+
+				arg_idx[1] = arg_idx1+ i;
+
+
+				v1_rd: __attribute__((xcl_pipeline_loop))
+				for(int k = 0; k < BURST_LEN; k++){
+					arg_idx[0] = arg_idx0+ (j<<SHIFT_BITS) + k;
+					x = dx * (double)(arg_idx[0]+arg0);
+					y = dy * (double)(arg_idx[1]+arg1);
+					mem3[k] = myfun(sin(M_PI*x),cos(2.0*M_PI*y))-1.0;
+					mem4[k] = -5.0*M_PI*M_PI*sin(M_PI*x)*cos(2.0*M_PI*y);
+					mem5[k] = sin(M_PI*x)*cos(2.0*M_PI*y);
+				}
+				v1_wr3: __attribute__((xcl_pipeline_loop))
+				for(int k = 0; k < BURST_LEN; k++){
+					arg3[base_index3 +k] = mem3[k];
+				}
+				v1_wr4: __attribute__((xcl_pipeline_loop))
+				for(int k = 0; k < BURST_LEN; k++){
+					arg4[base_index4 +k] = mem4[k];
+				}
+				v1_wr5: __attribute__((xcl_pipeline_loop))
+				for(int k = 0; k < BURST_LEN; k++){
+					arg5[base_index5 +k] = mem5[k];
+				}
+			}
+
 		}
 
-		int index3;
-		int index4;
-		int index5;
+		for(int i  = 0; i < size1; i++){
+			int base_index3 = base3 + (beat_no<<SHIFT_BITS) + i* xdim3_poisson_kernel_populate;
+			int base_index4 = base4 + (beat_no<<SHIFT_BITS) + i* xdim4_poisson_kernel_populate;
+			int base_index5 = base5 + (beat_no<<SHIFT_BITS) + i* xdim5_poisson_kernel_populate;
 
-		__attribute__((xcl_pipeline_workitems)){
-			index3 = base3 + idx_y * xdim3_poisson_kernel_populate;
-			index4 = base4 + idx_y * xdim4_poisson_kernel_populate;
-			index5 = base5 + idx_y * xdim5_poisson_kernel_populate;
-		}
+			int arg_idx[2];
+			arg_idx[1] = arg_idx1+ i;
 
-		if (idx_x < size0 && idx_y < size1) {
-//
-//			__global double* restrict ptr3 = &arg3[index];
-//			__global double* restrict ptr4 = &arg4[index];
-//			__global double* restrict ptr5 = &arg5[index];
 
+			v2_rd: __attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < (size0 & (BURST_LEN-1)); k++){
+				arg_idx[0] = arg_idx0+ (beat_no<<SHIFT_BITS) + k;
 				double x = dx * (double)(arg_idx[0]+arg0);
 				double y = dy * (double)(arg_idx[1]+arg1);
-
-
-				double f3, f4, f5;
-				__attribute__((xcl_dataflow)){
-					f3 = myfun(sin(M_PI*x),cos(2.0*M_PI*y))-1.0;
-					f4 = -5.0*M_PI*M_PI*sin(M_PI*x)*cos(2.0*M_PI*y);
-					f5 = sin(M_PI*x)*cos(2.0*M_PI*y);
-				}
-
-			/*__attribute__((xcl_pipeline_workitems))*/{
-
-				arg3[index3+idx_x] = f3;
-				arg4[index4+idx_x] = f4;
-				arg5[index5+idx_x] = f5;
-		    }
-
-		  }
-
+				mem3[k] = myfun(sin(M_PI*x),cos(2.0*M_PI*y))-1.0;
+				mem4[k] = -5.0*M_PI*M_PI*sin(M_PI*x)*cos(2.0*M_PI*y);
+				mem5[k] = sin(M_PI*x)*cos(2.0*M_PI*y);
+			}
+			v2_wr3: __attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < (size0 & (BURST_LEN-1)); k++){
+				arg3[base_index3 +k] = mem3[k];
+			}
+			v2_wr4: __attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < (size0 & (BURST_LEN-1)); k++){
+				arg4[base_index4 +k] = mem4[k];
+			}
+			v2_wr5: __attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < (size0 & (BURST_LEN-1)); k++){
+				arg5[base_index5 +k] = mem5[k];
+			}
+		}
 }

@@ -49,12 +49,9 @@
 
 #define BURST_LEN_RD 130
 #define BURST_LEN_WR 128
+#define SHIFT_BITS 7
 
-//__kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
-//__kernel __attribute__ ((reqd_work_group_size(OPS_block_size_x, OPS_block_size_y, 1)))
-//__kernel __attribute__((vec_type_hint(double)))
-//__kernel __attribute__((xcl_zero_global_work_offset))
-
+__kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 __kernel void ops_poisson_kernel_stencil(
 		__global const double* restrict arg0,
 		__global double* restrict arg1,
@@ -70,7 +67,7 @@ __kernel void ops_poisson_kernel_stencil(
 //	int idx_y = get_global_id(1);
 //	int idx_x = get_global_id(0);
 
-	int beat_no = size0 >> 7;
+	int beat_no = size0 >> SHIFT_BITS;
 
 
 	local double mem_rd1[BURST_LEN_RD];
@@ -86,11 +83,11 @@ __kernel void ops_poisson_kernel_stencil(
 		for(int i  = 0; i < size1; i++){
 			for(int j = 0; j < beat_no; j++){
 
-				int base_index1 = base0 + (j<<7) + (i-1)* xdim0_poisson_kernel_stencil -1;
-				int base_index2 = base0 + (j<<7) + (i) * xdim0_poisson_kernel_stencil - 1;
-				int base_index3 = base0 + (j<<7) + (i+1)* xdim0_poisson_kernel_stencil -1;
+				int base_index1 = base0 + (j<<SHIFT_BITS) + (i-1)* xdim0_poisson_kernel_stencil -1;
+				int base_index2 = base0 + (j<<SHIFT_BITS) + (i) * xdim0_poisson_kernel_stencil - 1;
+				int base_index3 = base0 + (j<<SHIFT_BITS) + (i+1)* xdim0_poisson_kernel_stencil -1;
 
-				int base_index0 = base1 + (j<<7) + i* xdim1_poisson_kernel_stencil;
+				int base_index0 = base1 + (j<<SHIFT_BITS) + i* xdim1_poisson_kernel_stencil;
 
 				v1_rd: __attribute__((xcl_pipeline_loop))
 				for(int k = 0; k < BURST_LEN_RD; k++){
@@ -128,29 +125,29 @@ __kernel void ops_poisson_kernel_stencil(
 
 		for(int i  = 0; i < size1; i++){
 
-				int base_index1 = base0 + (beat_no << 7) + (i-1)* xdim0_poisson_kernel_stencil -1;
-				int base_index2 = base0 + (beat_no << 7) + (i) * xdim0_poisson_kernel_stencil - 1;
-				int base_index3 = base0 + (beat_no << 7) + (i+1)* xdim0_poisson_kernel_stencil -1;
+				int base_index1 = base0 + (beat_no << SHIFT_BITS) + (i-1)* xdim0_poisson_kernel_stencil -1;
+				int base_index2 = base0 + (beat_no << SHIFT_BITS) + (i) * xdim0_poisson_kernel_stencil - 1;
+				int base_index3 = base0 + (beat_no << SHIFT_BITS) + (i+1)* xdim0_poisson_kernel_stencil -1;
 
-				int base_index0 = base1 + (beat_no << 7) + i * xdim1_poisson_kernel_stencil;
+				int base_index0 = base1 + (beat_no << SHIFT_BITS) + i * xdim1_poisson_kernel_stencil;
 
 				bv1_rd: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < ((size0 & 0x7f) + 2); k++){
+				for(int k = 0; k < ((size0 & (BURST_LEN_WR-1)) + 2); k++){
 					mem_rd1[k] = arg0[base_index1 +k];
 				}
 
 				bv2_rd: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < ((size0 & 0x7f) + 2); k++){
+				for(int k = 0; k < ((size0 & (BURST_LEN_WR-1)) + 2); k++){
 					mem_rd2[k] = arg0[base_index2 +k];
 				}
 
 				bv3_rd: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < ((size0 & 0x7f) + 2); k++){
+				for(int k = 0; k < ((size0 & (BURST_LEN_WR-1)) + 2); k++){
 					mem_rd3[k] = arg0[base_index3 +k];
 				}
 
 				bprocess: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < (size0 & 0x7f); k++){
+				for(int k = 0; k < (size0 & (BURST_LEN_WR-1)); k++){
 					mem_wr[k] = (
 							( mem_rd2[k] - 2.0f * mem_rd2[k+1] + mem_rd2[k+2] )*0.125f
 
@@ -161,22 +158,9 @@ __kernel void ops_poisson_kernel_stencil(
 				}
 
 				bv1_wr: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < (size0 & 0x7f); k++){
+				for(int k = 0; k < (size0 & (BURST_LEN_WR-1)); k++){
 					arg1[base_index0 +k] = mem_wr[k];
 				}
 		}
 	}
-
-//	if (idx_x < size0 && idx_y < size1) {
-//		const ptr_double ptr0 = { &arg0[base0 + idx_x * 1*1 + idx_y * 1*1 * xdim0_poisson_kernel_stencil], xdim0_poisson_kernel_stencil};
-//		ptr_double ptr1 = { &arg1[base1 + idx_x * 1*1 + idx_y * 1*1 * xdim1_poisson_kernel_stencil], xdim1_poisson_kernel_stencil};
-//
-//		/*poisson_kernel_stencil(ptr0,
-//		              ptr1);*/
-//
-//		OPS_ACCS(ptr1, 0,0) = ((OPS_ACCS(ptr0, -1,0)-2.0f*OPS_ACCS(ptr0, 0,0)+OPS_ACCS(ptr0, 1,0))*0.125f
-//				+ (OPS_ACCS(ptr0, 0,-1)-2.0f*OPS_ACCS(ptr0, 0,0)+OPS_ACCS(ptr0, 0,1))*0.125f
-//				+ OPS_ACCS(ptr0, 0,0));
-//	}
-
 }
