@@ -51,9 +51,10 @@
 	OPS_ACCS(u, 0,0) = 0.0;
 }*/
 
-__kernel __attribute__ ((reqd_work_group_size(OPS_block_size_x, OPS_block_size_y, 1)))
-__kernel __attribute__((vec_type_hint(double)))
-__kernel __attribute__((xcl_zero_global_work_offset))
+#define BURST_LEN 256
+__kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
+//__kernel __attribute__((vec_type_hint(double)))
+//__kernel __attribute__((xcl_zero_global_work_offset))
 
 __kernel void ops_poisson_kernel_initial(
 		__global double* restrict arg0,
@@ -62,16 +63,33 @@ __kernel void ops_poisson_kernel_initial(
 		const int size1,
 		const int xdim0_poisson_kernel_initial){
 
+	int beat_no = size0 >> 8;
+	local double mem[BURST_LEN];
 
-	int idx_y = get_global_id(1);
-	int idx_x = get_global_id(0);
-
-	//int xdim0_poisson_kernel_initial = 22;
-
-	if (idx_x < size0 && idx_y < size1) {
-		ptr_double ptr0 = { &arg0[base0 + idx_x * 1*1 + idx_y * 1*1 * xdim0_poisson_kernel_initial], xdim0_poisson_kernel_initial};
-		//poisson_kernel_initial(ptr0);
-		OPS_ACCS(ptr0, 0,0) = 0.0;
+	Initial_write: __attribute__((xcl_pipeline_loop))
+	for(int k = 0; k < BURST_LEN; k++){
+		mem[k] = 0;
 	}
+
+	for(int i  = 0; i < size1; i++){
+			for(int j = 0; j < beat_no; j++){
+				int base_index0 = base0 + (j<<8) + i* xdim0_poisson_kernel_initial;
+				v1_wr: __attribute__((xcl_pipeline_loop))
+				for(int k = 0; k < BURST_LEN; k++){
+					arg0[base_index0 +k] = mem[k];
+				}
+			}
+
+		}
+
+		for(int i  = 0; i < size1; i++){
+				int base_index0 = base0 + (beat_no<<8) + i* xdim0_poisson_kernel_initial;
+				v2_wr: __attribute__((xcl_pipeline_loop))
+				for(int k = 0; k < (size0 & 0xff); k++){
+					arg0[base_index0 +k] = mem[k];
+				}
+		}
+
+
 
 }

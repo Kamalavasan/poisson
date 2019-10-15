@@ -457,7 +457,7 @@
           <args name="xdim0_poisson_kernel_stencil"/>
           <args name="xdim1_poisson_kernel_stencil"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_update" sourceFile="src/OpenCL/poisson_kernel_update.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_update" sourceFile="src/OpenCL/poisson_kernel_update.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_update_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="arg1" master="true" memory=""/>
