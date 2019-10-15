@@ -53,9 +53,13 @@
 }*/
 
 
-__kernel __attribute__ ((reqd_work_group_size(OPS_block_size_x, OPS_block_size_y, 1)))
-__kernel __attribute__((vec_type_hint(double)))
-__kernel __attribute__((xcl_zero_global_work_offset))
+#define BURST_LEN 256
+
+__kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
+//__kernel __attribute__((vec_type_hint(double)))
+//__kernel __attribute__((xcl_zero_global_work_offset))
+
+
 
 __kernel void ops_poisson_kernel_update(
 		__global const double* restrict arg0,
@@ -68,20 +72,52 @@ __kernel void ops_poisson_kernel_update(
 		const int xdim1_poisson_kernel_update){
 
 
-	int idx_y = get_global_id(1);
-	int idx_x = get_global_id(0);
+//	int idx_y = get_global_id(1);
+//	int idx_x = get_global_id(0);
+
+	int beat_no = size0 >> 8;
+	local double mem[BURST_LEN];
 
 	//int xdim0_poisson_kernel_update = 22;
 	//int xdim1_poisson_kernel_update = 22;
 
-	if (idx_x < size0 && idx_y < size1) {
-		const ptr_double ptr0 = { &arg0[base0 + idx_x * 1*1 + idx_y * 1*1 * xdim0_poisson_kernel_update], xdim0_poisson_kernel_update};
-		ptr_double ptr1 = { &arg1[base1 + idx_x * 1*1 + idx_y * 1*1 * xdim1_poisson_kernel_update], xdim1_poisson_kernel_update};
+	for(int i  = 0; i < size1; i++){
+		for(int j = 0; j < beat_no; j++){
+			int base_index0 = base0 + (j<<8) + i* xdim0_poisson_kernel_update;
+			int base_index1 = base1 + (j<<8) + i* xdim1_poisson_kernel_update;
+			v1_rd: __attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < beat_no; k++){
+				mem[k] = arg0[base_index0 +k];
+			}
+			v1_wr: __attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < beat_no; k++){
+				arg1[base_index0 +k] = mem[k];
+			}
+		}
 
-
-		/*poisson_kernel_update(ptr0,
-		              ptr1);*/
-		OPS_ACCS(ptr1, 0,0) = OPS_ACCS(ptr0, 0,0);
 	}
+
+	for(int i  = 0; i < size1; i++){
+			int base_index0 = base0 + (beat_no<<8) + i* xdim0_poisson_kernel_update;
+			int base_index1 = base1 + (beat_no<<8) + i* xdim1_poisson_kernel_update;
+			v2_rd: __attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < (size0 & 0xff); k++){
+				mem[k] = arg0[base_index0 +k];
+			}
+			v2_wr: __attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < (size0 & 0xff); k++){
+				arg1[base_index0 +k] = mem[k];
+			}
+	}
+
+//	if (idx_x < size0 && idx_y < size1) {
+//		const ptr_double ptr0 = { &arg0[base0 + idx_x * 1*1 + idx_y * 1*1 * xdim0_poisson_kernel_update], xdim0_poisson_kernel_update};
+//		ptr_double ptr1 = { &arg1[base1 + idx_x * 1*1 + idx_y * 1*1 * xdim1_poisson_kernel_update], xdim1_poisson_kernel_update};
+//
+//
+//		/*poisson_kernel_update(ptr0,
+//		              ptr1);*/
+//		OPS_ACCS(ptr1, 0,0) = OPS_ACCS(ptr0, 0,0);
+//	}
 
 }
