@@ -421,8 +421,11 @@ void ops_par_loop_poisson_kernel_stencil(char const *name, ops_block block, int 
 			xdim0,xdim1);
 
 	//set up OpenCL thread blocks
-	size_t globalWorkSize[3] = {((x_size-1)/OPS_block_size_x+ 1)*OPS_block_size_x, ((y_size-1)/OPS_block_size_y + 1)*OPS_block_size_y, 1};
-	size_t localWorkSize[3] =  {OPS_block_size_x,OPS_block_size_y,OPS_block_size_z};
+//	size_t globalWorkSize[3] = {((x_size-1)/OPS_block_size_x+ 1)*OPS_block_size_x, ((y_size-1)/OPS_block_size_y + 1)*OPS_block_size_y, 1};
+//	size_t localWorkSize[3] =  {OPS_block_size_x,OPS_block_size_y,OPS_block_size_z};
+
+	size_t globalWorkSize[3] = {1,1,1};
+	size_t localWorkSize[3] =  {1,1,1};
 
 	//set up initial pointers
 	int d_m[OPS_MAX_DIM];

@@ -86,11 +86,11 @@ __kernel void ops_poisson_kernel_update(
 			int base_index0 = base0 + (j<<8) + i* xdim0_poisson_kernel_update;
 			int base_index1 = base1 + (j<<8) + i* xdim1_poisson_kernel_update;
 			v1_rd: __attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < beat_no; k++){
+			for(int k = 0; k < BURST_LEN; k++){
 				mem[k] = arg0[base_index0 +k];
 			}
 			v1_wr: __attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < beat_no; k++){
+			for(int k = 0; k < BURST_LEN; k++){
 				arg1[base_index0 +k] = mem[k];
 			}
 		}
