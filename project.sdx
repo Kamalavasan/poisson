@@ -3,7 +3,7 @@
   <configuration name="Emulation-SW" id="com.xilinx.sdx.opencl.config.sw_emu.262267279">
     <configBuildOptions xsi:type="openclProject:OpenCLOptions" kernelDebug="true">
       <binaryContainers name="ops_poisson_kernels">
-        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_populate_1" slr="">
             <args name="arg0" memory=""/>
             <args name="arg1" memory=""/>
@@ -41,7 +41,7 @@
           <args name="xdim4_poisson_kernel_populate"/>
           <args name="xdim5_poisson_kernel_populate"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_error_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="arg1" master="true" memory=""/>
@@ -67,7 +67,7 @@
           <args name="xdim0_poisson_kernel_error"/>
           <args name="xdim1_poisson_kernel_error"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_initial" sourceFile="src/OpenCL/poisson_kernel_initial.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_initial" sourceFile="src/OpenCL/poisson_kernel_initial.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_initial_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="base0" memory=""/>
@@ -81,7 +81,7 @@
           <args name="size1"/>
           <args name="xdim0_poisson_kernel_initial"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_stencil_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="arg1" master="true" memory=""/>
@@ -125,7 +125,7 @@
     </configBuildOptions>
     <lastBuildOptions xsi:type="openclProject:OpenCLOptions" kernelDebug="true">
       <binaryContainers name="ops_poisson_kernels">
-        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_populate_1" slr="">
             <args name="arg0" memory=""/>
             <args name="arg1" memory=""/>
@@ -163,7 +163,7 @@
           <args name="xdim4_poisson_kernel_populate"/>
           <args name="xdim5_poisson_kernel_populate"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_error_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="arg1" master="true" memory=""/>
@@ -189,7 +189,7 @@
           <args name="xdim0_poisson_kernel_error"/>
           <args name="xdim1_poisson_kernel_error"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_initial" sourceFile="src/OpenCL/poisson_kernel_initial.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_initial" sourceFile="src/OpenCL/poisson_kernel_initial.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_initial_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="base0" memory=""/>
@@ -203,7 +203,7 @@
           <args name="size1"/>
           <args name="xdim0_poisson_kernel_initial"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_stencil_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="arg1" master="true" memory=""/>
@@ -249,7 +249,7 @@
   <configuration name="Emulation-HW" id="com.xilinx.sdx.opencl.config.hw_emu.2144567038" dirty="true">
     <configBuildOptions xsi:type="openclProject:OpenCLOptions" kernelDebug="true" target="hw_emu">
       <binaryContainers name="ops_poisson_kernels">
-        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_populate_1" slr="">
             <args name="arg0" memory=""/>
             <args name="arg1" memory=""/>
@@ -281,7 +281,7 @@
           <args name="size0"/>
           <args name="size1"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_error_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="arg1" master="true" memory=""/>
@@ -307,7 +307,7 @@
           <args name="xdim0_poisson_kernel_error"/>
           <args name="xdim1_poisson_kernel_error"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_initial" sourceFile="src/OpenCL/poisson_kernel_initial.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_initial" sourceFile="src/OpenCL/poisson_kernel_initial.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_initial_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="base0" memory=""/>
@@ -321,7 +321,7 @@
           <args name="size1"/>
           <args name="xdim0_poisson_kernel_initial"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_stencil_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="arg1" master="true" memory=""/>
@@ -483,10 +483,10 @@
   <configuration name="System" id="com.xilinx.sdx.opencl.config.hw.1631457947" dirty="true">
     <configBuildOptions xsi:type="openclProject:OpenCLOptions" target="hw">
       <binaryContainers name="ops_poisson_kernels">
-        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_populate_1" slr=""/>
         </kernels>
-        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_error_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="arg1" master="true" memory=""/>
@@ -512,7 +512,7 @@
           <args name="xdim0_poisson_kernel_error"/>
           <args name="xdim1_poisson_kernel_error"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_initial" sourceFile="src/OpenCL/poisson_kernel_initial.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_initial" sourceFile="src/OpenCL/poisson_kernel_initial.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_initial_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="base0" memory=""/>
@@ -526,7 +526,7 @@
           <args name="size1"/>
           <args name="xdim0_poisson_kernel_initial"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_stencil_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="arg1" master="true" memory=""/>
@@ -570,10 +570,10 @@
     </configBuildOptions>
     <lastBuildOptions xsi:type="openclProject:OpenCLOptions" target="hw">
       <binaryContainers name="ops_poisson_kernels">
-        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_populate_1" slr=""/>
         </kernels>
-        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_error_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="arg1" master="true" memory=""/>
@@ -599,7 +599,7 @@
           <args name="xdim0_poisson_kernel_error"/>
           <args name="xdim1_poisson_kernel_error"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_initial" sourceFile="src/OpenCL/poisson_kernel_initial.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_initial" sourceFile="src/OpenCL/poisson_kernel_initial.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_initial_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="base0" memory=""/>
@@ -613,7 +613,7 @@
           <args name="size1"/>
           <args name="xdim0_poisson_kernel_initial"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cl" maxMemoryPorts="true">
+        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
           <computeUnits name="ops_poisson_kernel_stencil_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="arg1" master="true" memory=""/>
