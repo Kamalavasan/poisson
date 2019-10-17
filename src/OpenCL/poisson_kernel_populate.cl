@@ -79,18 +79,20 @@ __kernel void ops_poisson_kernel_populate(
 		double x, y;
 
 
+		int base_index3, base_index4, base_index5, loop_limit;
+
 		for(int i  = 0; i < size1; i++){
 			for(int j = 0; j < beat_no; j++){
-				int base_index3 = base3 + (j<<SHIFT_BITS) + i* xdim3_poisson_kernel_populate;
-				int base_index4 = base4 + (j<<SHIFT_BITS) + i* xdim4_poisson_kernel_populate;
-				int base_index5 = base5 + (j<<SHIFT_BITS) + i* xdim5_poisson_kernel_populate;
-
-				int loop_limit = (j < (beat_no - 1)) ? BURST_LEN : size0 & (BURST_LEN-1);
-
-				arg_idx[1] = arg_idx1+ i;
-
+				__attribute__((xcl_pipeline_workitems)){
+					base_index3 = base3 + (j<<SHIFT_BITS) + i* xdim3_poisson_kernel_populate;
+					base_index4 = base4 + (j<<SHIFT_BITS) + i* xdim4_poisson_kernel_populate;
+					base_index5 = base5 + (j<<SHIFT_BITS) + i* xdim5_poisson_kernel_populate;
+					loop_limit = (j < (beat_no - 1)) ? BURST_LEN : size0 & (BURST_LEN-1);
+					arg_idx[1] = arg_idx1+ i;
+				}
 
 				v1_rd: __attribute__((xcl_pipeline_loop))
+				__attribute__((opencl_unroll_hint(2)))
 				for(int k = 0; k < loop_limit; k++){
 					arg_idx[0] = arg_idx0+ (j<<SHIFT_BITS) + k;
 					x = dx * (double)(arg_idx[0]+arg0);

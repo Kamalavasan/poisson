@@ -77,13 +77,15 @@ __kernel void ops_poisson_kernel_update(
 	int beat_no = (size0 >> SHIFT_BITS) + 1;
 	local double mem[BURST_LEN];
 
+	int base_index0, base_index1, loop_limit;
 
 	for(int i  = 0; i < size1; i++){
 		for(int j = 0; j < beat_no; j++){
-			int base_index0 = base0 + (j<< SHIFT_BITS) + i* xdim0_poisson_kernel_update;
-			int base_index1 = base1 + (j<< SHIFT_BITS) + i* xdim1_poisson_kernel_update;
-
-			int loop_limit = (j < (beat_no - 1)) ? BURST_LEN : size0 & (BURST_LEN-1);
+			__attribute__((xcl_pipeline_workitems)){
+				base_index0 = base0 + (j<< SHIFT_BITS) + i* xdim0_poisson_kernel_update;
+				base_index1 = base1 + (j<< SHIFT_BITS) + i* xdim1_poisson_kernel_update;
+				loop_limit = (j < (beat_no - 1)) ? BURST_LEN : size0 & (BURST_LEN-1);
+			}
 
 			v1_rd: __attribute__((xcl_pipeline_loop))
 			for(int k = 0; k < loop_limit; k++){
