@@ -67,7 +67,7 @@ __kernel void ops_poisson_kernel_stencil(
 //	int idx_y = get_global_id(1);
 //	int idx_x = get_global_id(0);
 
-	int beat_no = size0 >> SHIFT_BITS;
+	int beat_no = (size0 >> SHIFT_BITS) + 1;
 
 
 	local double mem_rd1[BURST_LEN_RD+2];
@@ -88,30 +88,31 @@ __kernel void ops_poisson_kernel_stencil(
 				int base_index3 = base0 + (j<<SHIFT_BITS) + (i+1)* xdim0_poisson_kernel_stencil;
 
 				int base_index0 = base1 + (j<<SHIFT_BITS) + i* xdim1_poisson_kernel_stencil;
+				int loop_limit = (j < (beat_no - 1)) ? BURST_LEN_RD : size0 & (BURST_LEN_RD-1);
 
 				mem_rd1[0] = arg0[base_index1-1];
-				mem_rd1[BURST_LEN_RD+1] = arg0[base_index1 + BURST_LEN_RD];
+				mem_rd1[loop_limit+1] = arg0[base_index1 + loop_limit];
 				v1_rd: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < BURST_LEN_RD; k++){
+				for(int k = 0; k < loop_limit; k++){
 					mem_rd1[k+1] = arg0[base_index1 +k];
 				}
 
 				mem_rd2[0] = arg0[base_index2-1];
-				mem_rd2[BURST_LEN_RD+1] = arg0[base_index2 + BURST_LEN_RD];
+				mem_rd2[loop_limit+1] = arg0[base_index2 + loop_limit];
 				v2_rd: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < BURST_LEN_RD; k++){
+				for(int k = 0; k < loop_limit; k++){
 					mem_rd2[k+1] = arg0[base_index2 +k];
 				}
 
 				mem_rd3[0] = arg0[base_index3-1];
-				mem_rd3[BURST_LEN_RD+1] = arg0[base_index3 + BURST_LEN_RD];
+				mem_rd3[loop_limit+1] = arg0[base_index3 + loop_limit];
 				v3_rd: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < BURST_LEN_RD; k++){
+				for(int k = 0; k < loop_limit; k++){
 					mem_rd3[k+1] = arg0[base_index3 +k];
 				}
 
 				process: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < BURST_LEN_WR; k++){
+				for(int k = 0; k < loop_limit; k++){
 
 					double f1 = ( mem_rd2[k]  + mem_rd2[k+2] )*0.125f;
 					double f2 = ( mem_rd1[k+1]  + mem_rd3[k+1] )*0.125f;
@@ -121,54 +122,11 @@ __kernel void ops_poisson_kernel_stencil(
 				}
 
 				v1_wr: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < BURST_LEN_WR; k++){
+				for(int k = 0; k < loop_limit; k++){
 					arg1[base_index0 +k] = mem_wr[k];
 				}
 
 			}
-		}
-
-		for(int i  = 0; i < size1; i++){
-
-				int base_index1 = base0 + (beat_no << SHIFT_BITS) + (i-1)* xdim0_poisson_kernel_stencil;
-				int base_index2 = base0 + (beat_no << SHIFT_BITS) + (i) * xdim0_poisson_kernel_stencil;
-				int base_index3 = base0 + (beat_no << SHIFT_BITS) + (i+1)* xdim0_poisson_kernel_stencil;
-
-				int base_index0 = base1 + (beat_no << SHIFT_BITS) + i * xdim1_poisson_kernel_stencil;
-
-				mem_rd1[0] = arg0[base_index1-1];
-				bv1_rd: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < ((size0 & (BURST_LEN_WR-1)) + 1); k++){
-					mem_rd1[k+1] = arg0[base_index1 +k];
-				}
-
-				mem_rd2[0] = arg0[base_index2-1];
-				bv2_rd: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < ((size0 & (BURST_LEN_WR-1)) + 1); k++){
-					mem_rd2[k+1] = arg0[base_index2 +k];
-				}
-
-				mem_rd3[0] = arg0[base_index3-1];
-				bv3_rd: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < ((size0 & (BURST_LEN_WR-1)) + 1); k++){
-					mem_rd3[k+1] = arg0[base_index3 +k];
-				}
-
-				bprocess: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < (size0 & (BURST_LEN_WR-1)); k++){
-					mem_wr[k] = (
-							( mem_rd2[k] - 2.0f * mem_rd2[k+1] + mem_rd2[k+2] )*0.125f
-
-							+( mem_rd1[k+1] - 2.0f*mem_rd2[k+1] + mem_rd3[k+1] )*0.125f
-
-							+ mem_rd2[k+1]
-							);
-				}
-
-				bv1_wr: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < (size0 & (BURST_LEN_WR-1)); k++){
-					arg1[base_index0 +k] = mem_wr[k];
-				}
 		}
 	}
 }

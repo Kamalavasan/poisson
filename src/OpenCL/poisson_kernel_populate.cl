@@ -70,7 +70,7 @@ __kernel void ops_poisson_kernel_populate(
 
 
 
-		int beat_no = size0 >> SHIFT_BITS;
+		int beat_no = (size0 >> SHIFT_BITS) + 1;
 		local double mem3[BURST_LEN];
 		local double mem4[BURST_LEN];
 		local double mem5[BURST_LEN];
@@ -85,12 +85,13 @@ __kernel void ops_poisson_kernel_populate(
 				int base_index4 = base4 + (j<<SHIFT_BITS) + i* xdim4_poisson_kernel_populate;
 				int base_index5 = base5 + (j<<SHIFT_BITS) + i* xdim5_poisson_kernel_populate;
 
+				int loop_limit = (j < (beat_no - 1)) ? BURST_LEN : size0 & (BURST_LEN-1);
 
 				arg_idx[1] = arg_idx1+ i;
 
 
 				v1_rd: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < BURST_LEN; k++){
+				for(int k = 0; k < loop_limit; k++){
 					arg_idx[0] = arg_idx0+ (j<<SHIFT_BITS) + k;
 					x = dx * (double)(arg_idx[0]+arg0);
 					y = dy * (double)(arg_idx[1]+arg1);
@@ -99,50 +100,18 @@ __kernel void ops_poisson_kernel_populate(
 					mem5[k] = sin(M_PI*x)*cos(2.0*M_PI*y);
 				}
 				v1_wr3: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < BURST_LEN; k++){
+				for(int k = 0; k < loop_limit; k++){
 					arg3[base_index3 +k] = mem3[k];
 				}
 				v1_wr4: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < BURST_LEN; k++){
+				for(int k = 0; k < loop_limit; k++){
 					arg4[base_index4 +k] = mem4[k];
 				}
 				v1_wr5: __attribute__((xcl_pipeline_loop))
-				for(int k = 0; k < BURST_LEN; k++){
+				for(int k = 0; k < loop_limit; k++){
 					arg5[base_index5 +k] = mem5[k];
 				}
 			}
 
-		}
-
-		for(int i  = 0; i < size1; i++){
-			int base_index3 = base3 + (beat_no<<SHIFT_BITS) + i* xdim3_poisson_kernel_populate;
-			int base_index4 = base4 + (beat_no<<SHIFT_BITS) + i* xdim4_poisson_kernel_populate;
-			int base_index5 = base5 + (beat_no<<SHIFT_BITS) + i* xdim5_poisson_kernel_populate;
-
-			int arg_idx[2];
-			arg_idx[1] = arg_idx1+ i;
-
-
-			v2_rd: __attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < (size0 & (BURST_LEN-1)); k++){
-				arg_idx[0] = arg_idx0+ (beat_no<<SHIFT_BITS) + k;
-				double x = dx * (double)(arg_idx[0]+arg0);
-				double y = dy * (double)(arg_idx[1]+arg1);
-				mem3[k] = myfun(sin(M_PI*x),cos(2.0*M_PI*y))-1.0;
-				mem4[k] = -5.0*M_PI*M_PI*sin(M_PI*x)*cos(2.0*M_PI*y);
-				mem5[k] = sin(M_PI*x)*cos(2.0*M_PI*y);
-			}
-			v2_wr3: __attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < (size0 & (BURST_LEN-1)); k++){
-				arg3[base_index3 +k] = mem3[k];
-			}
-			v2_wr4: __attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < (size0 & (BURST_LEN-1)); k++){
-				arg4[base_index4 +k] = mem4[k];
-			}
-			v2_wr5: __attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < (size0 & (BURST_LEN-1)); k++){
-				arg5[base_index5 +k] = mem5[k];
-			}
 		}
 }

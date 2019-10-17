@@ -59,7 +59,7 @@ __kernel void ops_poisson_kernel_initial(
 		const int size1,
 		const int xdim0_poisson_kernel_initial){
 
-	int beat_no = size0 >> SHIFT_BITS;
+	int beat_no = (size0 >> SHIFT_BITS) + 1;
 	local double mem[BURST_LEN];
 
 	Initial_write: __attribute__((xcl_pipeline_loop))
@@ -70,18 +70,11 @@ __kernel void ops_poisson_kernel_initial(
 	for(int i  = 0; i < size1; i++){
 		for(int j = 0; j < beat_no; j++){
 			int base_index0 = base0 + (j << SHIFT_BITS) + i* xdim0_poisson_kernel_initial;
+			int loop_limit = (j < (beat_no - 1)) ? BURST_LEN : size0 & (BURST_LEN-1);
 			v1_wr: __attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < BURST_LEN; k++){
+			for(int k = 0; k < loop_limit; k++){
 				arg0[base_index0 +k] = mem[k];
 			}
-		}
-	}
-
-	for(int i  = 0; i < size1; i++){
-		int base_index0 = base0 + (beat_no << SHIFT_BITS) + i* xdim0_poisson_kernel_initial;
-		v2_wr: __attribute__((xcl_pipeline_loop))
-		for(int k = 0; k < (size0 & (BURST_LEN-1)); k++){
-			arg0[base_index0 +k] = mem[k];
 		}
 	}
 
