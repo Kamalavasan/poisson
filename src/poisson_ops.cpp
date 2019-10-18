@@ -11,7 +11,7 @@ void ops_init_backend();
 #include <math.h>
 #include "../ops/c/src/ops_opencl_rt_support.c"
 
-double dx,dy;
+float dx,dy;
 
 
 #define OPS_2D
@@ -35,7 +35,7 @@ void ops_par_loop_poisson_kernel_update(char const *, ops_block, int , int*,
   ops_arg,
   ops_arg );
 
-void ops_par_loop_poisson_kernel_initialguess(char const *, ops_block, int , int*,
+void ops_par_loop_poisson_kernel_initial(char const *, ops_block, int , int*,
   ops_arg );
 
 void ops_par_loop_poisson_kernel_stencil(char const *, ops_block, int , int*,
@@ -48,10 +48,10 @@ void ops_par_loop_poisson_kernel_error(char const *, ops_block, int , int*,
   ops_arg );
 
 
-#include "user_types.h"
+#include "OpenCL/user_types.h"
 //#include "poisson_kernel.h"
 
-int main(int argc, const char **argv)
+int main(int argc,  char **argv)
 {
 
 
@@ -92,8 +92,8 @@ int main(int argc, const char **argv)
   }
 
   ops_printf("Grid: %dx%d in %dx%d blocks, %d iterations, %d tile height\n",logical_size_x,logical_size_y,ngrid_x,ngrid_y,n_iter,itertile);
-  dx = 0.01;
-  dy = 0.01;
+  dx = 0.01f;
+  dy = 0.01f;
   ops_decl_const2( "dx",1, "float",&dx);
   ops_decl_const2( "dy",1, "float",&dy);
 
@@ -219,7 +219,7 @@ int main(int argc, const char **argv)
 
 
 
-      ops_par_loop_poisson_kernel_initialguess("poisson_kernel_initialguess", blocks[i+ngrid_x*j], 2, iter_range,
+      ops_par_loop_poisson_kernel_initial("poisson_kernel_initialguess", blocks[i+ngrid_x*j], 2, iter_range,
                    ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
     }
   }

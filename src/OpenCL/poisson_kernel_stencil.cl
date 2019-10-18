@@ -53,8 +53,8 @@
 
 __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 __kernel void ops_poisson_kernel_stencil(
-		__global const double* restrict arg0,
-		__global double* restrict arg1,
+		__global const float* restrict arg0,
+		__global float* restrict arg1,
 		const int base0,
 		const int base1,
 		const int size0,

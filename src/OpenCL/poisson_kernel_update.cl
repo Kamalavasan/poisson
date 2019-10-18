@@ -16,6 +16,7 @@
 #include "ops_macros.h"
 #include "ops_opencl_reduction.h"
 
+
 #ifndef MIN
 #define MIN(a,b) ((a<b) ? (a) : (b))
 #endif
@@ -56,6 +57,8 @@
 #define BURST_LEN 256
 #define SHIFT_BITS 8
 
+__constant int c_min_size = (1024*1024)/64;
+__constant int c_max_size = (1024*1024*1024)/64;
 __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 //__kernel __attribute__((vec_type_hint(double)))
 //__kernel __attribute__((xcl_zero_global_work_offset))
@@ -63,12 +66,11 @@ __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 
 
 // Tripcount identifiers
-__constant int c_min_size = (1024*1024)/64;
-__constant int c_max_size = (1024*1024*1024)/64;
+
 
 __kernel void ops_poisson_kernel_update(
-		__global const double8* restrict arg0,
-		__global double8* restrict arg1,
+		__global const float* restrict arg0,
+		__global float* restrict arg1,
 		const int base0,
 		const int base1,
 		const int size0,
@@ -86,11 +88,11 @@ __kernel void ops_poisson_kernel_update(
 			base_index0 = base0 + i* xdim0_poisson_kernel_update;
 			base_index1 = base1 + i* xdim1_poisson_kernel_update;
 		}
-		__attribute__((xcl_pipeline_loop))
+		__attribute__((xcl_pipeline_loop(1)))
 		__attribute__((xcl_loop_tripcount(c_min_size, c_max_size)))
-		for(int j = 0; j < beat_no; j++){
-			double8 temp = arg0[base_index0 +k];
-			arg1[base_index0 +k] = temp;
+		for(int j = 0; j < (size0 >> 0); j++){
+			double temp = arg0[base_index0 +j];
+			arg1[base_index0 +j] = temp;
 
 		}
 

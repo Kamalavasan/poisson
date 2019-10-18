@@ -31,9 +31,9 @@
 #define OPS_INC 3
 #define OPS_MIN 4
 #define OPS_MAX 5
-#define ZERO_double 0.0;
-#define INFINITY_double INFINITY;
-#define ZERO_float 0.0f;
+#define ZERO_float 0.0;
+#define INFINITY_float INFINITY;
+#define ZERO_double 0.0f;
 #define INFINITY_float INFINITY;
 #define ZERO_int 0;
 #define INFINITY_int INFINITY;
@@ -47,22 +47,22 @@
 
 //user function
 
-/*void poisson_kernel_error(const ptr_double u,
-		const ptr_double ref,
-		double *err) {
+/*void poisson_kernel_error(const ptr_float u,
+		const ptr_float ref,
+		float *err) {
 
 	*err = *err + (OPS_ACCS(u, 0,0)-OPS_ACCS(ref, 0,0))*(OPS_ACCS(u, 0,0)-OPS_ACCS(ref, 0,0));
 }*/
 
 __kernel __attribute__ ((reqd_work_group_size(OPS_block_size_x, OPS_block_size_y, 1)))
-__kernel __attribute__((vec_type_hint(double)))
+__kernel __attribute__((vec_type_hint(float)))
 __kernel __attribute__((xcl_zero_global_work_offset))
 
 __kernel void ops_poisson_kernel_error(
-		__global const double* restrict arg0,
-		__global const double* restrict arg1,
-		__global double* restrict arg2,
-		__local double* scratch2,
+		__global const float* restrict arg0,
+		__global const float* restrict arg1,
+		__global float* restrict arg2,
+		__local float* scratch2,
 		int r_bytes2,
 		const int base0,
 		const int base1,
@@ -72,8 +72,8 @@ __kernel void ops_poisson_kernel_error(
 		const int xdim1_poisson_kernel_error){
 
 	arg2 += r_bytes2;
-	double arg2_l[1];
-	for (int d=0; d<1; d++) arg2_l[d] = ZERO_double;
+	float arg2_l[1];
+	for (int d=0; d<1; d++) arg2_l[d] = ZERO_float;
 
 	int idx_y = get_global_id(1);
 	int idx_x = get_global_id(0);
@@ -83,17 +83,15 @@ __kernel void ops_poisson_kernel_error(
 
 
 	if (idx_x < size0 && idx_y < size1) {
-		const ptr_double ptr0 = { &arg0[base0 + idx_x * 1*1 + idx_y * 1*1 * xdim0_poisson_kernel_error], xdim0_poisson_kernel_error};
-		const ptr_double ptr1 = { &arg1[base1 + idx_x * 1*1 + idx_y * 1*1 * xdim1_poisson_kernel_error], xdim1_poisson_kernel_error};
-		/*poisson_kernel_error(ptr0,
-                   ptr1,
-                   arg2_l);*/
-		*arg2_l = *arg2_l + (OPS_ACCS(ptr0, 0,0)-OPS_ACCS(ptr1, 0,0))*(OPS_ACCS(ptr0, 0,0)-OPS_ACCS(ptr1, 0,0));
+		const __global float* ptr0 = &arg0[base0 + idx_x * 1*1 + idx_y * 1*1 * xdim0_poisson_kernel_error];
+		const __global float* ptr1 = &arg1[base1 + idx_x * 1*1 + idx_y * 1*1 * xdim1_poisson_kernel_error];
+
+		*arg2_l = *arg2_l + (*ptr0 - *ptr1 )*( *ptr0 - *ptr1);
 	}
 
 	int group_index = get_group_id(0) + get_group_id(1)*get_num_groups(0)+ get_group_id(2)*get_num_groups(0)*get_num_groups(1);
 
 	for (int d=0; d<1; d++)
-		reduce_double(arg2_l[d], scratch2, &arg2[group_index*1+d], OPS_INC);
+		reduce_float(arg2_l[d], scratch2, &arg2[group_index*1+d], OPS_INC);
 
 }
