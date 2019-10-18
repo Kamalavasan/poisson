@@ -62,9 +62,13 @@ __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 
 
 
+// Tripcount identifiers
+__constant int c_min_size = (1024*1024)/64;
+__constant int c_max_size = (1024*1024*1024)/64;
+
 __kernel void ops_poisson_kernel_update(
-		__global const double* restrict arg0,
-		__global double* restrict arg1,
+		__global const double8* restrict arg0,
+		__global double8* restrict arg1,
 		const int base0,
 		const int base1,
 		const int size0,
@@ -74,27 +78,20 @@ __kernel void ops_poisson_kernel_update(
 
 
 
-	int beat_no = (size0 >> SHIFT_BITS) + 1;
-	local double mem[BURST_LEN];
 
 	int base_index0, base_index1, loop_limit;
 
 	for(int i  = 0; i < size1; i++){
+		__attribute__((xcl_pipeline_workitems)){
+			base_index0 = base0 + i* xdim0_poisson_kernel_update;
+			base_index1 = base1 + i* xdim1_poisson_kernel_update;
+		}
+		__attribute__((xcl_pipeline_loop))
+		__attribute__((xcl_loop_tripcount(c_min_size, c_max_size)))
 		for(int j = 0; j < beat_no; j++){
-			__attribute__((xcl_pipeline_workitems)){
-				base_index0 = base0 + (j<< SHIFT_BITS) + i* xdim0_poisson_kernel_update;
-				base_index1 = base1 + (j<< SHIFT_BITS) + i* xdim1_poisson_kernel_update;
-				loop_limit = (j < (beat_no - 1)) ? BURST_LEN : size0 & (BURST_LEN-1);
-			}
+			double8 temp = arg0[base_index0 +k];
+			arg1[base_index0 +k] = temp;
 
-			v1_rd: __attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < loop_limit; k++){
-				mem[k] = arg0[base_index0 +k];
-			}
-			v1_wr: __attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < loop_limit; k++){
-				arg1[base_index0 +k] = mem[k];
-			}
 		}
 
 	}
