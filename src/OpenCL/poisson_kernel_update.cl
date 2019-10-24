@@ -54,23 +54,16 @@
 }*/
 
 
-#define BURST_LEN 256
-#define SHIFT_BITS 8
+#define SHIFT_BITS 4
 
 __constant int c_min_size = (1024*1024)/64;
 __constant int c_max_size = (1024*1024*1024)/64;
 __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
-//__kernel __attribute__((vec_type_hint(double)))
-//__kernel __attribute__((xcl_zero_global_work_offset))
-
-
-
-// Tripcount identifiers
 
 
 __kernel void ops_poisson_kernel_update(
-		__global const float* restrict arg0,
-		__global float* restrict arg1,
+		__global const float16* restrict arg0,
+		__global float16* restrict arg1,
 		const int base0,
 		const int base1,
 		const int size0,
@@ -81,18 +74,19 @@ __kernel void ops_poisson_kernel_update(
 
 
 
-	int base_index0, base_index1, loop_limit;
+	int base_index0, base_index1, end_index;
 
 	for(int i  = 0; i < size1; i++){
 		__attribute__((xcl_pipeline_workitems)){
-			base_index0 = base0 + i* xdim0_poisson_kernel_update;
-			base_index1 = base1 + i* xdim1_poisson_kernel_update;
+			base_index0 = (base0 + i* xdim0_poisson_kernel_update -1) >> SHIFT_BITS;
+			base_index1 = (base1 + i* xdim1_poisson_kernel_update -1) >> SHIFT_BITS;
+			end_index = (xdim0_poisson_kernel_update >> SHIFT_BITS);
 		}
 		__attribute__((xcl_pipeline_loop(1)))
 		__attribute__((xcl_loop_tripcount(c_min_size, c_max_size)))
-		for(int j = 0; j < (size0 >> 0); j++){
-			double temp = arg0[base_index0 +j];
-			arg1[base_index0 +j] = temp;
+		for(int j = 0; j < end_index; j++){
+			float16 temp = arg0[base_index0 +j];
+			arg1[base_index1 +j] = temp;
 
 		}
 
