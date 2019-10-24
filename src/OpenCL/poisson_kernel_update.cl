@@ -82,7 +82,7 @@ __kernel void ops_poisson_kernel_update(
 			base_index1 = (base1 + i* xdim1_poisson_kernel_update -1) >> SHIFT_BITS;
 			end_index = (xdim0_poisson_kernel_update >> SHIFT_BITS);
 		}
-		__attribute__((xcl_pipeline_loop(1)))
+		__attribute__((xcl_pipeline_loop))
 		__attribute__((xcl_loop_tripcount(c_min_size, c_max_size)))
 		for(int j = 0; j < end_index; j++){
 			float16 temp = arg0[base_index0 +j];

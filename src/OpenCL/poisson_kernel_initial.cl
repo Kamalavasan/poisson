@@ -62,91 +62,53 @@ __kernel void ops_poisson_kernel_initial(
 		const int size1,
 		const int xdim0_poisson_kernel_initial){
 
-//	int beat_no = (size0 >> SHIFT_BITS) + 1;
-//	local double mem[BURST_LEN];
-
-
-
 
 	const float16 f16 = (float16)(0,0,0,0,   0,0,0,0,  0,0,0,0,  0,0,0,0);
 
 	for(int i  = 0; i < size1; i++){
 
 		int base_index, end_index;
-		int base_start, base_end;
+
+		base_index = (base0  + i* xdim0_poisson_kernel_initial - 1) >> SHIFT_BITS;
+		end_index = (xdim0_poisson_kernel_initial >> SHIFT_BITS);
 
 
-		__attribute__((xcl_pipeline_workitems)){
-			base_index = (base0  + i* xdim0_poisson_kernel_initial);
-			end_index = (base0  + i* xdim0_poisson_kernel_initial) + size0;
-
-			if((base_index & 0xf)){
-				base_start = ((base_index) >> SHIFT_BITS) + 1 ;
-			} else {
-				base_start = ((base_index) >> SHIFT_BITS);
-			}
-
-			base_end = ((end_index) >> SHIFT_BITS);
-
-//			if((end_index & 0xf)){
-//				base_end = ((end_index) >> SHIFT_BITS) - 1 ;
-//			} else {
-//				base_end = ((end_index) >> SHIFT_BITS);
-//			}
-		}
 
 		v1_wr: __attribute__((xcl_pipeline_loop))
-		for(int j = base_start; j < base_end ; j++){
+		for(int j = 1; j < end_index -1 ; j++){
 			arg0[j] = f16;
 
 		}
 
-		if(base_index & 0xf){
-			float16 tmp_f16;
-			float16 tmp_wr;
-			tmp_f16 = arg0[base_start-1];
-			float arr_f16[16] = {tmp_f16.s0, tmp_f16.s1, tmp_f16.s2, tmp_f16.s3, tmp_f16.s4, tmp_f16.s5, tmp_f16.s6, tmp_f16.s7,
-								tmp_f16.s8, tmp_f16.s9, tmp_f16.sa, tmp_f16.sb, tmp_f16.sc, tmp_f16.sd, tmp_f16.se, tmp_f16.sf};
-			float arr_wr_16[16];
+		// initial row handle
+		float16 tmp_f16;
+		float16 tmp_wr;
+		tmp_f16 = arg0[base_index];
+		tmp_wr = (float16){ tmp_f16.s0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		arg0[base_index] = tmp_wr;
 
-			__attribute__((opencl_unroll_hint(16)))
-			for (int p = 0; p < 16; p++){
-				if(p < (base_index & 0xf)){
-					arr_wr_16[p] = arr_f16[p];
-				} else {
-					arr_wr_16[p] = 0.0;
-				}
+
+		// end row handle
+		tmp_f16 = arg0[base_index + end_index -1];
+		float arr_f16[16] = {tmp_f16.s0, tmp_f16.s1, tmp_f16.s2, tmp_f16.s3, tmp_f16.s4, tmp_f16.s5, tmp_f16.s6, tmp_f16.s7,
+							tmp_f16.s8, tmp_f16.s9, tmp_f16.sa, tmp_f16.sb, tmp_f16.sc, tmp_f16.sd, tmp_f16.se, tmp_f16.sf};
+		float arr_wr_16[16];
+		__attribute__((opencl_unroll_hint(16)))
+		for (int p = 0; p < 16; p++){
+			if(p >= ((size0+1) & 0xf)){
+				arr_wr_16[p] = arr_f16[p];
+			} else {
+				arr_wr_16[p] = 0.0;
 			}
-			tmp_wr = (float16){ arr_wr_16[0], arr_wr_16[1], arr_wr_16[2], arr_wr_16[3],
-				arr_wr_16[4], arr_wr_16[5], arr_wr_16[6], arr_wr_16[7],
-				arr_wr_16[8], arr_wr_16[9], arr_wr_16[10], arr_wr_16[11],
-				arr_wr_16[12], arr_wr_16[13], arr_wr_16[14], arr_wr_16[15]};
-			arg0[base_start-1] = tmp_wr;
 		}
 
-		if(end_index & 0xf){
-			float16 tmp_f16;
-			float16 tmp_wr;
-			tmp_f16 = arg0[base_end];
-			float arr_f16[16] = {tmp_f16.s0, tmp_f16.s1, tmp_f16.s2, tmp_f16.s3, tmp_f16.s4, tmp_f16.s5, tmp_f16.s6, tmp_f16.s7,
-								tmp_f16.s8, tmp_f16.s9, tmp_f16.sa, tmp_f16.sb, tmp_f16.sc, tmp_f16.sd, tmp_f16.se, tmp_f16.sf};
-			float arr_wr_16[16];
+		tmp_wr = (float16){ arr_wr_16[0], arr_wr_16[1], arr_wr_16[2], arr_wr_16[3],
+			arr_wr_16[4], arr_wr_16[5], arr_wr_16[6], arr_wr_16[7],
+			arr_wr_16[8], arr_wr_16[9], arr_wr_16[10], arr_wr_16[11],
+			arr_wr_16[12], arr_wr_16[13], arr_wr_16[14], arr_wr_16[15]};
 
-			__attribute__((opencl_unroll_hint(16)))
-			for (int p = 0; p < 16; p++){
-				if(p >= (end_index & 0xf)){
-					arr_wr_16[p] = arr_f16[p];
-				} else {
-					arr_wr_16[p] = 0.0;
-				}
-			}
-			tmp_wr = (float16){ arr_wr_16[0], arr_wr_16[1], arr_wr_16[2], arr_wr_16[3],
-				arr_wr_16[4], arr_wr_16[5], arr_wr_16[6], arr_wr_16[7],
-				arr_wr_16[8], arr_wr_16[9], arr_wr_16[10], arr_wr_16[11],
-				arr_wr_16[12], arr_wr_16[13], arr_wr_16[14], arr_wr_16[15]};
+		arg0[base_index + end_index -1] = tmp_wr;
 
-			arg0[base_end] = tmp_wr;
-		}
 	}
 
 }
