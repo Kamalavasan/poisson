@@ -74,22 +74,59 @@ __kernel void ops_poisson_kernel_update(
 
 
 
-	int base_index0, base_index1, end_index;
+	int base_index0, base_index1, end_index, adjust;
 
 	for(int i  = 0; i < size1; i++){
 		__attribute__((xcl_pipeline_workitems)){
-			base_index0 = (base0 + i* xdim0_poisson_kernel_update -1) >> SHIFT_BITS;
-			base_index1 = (base1 + i* xdim1_poisson_kernel_update -1) >> SHIFT_BITS;
+			adjust = (base0 != 0 ?  1 : 0);
+			base_index0 = (base0 + i* xdim0_poisson_kernel_update -adjust) >> SHIFT_BITS;
+			base_index1 = (base1 + i* xdim1_poisson_kernel_update -adjust) >> SHIFT_BITS;
 			end_index = (xdim0_poisson_kernel_update >> SHIFT_BITS);
 		}
 		__attribute__((xcl_pipeline_loop))
 		__attribute__((xcl_loop_tripcount(c_min_size, c_max_size)))
-		for(int j = 0; j < end_index; j++){
+		for(int j = 0; j < (end_index); j++){
 			float16 temp = arg0[base_index0 +j];
 			arg1[base_index1 +j] = temp;
 
 		}
 
+//		// initial row handle
+//		float16 tmp0_f16, tmp1_f16;
+//		float16 tmp_wr;
+//		tmp0_f16 = arg0[base_index0];
+//		tmp1_f16 = arg1[base_index1];
+//		tmp_wr = (float16){tmp1_f16.s0, tmp0_f16.s1, tmp0_f16.s2, tmp0_f16.s3, tmp0_f16.s4, tmp0_f16.s5, tmp0_f16.s6, tmp0_f16.s7,
+//			tmp0_f16.s8, tmp0_f16.s9, tmp0_f16.sa, tmp0_f16.sb, tmp0_f16.sc, tmp0_f16.sd, tmp0_f16.se, tmp0_f16.sf};
+//		arg1[base_index1] = adjust? tmp_wr: tmp0_f16;
+//
+//
+//		// end row handle
+//		tmp0_f16 = arg0[base_index0 + end_index -1];
+//		float arr0_f16[16] = {tmp0_f16.s0, tmp0_f16.s1, tmp0_f16.s2, tmp0_f16.s3, tmp0_f16.s4, tmp0_f16.s5, tmp0_f16.s6, tmp0_f16.s7,
+//							tmp0_f16.s8, tmp0_f16.s9, tmp0_f16.sa, tmp0_f16.sb, tmp0_f16.sc, tmp0_f16.sd, tmp0_f16.se, tmp0_f16.sf};
+//
+//		tmp1_f16 = arg1[base_index1 + end_index -1];
+//		float arr1_f16[16] = {tmp1_f16.s0, tmp1_f16.s1, tmp1_f16.s2, tmp1_f16.s3, tmp1_f16.s4, tmp1_f16.s5, tmp1_f16.s6, tmp1_f16.s7,
+//									tmp1_f16.s8, tmp1_f16.s9, tmp1_f16.sa, tmp1_f16.sb, tmp1_f16.sc, tmp1_f16.sd, tmp1_f16.se, tmp1_f16.sf};
+//
+//		float arr_wr_16[16];
+//		__attribute__((opencl_unroll_hint(16)))
+//		for (int p = 0; p < 16; p++){
+//			if(p >= ((size0+1) & 0xf)){
+//				arr_wr_16[p] = arr1_f16[p];
+//			} else {
+//				arr_wr_16[p] = arr0_f16[p];
+//			}
+//		}
+//
+//		tmp_wr = (float16){ arr_wr_16[0], arr_wr_16[1], arr_wr_16[2], arr_wr_16[3],
+//			arr_wr_16[4], arr_wr_16[5], arr_wr_16[6], arr_wr_16[7],
+//			arr_wr_16[8], arr_wr_16[9], arr_wr_16[10], arr_wr_16[11],
+//			arr_wr_16[12], arr_wr_16[13], arr_wr_16[14], arr_wr_16[15]};
+//
+//		arg1[base_index1 + end_index -1] = (adjust ? tmp_wr : tmp0_f16);
+//
 	}
 
 }

@@ -48,7 +48,6 @@
 //user function
 
 
-#define BURST_LEN 256
 #define SHIFT_BITS 4
 
 
@@ -75,8 +74,8 @@ __kernel void ops_poisson_kernel_initial(
 
 
 		v1_wr: __attribute__((xcl_pipeline_loop))
-		for(int j = 1; j < end_index -1 ; j++){
-			arg0[j] = f16;
+		for(int j = 1; j < (end_index -1) ; j++){
+			arg0[base_index+ j] = f16;
 
 		}
 
