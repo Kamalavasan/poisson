@@ -50,6 +50,8 @@
 
 #define SHIFT_BITS 4
 
+__constant int c_min_size = (1024*64)/64;
+__constant int c_max_size = (1024*1024*1024)/64;
 
 
 
@@ -68,45 +70,55 @@ __kernel void ops_poisson_kernel_initial(
 
 		int base_index, end_index;
 
-		base_index = (base0  + i* xdim0_poisson_kernel_initial - 1) >> SHIFT_BITS;
-		end_index = (xdim0_poisson_kernel_initial >> SHIFT_BITS);
+		v1_index: __attribute__((xcl_pipeline_loop)){
+			base_index = (base0  + i* xdim0_poisson_kernel_initial - 1) >> SHIFT_BITS;
+			end_index = (xdim0_poisson_kernel_initial >> SHIFT_BITS);
+		}
 
 
 
 		v1_wr: __attribute__((xcl_pipeline_loop))
+		__attribute__((xcl_loop_tripcount(c_min_size, c_max_size)))
 		for(int j = 1; j < (end_index -1) ; j++){
 			arg0[base_index+ j] = f16;
 
 		}
 
 		// initial row handle
-		float16 tmp_f16;
-		float16 tmp_wr;
-		tmp_f16 = arg0[base_index];
-		tmp_wr = (float16){ tmp_f16.s0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		arg0[base_index] = tmp_wr;
+		v1_wr_initial: __attribute__((xcl_pipeline_loop)) {
+			float16 tmp_f16;
+			float16 tmp_wr;
+			tmp_f16 = arg0[base_index];
+			tmp_wr = (float16){ tmp_f16.s0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			arg0[base_index] = tmp_wr;
+		}
 
 
 		// end row handle
-		tmp_f16 = arg0[base_index + end_index -1];
-		float arr_f16[16] = {tmp_f16.s0, tmp_f16.s1, tmp_f16.s2, tmp_f16.s3, tmp_f16.s4, tmp_f16.s5, tmp_f16.s6, tmp_f16.s7,
-							tmp_f16.s8, tmp_f16.s9, tmp_f16.sa, tmp_f16.sb, tmp_f16.sc, tmp_f16.sd, tmp_f16.se, tmp_f16.sf};
-		float arr_wr_16[16];
-		__attribute__((opencl_unroll_hint(16)))
-		for (int p = 0; p < 16; p++){
-			if(p >= ((size0+1) & 0xf)){
-				arr_wr_16[p] = arr_f16[p];
-			} else {
-				arr_wr_16[p] = 0.0;
+		v1_wr_end: __attribute__((xcl_pipeline_loop)) {
+			float16 tmp_f16;
+			float16 tmp_wr;
+
+			tmp_f16 = arg0[base_index + end_index -1];
+			float arr_f16[16] = {tmp_f16.s0, tmp_f16.s1, tmp_f16.s2, tmp_f16.s3, tmp_f16.s4, tmp_f16.s5, tmp_f16.s6, tmp_f16.s7,
+								tmp_f16.s8, tmp_f16.s9, tmp_f16.sa, tmp_f16.sb, tmp_f16.sc, tmp_f16.sd, tmp_f16.se, tmp_f16.sf};
+			float arr_wr_16[16];
+			__attribute__((opencl_unroll_hint(16)))
+			for (int p = 0; p < 16; p++){
+				if(p >= ((size0+1) & 0xf)){
+					arr_wr_16[p] = arr_f16[p];
+				} else {
+					arr_wr_16[p] = 0.0;
+				}
 			}
+
+			tmp_wr = (float16){ arr_wr_16[0], arr_wr_16[1], arr_wr_16[2], arr_wr_16[3],
+				arr_wr_16[4], arr_wr_16[5], arr_wr_16[6], arr_wr_16[7],
+				arr_wr_16[8], arr_wr_16[9], arr_wr_16[10], arr_wr_16[11],
+				arr_wr_16[12], arr_wr_16[13], arr_wr_16[14], arr_wr_16[15]};
+
+			arg0[base_index + end_index -1] = tmp_wr;
 		}
-
-		tmp_wr = (float16){ arr_wr_16[0], arr_wr_16[1], arr_wr_16[2], arr_wr_16[3],
-			arr_wr_16[4], arr_wr_16[5], arr_wr_16[6], arr_wr_16[7],
-			arr_wr_16[8], arr_wr_16[9], arr_wr_16[10], arr_wr_16[11],
-			arr_wr_16[12], arr_wr_16[13], arr_wr_16[14], arr_wr_16[15]};
-
-		arg0[base_index + end_index -1] = tmp_wr;
 
 	}
 
