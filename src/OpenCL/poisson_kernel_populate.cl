@@ -71,9 +71,9 @@ __kernel void ops_poisson_kernel_populate(
 
 
 		int beat_no = (size0 >> SHIFT_BITS) + 1;
-		local float mem3[PORT_WIDTH];
-		local float mem4[PORT_WIDTH];
-		local float mem5[PORT_WIDTH];
+		local float mem3[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
+		local float mem4[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
+		local float mem5[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
 
 		int arg_idx[2];
 		double x, y;
@@ -84,7 +84,7 @@ __kernel void ops_poisson_kernel_populate(
 		for(int i  = 0; i < size1; i++){
 
 			__attribute__((xcl_pipeline_workitems)){
-				base_index3 = (base3 +  i* xdim3_poisson_kernel_populate)  >> SHIFT_BITS;
+				base_index3 = (base3 +  i* xdim3_poisson_kernel_populate) >> SHIFT_BITS;
 				base_index4 = (base4 +  i* xdim4_poisson_kernel_populate) >> SHIFT_BITS;
 				base_index5 = (base5 +  i* xdim5_poisson_kernel_populate) >> SHIFT_BITS;
 				arg_idx[1] = arg_idx1+ i;
