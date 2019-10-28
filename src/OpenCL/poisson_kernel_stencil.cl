@@ -112,19 +112,18 @@ __kernel void ops_poisson_kernel_stencil(
 		local float16* ptr3;
 
 		// initialising first element
-		for (int k = 0; k < 1024; k++){
+		for (int k = 0; k < size1; k++){
 			first_element[k] = 0;
 		}
 
 		int state = 0;
 
+		// initial pointers
+		ptr1 = mem_rd1;
+		ptr2 = mem_rd2;
+		ptr3 = mem_rd3;
+
 		for(int j = 0; j < size1; j++){
-			switch(state){
-				case 0: {ptr1 = mem_rd1; ptr2 = mem_rd2; ptr3 = mem_rd3; break; }
-				case 1: {ptr1 = mem_rd2; ptr2 = mem_rd3; ptr3 = mem_rd1; break; }
-				case 2: {ptr1 = mem_rd3; ptr2 = mem_rd1; ptr3 = mem_rd2; break; }
-				default: {ptr1 = mem_rd1; ptr2 = mem_rd2; ptr3 = mem_rd3; break; }
-			}
 			for(int p = 0; p < loop_limit; p++){
 				float16 row1 = ptr1[p];
 				float16 row2 = ptr2[p];
@@ -146,7 +145,7 @@ __kernel void ops_poisson_kernel_stencil(
 				process: __attribute__((xcl_pipeline_loop))
 				__attribute__((opencl_unroll_hint(16)))
 				for(int q = 0; q < PORT_WIDTH; q++){
-					int index = (beat_no << BEAT_SHIFT_BITS) + (p << SHIFT_BITS) + q;
+					int index = (i << BEAT_SHIFT_BITS) + (p << SHIFT_BITS) + q;
 					float f1 = ( row_arr2[q]  + row_arr2[q+2] )*0.125f;
 					float f2 = ( row_arr1[q]  + row_arr3[q] )*0.125f;
 					float f3 = row_arr2[q+1] * 0.5f;
@@ -171,6 +170,12 @@ __kernel void ops_poisson_kernel_stencil(
 				state = 0;
 			}
 
+			switch(state){
+				case 0: {ptr1 = mem_rd1; ptr2 = mem_rd2; ptr3 = mem_rd3; break; }
+				case 1: {ptr1 = mem_rd2; ptr2 = mem_rd3; ptr3 = mem_rd1; break; }
+				case 2: {ptr1 = mem_rd3; ptr2 = mem_rd1; ptr3 = mem_rd2; break; }
+				default: {ptr1 = mem_rd1; ptr2 = mem_rd2; ptr3 = mem_rd3; break; }
+			}
 			base_index3  = base_index3 + xdim0_poisson_kernel_stencil;
 			v2_row3_read: __attribute__((xcl_pipeline_loop))
 			for(int k = 0; k < loop_limit; k++){
