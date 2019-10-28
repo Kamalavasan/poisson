@@ -46,15 +46,15 @@
 #define ZERO_bool 0;
 
 //user function
-
-#define BURST_LEN_RD 256
-#define BURST_LEN_WR 256
-#define SHIFT_BITS 8
+#define PORT_WIDTH 16
+#define SHIFT_BITS 4
+#define BEAT_SHIFT_BITS 6
+#define BURST_LEN 64
 
 __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 __kernel void ops_poisson_kernel_stencil(
-		__global const float* restrict arg0,
-		__global float* restrict arg1,
+		__global const float16* restrict arg0,
+		__global float16* restrict arg1,
 		const int base0,
 		const int base1,
 		const int size0,
@@ -70,65 +70,100 @@ __kernel void ops_poisson_kernel_stencil(
 	int beat_no = (size0 >> SHIFT_BITS) + 1;
 
 
-	local double mem_rd1[BURST_LEN_RD+2];
-	local double mem_rd2[BURST_LEN_RD+2];
-	local double mem_rd3[BURST_LEN_RD+2];
+	local float16 mem_rd1[BURST_LEN];
+	local float16 mem_rd2[BURST_LEN+1];
+	local float16 mem_rd3[BURST_LEN];
 
-	local double mem_wr[BURST_LEN_WR];
+	local float16 mem_wr[BURST_LEN];
 
 
 	double last_element	= 0;
 
-	int base_index1, base_index2, base_index3, base_index0, loop_limit;
+	int base_index1, base_index2, base_index3, base_index0, end_index;
 	double f1, f2, f3;
 
 
-	for(int i  = 0; i < size1; i++){
-		for(int j = 0; j < beat_no; j++){
+	for(int i  = 0; i < beat_no; i++) {
+		__attribute__((xcl_pipeline_workitems)){
+			base_index1 = (base0  - xdim0_poisson_kernel_stencil + (beat_no << BEAT_SHIFT_BITS) - 1) >> SHIFT_BITS;
+			base_index2 = (base0 + (beat_no << BEAT_SHIFT_BITS)) >> SHIFT_BITS;
+			base_index3 = (base0 + xdim0_poisson_kernel_stencil + (beat_no << BEAT_SHIFT_BITS) - 1) >> SHIFT_BITS;
+			base_index0 = (base1 + (beat_no << BEAT_SHIFT_BITS)  - 1) >> SHIFT_BITS;
+		}
 
-			__attribute__((xcl_pipeline_workitems)){
-				base_index1 = base0 + (j<<SHIFT_BITS) + (i-1)* xdim0_poisson_kernel_stencil;
-				base_index2 = base0 + (j<<SHIFT_BITS) + (i) * xdim0_poisson_kernel_stencil;
-				base_index3 = base0 + (j<<SHIFT_BITS) + (i+1)* xdim0_poisson_kernel_stencil;
+		v1_row1_read: for(int k = 0; k < BURST_LEN; k++){
+			mem_rd1[k] = arg0[base_index1 + k];
+		}
+		v1_row2_read: for(int k = 0; k < BURST_LEN + 1; k++){
+			mem_rd2[k] = arg0[base_index2 + k];
+		}
+		v1_row3_read: for(int k = 0; k < BURST_LEN; k++){
+			mem_rd3[k] = arg0[base_index3 + k];
+		}
 
-				base_index0 = base1 + (j<<SHIFT_BITS) + i* xdim1_poisson_kernel_stencil;
-				loop_limit = (j < (beat_no - 1)) ? BURST_LEN_RD : size0 & (BURST_LEN_RD-1);
+		float16* ptr1;
+		float16* ptr2;
+		float16* ptr3;
+
+		float first_element = 0;
+
+		int state = 0;
+
+		for(int j = 0; j < size1; j++){
+			for(int p = 0; p < BURST_LEN; p++){
+				float16 row1 = ptr1[p];
+				float16 row2 = ptr2[p];
+				float16 row3 = ptr3[p];
+
+				float16 row2_n = ptr2[p+1];
+			
+				float row_arr1[PORT_WIDTH] = {row1.s0, row1.s1, row1.s2, row1.s3, row1.s4, row1.s5, row1.s6, row1.s7,
+												row1.s8, row1.s9, row1.sa, row1.sb, row1.sc, row1.sd, row1.se, row1.sf};
+
+				float row_arr2[PORT_WIDTH + 2] = {first_element, row2.s0, row2.s1, row2.s2, row2.s3, row2.s4, row2.s5, row2.s6, row2.s7,
+												row2.s8, row2.s9, row2.sa, row2.sb, row2.sc, row2.sd, row2.se, row2.sf, row2_n.s0};
+
+				float row_arr3[PORT_WIDTH] = {row3.s0, row3.s1, row3.s2, row3.s3, row3.s4, row3.s5, row3.s6, row3.s7,
+								row3.s8, row3.s9, row3.sa, row3.sb, row3.sc, row3.sd, row3.se, row3.sf};
+
+				float mem_wr[PORT_WIDTH];
+
+				process: __attribute__((xcl_pipeline_loop))
+					__attribute__((opencl_unroll_hint(16)))
+				for(int q = 0; q < PORT_WIDTH; q++){
+					int index = (beat_no << BEAT_SHIFT_BITS) + (p << SHIFT_BITS) + q;
+					float f1 = ( row_arr2[q]  + row_arr2[q+2] )*0.125f;
+					float f2 = ( row_arr1[q]  + row_arr3[q] )*0.125f;
+					float f3 = row_arr2[q+1] * 0.5f;
+					float result  = f1 + f2 + f3;
+					mem_wr[k] = (index == 0 || index > size0) ? row_arr2[k] : result;
+				}
+				first_element = row2.sf;
+
+				float16 row_wr = (float16) {mem_wr[0], mem_wr[1], mem_wr[2], mem_wr[3], mem_wr[4], mem_wr[5], mem_wr[6], mem_wr[7],
+												mem_wr[8], mem_wr[9], mem_wr[10], mem_wr[11], mem_wr[12], mem_wr[13], mem_wr[14], mem_wr[15]};
+
+				mem_wr[p]  = row_wr;
+			
 			}
-
-			mem_rd1[0] = arg0[base_index1-1];
-			mem_rd1[loop_limit+1] = arg0[base_index1 + loop_limit];
-			v1_rd: __attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < loop_limit; k++){
-				mem_rd1[k+1] = arg0[base_index1 +k];
-			}
-
-			mem_rd2[0] = arg0[base_index2-1];
-			mem_rd2[loop_limit+1] = arg0[base_index2 + loop_limit];
-			v2_rd: __attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < loop_limit; k++){
-				mem_rd2[k+1] = arg0[base_index2 +k];
-			}
-
-			mem_rd3[0] = arg0[base_index3-1];
-			mem_rd3[loop_limit+1] = arg0[base_index3 + loop_limit];
-			v3_rd: __attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < loop_limit; k++){
-				mem_rd3[k+1] = arg0[base_index3 +k];
-			}
-
-			process: __attribute__((xcl_pipeline_loop))
-				__attribute__((opencl_unroll_hint(8)))
-			for(int k = 0; k < loop_limit; k++){
-				f1 = ( mem_rd2[k]  + mem_rd2[k+2] )*0.125f;
-				f2 = ( mem_rd1[k+1]  + mem_rd3[k+1] )*0.125f;
-				f3 = mem_rd2[k+1] * 0.5f;
-				mem_wr[k] = f1 + f2 + f3;
-
-			}
-
 			v1_wr: __attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < loop_limit; k++){
+			for(int k = 0; k < BURST_LEN; k++){
 				arg1[base_index0 +k] = mem_wr[k];
+			}
+			state = state + 1;
+			if(state == 3 ){
+				state = 0;
+			}
+			switch(state){
+				case 0: {ptr1 = mem_rd1; ptr2 = mem_rd2; ptr3 = mem_rd3; break; }
+				case 1: {ptr1 = mem_rd2; ptr2 = mem_rd3; ptr3 = mem_rd1; break; }
+				case 2: {ptr1 = mem_rd3; ptr2 = mem_rd1; ptr3 = mem_rd2; break; }
+				default: {ptr1 = mem_rd1; ptr2 = mem_rd2; ptr3 = mem_rd3; break; }
+			}
+
+			base_index3  = base_index3 + xdim0_poisson_kernel_stencil;
+			v2_row3_read: for(int k = 0; k < BURST_LEN; k++){
+				ptr3[k] = arg0[base_index3 + k];
 			}
 
 		}
