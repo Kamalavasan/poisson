@@ -159,11 +159,12 @@ __kernel void ops_poisson_kernel_stencil(
 				mem_row_wr[p]  = row_wr;
 
 			}
-			base_index0  = base_index0 + xdim0_poisson_kernel_stencil;
+
 			v1_wr: __attribute__((xcl_pipeline_loop))
 			for(int k = 0; k < loop_limit; k++){
 				arg1[base_index0 +k] = mem_row_wr[k];
 			}
+			base_index0  = base_index0 + (xdim0_poisson_kernel_stencil >> SHIFT_BITS);
 
 			state = state + 1;
 			if(state == 3 ){
@@ -176,7 +177,7 @@ __kernel void ops_poisson_kernel_stencil(
 				case 2: {ptr1 = mem_rd3; ptr2 = mem_rd1; ptr3 = mem_rd2; break; }
 				default: {ptr1 = mem_rd1; ptr2 = mem_rd2; ptr3 = mem_rd3; break; }
 			}
-			base_index3  = base_index3 + xdim0_poisson_kernel_stencil;
+			base_index3  = base_index3 + (xdim0_poisson_kernel_stencil >> SHIFT_BITS);
 			v2_row3_read: __attribute__((xcl_pipeline_loop))
 			for(int k = 0; k < loop_limit; k++){
 				ptr3[k] = arg0[base_index3 + k];
