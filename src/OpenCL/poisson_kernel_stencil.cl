@@ -51,6 +51,9 @@
 #define BEAT_SHIFT_BITS 10
 #define BURST_LEN 64
 
+// FiX ME
+#define MAX_SIZE1 10000
+
 __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 __kernel void ops_poisson_kernel_stencil(
 		__global const float16* restrict arg0,
@@ -76,7 +79,7 @@ __kernel void ops_poisson_kernel_stencil(
 
 	local float16 mem_row_wr[BURST_LEN];
 
-	local float	first_element[1024];
+	local float	first_element[MAX_SIZE1];
 
 
 	double last_element	= 0;
