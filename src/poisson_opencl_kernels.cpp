@@ -32,7 +32,7 @@ void ops_release_program(){
 	clReleaseContext(OPS_opencl_core.context);
 	clReleaseDevice(OPS_opencl_core.device_id);
 	//clReleaseKernel(*OPS_opencl_core.kernel);
-	/*for (int i=0; i<4; i++)*/ clReleaseKernel(OPS_opencl_core.kernel[0]);
+	for (int i=0; i<5; i++) clReleaseKernel(OPS_opencl_core.kernel[i]);
 	clReleaseProgram(OPS_opencl_core.program);
 
 	free(OPS_opencl_core.platform_id);
@@ -235,9 +235,11 @@ void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int di
 			xdim0,xdim1);
 
 	//set up OpenCL thread blocks
-	size_t globalWorkSize[3] = {((x_size-1)/OPS_block_size_x+ 1)*OPS_block_size_x, ((y_size-1)/OPS_block_size_y + 1)*OPS_block_size_y, 1};
-	size_t localWorkSize[3] =  {OPS_block_size_x,OPS_block_size_y,OPS_block_size_z};
+//	size_t globalWorkSize[3] = {((x_size-1)/OPS_block_size_x+ 1)*OPS_block_size_x, ((y_size-1)/OPS_block_size_y + 1)*OPS_block_size_y, 1};
+//	size_t localWorkSize[3] =  {OPS_block_size_x,OPS_block_size_y,OPS_block_size_z};
 
+	size_t globalWorkSize[3] = {1,1,1};
+	size_t localWorkSize[3] =  {1,1,1};
 
 #ifdef OPS_MPI
 	float *arg2h = (float *)(((ops_reduction)args[2].data)->data + ((ops_reduction)args[2].data)->size * block->index);
@@ -297,6 +299,13 @@ void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int di
 	}
 
 	int nthread = OPS_block_size_x*OPS_block_size_y*OPS_block_size_z;
+
+
+	std::cout << "base0: " << base0 << "\n";
+	std::cout << "base1: " << base1 << "\n";
+
+	std::cout << "x_size: " << x_size << "\n";
+	std::cout << "y_size: " << y_size << "\n";
 
 	if (globalWorkSize[0]>0 && globalWorkSize[1]>0 && globalWorkSize[2]>0) {
 		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[4], 0, sizeof(cl_mem), (void*) &arg0.data_d ));
@@ -607,6 +616,10 @@ void ops_par_loop_poisson_kernel_initial(char const *name, ops_block block, int 
 		OPS_kernels[2].mpi_time += t2-t1;
 	}
 
+	std::cout << "\n base0: " << base0 << "\n";
+	std::cout << "x_size: " << x_size << "\n";
+	std::cout << "xdim0: " << xdim0 << "\n";
+
 	if (globalWorkSize[0]>0 && globalWorkSize[1]>0 && globalWorkSize[2]>0) {
 		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[2], 0, sizeof(cl_mem), (void*) &arg0.data_d ));
 		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[2], 1, sizeof(cl_int), (void*) &base0 ));
@@ -757,6 +770,8 @@ void ops_par_loop_poisson_kernel_update(char const *name, ops_block block, int d
 		ops_timers_core(&c2,&t2);
 		OPS_kernels[1].mpi_time += t2-t1;
 	}
+
+
 
 	if (globalWorkSize[0]>0 && globalWorkSize[1]>0 && globalWorkSize[2]>0) {
 
@@ -944,6 +959,7 @@ void ops_par_loop_poisson_kernel_populate(char const *name, ops_block block, int
 		ops_timers_core(&c2,&t2);
 		OPS_kernels[0].mpi_time += t2-t1;
 	}
+
 
 	if (globalWorkSize[0]>0 && globalWorkSize[1]>0 && globalWorkSize[2]>0) {
 		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 0, sizeof(cl_int), (void*) arg0.data ));

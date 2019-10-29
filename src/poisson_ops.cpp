@@ -47,6 +47,7 @@ void ops_par_loop_poisson_kernel_error(char const *, ops_block, int , int*,
   ops_arg,
   ops_arg );
 
+void ops_release_program();
 
 #include "OpenCL/user_types.h"
 //#include "poisson_kernel.h"
@@ -133,6 +134,7 @@ int main(int argc,  char **argv)
       if ((i+1)*size[0]>logical_size_x) size[0] = logical_size_x - i*size[0];
       if ((j+1)*size[1]>logical_size_y) size[1] = logical_size_y - j*size[1];
 
+      printf("size[0]: %d, size[1]: %d\n", size[0], size[1]);
 
       sprintf(buf,"coordx %d,%d",i,j);
       coordx[i+ngrid_x*j] = ops_decl_dat(blocks[i+ngrid_x*j], 1, size, base, d_m, d_p, temp, "float", buf);
@@ -206,6 +208,10 @@ int main(int argc,  char **argv)
                    ops_arg_dat(f[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE),
                    ops_arg_dat(ref[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
 
+
+//      ops_print_dat_to_txtfile((f[i+ngrid_x*j]), "/home/vasan/faraz/poisson_1/f.txt");
+//      ops_print_dat_to_txtfile((ref[i+ngrid_x*j]), "/home/vasan/faraz/poisson_1/ref.txt");
+
 		 ops_par_loop_poisson_kernel_update("poisson_kernel_update", blocks[i+ngrid_x*j], 2, iter_range,
                 ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_READ),
                 ops_arg_dat(u2[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
@@ -221,6 +227,7 @@ int main(int argc,  char **argv)
 
       ops_par_loop_poisson_kernel_initial("poisson_kernel_initialguess", blocks[i+ngrid_x*j], 2, iter_range,
                    ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
+
     }
   }
 
@@ -237,8 +244,12 @@ int main(int argc,  char **argv)
         ops_par_loop_poisson_kernel_stencil("poisson_kernel_stencil", blocks[i+ngrid_x*j], 2, iter_range,
                      ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00_P10_M10_0P1_0M1, "float", OPS_READ),
                      ops_arg_dat(u2[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
+//              ops_print_dat_to_txtfile((u[i+ngrid_x*j]), "/home/vasan/faraz/poisson_1/u.txt");
+
       }
     }
+
+
 
 		if (non_copy) {
 			for (int j = 0; j < ngrid_y; j++) {
@@ -307,6 +318,7 @@ int main(int argc,  char **argv)
   free(blocks);
   free(halos);
 
+  ops_release_program();
   ops_exit();
   return 0;
 }
