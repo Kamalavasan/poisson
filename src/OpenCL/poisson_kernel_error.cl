@@ -111,10 +111,10 @@ __kernel void ops_poisson_kernel_error(
 				float16 tmp1 = arg1[base_index1+ j];
 				float16 diff = tmp0 -tmp1;
 
-				float arr_diff[PORT_WIDTH] = {diff.s0, diff.s1, diff.s2, diff.s3, diff.s4, diff.s5, diff.s6, diff.s7,
+				float arr_diff[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1))) = {diff.s0, diff.s1, diff.s2, diff.s3, diff.s4, diff.s5, diff.s6, diff.s7,
 						diff.s8, diff.s9, diff.sa, diff.sb, diff.sc, diff.sd, diff.se, diff.sf};
 
-				float arr_focus[PORT_WIDTH];
+				float arr_focus[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
 
 				__attribute__((xcl_pipeline_loop))
 				__attribute__((opencl_unroll_hint(PORT_WIDTH)))
@@ -123,14 +123,14 @@ __kernel void ops_poisson_kernel_error(
 					arr_focus[k] = (index > size0 || index == 0) ? 0 : arr_diff[k]* arr_diff[k];
 				}
 
-				float sum1[PORT_WIDTH/2];
+				float sum1[PORT_WIDTH/2] __attribute__((xcl_array_partition(complete, 1)));
 				__attribute__((xcl_pipeline_loop))
 				__attribute__((opencl_unroll_hint(PORT_WIDTH/2)))
 				for(int k = 0; k < PORT_WIDTH/2; k++){
 					sum1[k] = arr_focus[2*k] + arr_focus[2*k + 1];
 				}
 
-				float sum2[PORT_WIDTH/4];
+				float sum2[PORT_WIDTH/4] __attribute__((xcl_array_partition(complete, 1)));
 				__attribute__((xcl_pipeline_loop))
 				__attribute__((opencl_unroll_hint(PORT_WIDTH/2)))
 				for(int k = 0; k < PORT_WIDTH/4; k++){
