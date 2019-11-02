@@ -74,28 +74,6 @@ __kernel void ops_poisson_kernel_error(
 		const int xdim1_poisson_kernel_error){
 
 
-//	float arg2_l[1];
-//	for (int d=0; d<1; d++) arg2_l[d] = ZERO_float;
-//
-//	int idx_y = get_global_id(1);
-//	int idx_x = get_global_id(0);
-//
-//	//int xdim0_poisson_kernel_error = 22;
-//	//int xdim1_poisson_kernel_error = 22;
-//
-//
-//	if (idx_x < size0 && idx_y < size1) {
-//		const __global float* ptr0 = &arg0[base0 + idx_x * 1*1 + idx_y * 1*1 * xdim0_poisson_kernel_error];
-//		const __global float* ptr1 = &arg1[base1 + idx_x * 1*1 + idx_y * 1*1 * xdim1_poisson_kernel_error];
-//
-//		*arg2_l = *arg2_l + (*ptr0 - *ptr1 )*( *ptr0 - *ptr1);
-//	}
-//
-//	int group_index = get_group_id(0) + get_group_id(1)*get_num_groups(0)+ get_group_id(2)*get_num_groups(0)*get_num_groups(1);
-//
-//	for (int d=0; d<1; d++)
-//		reduce_float(arg2_l[d], scratch2, &arg2[group_index*1+d], OPS_INC);
-
 	float g_sum = 0;
 	for(int i  = 0; i < size1; i++){
 			int base_index0, base_index1, end_index;

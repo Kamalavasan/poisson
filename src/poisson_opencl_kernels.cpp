@@ -33,6 +33,8 @@ void ops_release_program(){
 	clReleaseDevice(OPS_opencl_core.device_id);
 	//clReleaseKernel(*OPS_opencl_core.kernel);
 	for (int i=0; i<5; i++) clReleaseKernel(OPS_opencl_core.kernel[i]);
+
+
 	clReleaseProgram(OPS_opencl_core.program);
 
 	free(OPS_opencl_core.platform_id);

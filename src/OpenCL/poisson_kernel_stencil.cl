@@ -48,12 +48,13 @@
 //user function
 #define PORT_WIDTH 16
 #define SHIFT_BITS 4
-#define BEAT_SHIFT_BITS 10
-#define BURST_LEN 64
+#define BEAT_SHIFT_BITS 11
+#define BURST_LEN 128
 
 // FiX ME
-#define MAX_SIZE1 10000
+#define MAX_SIZE1 20000
 
+__attribute__((xcl_dataflow))
 __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 __kernel void ops_poisson_kernel_stencil(
 		__global const float16* restrict arg0,
@@ -73,11 +74,11 @@ __kernel void ops_poisson_kernel_stencil(
 	int beat_no = (size0 >> BEAT_SHIFT_BITS) + 1;
 
 
-	local float16 mem_rd1[BURST_LEN];
+	local float16 mem_rd1[BURST_LEN+1];
 	local float16 mem_rd2[BURST_LEN+1];
-	local float16 mem_rd3[BURST_LEN];
+	local float16 mem_rd3[BURST_LEN+1];
 
-	local float16 mem_row_wr[BURST_LEN];
+	local float16 mem_row_wr[BURST_LEN + 1];
 
 	local float	first_element[MAX_SIZE1];
 
@@ -103,7 +104,7 @@ __kernel void ops_poisson_kernel_stencil(
 
 
 		v1_row1_read: __attribute__((xcl_pipeline_loop))
-		for(int k = 0; k < loop_limit; k++){
+		for(int k = 0; k < loop_limit+1; k++){
 			mem_rd1[k] = arg0[base_index1 + k];
 		}
 
@@ -113,7 +114,7 @@ __kernel void ops_poisson_kernel_stencil(
 		}
 
 		v1_row3_read: __attribute__((xcl_pipeline_loop))
-		for(int k = 0; k < loop_limit; k++){
+		for(int k = 0; k < loop_limit + 1; k++){
 			mem_rd3[k] = arg0[base_index3 + k];
 		}
 
@@ -133,7 +134,10 @@ __kernel void ops_poisson_kernel_stencil(
 		ptr2 = mem_rd2;
 		ptr3 = mem_rd3;
 
+
 		for(int j = 0; j < size1; j++){
+
+			__attribute__((xcl_pipeline_loop))
 			for(int p = 0; p < loop_limit; p++){
 				float16 row1 = ptr1[p];
 				float16 row2 = ptr2[p];
@@ -165,16 +169,10 @@ __kernel void ops_poisson_kernel_stencil(
 				first_element[j] = row2.sf;
 				float16 row_wr = (float16) {mem_wr[0], mem_wr[1], mem_wr[2], mem_wr[3], mem_wr[4], mem_wr[5], mem_wr[6], mem_wr[7],
 												mem_wr[8], mem_wr[9], mem_wr[10], mem_wr[11], mem_wr[12], mem_wr[13], mem_wr[14], mem_wr[15]};
-
 				mem_row_wr[p]  = row_wr;
-
 			}
+			mem_row_wr[loop_limit] = ptr2[loop_limit];
 
-			v1_wr: __attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < loop_limit; k++){
-				arg1[base_index0 +k] = mem_row_wr[k];
-			}
-			base_index0  = base_index0 + (xdim0_poisson_kernel_stencil >> SHIFT_BITS);
 
 			state = state + 1;
 			if(state == 3 ){
@@ -190,9 +188,11 @@ __kernel void ops_poisson_kernel_stencil(
 
 			base_index3  = base_index3 + (xdim0_poisson_kernel_stencil >> SHIFT_BITS);
 			v2_row3_read: __attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < loop_limit; k++){
+			for(int k = 0; k < loop_limit + 1; k++){
 				ptr3[k] = arg0[base_index3 + k];
+				arg1[base_index0 +k] = mem_row_wr[k];
 			}
+			base_index0  = base_index0 + (xdim0_poisson_kernel_stencil >> SHIFT_BITS);
 
 		}
 	}
