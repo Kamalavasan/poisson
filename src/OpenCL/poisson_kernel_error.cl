@@ -57,6 +57,9 @@
 
 #define PORT_WIDTH 16
 #define SHIFT_BITS 4
+#define BEAT_SHIFT_BITS 11
+#define BURST_LEN 128
+
 
 __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 
@@ -75,50 +78,74 @@ __kernel void ops_poisson_kernel_error(
 
 
 	float g_sum = 0;
+
+	local float16 mem_rd1[BURST_LEN+1];
+	local float16 mem_rd2[BURST_LEN+1];
+
+
+	int beat_no = (size0 >> BEAT_SHIFT_BITS) + 1;
+
 	for(int i  = 0; i < size1; i++){
-			int base_index0, base_index1, end_index;
-			v1_index: __attribute__((xcl_pipeline_loop)){
-				base_index0 = (base0  + i* xdim0_poisson_kernel_error - 1) >> SHIFT_BITS;
-				base_index1 = (base1  + i* xdim0_poisson_kernel_error - 1) >> SHIFT_BITS;
-				end_index = (xdim0_poisson_kernel_error >> SHIFT_BITS) + 1;
-			}
+			int base_index0, base_index1, loop_limit, adjust_burst, cond;
 
 			v1_rd: __attribute__((xcl_pipeline_loop))
-			for(int j = 0; j < end_index ; j++){
-				float16 tmp0 = arg0[base_index0+ j];
-				float16 tmp1 = arg1[base_index1+ j];
-				float16 diff = tmp0 -tmp1;
+			for(int j = 0; j < beat_no ; j++){
 
-				float arr_diff[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1))) = {diff.s0, diff.s1, diff.s2, diff.s3, diff.s4, diff.s5, diff.s6, diff.s7,
-						diff.s8, diff.s9, diff.sa, diff.sb, diff.sc, diff.sd, diff.se, diff.sf};
-
-				float arr_focus[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
-
-				__attribute__((xcl_pipeline_loop))
-				__attribute__((opencl_unroll_hint(PORT_WIDTH)))
-				for(int k = 0; k < PORT_WIDTH; k++){
-					int index = (j << SHIFT_BITS) + k;
-					arr_focus[k] = (index > size0 || index == 0) ? 0 : arr_diff[k]* arr_diff[k];
+				v1_index: __attribute__((xcl_pipeline_loop)){
+					base_index0 = (base0  + i * xdim0_poisson_kernel_error + (j << BEAT_SHIFT_BITS) - 1) >> SHIFT_BITS;
+					base_index1 = (base1  + i * xdim1_poisson_kernel_error + (j << BEAT_SHIFT_BITS) - 1) >> SHIFT_BITS;
+					int cond = (size0 > ((j+1) << BEAT_SHIFT_BITS)) ? 1 : 0;
+					int adjust_burst = ((size0 - (j << BEAT_SHIFT_BITS)) >> SHIFT_BITS) + 1;
+					loop_limit = cond ? BURST_LEN : adjust_burst;
 				}
 
-				float sum1[PORT_WIDTH/2] __attribute__((xcl_array_partition(complete, 1)));
-				__attribute__((xcl_pipeline_loop))
-				__attribute__((opencl_unroll_hint(PORT_WIDTH/2)))
-				for(int k = 0; k < PORT_WIDTH/2; k++){
-					sum1[k] = arr_focus[2*k] + arr_focus[2*k + 1];
+				v1_row1_read: __attribute__((xcl_pipeline_loop))
+				for(int k = 0; k < loop_limit; k++){
+					mem_rd1[k] = arg0[base_index0 + k];
 				}
 
-				float sum2[PORT_WIDTH/4] __attribute__((xcl_array_partition(complete, 1)));
-				__attribute__((xcl_pipeline_loop))
-				__attribute__((opencl_unroll_hint(PORT_WIDTH/2)))
-				for(int k = 0; k < PORT_WIDTH/4; k++){
-					sum2[k] = sum1[2*k] + sum1[2*k + 1];
+				v2_row1_read: __attribute__((xcl_pipeline_loop))
+				for(int k = 0; k < loop_limit; k++){
+					mem_rd2[k] = arg1[base_index1 + k];
 				}
 
-				float sum3 = sum2[0] + sum2[1];
-				float sum4 = sum2[2] + sum2[3];
-				float sum = sum3 + sum4;
-				g_sum = g_sum + sum;
+				v3_process: __attribute__((xcl_pipeline_loop))
+				for(int p = 0; p < loop_limit; p++){
+					float16 tmp0 = mem_rd1[p];
+					float16 tmp1 = mem_rd2[p];
+					float16 diff = tmp0 -tmp1;
+
+					float arr_diff[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1))) = {diff.s0, diff.s1, diff.s2, diff.s3, diff.s4, diff.s5, diff.s6, diff.s7,
+							diff.s8, diff.s9, diff.sa, diff.sb, diff.sc, diff.sd, diff.se, diff.sf};
+
+					float arr_focus[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
+
+					__attribute__((xcl_pipeline_loop))
+					__attribute__((opencl_unroll_hint(PORT_WIDTH)))
+					for(int k = 0; k < PORT_WIDTH; k++){
+						int index = (j << BEAT_SHIFT_BITS) + (p << SHIFT_BITS) + k;
+						arr_focus[k] = (index > size0 || index == 0) ? 0 : arr_diff[k]* arr_diff[k];
+					}
+
+					float sum1[PORT_WIDTH/2] __attribute__((xcl_array_partition(complete, 1)));
+					__attribute__((xcl_pipeline_loop))
+					__attribute__((opencl_unroll_hint(PORT_WIDTH/2)))
+					for(int k = 0; k < PORT_WIDTH/2; k++){
+						sum1[k] = arr_focus[2*k] + arr_focus[2*k + 1];
+					}
+
+					float sum2[PORT_WIDTH/4] __attribute__((xcl_array_partition(complete, 1)));
+					__attribute__((xcl_pipeline_loop))
+					__attribute__((opencl_unroll_hint(PORT_WIDTH/2)))
+					for(int k = 0; k < PORT_WIDTH/4; k++){
+						sum2[k] = sum1[2*k] + sum1[2*k + 1];
+					}
+
+					float sum3 = sum2[0] + sum2[1];
+					float sum4 = sum2[2] + sum2[3];
+					float sum = sum3 + sum4;
+					g_sum = g_sum + sum;
+				}
 			}
 
 		}

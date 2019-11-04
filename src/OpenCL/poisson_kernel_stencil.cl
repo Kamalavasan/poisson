@@ -134,7 +134,7 @@ __kernel void ops_poisson_kernel_stencil(
 		ptr2 = mem_rd2;
 		ptr3 = mem_rd3;
 
-
+		__attribute__((xcl_pipeline_loop))
 		for(int j = 0; j < size1; j++){
 
 			__attribute__((xcl_pipeline_loop))
