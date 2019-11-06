@@ -78,6 +78,10 @@ __kernel void ops_poisson_kernel_stencil(
 	local float16 mem_rd2[BURST_LEN+1];
 	local float16 mem_rd3[BURST_LEN+1];
 
+	local float mem_rd1_c[BURST_LEN+1];
+	local float mem_rd2_c[BURST_LEN+1];
+	local float mem_rd3_c[BURST_LEN+1];
+
 	local float16 mem_row_wr[BURST_LEN + 1];
 
 	local float	first_element[MAX_SIZE1];
@@ -105,22 +109,32 @@ __kernel void ops_poisson_kernel_stencil(
 
 		v1_row1_read: __attribute__((xcl_pipeline_loop))
 		for(int k = 0; k < loop_limit+1; k++){
-			mem_rd1[k] = arg0[base_index1 + k];
+			float16 tmp = arg0[base_index1 + k];
+			mem_rd1[k] = tmp;
+			mem_rd1_c[k] = tmp.s0;
 		}
 
 		v1_row2_read: __attribute__((xcl_pipeline_loop))
 		for(int k = 0; k < loop_limit + 1; k++){
-			mem_rd2[k] = arg0[base_index2 + k];
+			float16 tmp = arg0[base_index2 + k];
+			mem_rd2[k] = tmp;
+			mem_rd2_c[k] = tmp.s0;
 		}
 
 		v1_row3_read: __attribute__((xcl_pipeline_loop))
 		for(int k = 0; k < loop_limit + 1; k++){
-			mem_rd3[k] = arg0[base_index3 + k];
+			float16 tmp = arg0[base_index3 + k];
+			mem_rd3[k] = tmp;
+			mem_rd3_c[k] = tmp.s0;
 		}
 
 		local float16* ptr1;
 		local float16* ptr2;
 		local float16* ptr3;
+
+		local float* ptr1_c;
+		local float* ptr2_c;
+		local float* ptr3_c;
 
 		// initialising first element
 		for (int k = 0; k < size1; k++){
@@ -134,6 +148,10 @@ __kernel void ops_poisson_kernel_stencil(
 		ptr2 = mem_rd2;
 		ptr3 = mem_rd3;
 
+		ptr1_c = mem_rd1_c;
+		ptr2_c = mem_rd2_c;
+		ptr3_c = mem_rd3_c;
+
 		__attribute__((xcl_pipeline_loop))
 		for(int j = 0; j < size1; j++){
 
@@ -143,13 +161,13 @@ __kernel void ops_poisson_kernel_stencil(
 				float16 row2 = ptr2[p];
 				float16 row3 = ptr3[p];
 
-				float16 row2_n = ptr2[p+1];
+				float row2_0 = ptr2_c[p+1];
 
 				float row_arr1[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1))) = {row1.s0, row1.s1, row1.s2, row1.s3, row1.s4, row1.s5, row1.s6, row1.s7,
 												row1.s8, row1.s9, row1.sa, row1.sb, row1.sc, row1.sd, row1.se, row1.sf};
 
 				float row_arr2[PORT_WIDTH + 2] __attribute__((xcl_array_partition(complete, 1))) = {first_element[j], row2.s0, row2.s1, row2.s2, row2.s3, row2.s4, row2.s5, row2.s6, row2.s7,
-												row2.s8, row2.s9, row2.sa, row2.sb, row2.sc, row2.sd, row2.se, row2.sf, row2_n.s0};
+												row2.s8, row2.s9, row2.sa, row2.sb, row2.sc, row2.sd, row2.se, row2.sf, row2_0};
 
 				float row_arr3[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1))) = {row3.s0, row3.s1, row3.s2, row3.s3, row3.s4, row3.s5, row3.s6, row3.s7,
 								row3.s8, row3.s9, row3.sa, row3.sb, row3.sc, row3.sd, row3.se, row3.sf};
@@ -180,16 +198,18 @@ __kernel void ops_poisson_kernel_stencil(
 			}
 
 			switch(state){
-				case 0: {ptr1 = mem_rd1; ptr2 = mem_rd2; ptr3 = mem_rd3; break; }
-				case 1: {ptr1 = mem_rd2; ptr2 = mem_rd3; ptr3 = mem_rd1; break; }
-				case 2: {ptr1 = mem_rd3; ptr2 = mem_rd1; ptr3 = mem_rd2; break; }
-				default: {ptr1 = mem_rd1; ptr2 = mem_rd2; ptr3 = mem_rd3; break; }
+				case 0: {ptr1 = mem_rd1; ptr2 = mem_rd2; ptr3 = mem_rd3; ptr1_c = mem_rd1_c; ptr2_c = mem_rd2_c; ptr3_c = mem_rd3_c; break; }
+				case 1: {ptr1 = mem_rd2; ptr2 = mem_rd3; ptr3 = mem_rd1; ptr1_c = mem_rd2_c; ptr2_c = mem_rd3_c; ptr3_c = mem_rd1_c; break; }
+				case 2: {ptr1 = mem_rd3; ptr2 = mem_rd1; ptr3 = mem_rd2; ptr1_c = mem_rd3_c; ptr2_c = mem_rd1_c; ptr3_c = mem_rd2_c; break; }
+				default: {ptr1 = mem_rd1; ptr2 = mem_rd2; ptr3 = mem_rd3; ptr1_c = mem_rd1_c; ptr2_c = mem_rd2_c; ptr3_c = mem_rd3_c; break; }
 			}
 
 			base_index3  = base_index3 + (xdim0_poisson_kernel_stencil >> SHIFT_BITS);
 			v2_row3_read: __attribute__((xcl_pipeline_loop))
 			for(int k = 0; k < loop_limit + 1; k++){
-				ptr3[k] = arg0[base_index3 + k];
+				float16 tmp = arg0[base_index3 + k];
+				ptr3[k] = tmp;
+				ptr3_c[k] = tmp.s0;
 				arg1[base_index0 +k] = mem_row_wr[k];
 			}
 			base_index0  = base_index0 + (xdim0_poisson_kernel_stencil >> SHIFT_BITS);

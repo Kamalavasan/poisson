@@ -59,6 +59,7 @@
 __constant int c_min_size = 40;
 __constant int c_max_size = (1024*1024*1024)/64;
 __constant int c_avg_size = (1024*1024*1024)/64;
+__kernel __attribute__((xcl_dataflow))
 __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 
 

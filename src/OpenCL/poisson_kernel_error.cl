@@ -60,7 +60,7 @@
 #define BEAT_SHIFT_BITS 11
 #define BURST_LEN 128
 
-
+__attribute__((xcl_dataflow))
 __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 
 __kernel void ops_poisson_kernel_error(
@@ -82,18 +82,22 @@ __kernel void ops_poisson_kernel_error(
 	local float16 mem_rd1[BURST_LEN+1];
 	local float16 mem_rd2[BURST_LEN+1];
 
+	float arr_focus[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
+
 
 	int beat_no = (size0 >> BEAT_SHIFT_BITS) + 1;
 
+	int row_shift0 = 0;
+	int row_shift1 = 0;
 	for(int i  = 0; i < size1; i++){
 			int base_index0, base_index1, loop_limit, adjust_burst, cond;
 
 			v1_rd: __attribute__((xcl_pipeline_loop))
 			for(int j = 0; j < beat_no ; j++){
 
-				v1_index: __attribute__((xcl_pipeline_loop)){
-					base_index0 = (base0  + i * xdim0_poisson_kernel_error + (j << BEAT_SHIFT_BITS) - 1) >> SHIFT_BITS;
-					base_index1 = (base1  + i * xdim1_poisson_kernel_error + (j << BEAT_SHIFT_BITS) - 1) >> SHIFT_BITS;
+				__attribute__((xcl_pipeline_workitems)){
+					base_index0 = (base0  + row_shift0 + (j << BEAT_SHIFT_BITS) - 1) >> SHIFT_BITS;
+					base_index1 = (base1  + row_shift1 + (j << BEAT_SHIFT_BITS) - 1) >> SHIFT_BITS;
 					int cond = (size0 > ((j+1) << BEAT_SHIFT_BITS)) ? 1 : 0;
 					int adjust_burst = ((size0 - (j << BEAT_SHIFT_BITS)) >> SHIFT_BITS) + 1;
 					loop_limit = cond ? BURST_LEN : adjust_burst;
@@ -118,39 +122,42 @@ __kernel void ops_poisson_kernel_error(
 					float arr_diff[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1))) = {diff.s0, diff.s1, diff.s2, diff.s3, diff.s4, diff.s5, diff.s6, diff.s7,
 							diff.s8, diff.s9, diff.sa, diff.sb, diff.sc, diff.sd, diff.se, diff.sf};
 
-					float arr_focus[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
 
 					__attribute__((xcl_pipeline_loop))
 					__attribute__((opencl_unroll_hint(PORT_WIDTH)))
 					for(int k = 0; k < PORT_WIDTH; k++){
 						int index = (j << BEAT_SHIFT_BITS) + (p << SHIFT_BITS) + k;
-						arr_focus[k] = (index > size0 || index == 0) ? 0 : arr_diff[k]* arr_diff[k];
+						float square = arr_diff[k]* arr_diff[k];
+						float eval = (index > size0 || index == 0) ? 0 : square;
+						arr_focus[k] = arr_focus[k] + eval;
 					}
-
-					float sum1[PORT_WIDTH/2] __attribute__((xcl_array_partition(complete, 1)));
-					__attribute__((xcl_pipeline_loop))
-					__attribute__((opencl_unroll_hint(PORT_WIDTH/2)))
-					for(int k = 0; k < PORT_WIDTH/2; k++){
-						sum1[k] = arr_focus[2*k] + arr_focus[2*k + 1];
-					}
-
-					float sum2[PORT_WIDTH/4] __attribute__((xcl_array_partition(complete, 1)));
-					__attribute__((xcl_pipeline_loop))
-					__attribute__((opencl_unroll_hint(PORT_WIDTH/2)))
-					for(int k = 0; k < PORT_WIDTH/4; k++){
-						sum2[k] = sum1[2*k] + sum1[2*k + 1];
-					}
-
-					float sum3 = sum2[0] + sum2[1];
-					float sum4 = sum2[2] + sum2[3];
-					float sum = sum3 + sum4;
-					g_sum = g_sum + sum;
 				}
 			}
 
+			row_shift0  = row_shift0 + xdim0_poisson_kernel_error;
+			row_shift1  = row_shift1 + xdim1_poisson_kernel_error;
+
 		}
 
-//	arg2[r_bytes2] = g_sum;
-	arg2[r_bytes2 >> SHIFT_BITS] = (float16){g_sum, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,   0, 0, 0, 0};
+		float sum1[PORT_WIDTH/2] __attribute__((xcl_array_partition(complete, 1)));
+		__attribute__((xcl_pipeline_loop))
+		__attribute__((opencl_unroll_hint(PORT_WIDTH/2)))
+		for(int k = 0; k < PORT_WIDTH/2; k++){
+			sum1[k] = arr_focus[2*k] + arr_focus[2*k + 1];
+		}
+
+		float sum2[PORT_WIDTH/4] __attribute__((xcl_array_partition(complete, 1)));
+		__attribute__((xcl_pipeline_loop))
+		__attribute__((opencl_unroll_hint(PORT_WIDTH/4)))
+		for(int k = 0; k < PORT_WIDTH/4; k++){
+			sum2[k] = sum1[2*k] + sum1[2*k + 1];
+		}
+
+		float sum3 = sum2[0] + sum2[1];
+		float sum4 = sum2[2] + sum2[3];
+		float sum = sum3 + sum4;
+		g_sum = g_sum + sum;
+
+		arg2[r_bytes2 >> SHIFT_BITS] = (float16){g_sum, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,   0, 0, 0, 0};
 
 }
