@@ -188,95 +188,10 @@ int main(int argc,  char **argv)
 
   ops_partition("");
   ops_checkpointing_init("check.h5", 5.0, 0);
-	ops_diagnostic_output();
+  ops_diagnostic_output();
 
 
-  double ct0, ct1, et0, et1;
-  ops_timers(&ct0, &et0);
-
-  for (int j = 0; j < ngrid_y; j++) {
-    for (int i = 0; i < ngrid_x; i++) {
-      int iter_range[] = {-1,sizes[2*(i+ngrid_x*j)]+1,-1,sizes[2*(i+ngrid_x*j)+1]+1};
-
-
-
-      ops_par_loop_poisson_kernel_populate("poisson_kernel_populate", blocks[i+ngrid_x*j], 2, iter_range,
-                   ops_arg_gbl(&disps[2*(i+ngrid_x*j)], 1, "int", OPS_READ),
-                   ops_arg_gbl(&disps[2*(i+ngrid_x*j)+1], 1, "int", OPS_READ),
-                   ops_arg_idx(),
-                   ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE),
-                   ops_arg_dat(f[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE),
-                   ops_arg_dat(ref[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
-
-
-//      ops_print_dat_to_txtfile((f[i+ngrid_x*j]), "/home/vasan/faraz/poisson_1/f.txt");
-//      ops_print_dat_to_txtfile((ref[i+ngrid_x*j]), "/home/vasan/faraz/poisson_1/ref.txt");
-
-		 ops_par_loop_poisson_kernel_update("poisson_kernel_update", blocks[i+ngrid_x*j], 2, iter_range,
-                ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_READ),
-                ops_arg_dat(u2[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
-
-    }
-  }
-
-  for (int j = 0; j < ngrid_y; j++) {
-    for (int i = 0; i < ngrid_x; i++) {
-      int iter_range[] = {0,sizes[2*(i+ngrid_x*j)],0,sizes[2*(i+ngrid_x*j)+1]};
-
-
-
-      ops_par_loop_poisson_kernel_initial("poisson_kernel_initialguess", blocks[i+ngrid_x*j], 2, iter_range,
-                   ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
-
-    }
-  }
-
-  double it0, it1;
-  ops_timers(&ct0, &it0);
-
-  for (int iter = 0; iter < n_iter; iter++) {
-    if (ngrid_x>1 || ngrid_y>1) ops_halo_transfer(u_halos);
-    if (iter%itertile == 0) ops_execute();
-
-    for (int j = 0; j < ngrid_y; j++) {
-      for (int i = 0; i < ngrid_x; i++) {
-        int iter_range[] = {0,sizes[2*(i+ngrid_x*j)],0,sizes[2*(i+ngrid_x*j)+1]};
-        ops_par_loop_poisson_kernel_stencil("poisson_kernel_stencil", blocks[i+ngrid_x*j], 2, iter_range,
-                     ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00_P10_M10_0P1_0M1, "float", OPS_READ),
-                     ops_arg_dat(u2[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
-//              ops_print_dat_to_txtfile((u[i+ngrid_x*j]), "/home/vasan/faraz/poisson_1/u.txt");
-
-      }
-    }
-
-
-
-		if (non_copy) {
-			for (int j = 0; j < ngrid_y; j++) {
-				for (int i = 0; i < ngrid_x; i++) {
-					int iter_range[] = {0,sizes[2*(i+ngrid_x*j)],0,sizes[2*(i+ngrid_x*j)+1]};
-				 ops_par_loop_poisson_kernel_stencil("poisson_kernel_stencil", blocks[i+ngrid_x*j], 2, iter_range,
-                  ops_arg_dat(u2[i+ngrid_x*j], 1, S2D_00_P10_M10_0P1_0M1, "float", OPS_READ),
-                  ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
-				}
-			}
-		} else {
-			for (int j = 0; j < ngrid_y; j++) {
-				for (int i = 0; i < ngrid_x; i++) {
-					int iter_range[] = {0,sizes[2*(i+ngrid_x*j)],0,sizes[2*(i+ngrid_x*j)+1]};
-				 ops_par_loop_poisson_kernel_update("poisson_kernel_update", blocks[i+ngrid_x*j], 2, iter_range,
-                  ops_arg_dat(u2[i+ngrid_x*j], 1, S2D_00, "float", OPS_READ),
-                  ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
-				}
-			}
-		}
-  }
-	ops_execute();
-  ops_timers(&ct0, &it1);
-
-
-
-
+  ops_execute();
   float err = 0.0;
   for (int j = 0; j < ngrid_y; j++) {
     for (int i = 0; i < ngrid_x; i++) {
@@ -288,11 +203,12 @@ int main(int argc,  char **argv)
     }
   }
 
-  ops_reduction_result(red_err,&err);
 
-  ops_timers(&ct1, &et1);
-  ops_timing_output(stdout);
-  ops_printf("\nTotal Wall time %lf\n",et1-et0);
+
+  ops_reduction_result(red_err,&err);
+//  ops_timing_output(stdout);
+
+
   float err_diff=fabs((100.0*(err/20.727007094619303))-100.0);
   ops_printf("Total error: %3.15g\n",err);
   ops_printf("Total error is within %3.15E %% of the expected error\n",err_diff);
@@ -303,8 +219,6 @@ int main(int argc,  char **argv)
   else {
     ops_printf("This test is considered FAILED\n");
   }
-
-  ops_printf("%lf\n",it1-it0);
 
   free(coordx);
   free(coordy);

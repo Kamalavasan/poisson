@@ -486,7 +486,7 @@
       </binaryContainers>
     </lastBuildOptions>
   </configuration>
-  <configuration name="System" id="com.xilinx.sdx.opencl.config.hw.1631457947">
+  <configuration name="System" id="com.xilinx.sdx.opencl.config.hw.1631457947" dirty="true">
     <configBuildOptions xsi:type="openclProject:OpenCLOptions" target="hw">
       <binaryContainers name="ops_poisson_kernels">
         <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cl" memoryPortDataWidth="512" xoccOptions="--xp param:compiler.interfaceWrBurstLen=128 --xp param:compiler.interfaceRdBurstLen=128">

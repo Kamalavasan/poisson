@@ -31,16 +31,15 @@ void ops_release_program(){
 	clReleaseCommandQueue(OPS_opencl_core.command_queue);
 	clReleaseContext(OPS_opencl_core.context);
 	clReleaseDevice(OPS_opencl_core.device_id);
-	//clReleaseKernel(*OPS_opencl_core.kernel);
-	for (int i=0; i<5; i++) clReleaseKernel(OPS_opencl_core.kernel[i]);
-
-
+//	//clReleaseKernel(*OPS_opencl_core.kernel);
+	clReleaseKernel(OPS_opencl_core.kernel[0]);
+//
 	clReleaseProgram(OPS_opencl_core.program);
-
-	free(OPS_opencl_core.platform_id);
-	free(OPS_opencl_core.devices);
-	free(OPS_opencl_core.kernel);
-	free(OPS_opencl_core.constant);
+//
+	free((OPS_opencl_core.platform_id));
+	free((OPS_opencl_core.devices));
+	free((OPS_opencl_core.kernel));
+	free((OPS_opencl_core.constant));
 }
 
 int load_file_to_memory(const char *filename, char **result)
@@ -150,8 +149,8 @@ void buildOpenCLKernels() {
 	if(!isbuilt) {
 		//clSafeCall( clUnloadCompiler() );
 
-		OPS_opencl_core.n_kernels = 5;
-		OPS_opencl_core.kernel = (cl_kernel*) malloc(5*sizeof(cl_kernel));
+		OPS_opencl_core.n_kernels = 1;
+		OPS_opencl_core.kernel = (cl_kernel*) malloc(1*sizeof(cl_kernel));
 	}
 	isbuilt = true;
 }
@@ -167,7 +166,7 @@ void buildOpenCLKernels_poisson_kernel_error(int xdim0, int xdim1) {
 		cl_int ret;
 
 		// Create the OpenCL kernel
-		OPS_opencl_core.kernel[4] = clCreateKernel(OPS_opencl_core.program, "ops_poisson_kernel_error", &ret);
+		OPS_opencl_core.kernel[0] = clCreateKernel(OPS_opencl_core.program, "ops_poisson_kernel_error", &ret);
 		clSafeCall( ret );
 
 		isbuilt_poisson_kernel_error = true;
@@ -190,8 +189,8 @@ void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int di
 #endif
 
 	if (OPS_diags > 1) {
-		ops_timing_realloc(4,"poisson_kernel_error");
-		OPS_kernels[4].count++;
+		ops_timing_realloc(0,"poisson_kernel_error");
+		OPS_kernels[0].count++;
 		ops_timers_core(&c1,&t1);
 	}
 
@@ -236,9 +235,6 @@ void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int di
 	buildOpenCLKernels_poisson_kernel_error(
 			xdim0,xdim1);
 
-	//set up OpenCL thread blocks
-//	size_t globalWorkSize[3] = {((x_size-1)/OPS_block_size_x+ 1)*OPS_block_size_x, ((y_size-1)/OPS_block_size_y + 1)*OPS_block_size_y, 1};
-//	size_t localWorkSize[3] =  {OPS_block_size_x,OPS_block_size_y,OPS_block_size_z};
 
 	size_t globalWorkSize[3] = {1,1,1};
 	size_t localWorkSize[3] =  {1,1,1};
@@ -302,29 +298,23 @@ void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int di
 
 	int nthread = OPS_block_size_x*OPS_block_size_y*OPS_block_size_z;
 
-
-	std::cout << "base0: " << base0 << "\n";
-	std::cout << "base1: " << base1 << "\n";
-
-	std::cout << "x_size: " << x_size << "\n";
-	std::cout << "y_size: " << y_size << "\n";
-
 	if (globalWorkSize[0]>0 && globalWorkSize[1]>0 && globalWorkSize[2]>0) {
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[4], 0, sizeof(cl_mem), (void*) &arg0.data_d ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[4], 1, sizeof(cl_mem), (void*) &arg1.data_d ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[4], 2, sizeof(cl_mem), (void*) &arg2.data_d ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[4], 3, nthread*sizeof(float), NULL));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[4], 4, sizeof(cl_int), (void*) &r_bytes2 ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[4], 5, sizeof(cl_int), (void*) &base0 ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[4], 6, sizeof(cl_int), (void*) &base1 ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[4], 7, sizeof(cl_int), (void*) &x_size ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[4], 8, sizeof(cl_int), (void*) &y_size ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[4], 9, sizeof(cl_int), (void*) &xdim0 ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[4], 10, sizeof(cl_int), (void*) &xdim1 ));
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 0, sizeof(cl_mem), (void*) &arg0.data_d ));
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 1, sizeof(cl_mem), (void*) &arg1.data_d ));
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 2, sizeof(cl_mem), (void*) &arg2.data_d ));
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 3, nthread*sizeof(float), NULL));
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 4, sizeof(cl_int), (void*) &r_bytes2 ));
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 5, sizeof(cl_int), (void*) &base0 ));
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 6, sizeof(cl_int), (void*) &base1 ));
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 7, sizeof(cl_int), (void*) &x_size ));
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 8, sizeof(cl_int), (void*) &y_size ));
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 9, sizeof(cl_int), (void*) &xdim0 ));
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 10, sizeof(cl_int), (void*) &xdim1 ));
 
 		//call/enque opencl kernel wrapper function
-		clSafeCall( clEnqueueNDRangeKernel(OPS_opencl_core.command_queue, OPS_opencl_core.kernel[4], 3, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL) );
+		clSafeCall( clEnqueueNDRangeKernel(OPS_opencl_core.command_queue, OPS_opencl_core.kernel[0], 3, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL) );
 	}
+
 	if (OPS_diags>1) {
 		clSafeCall( clFinish(OPS_opencl_core.command_queue) );
 	}
@@ -353,658 +343,7 @@ void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int di
 	}
 }
 
-//#include "poisson_kernel_stencil_opencl_kernel.cpp"
-static bool isbuilt_poisson_kernel_stencil = false;
-void buildOpenCLKernels_poisson_kernel_stencil(int xdim0, int xdim1) {
 
-	//int ocl_fma = OCL_FMA;
-	if(!isbuilt_poisson_kernel_stencil) {
-		buildOpenCLKernels();
-		//clSafeCall( clUnloadCompiler() );
-		cl_int ret;
-		// Create the OpenCL kernel
-		OPS_opencl_core.kernel[3] = clCreateKernel(OPS_opencl_core.program, "ops_poisson_kernel_stencil", &ret);
-		clSafeCall( ret );
 
-		isbuilt_poisson_kernel_stencil = true;
-	}
 
-}
 
-
-// host stub function
-void ops_par_loop_poisson_kernel_stencil(char const *name, ops_block block, int dim, int* range,
-		ops_arg arg0, ops_arg arg1) {
-
-	//Timing
-	double t1,t2,c1,c2;
-
-	ops_arg args[2] = { arg0, arg1};
-
-
-#ifdef CHECKPOINTING
-	if (!ops_checkpointing_before(args,2,range,3)) return;
-#endif
-
-	if (OPS_diags > 1) {
-		ops_timing_realloc(3,"poisson_kernel_stencil");
-		OPS_kernels[3].count++;
-		ops_timers_core(&c1,&t1);
-	}
-
-	//compute locally allocated range for the sub-block
-	int start[2];
-	int end[2];
-#ifdef OPS_MPI
-	sub_block_list sb = OPS_sub_block_list[block->index];
-	if (!sb->owned) return;
-	for ( int n=0; n<2; n++ ){
-		start[n] = sb->decomp_disp[n];end[n] = sb->decomp_disp[n]+sb->decomp_size[n];
-		if (start[n] >= range[2*n]) {
-			start[n] = 0;
-		}
-		else {
-			start[n] = range[2*n] - start[n];
-		}
-		if (sb->id_m[n]==MPI_PROC_NULL && range[2*n] < 0) start[n] = range[2*n];
-		if (end[n] >= range[2*n+1]) {
-			end[n] = range[2*n+1] - sb->decomp_disp[n];
-		}
-		else {
-			end[n] = sb->decomp_size[n];
-		}
-		if (sb->id_p[n]==MPI_PROC_NULL && (range[2*n+1] > sb->decomp_disp[n]+sb->decomp_size[n]))
-			end[n] += (range[2*n+1]-sb->decomp_disp[n]-sb->decomp_size[n]);
-	}
-#else
-	for ( int n=0; n<2; n++ ){
-		start[n] = range[2*n];end[n] = range[2*n+1];
-	}
-#endif
-
-	int x_size = MAX(0,end[0]-start[0]);
-	int y_size = MAX(0,end[1]-start[1]);
-
-
-	int xdim0 = args[0].dat->size[0];
-	int xdim1 = args[1].dat->size[0];
-
-	//build opencl kernel if not already built
-	buildOpenCLKernels_poisson_kernel_stencil(
-			xdim0,xdim1);
-
-	//set up OpenCL thread blocks
-//	size_t globalWorkSize[3] = {((x_size-1)/OPS_block_size_x+ 1)*OPS_block_size_x, ((y_size-1)/OPS_block_size_y + 1)*OPS_block_size_y, 1};
-//	size_t localWorkSize[3] =  {OPS_block_size_x,OPS_block_size_y,OPS_block_size_z};
-
-	size_t globalWorkSize[3] = {1, 1, 1};
-	size_t localWorkSize[3] =  {1, 1 ,1};
-
-
-	//set up initial pointers
-	int d_m[OPS_MAX_DIM];
-#ifdef OPS_MPI
-	for (int d = 0; d < dim; d++) d_m[d] = args[0].dat->d_m[d] + OPS_sub_dat_list[args[0].dat->index]->d_im[d];
-#else
-	for (int d = 0; d < dim; d++) d_m[d] = args[0].dat->d_m[d];
-#endif
-	int base0 = 1 *1*
-			(start[0] * args[0].stencil->stride[0] - args[0].dat->base[0] - d_m[0]);
-	base0 = base0 + args[0].dat->size[0] *1*
-			(start[1] * args[0].stencil->stride[1] - args[0].dat->base[1] - d_m[1]);
-
-#ifdef OPS_MPI
-	for (int d = 0; d < dim; d++) d_m[d] = args[1].dat->d_m[d] + OPS_sub_dat_list[args[1].dat->index]->d_im[d];
-#else
-	for (int d = 0; d < dim; d++) d_m[d] = args[1].dat->d_m[d];
-#endif
-	int base1 = 1 *1*
-			(start[0] * args[1].stencil->stride[0] - args[1].dat->base[0] - d_m[0]);
-	base1 = base1 + args[1].dat->size[0] *1*
-			(start[1] * args[1].stencil->stride[1] - args[1].dat->base[1] - d_m[1]);
-
-
-	ops_H_D_exchanges_device(args, 2);
-	ops_halo_exchanges(args,2,range);
-	ops_H_D_exchanges_device(args, 2);
-
-	if (OPS_diags > 1) {
-		ops_timers_core(&c2,&t2);
-		OPS_kernels[3].mpi_time += t2-t1;
-	}
-
-	if (globalWorkSize[0]>0 && globalWorkSize[1]>0 && globalWorkSize[2]>0) {
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[3], 0, sizeof(cl_mem), (void*) &arg0.data_d ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[3], 1, sizeof(cl_mem), (void*) &arg1.data_d ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[3], 2, sizeof(cl_int), (void*) &base0 ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[3], 3, sizeof(cl_int), (void*) &base1 ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[3], 4, sizeof(cl_int), (void*) &x_size ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[3], 5, sizeof(cl_int), (void*) &y_size ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[3], 6, sizeof(cl_int), (void*) &xdim0 ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[3], 7, sizeof(cl_int), (void*) &xdim1 ));
-
-		//call/enque opencl kernel wrapper function
-		clSafeCall( clEnqueueNDRangeKernel(OPS_opencl_core.command_queue, OPS_opencl_core.kernel[3], 3, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL) );
-	}
-	if (OPS_diags>1) {
-		clSafeCall( clFinish(OPS_opencl_core.command_queue) );
-	}
-
-	if (OPS_diags > 1) {
-		ops_timers_core(&c1,&t1);
-		OPS_kernels[3].time += t1-t2;
-	}
-
-	ops_set_dirtybit_device(args, 2);
-	ops_set_halo_dirtybit3(&args[1],range);
-
-	if (OPS_diags > 1) {
-		//Update kernel record
-		ops_timers_core(&c2,&t2);
-		OPS_kernels[3].mpi_time += t2-t1;
-		OPS_kernels[3].transfer += ops_compute_transfer(dim, start, end, &arg0);
-		OPS_kernels[3].transfer += ops_compute_transfer(dim, start, end, &arg1);
-	}
-}
-
-
-//#include "poisson_kernel_initial_opencl_kernel.cpp"
-static bool isbuilt_poisson_kernel_initial = false;
-
-void buildOpenCLKernels_poisson_kernel_initial(int xdim0) {
-
-	//int ocl_fma = OCL_FMA;
-	if(!isbuilt_poisson_kernel_initial) {
-		buildOpenCLKernels();
-		//clSafeCall( clUnloadCompiler() );
-		cl_int ret;
-
-		// Create the OpenCL kernel
-		OPS_opencl_core.kernel[2] = clCreateKernel(OPS_opencl_core.program, "ops_poisson_kernel_initial", &ret);
-		clSafeCall( ret );
-
-		isbuilt_poisson_kernel_initial = true;
-	}
-
-}
-
-
-// host stub function
-void ops_par_loop_poisson_kernel_initial(char const *name, ops_block block, int dim, int* range,
-		ops_arg arg0) {
-
-	//Timing
-	double t1,t2,c1,c2;
-
-	ops_arg args[1] = { arg0};
-
-
-#ifdef CHECKPOINTING
-	if (!ops_checkpointing_before(args,1,range,2)) return;
-#endif
-
-	if (OPS_diags > 1) {
-		ops_timing_realloc(2,"poisson_kernel_initial");
-		OPS_kernels[2].count++;
-		ops_timers_core(&c1,&t1);
-	}
-
-	//compute locally allocated range for the sub-block
-	int start[2];
-	int end[2];
-#ifdef OPS_MPI
-	sub_block_list sb = OPS_sub_block_list[block->index];
-	if (!sb->owned) return;
-	for ( int n=0; n<2; n++ ){
-		start[n] = sb->decomp_disp[n];end[n] = sb->decomp_disp[n]+sb->decomp_size[n];
-		if (start[n] >= range[2*n]) {
-			start[n] = 0;
-		}
-		else {
-			start[n] = range[2*n] - start[n];
-		}
-		if (sb->id_m[n]==MPI_PROC_NULL && range[2*n] < 0) start[n] = range[2*n];
-		if (end[n] >= range[2*n+1]) {
-			end[n] = range[2*n+1] - sb->decomp_disp[n];
-		}
-		else {
-			end[n] = sb->decomp_size[n];
-		}
-		if (sb->id_p[n]==MPI_PROC_NULL && (range[2*n+1] > sb->decomp_disp[n]+sb->decomp_size[n]))
-			end[n] += (range[2*n+1]-sb->decomp_disp[n]-sb->decomp_size[n]);
-	}
-#else
-	for ( int n=0; n<2; n++ ){
-		start[n] = range[2*n];end[n] = range[2*n+1];
-	}
-#endif
-
-	int x_size = MAX(0,end[0]-start[0]);
-	int y_size = MAX(0,end[1]-start[1]);
-
-
-	int xdim0 = args[0].dat->size[0];
-
-	//build opencl kernel if not already built
-	buildOpenCLKernels_poisson_kernel_initial(
-			xdim0);
-
-	//set up OpenCL thread blocks
-//	size_t globalWorkSize[3] = {((x_size-1)/OPS_block_size_x+ 1)*OPS_block_size_x, ((y_size-1)/OPS_block_size_y + 1)*OPS_block_size_y, 1};
-//	size_t localWorkSize[3] =  {OPS_block_size_x,OPS_block_size_y,OPS_block_size_z};
-
-	size_t globalWorkSize[3] = {1, 1, 1};
-	size_t localWorkSize[3] =  {1,1,1};
-
-	//set up initial pointers
-	int d_m[OPS_MAX_DIM];
-#ifdef OPS_MPI
-	for (int d = 0; d < dim; d++) d_m[d] = args[0].dat->d_m[d] + OPS_sub_dat_list[args[0].dat->index]->d_im[d];
-#else
-	for (int d = 0; d < dim; d++) d_m[d] = args[0].dat->d_m[d];
-#endif
-	int base0 = 1 *1*
-			(start[0] * args[0].stencil->stride[0] - args[0].dat->base[0] - d_m[0]);
-	base0 = base0 + args[0].dat->size[0] *1*
-			(start[1] * args[0].stencil->stride[1] - args[0].dat->base[1] - d_m[1]);
-
-
-	ops_H_D_exchanges_device(args, 1);
-	ops_halo_exchanges(args,1,range);
-	ops_H_D_exchanges_device(args, 1);
-
-	if (OPS_diags > 1) {
-		ops_timers_core(&c2,&t2);
-		OPS_kernels[2].mpi_time += t2-t1;
-	}
-
-	std::cout << "\n base0: " << base0 << "\n";
-	std::cout << "x_size: " << x_size << "\n";
-	std::cout << "xdim0: " << xdim0 << "\n";
-
-	if (globalWorkSize[0]>0 && globalWorkSize[1]>0 && globalWorkSize[2]>0) {
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[2], 0, sizeof(cl_mem), (void*) &arg0.data_d ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[2], 1, sizeof(cl_int), (void*) &base0 ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[2], 2, sizeof(cl_int), (void*) &x_size ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[2], 3, sizeof(cl_int), (void*) &y_size ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[2], 4, sizeof(cl_int), (void*) &xdim0 ));
-
-		//call/enque opencl kernel wrapper function
-		clSafeCall( clEnqueueNDRangeKernel(OPS_opencl_core.command_queue, OPS_opencl_core.kernel[2], 3, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL) );
-	}
-	if (OPS_diags>1) {
-		clSafeCall( clFinish(OPS_opencl_core.command_queue) );
-	}
-
-	if (OPS_diags > 1) {
-		ops_timers_core(&c1,&t1);
-		OPS_kernels[2].time += t1-t2;
-	}
-
-	ops_set_dirtybit_device(args, 1);
-	ops_set_halo_dirtybit3(&args[0],range);
-
-	if (OPS_diags > 1) {
-		//Update kernel record
-		ops_timers_core(&c2,&t2);
-		OPS_kernels[2].mpi_time += t2-t1;
-		OPS_kernels[2].transfer += ops_compute_transfer(dim, start, end, &arg0);
-	}
-}
-
-
-//#include "poisson_kernel_update_opencl_kernel.cpp"
-static bool isbuilt_poisson_kernel_update = false;
-
-void buildOpenCLKernels_poisson_kernel_update(int xdim0, int xdim1) {
-	//int ocl_fma = OCL_FMA;
-	if(!isbuilt_poisson_kernel_update) {
-		buildOpenCLKernels();
-		//clSafeCall( clUnloadCompiler() );
-		cl_int ret;
-
-		// Create the OpenCL kernel
-		OPS_opencl_core.kernel[1] = clCreateKernel(OPS_opencl_core.program, "ops_poisson_kernel_update", &ret);
-		clSafeCall( ret );
-
-		isbuilt_poisson_kernel_update = true;
-	}
-
-}
-
-
-// host stub function
-void ops_par_loop_poisson_kernel_update(char const *name, ops_block block, int dim, int* range,
-		ops_arg arg0, ops_arg arg1) {
-
-	//Timing
-	double t1,t2,c1,c2;
-
-	ops_arg args[2] = { arg0, arg1};
-
-
-#ifdef CHECKPOINTING
-	if (!ops_checkpointing_before(args,2,range,1)) return;
-#endif
-
-	if (OPS_diags > 1) {
-		ops_timing_realloc(1,"poisson_kernel_update");
-		OPS_kernels[1].count++;
-		ops_timers_core(&c1,&t1);
-	}
-
-	//compute locally allocated range for the sub-block
-	int start[2];
-	int end[2];
-#ifdef OPS_MPI
-	sub_block_list sb = OPS_sub_block_list[block->index];
-	if (!sb->owned) return;
-	for ( int n=0; n<2; n++ ){
-		start[n] = sb->decomp_disp[n];end[n] = sb->decomp_disp[n]+sb->decomp_size[n];
-		if (start[n] >= range[2*n]) {
-			start[n] = 0;
-		}
-		else {
-			start[n] = range[2*n] - start[n];
-		}
-		if (sb->id_m[n]==MPI_PROC_NULL && range[2*n] < 0) start[n] = range[2*n];
-		if (end[n] >= range[2*n+1]) {
-			end[n] = range[2*n+1] - sb->decomp_disp[n];
-		}
-		else {
-			end[n] = sb->decomp_size[n];
-		}
-		if (sb->id_p[n]==MPI_PROC_NULL && (range[2*n+1] > sb->decomp_disp[n]+sb->decomp_size[n]))
-			end[n] += (range[2*n+1]-sb->decomp_disp[n]-sb->decomp_size[n]);
-	}
-#else
-	for ( int n=0; n<2; n++ ){
-		start[n] = range[2*n];end[n] = range[2*n+1];
-	}
-#endif
-
-	int x_size = MAX(0,end[0]-start[0]);
-	int y_size = MAX(0,end[1]-start[1]);
-
-
-	int xdim0 = args[0].dat->size[0];
-	int xdim1 = args[1].dat->size[0];
-
-	//build opencl kernel if not already built
-	buildOpenCLKernels_poisson_kernel_update(
-			xdim0,xdim1);
-
-	//set up OpenCL thread blocks
-//	size_t globalWorkSize[3] = {((x_size-1)/OPS_block_size_x+ 1)*OPS_block_size_x, ((y_size-1)/OPS_block_size_y + 1)*OPS_block_size_y, 1};
-//	size_t localWorkSize[3] =  {OPS_block_size_x,OPS_block_size_y,OPS_block_size_z};
-
-	size_t globalWorkSize[3] = {1,1,1};
-	size_t localWorkSize[3] =  {1,1,1};
-
-	//set up initial pointers
-	int d_m[OPS_MAX_DIM];
-#ifdef OPS_MPI
-	for (int d = 0; d < dim; d++) d_m[d] = args[0].dat->d_m[d] + OPS_sub_dat_list[args[0].dat->index]->d_im[d];
-#else
-	for (int d = 0; d < dim; d++) d_m[d] = args[0].dat->d_m[d];
-#endif
-	int base0 = 1 *1*
-			(start[0] * args[0].stencil->stride[0] - args[0].dat->base[0] - d_m[0]);
-	base0 = base0 + args[0].dat->size[0] *1*
-			(start[1] * args[0].stencil->stride[1] - args[0].dat->base[1] - d_m[1]);
-
-#ifdef OPS_MPI
-	for (int d = 0; d < dim; d++) d_m[d] = args[1].dat->d_m[d] + OPS_sub_dat_list[args[1].dat->index]->d_im[d];
-#else
-	for (int d = 0; d < dim; d++) d_m[d] = args[1].dat->d_m[d];
-#endif
-	int base1 = 1 *1*
-			(start[0] * args[1].stencil->stride[0] - args[1].dat->base[0] - d_m[0]);
-	base1 = base1 + args[1].dat->size[0] *1*
-			(start[1] * args[1].stencil->stride[1] - args[1].dat->base[1] - d_m[1]);
-
-
-	ops_H_D_exchanges_device(args, 2);
-	ops_halo_exchanges(args,2,range);
-	ops_H_D_exchanges_device(args, 2);
-
-	if (OPS_diags > 1) {
-		ops_timers_core(&c2,&t2);
-		OPS_kernels[1].mpi_time += t2-t1;
-	}
-
-
-
-	if (globalWorkSize[0]>0 && globalWorkSize[1]>0 && globalWorkSize[2]>0) {
-
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[1], 0, sizeof(cl_mem), (void*) &arg0.data_d ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[1], 1, sizeof(cl_mem), (void*) &arg1.data_d ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[1], 2, sizeof(cl_int), (void*) &base0 ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[1], 3, sizeof(cl_int), (void*) &base1 ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[1], 4, sizeof(cl_int), (void*) &x_size ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[1], 5, sizeof(cl_int), (void*) &y_size ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[1], 6, sizeof(cl_int), (void*) &xdim0 ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[1], 7, sizeof(cl_int), (void*) &xdim1 ));
-
-		//call/enque opencl kernel wrapper function
-		clSafeCall( clEnqueueNDRangeKernel(OPS_opencl_core.command_queue, OPS_opencl_core.kernel[1], 3, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL) );
-	}
-	if (OPS_diags>1) {
-		clSafeCall( clFinish(OPS_opencl_core.command_queue) );
-	}
-
-	if (OPS_diags > 1) {
-		ops_timers_core(&c1,&t1);
-		OPS_kernels[1].time += t1-t2;
-	}
-
-	ops_set_dirtybit_device(args, 2);
-	ops_set_halo_dirtybit3(&args[1],range);
-
-	if (OPS_diags > 1) {
-		//Update kernel record
-		ops_timers_core(&c2,&t2);
-		OPS_kernels[1].mpi_time += t2-t1;
-		OPS_kernels[1].transfer += ops_compute_transfer(dim, start, end, &arg0);
-		OPS_kernels[1].transfer += ops_compute_transfer(dim, start, end, &arg1);
-	}
-}
-
-
-//#include "poisson_kernel_populate_opencl_kernel.cpp"
-static bool isbuilt_poisson_kernel_populate = false;
-
-void buildOpenCLKernels_poisson_kernel_populate(int xdim3, int xdim4, int xdim5) {
-
-	//int ocl_fma = OCL_FMA;
-	if(!isbuilt_poisson_kernel_populate) {
-		buildOpenCLKernels();
-		//clSafeCall( clUnloadCompiler() );
-		cl_int ret;
-
-		// Create the OpenCL kernel
-		OPS_opencl_core.kernel[0] = clCreateKernel(OPS_opencl_core.program, "ops_poisson_kernel_populate", &ret);
-		clSafeCall( ret );
-
-		isbuilt_poisson_kernel_populate = true;
-	}
-
-}
-
-
-// host stub function
-void ops_par_loop_poisson_kernel_populate(char const *name, ops_block block, int dim, int* range,
-		ops_arg arg0, ops_arg arg1, ops_arg arg2, ops_arg arg3,
-		ops_arg arg4, ops_arg arg5) {
-
-	//Timing
-	double t1,t2,c1,c2;
-
-	ops_arg args[6] = { arg0, arg1, arg2, arg3, arg4, arg5};
-
-
-#ifdef CHECKPOINTING
-	if (!ops_checkpointing_before(args,6,range,0)) return;
-#endif
-
-	if (OPS_diags > 1) {
-		ops_timing_realloc(0,"poisson_kernel_populate");
-		OPS_kernels[0].count++;
-		ops_timers_core(&c1,&t1);
-	}
-
-	//compute locally allocated range for the sub-block
-	int start[2];
-	int end[2];
-#ifdef OPS_MPI
-	sub_block_list sb = OPS_sub_block_list[block->index];
-	if (!sb->owned) return;
-	for ( int n=0; n<2; n++ ){
-		start[n] = sb->decomp_disp[n];end[n] = sb->decomp_disp[n]+sb->decomp_size[n];
-		if (start[n] >= range[2*n]) {
-			start[n] = 0;
-		}
-		else {
-			start[n] = range[2*n] - start[n];
-		}
-		if (sb->id_m[n]==MPI_PROC_NULL && range[2*n] < 0) start[n] = range[2*n];
-		if (end[n] >= range[2*n+1]) {
-			end[n] = range[2*n+1] - sb->decomp_disp[n];
-		}
-		else {
-			end[n] = sb->decomp_size[n];
-		}
-		if (sb->id_p[n]==MPI_PROC_NULL && (range[2*n+1] > sb->decomp_disp[n]+sb->decomp_size[n]))
-			end[n] += (range[2*n+1]-sb->decomp_disp[n]-sb->decomp_size[n]);
-	}
-#else
-	for ( int n=0; n<2; n++ ){
-		start[n] = range[2*n];end[n] = range[2*n+1];
-	}
-#endif
-
-	int x_size = MAX(0,end[0]-start[0]);
-	int y_size = MAX(0,end[1]-start[1]);
-
-	int arg_idx[2];
-#ifdef OPS_MPI
-	arg_idx[0] = sb->decomp_disp[0]+start[0];
-	arg_idx[1] = sb->decomp_disp[1]+start[1];
-#else
-	arg_idx[0] = start[0];
-	arg_idx[1] = start[1];
-#endif
-
-	int xdim3 = args[3].dat->size[0];
-	int xdim4 = args[4].dat->size[0];
-	int xdim5 = args[5].dat->size[0];
-
-	//build opencl kernel if not already built
-
-	buildOpenCLKernels_poisson_kernel_populate(
-			xdim3,xdim4,xdim5);
-
-	//set up OpenCL thread blocks
-//	size_t globalWorkSize[3] = {((x_size-1)/OPS_block_size_x+ 1)*OPS_block_size_x, ((y_size-1)/OPS_block_size_y + 1)*OPS_block_size_y, 1};
-//	size_t localWorkSize[3] =  {OPS_block_size_x,OPS_block_size_y,OPS_block_size_z};
-	size_t globalWorkSize[3] = {1, 1, 1};
-	size_t localWorkSize[3] =  {1, 1 ,1};
-
-	printf("global worksize is %d %d %d\n", globalWorkSize[0], globalWorkSize[1], globalWorkSize[2]);
-	fflush(stdout);
-
-	//set up initial pointers
-	int d_m[OPS_MAX_DIM];
-#ifdef OPS_MPI
-	for (int d = 0; d < dim; d++) d_m[d] = args[3].dat->d_m[d] + OPS_sub_dat_list[args[3].dat->index]->d_im[d];
-#else
-	for (int d = 0; d < dim; d++) d_m[d] = args[3].dat->d_m[d];
-#endif
-	int base3 = 1 *1*
-			(start[0] * args[3].stencil->stride[0] - args[3].dat->base[0] - d_m[0]);
-	base3 = base3 + args[3].dat->size[0] *1*
-			(start[1] * args[3].stencil->stride[1] - args[3].dat->base[1] - d_m[1]);
-
-#ifdef OPS_MPI
-	for (int d = 0; d < dim; d++) d_m[d] = args[4].dat->d_m[d] + OPS_sub_dat_list[args[4].dat->index]->d_im[d];
-#else
-	for (int d = 0; d < dim; d++) d_m[d] = args[4].dat->d_m[d];
-#endif
-	int base4 = 1 *1*
-			(start[0] * args[4].stencil->stride[0] - args[4].dat->base[0] - d_m[0]);
-	base4 = base4 + args[4].dat->size[0] *1*
-			(start[1] * args[4].stencil->stride[1] - args[4].dat->base[1] - d_m[1]);
-
-#ifdef OPS_MPI
-	for (int d = 0; d < dim; d++) d_m[d] = args[5].dat->d_m[d] + OPS_sub_dat_list[args[5].dat->index]->d_im[d];
-#else
-	for (int d = 0; d < dim; d++) d_m[d] = args[5].dat->d_m[d];
-#endif
-	int base5 = 1 *1*
-			(start[0] * args[5].stencil->stride[0] - args[5].dat->base[0] - d_m[0]);
-	base5 = base5 + args[5].dat->size[0] *1*
-			(start[1] * args[5].stencil->stride[1] - args[5].dat->base[1] - d_m[1]);
-
-
-	ops_H_D_exchanges_device(args, 6);
-	ops_halo_exchanges(args,6,range);
-	ops_H_D_exchanges_device(args, 6);
-
-//	size_t w_size;
-//	size_t w_size_ret;
-//	static size_t sizes[3] = {0,0,0};
-//	//clGetDeviceInfo(OPS_opencl_core.device_id, CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(size_t), &w_size, &w_size_ret);
-//	clGetDeviceInfo(OPS_opencl_core.device_id, CL_DEVICE_MAX_WORK_ITEM_SIZES,sizeof(size_t)*3,&sizes,nullptr);
-//	printf("\nCL_DEVICE_MAX_WORK_GROUP_SIZE is %d %d %d ret size %d\n", sizes[0], sizes[1], sizes[2]);
-
-	if (OPS_diags > 1) {
-		ops_timers_core(&c2,&t2);
-		OPS_kernels[0].mpi_time += t2-t1;
-	}
-
-
-	if (globalWorkSize[0]>0 && globalWorkSize[1]>0 && globalWorkSize[2]>0) {
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 0, sizeof(cl_int), (void*) arg0.data ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 1, sizeof(cl_int), (void*) arg1.data ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 2, sizeof(cl_mem), (void*) &arg3.data_d ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 3, sizeof(cl_mem), (void*) &arg4.data_d ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 4, sizeof(cl_mem), (void*) &arg5.data_d ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 5, sizeof(cl_float), (void*) &dx ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 6, sizeof(cl_float), (void*) &dy ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 7, sizeof(cl_int), (void*) &base3 ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 8, sizeof(cl_int), (void*) &base4 ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 9, sizeof(cl_int), (void*) &base5 ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 10, sizeof(cl_int), (void*) &arg_idx[0] ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 11, sizeof(cl_int), (void*) &arg_idx[1] ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 12, sizeof(cl_int), (void*) &x_size ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 13, sizeof(cl_int), (void*) &y_size ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 14, sizeof(cl_int), (void*) &xdim3 ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 15, sizeof(cl_int), (void*) &xdim4 ));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 16, sizeof(cl_int), (void*) &xdim5 ));
-
-		//call/enque opencl kernel wrapper function
-		clSafeCall( clEnqueueNDRangeKernel(OPS_opencl_core.command_queue, OPS_opencl_core.kernel[0], 3, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL) );
-	}
-	if (OPS_diags>1) {
-		clSafeCall( clFinish(OPS_opencl_core.command_queue) );
-	}
-
-	if (OPS_diags > 1) {
-		ops_timers_core(&c1,&t1);
-		OPS_kernels[0].time += t1-t2;
-	}
-
-	ops_set_dirtybit_device(args, 6);
-	ops_set_halo_dirtybit3(&args[3],range);
-	ops_set_halo_dirtybit3(&args[4],range);
-	ops_set_halo_dirtybit3(&args[5],range);
-
-	if (OPS_diags > 1) {
-		//Update kernel record
-		ops_timers_core(&c2,&t2);
-		OPS_kernels[0].mpi_time += t2-t1;
-		OPS_kernels[0].transfer += ops_compute_transfer(dim, start, end, &arg3);
-		OPS_kernels[0].transfer += ops_compute_transfer(dim, start, end, &arg4);
-		OPS_kernels[0].transfer += ops_compute_transfer(dim, start, end, &arg5);
-	}
-}
