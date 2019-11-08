@@ -166,7 +166,7 @@ void buildOpenCLKernels_poisson_kernel_error(int xdim0, int xdim1) {
 		cl_int ret;
 
 		// Create the OpenCL kernel
-		OPS_opencl_core.kernel[0] = clCreateKernel(OPS_opencl_core.program, "ops_poisson_kernel_error", &ret);
+		OPS_opencl_core.kernel[0] = clCreateKernel(OPS_opencl_core.program, "ops_poisson_kernel", &ret);
 		clSafeCall( ret );
 
 		isbuilt_poisson_kernel_error = true;

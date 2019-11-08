@@ -75,7 +75,6 @@ void ops_poisson_kernel_initial(
 	for(int i  = 0; i < size1; i++){
 
 		int base_index, end_index;
-
 		v1_index: __attribute__((xcl_pipeline_loop)){
 			base_index = (base0  + i* xdim0_poisson_kernel_initial - 1) >> SHIFT_BITS;
 			end_index = (xdim0_poisson_kernel_initial >> SHIFT_BITS);
@@ -84,7 +83,6 @@ void ops_poisson_kernel_initial(
 
 
 		v1_wr: __attribute__((xcl_pipeline_loop))
-		__attribute__((xcl_loop_tripcount(c_min_size, c_max_size)))
 		for(int j = 1; j < (end_index -1) ; j++){
 			arg0[base_index+ j] = f16;
 
@@ -132,9 +130,9 @@ void ops_poisson_kernel_initial(
 void ops_poisson_kernel_populate(
 		const int arg0,
 		const int arg1,
-		float arg3,
-		float arg4,
-		float arg5,
+		float16* arg3,
+		float16* arg4,
+		float16* arg5,
 		const float dx,
 		const float dy,
 		const int base3,
@@ -147,84 +145,55 @@ void ops_poisson_kernel_populate(
 		const int xdim4_poisson_kernel_populate,
 		const int xdim5_poisson_kernel_populate){
 
-
-		int beat_no = (size0 >> BEAT_SHIFT_BITS) + 1;
-		local float mem3[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
-		local float mem4[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
-		local float mem5[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
-
-		local float16 mem3_16[BURST_LEN];
-		local float16 mem4_16[BURST_LEN];
-		local float16 mem5_16[BURST_LEN];
-
-
 		// arg3
+		int row_blocks = (size0 >> SHIFT_BITS) + 1;
+
 		for(int i  = 0; i < size1; i++){
 			int arg_idx[2];
 			double x, y;
 			int base_index3, base_index4, base_index5, loop_limit;
 
 			__attribute__((xcl_pipeline_workitems)){
-				base_index3 = (base3 +  i* xdim3_poisson_kernel_populate) >> SHIFT_BITS;
+				base_index3 = (base3  + i* xdim3_poisson_kernel_populate) >> SHIFT_BITS;
+				base_index4 = (base4  + i* xdim4_poisson_kernel_populate) >> SHIFT_BITS;
+				base_index5 = (base5  + i* xdim5_poisson_kernel_populate) >> SHIFT_BITS;
 				arg_idx[1] = arg_idx1+ i;
 			}
 
-			for(int j = 0; j < beat_no; j++){
+			for(int j = 0; j < row_blocks; j++){
 
-				__attribute__((xcl_pipeline_workitems)){
-					base_index3 = (base3  + i* xdim3_poisson_kernel_populate + (j << BEAT_SHIFT_BITS)) >> SHIFT_BITS;
-					base_index4 = (base4  + i* xdim4_poisson_kernel_populate + (j << BEAT_SHIFT_BITS)) >> SHIFT_BITS;
-					base_index5 = (base5  + i* xdim5_poisson_kernel_populate + (j << BEAT_SHIFT_BITS)) >> SHIFT_BITS;
-					int cond = (size0 > ((j+1) << BEAT_SHIFT_BITS)) ? 1 : 0;
-					int adjust_burst = ((size0 - (j << BEAT_SHIFT_BITS)) >> SHIFT_BITS) + 1;
-					loop_limit = cond ? BURST_LEN : adjust_burst;
+				float mem3[16];
+				float mem4[16];
+				float mem5[16];
+
+				v345_process: __attribute__((xcl_pipeline_loop))
+				__attribute__((opencl_unroll_hint(PORT_WIDTH)))
+				for(int k = 0; k < PORT_WIDTH; k++){
+					int index_x = (j << SHIFT_BITS)  + k;
+
+					arg_idx[0] = arg_idx0+ index_x;
+
+					x = dx * (double)(arg_idx[0]+arg0);
+					y = dy * (double)(arg_idx[1]+arg1);
+
+					float f3 = myfun(native_sin(M_PI*x),native_cos(2.0*M_PI*y))-1.0;
+					float f4 = -5.0*M_PI*M_PI*native_sin(M_PI*x)*native_cos(2.0*M_PI*y);
+					float f5 = native_sin(M_PI*x)*native_cos(2.0*M_PI*y);
+					mem3[k] = f3;
+					mem4[k] = f4;
+					mem5[k] = f5;
 				}
+				arg3[base_index3 +j] = (float16) {mem3[0], mem3[1], mem3[2], mem3[3], mem3[4], mem3[5], mem3[6], mem3[7], mem3[8], mem3[9], mem3[10], mem3[11], mem3[12], mem3[13], mem3[14], mem3[15]};
+				arg4[base_index4 +j] = (float16) {mem4[0], mem4[1], mem4[2], mem4[3], mem4[4], mem4[5], mem4[6], mem4[7], mem4[8], mem4[9], mem4[10], mem4[11], mem4[12], mem4[13], mem4[14], mem4[15]};
+				arg5[base_index5 +j] = (float16) {mem5[0], mem5[1], mem5[2], mem5[3], mem5[4], mem5[5], mem5[6], mem5[7], mem5[8], mem5[9], mem5[10], mem5[11], mem5[12], mem5[13], mem5[14], mem5[15]};
 
-				main_process: __attribute__((xcl_pipeline_loop))
-				for(int p = 0; p < loop_limit; p++){
-
-					v345_process: __attribute__((xcl_pipeline_loop))
-					__attribute__((opencl_unroll_hint(PORT_WIDTH)))
-					for(int k = 0; k < PORT_WIDTH; k++){
-						int index_x = (j << BEAT_SHIFT_BITS) + (p << SHIFT_BITS) + k;
-
-						arg_idx[0] = arg_idx0+ index_x;
-
-						x = dx * (double)(arg_idx[0]+arg0);
-						y = dy * (double)(arg_idx[1]+arg1);
-
-						float f3 = myfun(native_sin(M_PI*x),native_cos(2.0*M_PI*y))-1.0;
-						float f4 = -5.0*M_PI*M_PI*native_sin(M_PI*x)*native_cos(2.0*M_PI*y);
-						float f5 = native_sin(M_PI*x)*native_cos(2.0*M_PI*y);
-						mem3[k] = f3;
-						mem4[k] = f4;
-						mem5[k] = f5;
-					}
-					mem3_16[p] = (float16) {mem3[0], mem3[1], mem3[2], mem3[3], mem3[4], mem3[5], mem3[6], mem3[7], mem3[8], mem3[9], mem3[10], mem3[11], mem3[12], mem3[13], mem3[14], mem3[15]};
-					mem4_16[p] = (float16) {mem4[0], mem4[1], mem4[2], mem4[3], mem4[4], mem4[5], mem4[6], mem4[7], mem4[8], mem4[9], mem4[10], mem4[11], mem4[12], mem4[13], mem4[14], mem4[15]};
-					mem5_16[p] = (float16) {mem5[0], mem5[1], mem5[2], mem5[3], mem5[4], mem5[5], mem5[6], mem5[7], mem5[8], mem5[9], mem5[10], mem5[11], mem5[12], mem5[13], mem5[14], mem5[15]};
-
-
-				}
-				v3_wr: __attribute__((xcl_pipeline_loop))
-				for(int p = 0; p < loop_limit; p++){
-					arg3[base_index3 +p] = mem3_16[p];
-				}
-
-				v4_wr: __attribute__((xcl_pipeline_loop))
-				for(int p = 0; p < loop_limit; p++){
-					arg4[base_index4 +p] = mem4_16[p];
-				}
-
-				v5_wr: __attribute__((xcl_pipeline_loop))
-				for(int p = 0; p < loop_limit; p++){
-					arg5[base_index5 +p] = mem5_16[p];
-				}
 			}
 		}
 
 
 }
+
+#define MAX_SIZE1 20000
 void ops_poisson_kernel_stencil(
 		const float16* restrict arg0,
 		float16* restrict arg1,
@@ -237,23 +206,20 @@ void ops_poisson_kernel_stencil(
 
 
 
-//	int idx_y = get_global_id(1);
-//	int idx_x = get_global_id(0);
-
 	int beat_no = (size0 >> BEAT_SHIFT_BITS) + 1;
 
 
-	local float16 mem_rd1[BURST_LEN+1];
-	local float16 mem_rd2[BURST_LEN+1];
-	local float16 mem_rd3[BURST_LEN+1];
+	float16 mem_rd1[BURST_LEN+1];
+	float16 mem_rd2[BURST_LEN+1];
+	float16 mem_rd3[BURST_LEN+1];
 
-	local float mem_rd1_c[BURST_LEN+1];
-	local float mem_rd2_c[BURST_LEN+1];
-	local float mem_rd3_c[BURST_LEN+1];
+	float mem_rd1_c[BURST_LEN+1];
+	float mem_rd2_c[BURST_LEN+1];
+	float mem_rd3_c[BURST_LEN+1];
 
-	local float16 mem_row_wr[BURST_LEN + 1];
+	float16 mem_row_wr[BURST_LEN + 1];
 
-	local float	first_element[MAX_SIZE1];
+	float first_element[MAX_SIZE1];
 
 
 	double last_element	= 0;
@@ -297,13 +263,13 @@ void ops_poisson_kernel_stencil(
 			mem_rd3_c[k] = tmp.s0;
 		}
 
-		local float16* ptr1;
-		local float16* ptr2;
-		local float16* ptr3;
+		float16* ptr1;
+		float16* ptr2;
+		float16* ptr3;
 
-		local float* ptr1_c;
-		local float* ptr2_c;
-		local float* ptr3_c;
+		float* ptr1_c;
+		float* ptr2_c;
+		float* ptr3_c;
 
 		// initialising first element
 		for (int k = 0; k < size1; k++){
@@ -410,7 +376,6 @@ void ops_poisson_kernel_update(
 	}
 
 	__attribute__((xcl_pipeline_loop(1)))
-	__attribute__((xcl_loop_tripcount(c_min_size, c_max_size, c_avg_size)))
 	for(int i  = 0; i < total_iters; i++){
 			uint16 temp = arg0[base_index0 +i];
 			arg1[base_index1 +i] = temp;
@@ -421,7 +386,7 @@ void ops_poisson_kernel_update(
 void ops_poisson_kernel_error(
 		float16* restrict arg0,
 		const float16* restrict arg1,
-		float16* restrict arg2,
+		__global float16* restrict arg2,
 		__local float* scratch2,
 		int r_bytes2,
 		const int base0,
@@ -434,8 +399,8 @@ void ops_poisson_kernel_error(
 
 	float g_sum = 0;
 
-	local float16 mem_rd1[BURST_LEN+1];
-	local float16 mem_rd2[BURST_LEN+1];
+	float16 mem_rd1[BURST_LEN+1];
+	float16 mem_rd2[BURST_LEN+1];
 
 	float arr_focus[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
 
@@ -537,10 +502,10 @@ __kernel void ops_poisson_kernel(
 
 	float g_sum = 0;
 
-	local float16 U[MAX_GRID_SIZE * MAX_GRID_SIZE/16];
-	local float16 U2[MAX_GRID_SIZE * MAX_GRID_SIZE/16];
-	local float16 f[MAX_GRID_SIZE * MAX_GRID_SIZE/16];
-	local float16 ref[MAX_GRID_SIZE * MAX_GRID_SIZE/16];
+	float16 U[MAX_GRID_SIZE * MAX_GRID_SIZE/16];
+	float16 U2[MAX_GRID_SIZE * MAX_GRID_SIZE/16];
+	float16 f[MAX_GRID_SIZE * MAX_GRID_SIZE/16];
+	float16 ref[MAX_GRID_SIZE * MAX_GRID_SIZE/16];
 
 	ops_poisson_kernel_populate(
 			populate_arg0,
@@ -577,7 +542,7 @@ __kernel void ops_poisson_kernel(
 			size1,
 			xdim_poisson_kernel);
 
-	for (int iter = 0; iter < n_iter; iter++) {
+	for (int iter = 0; iter < 10; iter++) {
 		ops_poisson_kernel_stencil(
 				U,
 				U2,
