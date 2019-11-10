@@ -176,12 +176,12 @@ void buildOpenCLKernels_poisson_kernel_error(int xdim0, int xdim1) {
 
 // host stub function
 void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int dim, int* range,
-		ops_arg arg0, ops_arg arg1, ops_arg arg2) {
+		ops_arg arg0, ops_arg arg1, ops_arg arg2, ops_arg arg3, ops_arg arg4) {
 
 	//Timing
 	double t1,t2,c1,c2;
 
-	ops_arg args[3] = { arg0, arg1, arg2};
+	ops_arg args[5] = { arg0, arg1, arg2, arg3, arg4};
 
 
 #ifdef CHECKPOINTING
@@ -310,11 +310,11 @@ void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int di
 	int nthread = OPS_block_size_x*OPS_block_size_y*OPS_block_size_z;
 
 	if (globalWorkSize[0]>0 && globalWorkSize[1]>0 && globalWorkSize[2]>0) {
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 0, sizeof(cl_mem), (void*) &arg0.data));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 1, sizeof(cl_mem), (void*) &arg1.data));
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 0, sizeof(cl_int), (void*) arg3.data));
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 1, sizeof(cl_int), (void*) arg4.data));
 
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 2, sizeof(cl_mem), (void*) &dx));
-		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 3, sizeof(cl_mem), (void*) &dy));
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 2, sizeof(cl_float), (void*) &dx));
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 3, sizeof(cl_float), (void*) &dy));
 
 		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 4, sizeof(cl_int), (void*) &arg_idx[0]));
 		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 5, sizeof(cl_int), (void*) &arg_idx[1]));

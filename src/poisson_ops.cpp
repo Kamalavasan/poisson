@@ -45,6 +45,8 @@ void ops_par_loop_poisson_kernel_stencil(char const *, ops_block, int , int*,
 void ops_par_loop_poisson_kernel_error(char const *, ops_block, int , int*,
   ops_arg,
   ops_arg,
+  ops_arg,
+  ops_arg,
   ops_arg );
 
 void ops_release_program();
@@ -199,7 +201,9 @@ int main(int argc,  char **argv)
       ops_par_loop_poisson_kernel_error("poisson_kernel_error", blocks[i+ngrid_x*j], 2, iter_range,
                    ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_READ),
                    ops_arg_dat(ref[i+ngrid_x*j], 1, S2D_00, "float", OPS_READ),
-                   ops_arg_reduce(red_err, 1, "float", OPS_INC));
+                   ops_arg_reduce(red_err, 1, "float", OPS_INC),
+				   ops_arg_gbl(&disps[2*(i+ngrid_x*j)], 1, "int", OPS_READ),
+				   ops_arg_gbl(&disps[2*(i+ngrid_x*j)+1], 1, "int", OPS_READ));
     }
   }
 
@@ -209,16 +213,16 @@ int main(int argc,  char **argv)
 //  ops_timing_output(stdout);
 
 
-  float err_diff=fabs((100.0*(err/20.727007094619303))-100.0);
-  ops_printf("Total error: %3.15g\n",err);
-  ops_printf("Total error is within %3.15E %% of the expected error\n",err_diff);
-
-  if(err_diff < 0.001) {
-    ops_printf("This run is considered PASSED\n");
-  }
-  else {
-    ops_printf("This test is considered FAILED\n");
-  }
+//  float err_diff=fabs((100.0*(err/20.727007094619303))-100.0);
+//  ops_printf("Total error: %3.15g\n",err);
+//  ops_printf("Total error is within %3.15E %% of the expected error\n",err_diff);
+//
+//  if(err_diff < 0.001) {
+//    ops_printf("This run is considered PASSED\n");
+//  }
+//  else {
+//    ops_printf("This test is considered FAILED\n");
+//  }
 
   free(coordx);
   free(coordy);
