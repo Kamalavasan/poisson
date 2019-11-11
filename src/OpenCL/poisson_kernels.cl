@@ -171,7 +171,6 @@ void ops_poisson_kernel_populate(
 				__attribute__((opencl_unroll_hint(PORT_WIDTH)))
 				for(int k = 0; k < PORT_WIDTH; k++){
 					int index_x = (j << SHIFT_BITS)  + k;
-
 					arg_idx[0] = arg_idx0+ index_x;
 
 					x = dx * (double)(arg_idx[0]+arg0);
@@ -180,9 +179,10 @@ void ops_poisson_kernel_populate(
 					float f3 = myfun(native_sin(M_PI*x),native_cos(2.0*M_PI*y))-1.0;
 					float f4 = -5.0*M_PI*M_PI*native_sin(M_PI*x)*native_cos(2.0*M_PI*y);
 					float f5 = native_sin(M_PI*x)*native_cos(2.0*M_PI*y);
-					mem3[k] = f3;
-					mem4[k] = f4;
-					mem5[k] = f5;
+
+					mem3[k] = (index_x >= size0) ? 0 : f3;
+					mem4[k] = (index_x >= size0) ? 0 : f4;
+					mem5[k] = (index_x >= size0) ? 0 : f5;
 				}
 				arg3[base_index3 +j] = (float16) {mem3[0], mem3[1], mem3[2], mem3[3], mem3[4], mem3[5], mem3[6], mem3[7], mem3[8], mem3[9], mem3[10], mem3[11], mem3[12], mem3[13], mem3[14], mem3[15]};
 				arg4[base_index4 +j] = (float16) {mem4[0], mem4[1], mem4[2], mem4[3], mem4[4], mem4[5], mem4[6], mem4[7], mem4[8], mem4[9], mem4[10], mem4[11], mem4[12], mem4[13], mem4[14], mem4[15]};
@@ -517,13 +517,13 @@ __kernel void ops_poisson_kernel(
 			0,
 			0,
 			populate_arg_idx0, populate_arg_idx1,
-			size0,
-			size1,
+			size0+2,
+			size1+2,
 			xdim_poisson_kernel,
 			xdim_poisson_kernel,
 			xdim_poisson_kernel);
 
-	dump_grid(U, xdim_poisson_kernel, size1);
+	dump_grid(U, xdim_poisson_kernel, size1+2);
 
 	ops_poisson_kernel_update(
 			U,

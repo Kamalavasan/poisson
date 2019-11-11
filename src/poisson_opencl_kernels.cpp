@@ -230,8 +230,8 @@ void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int di
 		arg_idx[0] = sb->decomp_disp[0]+start[0];
 		arg_idx[1] = sb->decomp_disp[1]+start[1];
 	#else
-		arg_idx[0] = start[0];
-		arg_idx[1] = start[1];
+		arg_idx[0] = start[0] - 1;
+		arg_idx[1] = start[1] - 1 ;
 	#endif
 
 
@@ -308,6 +308,9 @@ void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int di
 	}
 
 	int nthread = OPS_block_size_x*OPS_block_size_y*OPS_block_size_z;
+
+
+
 
 	if (globalWorkSize[0]>0 && globalWorkSize[1]>0 && globalWorkSize[2]>0) {
 		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 0, sizeof(cl_int), (void*) arg3.data));
