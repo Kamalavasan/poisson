@@ -81,8 +81,6 @@ void ops_poisson_kernel_initial(
 			end_index = (xdim0_poisson_kernel_initial >> SHIFT_BITS);
 		}
 
-
-
 		v1_wr: __attribute__((xcl_pipeline_loop))
 		for(int j = 1; j < (end_index -1) ; j++){
 			arg0[base_index+ j] = f16;
@@ -97,7 +95,6 @@ void ops_poisson_kernel_initial(
 			tmp_wr = (float16){ tmp_f16.s0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 			arg0[base_index] = tmp_wr;
 		}
-
 
 		// end row handle
 		v1_wr_end: __attribute__((xcl_pipeline_loop)) {
@@ -410,7 +407,7 @@ void ops_poisson_kernel_error(
 	int row_shift0 = 0;
 	int row_shift1 = 0;
 	for(int i  = 0; i < size1; i++){
-			int base_index0, base_index1, loop_limit, adjust_burst, cond;
+			int base_index0, base_index1;
 
 			v1_rd: __attribute__((xcl_pipeline_loop))
 			for(int j = 0; j < row_blocks ; j++){
@@ -430,7 +427,7 @@ void ops_poisson_kernel_error(
 				for(int k = 0; k < PORT_WIDTH; k++){
 					int index = (j << SHIFT_BITS) + k;
 					float square = arr_diff[k]* arr_diff[k];
-					float eval = (index > size0 || index == 0) ? 0 : square;
+					float eval = (index >= size0 || index == 0) ? 0 : square;
 					arr_focus[k] = arr_focus[k] + eval;
 				}
 			}
@@ -458,7 +455,7 @@ void ops_poisson_kernel_error(
 		float sum4 = sum2[2] + sum2[3];
 		float sum = sum3 + sum4;
 		g_sum = g_sum + sum;
-		arg2[r_bytes2 >> SHIFT_BITS] = (float16){g_sum, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,   0, 0, 0, 0};
+		arg2[r_bytes2 >> SHIFT_BITS] = (float16){g_sum , 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,   0, 0, 0, 0};
 }
 
 
@@ -523,31 +520,35 @@ __kernel void ops_poisson_kernel(
 			xdim_poisson_kernel,
 			xdim_poisson_kernel);
 
-	dump_grid(U, xdim_poisson_kernel, size1+2);
+
 
 	ops_poisson_kernel_update(
 			U,
 			U2,
 			0,
 			0,
-			size0,
-			size1,
+			size0+2,
+			size1+2,
 			xdim_poisson_kernel,
 			xdim_poisson_kernel);
 
+
+
 	ops_poisson_kernel_initial(
 			U,
-			size0+3,
+			xdim_poisson_kernel+1,
 			size0,
 			size1,
 			xdim_poisson_kernel);
+
+//	dump_grid(U, xdim_poisson_kernel, size1+2);
 
 	for (int iter = 0; iter < 10; iter++) {
 		ops_poisson_kernel_stencil(
 				U,
 				U2,
-				size0+3,
-				size0+3,
+				xdim_poisson_kernel+1,
+				xdim_poisson_kernel+1,
 				size0,
 				size1,
 				xdim_poisson_kernel,
@@ -564,14 +565,16 @@ __kernel void ops_poisson_kernel(
 				xdim_poisson_kernel);
 	}
 
+	dump_grid(ref, xdim_poisson_kernel, size1+2);
+
 	ops_poisson_kernel_error(
 			U,
 			ref,
 			arg2,
 			scratch2,
 			r_bytes2,
-			size0+3,
-			size0+3,
+			xdim_poisson_kernel+1,
+			xdim_poisson_kernel+1,
 			size0,
 			size1,
 			xdim_poisson_kernel,
