@@ -210,7 +210,7 @@ int main(int argc,  char **argv)
 
 
   ops_reduction_result(red_err,&err);
-//  ops_timing_output(stdout);
+  ops_timing_output(stdout);
 
 
   float err_diff=fabs((100.0*(err/20.727007094619303))-100.0);

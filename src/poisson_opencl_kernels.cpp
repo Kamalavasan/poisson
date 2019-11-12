@@ -304,7 +304,7 @@ void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int di
 
 	if (OPS_diags > 1) {
 		ops_timers_core(&c2,&t2);
-		OPS_kernels[4].mpi_time += t2-t1;
+		OPS_kernels[0].mpi_time += t2-t1;
 	}
 
 	int nthread = OPS_block_size_x*OPS_block_size_y*OPS_block_size_z;
@@ -361,9 +361,9 @@ void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int di
 	if (OPS_diags > 1) {
 		//Update kernel record
 		ops_timers_core(&c2,&t2);
-		OPS_kernels[4].mpi_time += t2-t1;
-		OPS_kernels[4].transfer += ops_compute_transfer(dim, start, end, &arg0);
-		OPS_kernels[4].transfer += ops_compute_transfer(dim, start, end, &arg1);
+		OPS_kernels[0].mpi_time += t2-t1;
+		OPS_kernels[0].transfer += ops_compute_transfer(dim, start, end, &arg0);
+		OPS_kernels[0].transfer += ops_compute_transfer(dim, start, end, &arg1);
 	}
 }
 
