@@ -296,10 +296,6 @@ void ops_poisson_kernel_error(
 
 
 	float g_sum = 0;
-
-	float16 mem_rd1[BURST_LEN+1];
-	float16 mem_rd2[BURST_LEN+1];
-
 	float arr_focus[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
 
 	int row_blocks = (size0 >> SHIFT_BITS) + 1;
@@ -308,13 +304,14 @@ void ops_poisson_kernel_error(
 	int row_shift1 = 0;
 	for(int i  = 0; i < size1; i++){
 			int base_index0, base_index1;
+			__attribute__((xcl_pipeline_workitems)){
+				base_index0 = (base0  + row_shift0  - 1) >> SHIFT_BITS;
+				base_index1 = (base1  + row_shift1  - 1) >> SHIFT_BITS;
+			}
 
 			v1_rd: __attribute__((xcl_pipeline_loop))
 			for(int j = 0; j < row_blocks ; j++){
-				__attribute__((xcl_pipeline_workitems)){
-					base_index0 = (base0  + row_shift0 + (j << SHIFT_BITS) - 1) >> SHIFT_BITS;
-					base_index1 = (base1  + row_shift1 + (j << SHIFT_BITS) - 1) >> SHIFT_BITS;
-				}
+
 				float16 tmp0 = arg0[base_index0 + j];
 				float16 tmp1 = arg1[base_index1 + j];
 				float16 diff = tmp0 -tmp1;
@@ -326,8 +323,8 @@ void ops_poisson_kernel_error(
 				__attribute__((opencl_unroll_hint(PORT_WIDTH)))
 				for(int k = 0; k < PORT_WIDTH; k++){
 					int index = (j << SHIFT_BITS) + k;
-					float square = arr_diff[k]* arr_diff[k];
-					float eval = (index >= size0 || index == 0) ? 0 : square;
+					float square = arr_diff[k] * arr_diff[k];
+					float eval = (index > size0 || index == 0) ? 0 : square;
 					arr_focus[k] = arr_focus[k] + eval;
 				}
 			}
@@ -466,7 +463,7 @@ __kernel void ops_poisson_kernel(
 				xdim_poisson_kernel);
 	}
 
-//	dump_grid(ref, xdim_poisson_kernel, size1+2);
+	dump_grid(ref, xdim_poisson_kernel, size1+2);
 
 	ops_poisson_kernel_error(
 			U,
