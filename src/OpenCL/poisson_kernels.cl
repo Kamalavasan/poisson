@@ -60,7 +60,7 @@
 #define SHIFT_BITS 4
 #define BEAT_SHIFT_BITS 11
 #define BURST_LEN 128
-#define MAX_GRID_SIZE 200
+#define MAX_GRID_SIZE 400
 
 
 void ops_poisson_kernel_initial(
@@ -389,7 +389,8 @@ __kernel void ops_poisson_kernel(
 		const int base1,
 		const int size0,
 		const int size1,
-		const int xdim_poisson_kernel){
+		const int xdim_poisson_kernel,
+		const int n_iters){
 
 
 	float g_sum = 0;
@@ -440,7 +441,7 @@ __kernel void ops_poisson_kernel(
 
 //	dump_grid(U, xdim_poisson_kernel, size1+2);
 
-	for (int iter = 0; iter < 10; iter++) {
+	for (int iter = 0; iter < n_iters; iter++) {
 
 		ops_poisson_kernel_stencil(
 				U,
@@ -463,7 +464,7 @@ __kernel void ops_poisson_kernel(
 				xdim_poisson_kernel);
 	}
 
-	dump_grid(ref, xdim_poisson_kernel, size1+2);
+	//dump_grid(U, xdim_poisson_kernel, size1+2);
 
 	ops_poisson_kernel_error(
 			U,

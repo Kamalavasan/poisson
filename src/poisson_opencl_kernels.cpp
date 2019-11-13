@@ -176,7 +176,7 @@ void buildOpenCLKernels_poisson_kernel_error(int xdim0, int xdim1) {
 
 // host stub function
 void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int dim, int* range,
-		ops_arg arg0, ops_arg arg1, ops_arg arg2, ops_arg arg3, ops_arg arg4) {
+		ops_arg arg0, ops_arg arg1, ops_arg arg2, ops_arg arg3, ops_arg arg4, const int n_iters) {
 
 	//Timing
 	double t1,t2,c1,c2;
@@ -335,6 +335,7 @@ void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int di
 		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 12, sizeof(cl_int), (void*) &y_size));
 
 		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 13, sizeof(cl_int), (void*) &xdim0 ));
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[0], 14, sizeof(cl_int), (void*) &n_iters ));
 		//call/enque opencl kernel wrapper function
 		clSafeCall( clEnqueueNDRangeKernel(OPS_opencl_core.command_queue, OPS_opencl_core.kernel[0], 3, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL) );
 	}

@@ -47,7 +47,8 @@ void ops_par_loop_poisson_kernel_error(char const *, ops_block, int , int*,
   ops_arg,
   ops_arg,
   ops_arg,
-  ops_arg );
+  ops_arg,
+  const int);
 
 void ops_release_program();
 
@@ -193,6 +194,11 @@ int main(int argc,  char **argv)
   ops_diagnostic_output();
 
 
+  double ct0, ct1, et0, et1;
+  ops_timers(&ct0, &et0);
+
+
+
   ops_execute();
   float err = 0.0;
   for (int j = 0; j < ngrid_y; j++) {
@@ -203,17 +209,24 @@ int main(int argc,  char **argv)
                    ops_arg_dat(ref[i+ngrid_x*j], 1, S2D_00, "float", OPS_READ),
                    ops_arg_reduce(red_err, 1, "float", OPS_INC),
 				   ops_arg_gbl(&disps[2*(i+ngrid_x*j)], 1, "int", OPS_READ),
-				   ops_arg_gbl(&disps[2*(i+ngrid_x*j)+1], 1, "int", OPS_READ));
+				   ops_arg_gbl(&disps[2*(i+ngrid_x*j)+1], 1, "int", OPS_READ),
+				   n_iter);
     }
   }
 
 
 
   ops_reduction_result(red_err,&err);
+
+  ops_timers(&ct1, &et1);
+  ops_timing_output(stdout);
+
+
   ops_timing_output(stdout);
 
 
   float err_diff=fabs((100.0*(err/20.727007094619303))-100.0);
+  ops_printf("\nTotal Wall time %lf\n",et1-et0);
   ops_printf("Total error: %3.15g\n",err);
   ops_printf("Total error is within %3.15E %% of the expected error\n",err_diff);
 
