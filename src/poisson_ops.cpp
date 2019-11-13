@@ -221,10 +221,6 @@ int main(int argc,  char **argv)
   ops_timers(&ct1, &et1);
   ops_timing_output(stdout);
 
-
-  ops_timing_output(stdout);
-
-
   float err_diff=fabs((100.0*(err/20.727007094619303))-100.0);
   ops_printf("\nTotal Wall time %lf\n",et1-et0);
   ops_printf("Total error: %3.15g\n",err);
