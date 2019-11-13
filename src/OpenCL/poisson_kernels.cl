@@ -62,7 +62,7 @@
 #define BURST_LEN 128
 #define MAX_GRID_SIZE 400
 
-
+__attribute__((noinline))
 void ops_poisson_kernel_initial(
 		float16* restrict arg0,
 		const int base0,
@@ -125,11 +125,12 @@ void ops_poisson_kernel_initial(
 	}
 
 }
+__attribute__((noinline))
 void ops_poisson_kernel_populate(
 		const int arg0,
 		const int arg1,
 		float16* arg3,
-		float16* arg4,
+		/*float16* arg4,*/
 		float16* arg5,
 		const float dx,
 		const float dy,
@@ -182,7 +183,7 @@ void ops_poisson_kernel_populate(
 					mem5[k] = (index_x >= size0) ? 0 : f5;
 				}
 				arg3[base_index3 +j] = (float16) {mem3[0], mem3[1], mem3[2], mem3[3], mem3[4], mem3[5], mem3[6], mem3[7], mem3[8], mem3[9], mem3[10], mem3[11], mem3[12], mem3[13], mem3[14], mem3[15]};
-				arg4[base_index4 +j] = (float16) {mem4[0], mem4[1], mem4[2], mem4[3], mem4[4], mem4[5], mem4[6], mem4[7], mem4[8], mem4[9], mem4[10], mem4[11], mem4[12], mem4[13], mem4[14], mem4[15]};
+				/*arg4[base_index4 +j] = (float16) {mem4[0], mem4[1], mem4[2], mem4[3], mem4[4], mem4[5], mem4[6], mem4[7], mem4[8], mem4[9], mem4[10], mem4[11], mem4[12], mem4[13], mem4[14], mem4[15]};*/
 				arg5[base_index5 +j] = (float16) {mem5[0], mem5[1], mem5[2], mem5[3], mem5[4], mem5[5], mem5[6], mem5[7], mem5[8], mem5[9], mem5[10], mem5[11], mem5[12], mem5[13], mem5[14], mem5[15]};
 
 			}
@@ -191,7 +192,8 @@ void ops_poisson_kernel_populate(
 
 }
 
-#define MAX_SIZE1 20000
+
+__attribute__((noinline))
 void ops_poisson_kernel_stencil(
 		const float16* restrict arg0,
 		float16* restrict arg1,
@@ -251,7 +253,7 @@ void ops_poisson_kernel_stencil(
 	}
 }
 
-
+__attribute__((noinline))
 void ops_poisson_kernel_update(
 		const uint16* restrict arg0,
 		uint16* restrict arg1,
@@ -281,6 +283,7 @@ void ops_poisson_kernel_update(
 
 }
 
+__attribute__((noinline))
 void ops_poisson_kernel_error(
 		float16* restrict arg0,
 		const float16* restrict arg1,
@@ -351,25 +354,8 @@ void ops_poisson_kernel_error(
 		float sum3 = sum2[0] + sum2[1];
 		float sum4 = sum2[2] + sum2[3];
 		float sum = sum3 + sum4;
-		g_sum = g_sum + sum;
+		g_sum = sum;
 		arg2[r_bytes2 >> SHIFT_BITS] = (float16){g_sum , 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,   0, 0, 0, 0};
-}
-
-
-void dump_grid(float16* grid, int dimX, int dimY){
-
-	for(int i = 0; i < dimY; i++){
-		for(int j = 0; j < (dimX >> 4); j++){
-			float16 diff =  grid[i*(dimX >> 4)+j];
-			float arr_diff[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1))) = {diff.s0, diff.s1, diff.s2, diff.s3, diff.s4, diff.s5, diff.s6, diff.s7,
-									diff.s8, diff.s9, diff.sa, diff.sb, diff.sc, diff.sd, diff.se, diff.sf};
-//			printf("%f %f %f %f   %f %f %f %f  %f %f %f %f  %f %f %f %f\n", t.s0, t.s1, t.s2. t.s3, t.s4, t.s5, t.s6, t.s7,  t.s8, t.s9, t.sa, t.sb,  t.sc, t.sd, t.se, t.sf);
-			for(int k = 0; k < PORT_WIDTH; k++){
-				printf( "%f ", arr_diff[k]);
-			}
-		}
-		printf("\n");
-	}
 }
 
 
@@ -397,14 +383,14 @@ __kernel void ops_poisson_kernel(
 
 	float16 U[MAX_GRID_SIZE * MAX_GRID_SIZE/16];
 	float16 U2[MAX_GRID_SIZE * MAX_GRID_SIZE/16];
-	float16 f[MAX_GRID_SIZE * MAX_GRID_SIZE/16];
+//	float16 f[MAX_GRID_SIZE * MAX_GRID_SIZE/16];
 	float16 ref[MAX_GRID_SIZE * MAX_GRID_SIZE/16];
 
 	ops_poisson_kernel_populate(
 			populate_arg0,
 			populate_arg1,
 			U,
-			f,
+			/*f,*/				// removing unnecessary storage
 			ref,
 			populate_dx,
 			populate_dy,
@@ -439,7 +425,6 @@ __kernel void ops_poisson_kernel(
 			size1,
 			xdim_poisson_kernel);
 
-//	dump_grid(U, xdim_poisson_kernel, size1+2);
 
 	for (int iter = 0; iter < n_iters; iter++) {
 
@@ -464,7 +449,6 @@ __kernel void ops_poisson_kernel(
 				xdim_poisson_kernel);
 	}
 
-	//dump_grid(U, xdim_poisson_kernel, size1+2);
 
 	ops_poisson_kernel_error(
 			U,

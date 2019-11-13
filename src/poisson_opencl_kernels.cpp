@@ -346,7 +346,7 @@ void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int di
 
 	if (OPS_diags > 1) {
 		ops_timers_core(&c1,&t1);
-		OPS_kernels[4].time += t1-t2;
+		OPS_kernels[0].time += t1-t2;
 	}
 
 	mvReductArraysToHost(reduct_bytes);
