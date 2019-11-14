@@ -48,22 +48,21 @@
 
 
 #define MAX_GRID_SIZE 600
+#define MAX_X_DIM 512
 #define P_FACTOR 64
 
 
 __attribute__((xcl_dataflow))
-__attribute__((noinline))
-void ops_poisson_kernel_initial(
-		float* restrict arg0,
+__attribute__((always_inline))
+static void ops_poisson_kernel_initial(
+		local float* restrict arg0,
 		const int base0,
 		const int size0,
-		const int size1,
-		const int xdim0_poisson_kernel_initial){
+		const int size1){
 
 
 	for(int i  = 0; i < size1; i++){
-
-		int base_index = base0  + i* xdim0_poisson_kernel_initial;
+		int base_index = base0  + i * MAX_X_DIM;
 		__attribute__((opencl_unroll_hint(P_FACTOR)))
 		for(int j = 1; j < size0 ; j++){
 			arg0[base_index+ j] = 0;
@@ -73,12 +72,12 @@ void ops_poisson_kernel_initial(
 }
 
 __attribute__((xcl_dataflow))
-__attribute__((noinline))
-void ops_poisson_kernel_populate(
+__attribute__((always_inline))
+static void ops_poisson_kernel_populate(
 		const int arg0,
 		const int arg1,
-		float* arg3,
-		float* arg5,
+		local float* arg3,
+		local float* arg5,
 		const float dx,
 		const float dy,
 		const int base3,
@@ -86,10 +85,7 @@ void ops_poisson_kernel_populate(
 		const int base5,
 		int arg_idx0, int arg_idx1,
 		const int size0,
-		const int size1,
-		const int xdim3_poisson_kernel_populate,
-		const int xdim4_poisson_kernel_populate,
-		const int xdim5_poisson_kernel_populate){
+		const int size1){
 
 
 		v1_rd: __attribute__((xcl_pipeline_loop))
@@ -99,12 +95,13 @@ void ops_poisson_kernel_populate(
 			int base_index3, base_index4, base_index5, loop_limit;
 
 			__attribute__((xcl_pipeline_workitems)){
-				base_index3 = (base3  + i* xdim3_poisson_kernel_populate);
-				base_index4 = (base4  + i* xdim4_poisson_kernel_populate);
-				base_index5 = (base5  + i* xdim5_poisson_kernel_populate);
+				base_index3 = (base3  + i * MAX_X_DIM);
+				base_index4 = (base4  + i * MAX_X_DIM);
+				base_index5 = (base5  + i * MAX_X_DIM);
 				arg_idx[1] = arg_idx1+ i;
 			}
 
+			__attribute__((xcl_pipeline_loop))
 			__attribute__((opencl_unroll_hint(P_FACTOR)))
 			for(int j = 0; j < size0; j++){
 
@@ -122,20 +119,17 @@ void ops_poisson_kernel_populate(
 			}
 		}
 
-
 }
 
 __attribute__((xcl_dataflow))
-__attribute__((noinline))
-void ops_poisson_kernel_stencil(
-		const float* restrict arg0,
-		float* restrict arg1,
+__attribute__((always_inline))
+static void ops_poisson_kernel_stencil(
+		local const float* restrict arg0,
+		local float* restrict arg1,
 		const int base0,
 		const int base1,
 		const int size0,
-		const int size1,
-		const int xdim0_poisson_kernel_stencil,
-		const int xdim1_poisson_kernel_stencil){
+		const int size1){
 
 
 	float first_element = 0;
@@ -143,13 +137,13 @@ void ops_poisson_kernel_stencil(
 	for(int i = 0; i < size1; i++){
 		int base_index1, base_index2, base_index3, base_index0;
 		__attribute__((xcl_pipeline_workitems)){
-			base_index1 = (base0  + (i-1) * xdim0_poisson_kernel_stencil);
-			base_index2 = (base0 + (i) * xdim0_poisson_kernel_stencil);
-			base_index3 = (base0  + (i+1) * xdim0_poisson_kernel_stencil);
-			base_index0 = (base0 + (i) * xdim0_poisson_kernel_stencil);
+			base_index1 = (base0  + (i-1) * MAX_X_DIM);
+			base_index2 = (base0 + (i) * MAX_X_DIM);
+			base_index3 = (base0  + (i+1) * MAX_X_DIM);
+			base_index0 = (base0 + (i) * MAX_X_DIM);
 		}
 
-
+		__attribute__((xcl_pipeline_loop))
 		__attribute__((opencl_unroll_hint(P_FACTOR)))
 		for(int j = 0; j < size0; j++){
 				float f1 = ( arg0[base_index1+j]  + arg0[base_index3+j] ) * 0.125f;
@@ -162,22 +156,21 @@ void ops_poisson_kernel_stencil(
 }
 
 __attribute__((xcl_dataflow))
-__attribute__((noinline))
-void ops_poisson_kernel_update(
-		const uint* restrict arg0,
-		uint* restrict arg1,
+__attribute__((always_inline))
+static void ops_poisson_kernel_update(
+		local const float* restrict arg0,
+		local float* restrict arg1,
 		const int base0,
 		const int base1,
 		const int size0,
-		const int size1,
-		const int xdim0_poisson_kernel_update,
-		const int xdim1_poisson_kernel_update){
+		const int size1){
 
 
 	for(int i = 0; i < size1; i++){
-		int base_index0 = base0 + i * xdim0_poisson_kernel_update;
-		int base_index1 = base1 + i * xdim1_poisson_kernel_update;
+		int base_index0 = base0 + i * MAX_X_DIM;
+		int base_index1 = base1 + i * MAX_X_DIM;
 
+		__attribute__((xcl_pipeline_loop))
 		__attribute__((opencl_unroll_hint(P_FACTOR)))
 		for(int j = 0; j < size0; j++){
 			arg1[base_index0+j] = arg0[base_index1+j];
@@ -186,19 +179,17 @@ void ops_poisson_kernel_update(
 
 }
 __attribute__((xcl_dataflow))
-__attribute__((noinline))
-void ops_poisson_kernel_error(
-		float* restrict arg0,
-		const float* restrict arg1,
+__attribute__((always_inline))
+static void ops_poisson_kernel_error(
+		local float* restrict arg0,
+		local const float* restrict arg1,
 		__global float* restrict arg2,
 		__local float* scratch2,
 		int r_bytes2,
 		const int base0,
 		const int base1,
 		const int size0,
-		const int size1,
-		const int xdim0_poisson_kernel_error,
-		const int xdim1_poisson_kernel_error){
+		const int size1){
 
 
 	float g_sum = 0;
@@ -206,6 +197,10 @@ void ops_poisson_kernel_error(
 	int row_shift0 = 0;
 	int row_shift1 = 0;
 	float arr_focus[P_FACTOR] __attribute__((xcl_array_partition(complete, 1)));
+	for(int i = 0; i < P_FACTOR; i++){
+		arr_focus[i]   = 0;
+	}
+
 	for(int i  = 0; i < size1; i++){
 			int base_index0, base_index1;
 			__attribute__((xcl_pipeline_workitems)){
@@ -213,14 +208,14 @@ void ops_poisson_kernel_error(
 				base_index1 = base1  + row_shift1;
 			}
 
-
+			__attribute__((xcl_pipeline_loop))
 			__attribute__((opencl_unroll_hint(P_FACTOR)))
 			for(int j = 0; j < size0 ; j++){
 					float diff = arg0[base_index0+j] - arg1[base_index1 + j];
 					arr_focus[j%P_FACTOR] = arr_focus[j%P_FACTOR] + diff * diff;
 				}
-			row_shift0  = row_shift0 + xdim0_poisson_kernel_error;
-			row_shift1  = row_shift1 + xdim1_poisson_kernel_error;
+			row_shift0  = row_shift0 + MAX_X_DIM;
+			row_shift1  = row_shift1 + MAX_X_DIM;
 
 		}
 
@@ -280,12 +275,11 @@ __kernel void ops_poisson_kernel(
 		const int base1,
 		const int size0,
 		const int size1,
-		const int xdim_poisson_kernel,
 		const int n_iters){
 
-	float U[MAX_GRID_SIZE * MAX_GRID_SIZE] __attribute__((xcl_array_partition(block,P_FACTOR,1)));
-	float U2[MAX_GRID_SIZE * MAX_GRID_SIZE] __attribute__((xcl_array_partition(block,P_FACTOR,1)));
-	float ref[MAX_GRID_SIZE * MAX_GRID_SIZE] __attribute__((xcl_array_partition(block,P_FACTOR,1)));
+	local float U[MAX_GRID_SIZE * MAX_GRID_SIZE] __attribute__((xcl_array_partition(cyclic,P_FACTOR,1)));
+	local float U2[MAX_GRID_SIZE * MAX_GRID_SIZE] __attribute__((xcl_array_partition(cyclic,P_FACTOR,1)));
+	local float ref[MAX_GRID_SIZE * MAX_GRID_SIZE] __attribute__((xcl_array_partition(cyclic,P_FACTOR,1)));
 
 	ops_poisson_kernel_populate(
 			populate_arg0,
@@ -299,10 +293,7 @@ __kernel void ops_poisson_kernel(
 			0,
 			populate_arg_idx0, populate_arg_idx1,
 			size0+2,
-			size1+2,
-			xdim_poisson_kernel,
-			xdim_poisson_kernel,
-			xdim_poisson_kernel);
+			size1+2);
 
 
 
@@ -312,18 +303,15 @@ __kernel void ops_poisson_kernel(
 			0,
 			0,
 			size0+2,
-			size1+2,
-			xdim_poisson_kernel,
-			xdim_poisson_kernel);
+			size1+2);
 
 
 
 	ops_poisson_kernel_initial(
 			U,
-			xdim_poisson_kernel+1,
+			MAX_X_DIM+1,
 			size0,
-			size1,
-			xdim_poisson_kernel);
+			size1);
 
 
 	for (int iter = 0; iter < n_iters; iter++) {
@@ -331,12 +319,10 @@ __kernel void ops_poisson_kernel(
 		ops_poisson_kernel_stencil(
 				U,
 				U2,
-				xdim_poisson_kernel+1,
-				xdim_poisson_kernel+1,
+				MAX_X_DIM+1,
+				MAX_X_DIM+1,
 				size0,
-				size1,
-				xdim_poisson_kernel,
-				xdim_poisson_kernel);
+				size1);
 
 		ops_poisson_kernel_update(
 				U2,
@@ -344,9 +330,7 @@ __kernel void ops_poisson_kernel(
 				0,
 				0,
 				size0+2,
-				size1+2,
-				xdim_poisson_kernel,
-				xdim_poisson_kernel);
+				size1+2);
 	}
 
 
@@ -356,11 +340,9 @@ __kernel void ops_poisson_kernel(
 			arg2,
 			scratch2,
 			r_bytes2,
-			xdim_poisson_kernel+1,
-			xdim_poisson_kernel+1,
+			MAX_X_DIM+1,
+			MAX_X_DIM+1,
 			size0,
-			size1,
-			xdim_poisson_kernel,
-			xdim_poisson_kernel);
+			size1);
 
 }
