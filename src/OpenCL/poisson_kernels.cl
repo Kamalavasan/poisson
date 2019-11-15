@@ -136,11 +136,29 @@ static void ops_poisson_kernel_initial(
 	const int row_block = SINGLE_RAM_SIZE/MAX_X_DIM;
 
 	for(int i  = 0; i < size1; i++){
-		int base_index = base0  + i * MAX_X_DIM;
 
+		int base_index = base0  + i * row_block;
 		__attribute__((opencl_unroll_hint(P_FACTOR)))
-		for(int j = 1; j < end_loc ; j++){
-			arg0[base_index+ j] = 0;
+		for(int j = 0; j < end_loc ; j++){
+			int index0 = j * 64;
+			if(index0 != 0 || index0 < size0)
+				u.u0[base_index+j] = 0;
+
+			int index1 = j * 64 + 1;
+			if(index1 != 0 || index1 < size0)
+				u.u1[base_index+j] = 0;
+
+			int index0 = j * 64;
+			if(index0 != 0 || index0 < size0)
+				u.u0[base_index+j] = 0;
+
+			int index0 = j * 64;
+			if(index0 != 0 || index0 < size0)
+				u.u0[base_index+j] = 0;
+
+			int index0 = j * 64;
+			if(index0 != 0 || index0 < size0)
+				u.u0[base_index+j] = 0;
 		}
 	}
 
