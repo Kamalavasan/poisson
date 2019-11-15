@@ -50,26 +50,105 @@
 #define MAX_GRID_SIZE 600
 #define MAX_X_DIM 512
 #define P_FACTOR 64
+#define SHIFT_BITS 6
+#define SINGLE_RAM_SIZE 4096
+
+typedef struct __attribute__ ((packed)) bram_cluster
+{
+    float u0[SINGLE_RAM_SIZE];
+    float u1[SINGLE_RAM_SIZE];
+    float u2[SINGLE_RAM_SIZE];
+    float u3[SINGLE_RAM_SIZE];
+    float u4[SINGLE_RAM_SIZE];
+	float u5[SINGLE_RAM_SIZE];
+	float u6[SINGLE_RAM_SIZE];
+	float u7[SINGLE_RAM_SIZE];
+	float u8[SINGLE_RAM_SIZE];
+	float u9[SINGLE_RAM_SIZE];
+	float u10[SINGLE_RAM_SIZE];
+	float u11[SINGLE_RAM_SIZE];
+	float u12[SINGLE_RAM_SIZE];
+	float u13[SINGLE_RAM_SIZE];
+	float u14[SINGLE_RAM_SIZE];
+	float u15[SINGLE_RAM_SIZE];
+    float u16[SINGLE_RAM_SIZE];
+    float u17[SINGLE_RAM_SIZE];
+    float u18[SINGLE_RAM_SIZE];
+    float u19[SINGLE_RAM_SIZE];
+    float u20[SINGLE_RAM_SIZE];
+	float u21[SINGLE_RAM_SIZE];
+	float u22[SINGLE_RAM_SIZE];
+	float u23[SINGLE_RAM_SIZE];
+	float u24[SINGLE_RAM_SIZE];
+	float u25[SINGLE_RAM_SIZE];
+	float u26[SINGLE_RAM_SIZE];
+	float u27[SINGLE_RAM_SIZE];
+	float u28[SINGLE_RAM_SIZE];
+	float u29[SINGLE_RAM_SIZE];
+	float u30[SINGLE_RAM_SIZE];
+	float u31[SINGLE_RAM_SIZE];
+    float u32[SINGLE_RAM_SIZE];
+    float u33[SINGLE_RAM_SIZE];
+    float u34[SINGLE_RAM_SIZE];
+    float u35[SINGLE_RAM_SIZE];
+    float u36[SINGLE_RAM_SIZE];
+	float u37[SINGLE_RAM_SIZE];
+	float u38[SINGLE_RAM_SIZE];
+	float u39[SINGLE_RAM_SIZE];
+	float u40[SINGLE_RAM_SIZE];
+	float u41[SINGLE_RAM_SIZE];
+	float u42[SINGLE_RAM_SIZE];
+	float u43[SINGLE_RAM_SIZE];
+	float u44[SINGLE_RAM_SIZE];
+	float u45[SINGLE_RAM_SIZE];
+	float u46[SINGLE_RAM_SIZE];
+	float u47[SINGLE_RAM_SIZE];
+    float u48[SINGLE_RAM_SIZE];
+    float u49[SINGLE_RAM_SIZE];
+    float u50[SINGLE_RAM_SIZE];
+    float u51[SINGLE_RAM_SIZE];
+    float u52[SINGLE_RAM_SIZE];
+	float u53[SINGLE_RAM_SIZE];
+	float u54[SINGLE_RAM_SIZE];
+	float u55[SINGLE_RAM_SIZE];
+	float u56[SINGLE_RAM_SIZE];
+	float u57[SINGLE_RAM_SIZE];
+	float u58[SINGLE_RAM_SIZE];
+	float u59[SINGLE_RAM_SIZE];
+	float u60[SINGLE_RAM_SIZE];
+	float u61[SINGLE_RAM_SIZE];
+	float u62[SINGLE_RAM_SIZE];
+	float u63[SINGLE_RAM_SIZE];
+};
+
+
 
 
 __attribute__((xcl_dataflow))
 __attribute__((always_inline))
 static void ops_poisson_kernel_initial(
-		local float* restrict arg0,
+		struct bram_cluster u,
 		const int base0,
 		const int size0,
 		const int size1){
 
+	int end_loc =  (size0 >> 6) + 1;
+	const int row_block = SINGLE_RAM_SIZE/MAX_X_DIM;
 
 	for(int i  = 0; i < size1; i++){
 		int base_index = base0  + i * MAX_X_DIM;
+
 		__attribute__((opencl_unroll_hint(P_FACTOR)))
-		for(int j = 1; j < size0 ; j++){
+		for(int j = 1; j < end_loc ; j++){
 			arg0[base_index+ j] = 0;
 		}
 	}
 
 }
+
+
+
+
 
 __attribute__((xcl_dataflow))
 __attribute__((always_inline))
@@ -260,6 +339,7 @@ static void ops_poisson_kernel_error(
 }
 
 
+
 __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 __kernel void ops_poisson_kernel(
 		const int populate_arg0,
@@ -276,6 +356,11 @@ __kernel void ops_poisson_kernel(
 		const int size0,
 		const int size1,
 		const int n_iters){
+
+
+	struct bram_cluster u;
+	struct bram_cluster u2;
+	struct bram_cluster Ref;
 
 	local float U[MAX_GRID_SIZE * MAX_GRID_SIZE] __attribute__((xcl_array_partition(cyclic,P_FACTOR,1)));
 	local float U2[MAX_GRID_SIZE * MAX_GRID_SIZE] __attribute__((xcl_array_partition(cyclic,P_FACTOR,1)));
