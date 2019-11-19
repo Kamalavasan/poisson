@@ -123,8 +123,8 @@ typedef struct /*__attribute__ ((packed))*/ bram_cluster
 
 __attribute__((xcl_dataflow))
 static void ops_poisson_kernel_error(
-		struct bram_cluster u,
-		struct bram_cluster u2,
+		struct bram_cluster* u,
+		struct bram_cluster* u2,
 		__global float* restrict arg2,
 		__local float* scratch2,
 		int r_bytes2,
@@ -152,385 +152,385 @@ static void ops_poisson_kernel_error(
 
 			int index0 = j * 64 + 0;
 			if(index0 != 0 || index0  < size0){
-				float diff_0 = u.u0[base_index+j] - u2.u0[base_index+j];
+				float diff_0 = u->u0[base_index+j] - u2->u0[base_index+j];
 				arr_focus[0] = arr_focus[0] +  diff_0 * diff_0;
 			}
 
 			int index1 = j * 64 + 1;
 			if(index1 != 0 || index1  < size0){
-				float diff_1 = u.u1[base_index+j] - u2.u1[base_index+j];
+				float diff_1 = u->u1[base_index+j] - u2->u1[base_index+j];
 				arr_focus[1] = arr_focus[1] +  diff_1 * diff_1;
 			}
 
 			int index2 = j * 64 + 2;
 			if(index2 != 0 || index2  < size0){
-				float diff_2 = u.u2[base_index+j] - u2.u2[base_index+j];
+				float diff_2 = u->u2[base_index+j] - u2->u2[base_index+j];
 				arr_focus[2] = arr_focus[2] +  diff_2 * diff_2;
 			}
 
 			int index3 = j * 64 + 3;
 			if(index3 != 0 || index3  < size0){
-				float diff_3 = u.u3[base_index+j] - u2.u3[base_index+j];
+				float diff_3 = u->u3[base_index+j] - u2->u3[base_index+j];
 				arr_focus[3] = arr_focus[3] +  diff_3 * diff_3;
 			}
 
 			int index4 = j * 64 + 4;
 			if(index4 != 0 || index4  < size0){
-				float diff_4 = u.u4[base_index+j] - u2.u4[base_index+j];
+				float diff_4 = u->u4[base_index+j] - u2->u4[base_index+j];
 				arr_focus[4] = arr_focus[4] +  diff_4 * diff_4;
 			}
 
 			int index5 = j * 64 + 5;
 			if(index5 != 0 || index5  < size0){
-				float diff_5 = u.u5[base_index+j] - u2.u5[base_index+j];
+				float diff_5 = u->u5[base_index+j] - u2->u5[base_index+j];
 				arr_focus[5] = arr_focus[5] +  diff_5 * diff_5;
 			}
 
 			int index6 = j * 64 + 6;
 			if(index6 != 0 || index6  < size0){
-				float diff_6 = u.u6[base_index+j] - u2.u6[base_index+j];
+				float diff_6 = u->u6[base_index+j] - u2->u6[base_index+j];
 				arr_focus[6] = arr_focus[6] +  diff_6 * diff_6;
 			}
 
 			int index7 = j * 64 + 7;
 			if(index7 != 0 || index7  < size0){
-				float diff_7 = u.u7[base_index+j] - u2.u7[base_index+j];
+				float diff_7 = u->u7[base_index+j] - u2->u7[base_index+j];
 				arr_focus[7] = arr_focus[7] +  diff_7 * diff_7;
 			}
 
 			int index8 = j * 64 + 8;
 			if(index8 != 0 || index8  < size0){
-				float diff_8 = u.u8[base_index+j] - u2.u8[base_index+j];
+				float diff_8 = u->u8[base_index+j] - u2->u8[base_index+j];
 				arr_focus[8] = arr_focus[8] +  diff_8 * diff_8;
 			}
 
 			int index9 = j * 64 + 9;
 			if(index9 != 0 || index9  < size0){
-				float diff_9 = u.u9[base_index+j] - u2.u9[base_index+j];
+				float diff_9 = u->u9[base_index+j] - u2->u9[base_index+j];
 				arr_focus[9] = arr_focus[9] +  diff_9 * diff_9;
 			}
 
 			int index10 = j * 64 + 10;
 			if(index10 != 0 || index10  < size0){
-				float diff_10 = u.u10[base_index+j] - u2.u10[base_index+j];
+				float diff_10 = u->u10[base_index+j] - u2->u10[base_index+j];
 				arr_focus[10] = arr_focus[10] +  diff_10 * diff_10;
 			}
 
 			int index11 = j * 64 + 11;
 			if(index11 != 0 || index11  < size0){
-				float diff_11 = u.u11[base_index+j] - u2.u11[base_index+j];
+				float diff_11 = u->u11[base_index+j] - u2->u11[base_index+j];
 				arr_focus[11] = arr_focus[11] +  diff_11 * diff_11;
 			}
 
 			int index12 = j * 64 + 12;
 			if(index12 != 0 || index12  < size0){
-				float diff_12 = u.u12[base_index+j] - u2.u12[base_index+j];
+				float diff_12 = u->u12[base_index+j] - u2->u12[base_index+j];
 				arr_focus[12] = arr_focus[12] +  diff_12 * diff_12;
 			}
 
 			int index13 = j * 64 + 13;
 			if(index13 != 0 || index13  < size0){
-				float diff_13 = u.u13[base_index+j] - u2.u13[base_index+j];
+				float diff_13 = u->u13[base_index+j] - u2->u13[base_index+j];
 				arr_focus[13] = arr_focus[13] +  diff_13 * diff_13;
 			}
 
 			int index14 = j * 64 + 14;
 			if(index14 != 0 || index14  < size0){
-				float diff_14 = u.u14[base_index+j] - u2.u14[base_index+j];
+				float diff_14 = u->u14[base_index+j] - u2->u14[base_index+j];
 				arr_focus[14] = arr_focus[14] +  diff_14 * diff_14;
 			}
 
 			int index15 = j * 64 + 15;
 			if(index15 != 0 || index15  < size0){
-				float diff_15 = u.u15[base_index+j] - u2.u15[base_index+j];
+				float diff_15 = u->u15[base_index+j] - u2->u15[base_index+j];
 				arr_focus[15] = arr_focus[15] +  diff_15 * diff_15;
 			}
 
 			int index16 = j * 64 + 16;
 			if(index16 != 0 || index16  < size0){
-				float diff_16 = u.u16[base_index+j] - u2.u16[base_index+j];
+				float diff_16 = u->u16[base_index+j] - u2->u16[base_index+j];
 				arr_focus[16] = arr_focus[16] +  diff_16 * diff_16;
 			}
 
 			int index17 = j * 64 + 17;
 			if(index17 != 0 || index17  < size0){
-				float diff_17 = u.u17[base_index+j] - u2.u17[base_index+j];
+				float diff_17 = u->u17[base_index+j] - u2->u17[base_index+j];
 				arr_focus[17] = arr_focus[17] +  diff_17 * diff_17;
 			}
 
 			int index18 = j * 64 + 18;
 			if(index18 != 0 || index18  < size0){
-				float diff_18 = u.u18[base_index+j] - u2.u18[base_index+j];
+				float diff_18 = u->u18[base_index+j] - u2->u18[base_index+j];
 				arr_focus[18] = arr_focus[18] +  diff_18 * diff_18;
 			}
 
 			int index19 = j * 64 + 19;
 			if(index19 != 0 || index19  < size0){
-				float diff_19 = u.u19[base_index+j] - u2.u19[base_index+j];
+				float diff_19 = u->u19[base_index+j] - u2->u19[base_index+j];
 				arr_focus[19] = arr_focus[19] +  diff_19 * diff_19;
 			}
 
 			int index20 = j * 64 + 20;
 			if(index20 != 0 || index20  < size0){
-				float diff_20 = u.u20[base_index+j] - u2.u20[base_index+j];
+				float diff_20 = u->u20[base_index+j] - u2->u20[base_index+j];
 				arr_focus[20] = arr_focus[20] +  diff_20 * diff_20;
 			}
 
 			int index21 = j * 64 + 21;
 			if(index21 != 0 || index21  < size0){
-				float diff_21 = u.u21[base_index+j] - u2.u21[base_index+j];
+				float diff_21 = u->u21[base_index+j] - u2->u21[base_index+j];
 				arr_focus[21] = arr_focus[21] +  diff_21 * diff_21;
 			}
 
 			int index22 = j * 64 + 22;
 			if(index22 != 0 || index22  < size0){
-				float diff_22 = u.u22[base_index+j] - u2.u22[base_index+j];
+				float diff_22 = u->u22[base_index+j] - u2->u22[base_index+j];
 				arr_focus[22] = arr_focus[22] +  diff_22 * diff_22;
 			}
 
 			int index23 = j * 64 + 23;
 			if(index23 != 0 || index23  < size0){
-				float diff_23 = u.u23[base_index+j] - u2.u23[base_index+j];
+				float diff_23 = u->u23[base_index+j] - u2->u23[base_index+j];
 				arr_focus[23] = arr_focus[23] +  diff_23 * diff_23;
 			}
 
 			int index24 = j * 64 + 24;
 			if(index24 != 0 || index24  < size0){
-				float diff_24 = u.u24[base_index+j] - u2.u24[base_index+j];
+				float diff_24 = u->u24[base_index+j] - u2->u24[base_index+j];
 				arr_focus[24] = arr_focus[24] +  diff_24 * diff_24;
 			}
 
 			int index25 = j * 64 + 25;
 			if(index25 != 0 || index25  < size0){
-				float diff_25 = u.u25[base_index+j] - u2.u25[base_index+j];
+				float diff_25 = u->u25[base_index+j] - u2->u25[base_index+j];
 				arr_focus[25] = arr_focus[25] +  diff_25 * diff_25;
 			}
 
 			int index26 = j * 64 + 26;
 			if(index26 != 0 || index26  < size0){
-				float diff_26 = u.u26[base_index+j] - u2.u26[base_index+j];
+				float diff_26 = u->u26[base_index+j] - u2->u26[base_index+j];
 				arr_focus[26] = arr_focus[26] +  diff_26 * diff_26;
 			}
 
 			int index27 = j * 64 + 27;
 			if(index27 != 0 || index27  < size0){
-				float diff_27 = u.u27[base_index+j] - u2.u27[base_index+j];
+				float diff_27 = u->u27[base_index+j] - u2->u27[base_index+j];
 				arr_focus[27] = arr_focus[27] +  diff_27 * diff_27;
 			}
 
 			int index28 = j * 64 + 28;
 			if(index28 != 0 || index28  < size0){
-				float diff_28 = u.u28[base_index+j] - u2.u28[base_index+j];
+				float diff_28 = u->u28[base_index+j] - u2->u28[base_index+j];
 				arr_focus[28] = arr_focus[28] +  diff_28 * diff_28;
 			}
 
 			int index29 = j * 64 + 29;
 			if(index29 != 0 || index29  < size0){
-				float diff_29 = u.u29[base_index+j] - u2.u29[base_index+j];
+				float diff_29 = u->u29[base_index+j] - u2->u29[base_index+j];
 				arr_focus[29] = arr_focus[29] +  diff_29 * diff_29;
 			}
 
 			int index30 = j * 64 + 30;
 			if(index30 != 0 || index30  < size0){
-				float diff_30 = u.u30[base_index+j] - u2.u30[base_index+j];
+				float diff_30 = u->u30[base_index+j] - u2->u30[base_index+j];
 				arr_focus[30] = arr_focus[30] +  diff_30 * diff_30;
 			}
 
 			int index31 = j * 64 + 31;
 			if(index31 != 0 || index31  < size0){
-				float diff_31 = u.u31[base_index+j] - u2.u31[base_index+j];
+				float diff_31 = u->u31[base_index+j] - u2->u31[base_index+j];
 				arr_focus[31] = arr_focus[31] +  diff_31 * diff_31;
 			}
 
 			int index32 = j * 64 + 32;
 			if(index32 != 0 || index32  < size0){
-				float diff_32 = u.u32[base_index+j] - u2.u32[base_index+j];
+				float diff_32 = u->u32[base_index+j] - u2->u32[base_index+j];
 				arr_focus[32] = arr_focus[32] +  diff_32 * diff_32;
 			}
 
 			int index33 = j * 64 + 33;
 			if(index33 != 0 || index33  < size0){
-				float diff_33 = u.u33[base_index+j] - u2.u33[base_index+j];
+				float diff_33 = u->u33[base_index+j] - u2->u33[base_index+j];
 				arr_focus[33] = arr_focus[33] +  diff_33 * diff_33;
 			}
 
 			int index34 = j * 64 + 34;
 			if(index34 != 0 || index34  < size0){
-				float diff_34 = u.u34[base_index+j] - u2.u34[base_index+j];
+				float diff_34 = u->u34[base_index+j] - u2->u34[base_index+j];
 				arr_focus[34] = arr_focus[34] +  diff_34 * diff_34;
 			}
 
 			int index35 = j * 64 + 35;
 			if(index35 != 0 || index35  < size0){
-				float diff_35 = u.u35[base_index+j] - u2.u35[base_index+j];
+				float diff_35 = u->u35[base_index+j] - u2->u35[base_index+j];
 				arr_focus[35] = arr_focus[35] +  diff_35 * diff_35;
 			}
 
 			int index36 = j * 64 + 36;
 			if(index36 != 0 || index36  < size0){
-				float diff_36 = u.u36[base_index+j] - u2.u36[base_index+j];
+				float diff_36 = u->u36[base_index+j] - u2->u36[base_index+j];
 				arr_focus[36] = arr_focus[36] +  diff_36 * diff_36;
 			}
 
 			int index37 = j * 64 + 37;
 			if(index37 != 0 || index37  < size0){
-				float diff_37 = u.u37[base_index+j] - u2.u37[base_index+j];
+				float diff_37 = u->u37[base_index+j] - u2->u37[base_index+j];
 				arr_focus[37] = arr_focus[37] +  diff_37 * diff_37;
 			}
 
 			int index38 = j * 64 + 38;
 			if(index38 != 0 || index38  < size0){
-				float diff_38 = u.u38[base_index+j] - u2.u38[base_index+j];
+				float diff_38 = u->u38[base_index+j] - u2->u38[base_index+j];
 				arr_focus[38] = arr_focus[38] +  diff_38 * diff_38;
 			}
 
 			int index39 = j * 64 + 39;
 			if(index39 != 0 || index39  < size0){
-				float diff_39 = u.u39[base_index+j] - u2.u39[base_index+j];
+				float diff_39 = u->u39[base_index+j] - u2->u39[base_index+j];
 				arr_focus[39] = arr_focus[39] +  diff_39 * diff_39;
 			}
 
 			int index40 = j * 64 + 40;
 			if(index40 != 0 || index40  < size0){
-				float diff_40 = u.u40[base_index+j] - u2.u40[base_index+j];
+				float diff_40 = u->u40[base_index+j] - u2->u40[base_index+j];
 				arr_focus[40] = arr_focus[40] +  diff_40 * diff_40;
 			}
 
 			int index41 = j * 64 + 41;
 			if(index41 != 0 || index41  < size0){
-				float diff_41 = u.u41[base_index+j] - u2.u41[base_index+j];
+				float diff_41 = u->u41[base_index+j] - u2->u41[base_index+j];
 				arr_focus[41] = arr_focus[41] +  diff_41 * diff_41;
 			}
 
 			int index42 = j * 64 + 42;
 			if(index42 != 0 || index42  < size0){
-				float diff_42 = u.u42[base_index+j] - u2.u42[base_index+j];
+				float diff_42 = u->u42[base_index+j] - u2->u42[base_index+j];
 				arr_focus[42] = arr_focus[42] +  diff_42 * diff_42;
 			}
 
 			int index43 = j * 64 + 43;
 			if(index43 != 0 || index43  < size0){
-				float diff_43 = u.u43[base_index+j] - u2.u43[base_index+j];
+				float diff_43 = u->u43[base_index+j] - u2->u43[base_index+j];
 				arr_focus[43] = arr_focus[43] +  diff_43 * diff_43;
 			}
 
 			int index44 = j * 64 + 44;
 			if(index44 != 0 || index44  < size0){
-				float diff_44 = u.u44[base_index+j] - u2.u44[base_index+j];
+				float diff_44 = u->u44[base_index+j] - u2->u44[base_index+j];
 				arr_focus[44] = arr_focus[44] +  diff_44 * diff_44;
 			}
 
 			int index45 = j * 64 + 45;
 			if(index45 != 0 || index45  < size0){
-				float diff_45 = u.u45[base_index+j] - u2.u45[base_index+j];
+				float diff_45 = u->u45[base_index+j] - u2->u45[base_index+j];
 				arr_focus[45] = arr_focus[45] +  diff_45 * diff_45;
 			}
 
 			int index46 = j * 64 + 46;
 			if(index46 != 0 || index46  < size0){
-				float diff_46 = u.u46[base_index+j] - u2.u46[base_index+j];
+				float diff_46 = u->u46[base_index+j] - u2->u46[base_index+j];
 				arr_focus[46] = arr_focus[46] +  diff_46 * diff_46;
 			}
 
 			int index47 = j * 64 + 47;
 			if(index47 != 0 || index47  < size0){
-				float diff_47 = u.u47[base_index+j] - u2.u47[base_index+j];
+				float diff_47 = u->u47[base_index+j] - u2->u47[base_index+j];
 				arr_focus[47] = arr_focus[47] +  diff_47 * diff_47;
 			}
 
 			int index48 = j * 64 + 48;
 			if(index48 != 0 || index48  < size0){
-				float diff_48 = u.u48[base_index+j] - u2.u48[base_index+j];
+				float diff_48 = u->u48[base_index+j] - u2->u48[base_index+j];
 				arr_focus[48] = arr_focus[48] +  diff_48 * diff_48;
 			}
 
 			int index49 = j * 64 + 49;
 			if(index49 != 0 || index49  < size0){
-				float diff_49 = u.u49[base_index+j] - u2.u49[base_index+j];
+				float diff_49 = u->u49[base_index+j] - u2->u49[base_index+j];
 				arr_focus[49] = arr_focus[49] +  diff_49 * diff_49;
 			}
 
 			int index50 = j * 64 + 50;
 			if(index50 != 0 || index50  < size0){
-				float diff_50 = u.u50[base_index+j] - u2.u50[base_index+j];
+				float diff_50 = u->u50[base_index+j] - u2->u50[base_index+j];
 				arr_focus[50] = arr_focus[50] +  diff_50 * diff_50;
 			}
 
 			int index51 = j * 64 + 51;
 			if(index51 != 0 || index51  < size0){
-				float diff_51 = u.u51[base_index+j] - u2.u51[base_index+j];
+				float diff_51 = u->u51[base_index+j] - u2->u51[base_index+j];
 				arr_focus[51] = arr_focus[51] +  diff_51 * diff_51;
 			}
 
 			int index52 = j * 64 + 52;
 			if(index52 != 0 || index52  < size0){
-				float diff_52 = u.u52[base_index+j] - u2.u52[base_index+j];
+				float diff_52 = u->u52[base_index+j] - u2->u52[base_index+j];
 				arr_focus[52] = arr_focus[52] +  diff_52 * diff_52;
 			}
 
 			int index53 = j * 64 + 53;
 			if(index53 != 0 || index53  < size0){
-				float diff_53 = u.u53[base_index+j] - u2.u53[base_index+j];
+				float diff_53 = u->u53[base_index+j] - u2->u53[base_index+j];
 				arr_focus[53] = arr_focus[53] +  diff_53 * diff_53;
 			}
 
 			int index54 = j * 64 + 54;
 			if(index54 != 0 || index54  < size0){
-				float diff_54 = u.u54[base_index+j] - u2.u54[base_index+j];
+				float diff_54 = u->u54[base_index+j] - u2->u54[base_index+j];
 				arr_focus[54] = arr_focus[54] +  diff_54 * diff_54;
 			}
 
 			int index55 = j * 64 + 55;
 			if(index55 != 0 || index55  < size0){
-				float diff_55 = u.u55[base_index+j] - u2.u55[base_index+j];
+				float diff_55 = u->u55[base_index+j] - u2->u55[base_index+j];
 				arr_focus[55] = arr_focus[55] +  diff_55 * diff_55;
 			}
 
 			int index56 = j * 64 + 56;
 			if(index56 != 0 || index56  < size0){
-				float diff_56 = u.u56[base_index+j] - u2.u56[base_index+j];
+				float diff_56 = u->u56[base_index+j] - u2->u56[base_index+j];
 				arr_focus[56] = arr_focus[56] +  diff_56 * diff_56;
 			}
 
 			int index57 = j * 64 + 57;
 			if(index57 != 0 || index57  < size0){
-				float diff_57 = u.u57[base_index+j] - u2.u57[base_index+j];
+				float diff_57 = u->u57[base_index+j] - u2->u57[base_index+j];
 				arr_focus[57] = arr_focus[57] +  diff_57 * diff_57;
 			}
 
 			int index58 = j * 64 + 58;
 			if(index58 != 0 || index58  < size0){
-				float diff_58 = u.u58[base_index+j] - u2.u58[base_index+j];
+				float diff_58 = u->u58[base_index+j] - u2->u58[base_index+j];
 				arr_focus[58] = arr_focus[58] +  diff_58 * diff_58;
 			}
 
 			int index59 = j * 64 + 59;
 			if(index59 != 0 || index59  < size0){
-				float diff_59 = u.u59[base_index+j] - u2.u59[base_index+j];
+				float diff_59 = u->u59[base_index+j] - u2->u59[base_index+j];
 				arr_focus[59] = arr_focus[59] +  diff_59 * diff_59;
 			}
 
 			int index60 = j * 64 + 60;
 			if(index60 != 0 || index60  < size0){
-				float diff_60 = u.u60[base_index+j] - u2.u60[base_index+j];
+				float diff_60 = u->u60[base_index+j] - u2->u60[base_index+j];
 				arr_focus[60] = arr_focus[60] +  diff_60 * diff_60;
 			}
 
 			int index61 = j * 64 + 61;
 			if(index61 != 0 || index61  < size0){
-				float diff_61 = u.u61[base_index+j] - u2.u61[base_index+j];
+				float diff_61 = u->u61[base_index+j] - u2->u61[base_index+j];
 				arr_focus[61] = arr_focus[61] +  diff_61 * diff_61;
 			}
 
 			int index62 = j * 64 + 62;
 			if(index62 != 0 || index62  < size0){
-				float diff_62 = u.u62[base_index+j] - u2.u62[base_index+j];
+				float diff_62 = u->u62[base_index+j] - u2->u62[base_index+j];
 				arr_focus[62] = arr_focus[62] +  diff_62 * diff_62;
 			}
 
 			int index63 = j * 64 + 63;
 			if(index63 != 0 || index63  < size0){
-				float diff_63 = u.u63[base_index+j] - u2.u63[base_index+j];
+				float diff_63 = u->u63[base_index+j] - u2->u63[base_index+j];
 				arr_focus[63] = arr_focus[63] +  diff_63 * diff_63;
 			}
 
@@ -577,9 +577,10 @@ static void ops_poisson_kernel_error(
 		arg2[r_bytes2] = g_sum;
 }
 
+
 __attribute__((xcl_dataflow))
 static void ops_poisson_kernel_initial(
-		struct bram_cluster u,
+		struct bram_cluster* u,
 		const int base0,
 		const int size0,
 		const int size1){
@@ -594,2203 +595,2202 @@ static void ops_poisson_kernel_initial(
 
 			int index0 = j * 64 + 0;
 			if(index0 != 0 || index0  < size0)
-				u.u0[base_index+j] = 0;
+				u->u0[base_index+j] = 0;
 
 
 			int index1 = j * 64 + 1;
 			if(index1 != 0 || index1  < size0)
-				u.u1[base_index+j] = 0;
+				u->u1[base_index+j] = 0;
 
 
 			int index2 = j * 64 + 2;
 			if(index2 != 0 || index2  < size0)
-				u.u2[base_index+j] = 0;
+				u->u2[base_index+j] = 0;
 
 
 			int index3 = j * 64 + 3;
 			if(index3 != 0 || index3  < size0)
-				u.u3[base_index+j] = 0;
+				u->u3[base_index+j] = 0;
 
 
 			int index4 = j * 64 + 4;
 			if(index4 != 0 || index4  < size0)
-				u.u4[base_index+j] = 0;
+				u->u4[base_index+j] = 0;
 
 
 			int index5 = j * 64 + 5;
 			if(index5 != 0 || index5  < size0)
-				u.u5[base_index+j] = 0;
+				u->u5[base_index+j] = 0;
 
 
 			int index6 = j * 64 + 6;
 			if(index6 != 0 || index6  < size0)
-				u.u6[base_index+j] = 0;
+				u->u6[base_index+j] = 0;
 
 
 			int index7 = j * 64 + 7;
 			if(index7 != 0 || index7  < size0)
-				u.u7[base_index+j] = 0;
+				u->u7[base_index+j] = 0;
 
 
 			int index8 = j * 64 + 8;
 			if(index8 != 0 || index8  < size0)
-				u.u8[base_index+j] = 0;
+				u->u8[base_index+j] = 0;
 
 
 			int index9 = j * 64 + 9;
 			if(index9 != 0 || index9  < size0)
-				u.u9[base_index+j] = 0;
+				u->u9[base_index+j] = 0;
 
 
 			int index10 = j * 64 + 10;
 			if(index10 != 0 || index10  < size0)
-				u.u10[base_index+j] = 0;
+				u->u10[base_index+j] = 0;
 
 
 			int index11 = j * 64 + 11;
 			if(index11 != 0 || index11  < size0)
-				u.u11[base_index+j] = 0;
+				u->u11[base_index+j] = 0;
 
 
 			int index12 = j * 64 + 12;
 			if(index12 != 0 || index12  < size0)
-				u.u12[base_index+j] = 0;
+				u->u12[base_index+j] = 0;
 
 
 			int index13 = j * 64 + 13;
 			if(index13 != 0 || index13  < size0)
-				u.u13[base_index+j] = 0;
+				u->u13[base_index+j] = 0;
 
 
 			int index14 = j * 64 + 14;
 			if(index14 != 0 || index14  < size0)
-				u.u14[base_index+j] = 0;
+				u->u14[base_index+j] = 0;
 
 
 			int index15 = j * 64 + 15;
 			if(index15 != 0 || index15  < size0)
-				u.u15[base_index+j] = 0;
+				u->u15[base_index+j] = 0;
 
 
 			int index16 = j * 64 + 16;
 			if(index16 != 0 || index16  < size0)
-				u.u16[base_index+j] = 0;
+				u->u16[base_index+j] = 0;
 
 
 			int index17 = j * 64 + 17;
 			if(index17 != 0 || index17  < size0)
-				u.u17[base_index+j] = 0;
+				u->u17[base_index+j] = 0;
 
 
 			int index18 = j * 64 + 18;
 			if(index18 != 0 || index18  < size0)
-				u.u18[base_index+j] = 0;
+				u->u18[base_index+j] = 0;
 
 
 			int index19 = j * 64 + 19;
 			if(index19 != 0 || index19  < size0)
-				u.u19[base_index+j] = 0;
+				u->u19[base_index+j] = 0;
 
 
 			int index20 = j * 64 + 20;
 			if(index20 != 0 || index20  < size0)
-				u.u20[base_index+j] = 0;
+				u->u20[base_index+j] = 0;
 
 
 			int index21 = j * 64 + 21;
 			if(index21 != 0 || index21  < size0)
-				u.u21[base_index+j] = 0;
+				u->u21[base_index+j] = 0;
 
 
 			int index22 = j * 64 + 22;
 			if(index22 != 0 || index22  < size0)
-				u.u22[base_index+j] = 0;
+				u->u22[base_index+j] = 0;
 
 
 			int index23 = j * 64 + 23;
 			if(index23 != 0 || index23  < size0)
-				u.u23[base_index+j] = 0;
+				u->u23[base_index+j] = 0;
 
 
 			int index24 = j * 64 + 24;
 			if(index24 != 0 || index24  < size0)
-				u.u24[base_index+j] = 0;
+				u->u24[base_index+j] = 0;
 
 
 			int index25 = j * 64 + 25;
 			if(index25 != 0 || index25  < size0)
-				u.u25[base_index+j] = 0;
+				u->u25[base_index+j] = 0;
 
 
 			int index26 = j * 64 + 26;
 			if(index26 != 0 || index26  < size0)
-				u.u26[base_index+j] = 0;
+				u->u26[base_index+j] = 0;
 
 
 			int index27 = j * 64 + 27;
 			if(index27 != 0 || index27  < size0)
-				u.u27[base_index+j] = 0;
+				u->u27[base_index+j] = 0;
 
 
 			int index28 = j * 64 + 28;
 			if(index28 != 0 || index28  < size0)
-				u.u28[base_index+j] = 0;
+				u->u28[base_index+j] = 0;
 
 
 			int index29 = j * 64 + 29;
 			if(index29 != 0 || index29  < size0)
-				u.u29[base_index+j] = 0;
+				u->u29[base_index+j] = 0;
 
 
 			int index30 = j * 64 + 30;
 			if(index30 != 0 || index30  < size0)
-				u.u30[base_index+j] = 0;
+				u->u30[base_index+j] = 0;
 
 
 			int index31 = j * 64 + 31;
 			if(index31 != 0 || index31  < size0)
-				u.u31[base_index+j] = 0;
+				u->u31[base_index+j] = 0;
 
 
 			int index32 = j * 64 + 32;
 			if(index32 != 0 || index32  < size0)
-				u.u32[base_index+j] = 0;
+				u->u32[base_index+j] = 0;
 
 
 			int index33 = j * 64 + 33;
 			if(index33 != 0 || index33  < size0)
-				u.u33[base_index+j] = 0;
+				u->u33[base_index+j] = 0;
 
 
 			int index34 = j * 64 + 34;
 			if(index34 != 0 || index34  < size0)
-				u.u34[base_index+j] = 0;
+				u->u34[base_index+j] = 0;
 
 
 			int index35 = j * 64 + 35;
 			if(index35 != 0 || index35  < size0)
-				u.u35[base_index+j] = 0;
+				u->u35[base_index+j] = 0;
 
 
 			int index36 = j * 64 + 36;
 			if(index36 != 0 || index36  < size0)
-				u.u36[base_index+j] = 0;
+				u->u36[base_index+j] = 0;
 
 
 			int index37 = j * 64 + 37;
 			if(index37 != 0 || index37  < size0)
-				u.u37[base_index+j] = 0;
+				u->u37[base_index+j] = 0;
 
 
 			int index38 = j * 64 + 38;
 			if(index38 != 0 || index38  < size0)
-				u.u38[base_index+j] = 0;
+				u->u38[base_index+j] = 0;
 
 
 			int index39 = j * 64 + 39;
 			if(index39 != 0 || index39  < size0)
-				u.u39[base_index+j] = 0;
+				u->u39[base_index+j] = 0;
 
 
 			int index40 = j * 64 + 40;
 			if(index40 != 0 || index40  < size0)
-				u.u40[base_index+j] = 0;
+				u->u40[base_index+j] = 0;
 
 
 			int index41 = j * 64 + 41;
 			if(index41 != 0 || index41  < size0)
-				u.u41[base_index+j] = 0;
+				u->u41[base_index+j] = 0;
 
 
 			int index42 = j * 64 + 42;
 			if(index42 != 0 || index42  < size0)
-				u.u42[base_index+j] = 0;
+				u->u42[base_index+j] = 0;
 
 
 			int index43 = j * 64 + 43;
 			if(index43 != 0 || index43  < size0)
-				u.u43[base_index+j] = 0;
+				u->u43[base_index+j] = 0;
 
 
 			int index44 = j * 64 + 44;
 			if(index44 != 0 || index44  < size0)
-				u.u44[base_index+j] = 0;
+				u->u44[base_index+j] = 0;
 
 
 			int index45 = j * 64 + 45;
 			if(index45 != 0 || index45  < size0)
-				u.u45[base_index+j] = 0;
+				u->u45[base_index+j] = 0;
 
 
 			int index46 = j * 64 + 46;
 			if(index46 != 0 || index46  < size0)
-				u.u46[base_index+j] = 0;
+				u->u46[base_index+j] = 0;
 
 
 			int index47 = j * 64 + 47;
 			if(index47 != 0 || index47  < size0)
-				u.u47[base_index+j] = 0;
+				u->u47[base_index+j] = 0;
 
 
 			int index48 = j * 64 + 48;
 			if(index48 != 0 || index48  < size0)
-				u.u48[base_index+j] = 0;
+				u->u48[base_index+j] = 0;
 
 
 			int index49 = j * 64 + 49;
 			if(index49 != 0 || index49  < size0)
-				u.u49[base_index+j] = 0;
+				u->u49[base_index+j] = 0;
 
 
 			int index50 = j * 64 + 50;
 			if(index50 != 0 || index50  < size0)
-				u.u50[base_index+j] = 0;
+				u->u50[base_index+j] = 0;
 
 
 			int index51 = j * 64 + 51;
 			if(index51 != 0 || index51  < size0)
-				u.u51[base_index+j] = 0;
+				u->u51[base_index+j] = 0;
 
 
 			int index52 = j * 64 + 52;
 			if(index52 != 0 || index52  < size0)
-				u.u52[base_index+j] = 0;
+				u->u52[base_index+j] = 0;
 
 
 			int index53 = j * 64 + 53;
 			if(index53 != 0 || index53  < size0)
-				u.u53[base_index+j] = 0;
+				u->u53[base_index+j] = 0;
 
 
 			int index54 = j * 64 + 54;
 			if(index54 != 0 || index54  < size0)
-				u.u54[base_index+j] = 0;
+				u->u54[base_index+j] = 0;
 
 
 			int index55 = j * 64 + 55;
 			if(index55 != 0 || index55  < size0)
-				u.u55[base_index+j] = 0;
+				u->u55[base_index+j] = 0;
 
 
 			int index56 = j * 64 + 56;
 			if(index56 != 0 || index56  < size0)
-				u.u56[base_index+j] = 0;
+				u->u56[base_index+j] = 0;
 
 
 			int index57 = j * 64 + 57;
 			if(index57 != 0 || index57  < size0)
-				u.u57[base_index+j] = 0;
+				u->u57[base_index+j] = 0;
 
 
 			int index58 = j * 64 + 58;
 			if(index58 != 0 || index58  < size0)
-				u.u58[base_index+j] = 0;
+				u->u58[base_index+j] = 0;
 
 
 			int index59 = j * 64 + 59;
 			if(index59 != 0 || index59  < size0)
-				u.u59[base_index+j] = 0;
+				u->u59[base_index+j] = 0;
 
 
 			int index60 = j * 64 + 60;
 			if(index60 != 0 || index60  < size0)
-				u.u60[base_index+j] = 0;
+				u->u60[base_index+j] = 0;
 
 
 			int index61 = j * 64 + 61;
 			if(index61 != 0 || index61  < size0)
-				u.u61[base_index+j] = 0;
+				u->u61[base_index+j] = 0;
 
 
 			int index62 = j * 64 + 62;
 			if(index62 != 0 || index62  < size0)
-				u.u62[base_index+j] = 0;
+				u->u62[base_index+j] = 0;
 
 
 			int index63 = j * 64 + 63;
 			if(index63 != 0 || index63  < size0)
-				u.u63[base_index+j] = 0;
+				u->u63[base_index+j] = 0;
 
 		}
 	}
 }
 
-	__attribute__((xcl_dataflow))
-	static void ops_poisson_kernel_populate(
-			const int arg0,
-			const int arg1,
-			struct bram_cluster u,
-			struct bram_cluster ref,
-			const float dx,
-			const float dy,
-			const int base3,
-			const int base4,
-			const int base5,
-			int arg_idx0, int arg_idx1,
-			const int size0,
-			const int size1){
-
-
-			v1_rd: __attribute__((xcl_pipeline_loop))
-			for(int i  = 0; i < size1; i++){
-
-				int arg_idx[2];
-				double x, y;
-				int end_loc = (size0 >> 6) + 1;
-				const int row_block = MAX_X_DIM/P_FACTOR;
-				int base_index = i * row_block;
-
-				arg_idx[1] = arg_idx1 + i;
-
-				__attribute__((xcl_pipeline_loop))
-				__attribute__((opencl_unroll_hint(P_FACTOR)))
-				for(int j = 0; j < end_loc ; j++){
-
-						//------------COMPUTE UNIT 0  ----------------
-						int index0 = j * 64 + 0;
-						double arg_idx_0 = arg_idx0 + index0;
-
-						double x_0  = dx * (double)(arg_idx[0]+arg0);
-						double y_0 = dy * (double)(arg_idx_0 +arg1);
-
-						float f3_0 = myfun(native_sin(M_PI*x_0),native_cos(2.0*M_PI*y_0))-1.0;
-						float f5_0 = native_sin(M_PI*x_0)*native_cos(2.0*M_PI*y_0);
-
-						if(index0  < size0){
-							u.u0[base_index +j] = f3_0;
-							ref.u0[base_index +j] = f5_0;
-						}
-
-						//------------COMPUTE UNIT 1  ----------------
-						int index1 = j * 64 + 1;
-						double arg_idx_1 = arg_idx0 + index1;
-
-						double x_1  = dx * (double)(arg_idx[0]+arg0);
-						double y_1 = dy * (double)(arg_idx_1 +arg1);
-
-						float f3_1 = myfun(native_sin(M_PI*x_1),native_cos(2.0*M_PI*y_1))-1.0;
-						float f5_1 = native_sin(M_PI*x_1)*native_cos(2.0*M_PI*y_1);
-
-						if(index1  < size0){
-							u.u1[base_index +j] = f3_1;
-							ref.u1[base_index +j] = f5_1;
-						}
-
-						//------------COMPUTE UNIT 2  ----------------
-						int index2 = j * 64 + 2;
-						double arg_idx_2 = arg_idx0 + index2;
-
-						double x_2  = dx * (double)(arg_idx[0]+arg0);
-						double y_2 = dy * (double)(arg_idx_2 +arg1);
-
-						float f3_2 = myfun(native_sin(M_PI*x_2),native_cos(2.0*M_PI*y_2))-1.0;
-						float f5_2 = native_sin(M_PI*x_2)*native_cos(2.0*M_PI*y_2);
-
-						if(index2  < size0){
-							u.u2[base_index +j] = f3_2;
-							ref.u2[base_index +j] = f5_2;
-						}
-
-						//------------COMPUTE UNIT 3  ----------------
-						int index3 = j * 64 + 3;
-						double arg_idx_3 = arg_idx0 + index3;
-
-						double x_3  = dx * (double)(arg_idx[0]+arg0);
-						double y_3 = dy * (double)(arg_idx_3 +arg1);
-
-						float f3_3 = myfun(native_sin(M_PI*x_3),native_cos(2.0*M_PI*y_3))-1.0;
-						float f5_3 = native_sin(M_PI*x_3)*native_cos(2.0*M_PI*y_3);
-
-						if(index3  < size0){
-							u.u3[base_index +j] = f3_3;
-							ref.u3[base_index +j] = f5_3;
-						}
-
-						//------------COMPUTE UNIT 4  ----------------
-						int index4 = j * 64 + 4;
-						double arg_idx_4 = arg_idx0 + index4;
-
-						double x_4  = dx * (double)(arg_idx[0]+arg0);
-						double y_4 = dy * (double)(arg_idx_4 +arg1);
-
-						float f3_4 = myfun(native_sin(M_PI*x_4),native_cos(2.0*M_PI*y_4))-1.0;
-						float f5_4 = native_sin(M_PI*x_4)*native_cos(2.0*M_PI*y_4);
-
-						if(index4  < size0){
-							u.u4[base_index +j] = f3_4;
-							ref.u4[base_index +j] = f5_4;
-						}
-
-						//------------COMPUTE UNIT 5  ----------------
-						int index5 = j * 64 + 5;
-						double arg_idx_5 = arg_idx0 + index5;
-
-						double x_5  = dx * (double)(arg_idx[0]+arg0);
-						double y_5 = dy * (double)(arg_idx_5 +arg1);
-
-						float f3_5 = myfun(native_sin(M_PI*x_5),native_cos(2.0*M_PI*y_5))-1.0;
-						float f5_5 = native_sin(M_PI*x_5)*native_cos(2.0*M_PI*y_5);
-
-						if(index5  < size0){
-							u.u5[base_index +j] = f3_5;
-							ref.u5[base_index +j] = f5_5;
-						}
-
-						//------------COMPUTE UNIT 6  ----------------
-						int index6 = j * 64 + 6;
-						double arg_idx_6 = arg_idx0 + index6;
-
-						double x_6  = dx * (double)(arg_idx[0]+arg0);
-						double y_6 = dy * (double)(arg_idx_6 +arg1);
-
-						float f3_6 = myfun(native_sin(M_PI*x_6),native_cos(2.0*M_PI*y_6))-1.0;
-						float f5_6 = native_sin(M_PI*x_6)*native_cos(2.0*M_PI*y_6);
-
-						if(index6  < size0){
-							u.u6[base_index +j] = f3_6;
-							ref.u6[base_index +j] = f5_6;
-						}
-
-						//------------COMPUTE UNIT 7  ----------------
-						int index7 = j * 64 + 7;
-						double arg_idx_7 = arg_idx0 + index7;
-
-						double x_7  = dx * (double)(arg_idx[0]+arg0);
-						double y_7 = dy * (double)(arg_idx_7 +arg1);
-
-						float f3_7 = myfun(native_sin(M_PI*x_7),native_cos(2.0*M_PI*y_7))-1.0;
-						float f5_7 = native_sin(M_PI*x_7)*native_cos(2.0*M_PI*y_7);
-
-						if(index7  < size0){
-							u.u7[base_index +j] = f3_7;
-							ref.u7[base_index +j] = f5_7;
-						}
-
-						//------------COMPUTE UNIT 8  ----------------
-						int index8 = j * 64 + 8;
-						double arg_idx_8 = arg_idx0 + index8;
-
-						double x_8  = dx * (double)(arg_idx[0]+arg0);
-						double y_8 = dy * (double)(arg_idx_8 +arg1);
-
-						float f3_8 = myfun(native_sin(M_PI*x_8),native_cos(2.0*M_PI*y_8))-1.0;
-						float f5_8 = native_sin(M_PI*x_8)*native_cos(2.0*M_PI*y_8);
-
-						if(index8  < size0){
-							u.u8[base_index +j] = f3_8;
-							ref.u8[base_index +j] = f5_8;
-						}
-
-						//------------COMPUTE UNIT 9  ----------------
-						int index9 = j * 64 + 9;
-						double arg_idx_9 = arg_idx0 + index9;
-
-						double x_9  = dx * (double)(arg_idx[0]+arg0);
-						double y_9 = dy * (double)(arg_idx_9 +arg1);
-
-						float f3_9 = myfun(native_sin(M_PI*x_9),native_cos(2.0*M_PI*y_9))-1.0;
-						float f5_9 = native_sin(M_PI*x_9)*native_cos(2.0*M_PI*y_9);
-
-						if(index9  < size0){
-							u.u9[base_index +j] = f3_9;
-							ref.u9[base_index +j] = f5_9;
-						}
-
-						//------------COMPUTE UNIT 10  ----------------
-						int index10 = j * 64 + 10;
-						double arg_idx_10 = arg_idx0 + index10;
-
-						double x_10  = dx * (double)(arg_idx[0]+arg0);
-						double y_10 = dy * (double)(arg_idx_10 +arg1);
-
-						float f3_10 = myfun(native_sin(M_PI*x_10),native_cos(2.0*M_PI*y_10))-1.0;
-						float f5_10 = native_sin(M_PI*x_10)*native_cos(2.0*M_PI*y_10);
-
-						if(index10  < size0){
-							u.u10[base_index +j] = f3_10;
-							ref.u10[base_index +j] = f5_10;
-						}
-
-						//------------COMPUTE UNIT 11  ----------------
-						int index11 = j * 64 + 11;
-						double arg_idx_11 = arg_idx0 + index11;
-
-						double x_11  = dx * (double)(arg_idx[0]+arg0);
-						double y_11 = dy * (double)(arg_idx_11 +arg1);
-
-						float f3_11 = myfun(native_sin(M_PI*x_11),native_cos(2.0*M_PI*y_11))-1.0;
-						float f5_11 = native_sin(M_PI*x_11)*native_cos(2.0*M_PI*y_11);
-
-						if(index11  < size0){
-							u.u11[base_index +j] = f3_11;
-							ref.u11[base_index +j] = f5_11;
-						}
-
-						//------------COMPUTE UNIT 12  ----------------
-						int index12 = j * 64 + 12;
-						double arg_idx_12 = arg_idx0 + index12;
-
-						double x_12  = dx * (double)(arg_idx[0]+arg0);
-						double y_12 = dy * (double)(arg_idx_12 +arg1);
-
-						float f3_12 = myfun(native_sin(M_PI*x_12),native_cos(2.0*M_PI*y_12))-1.0;
-						float f5_12 = native_sin(M_PI*x_12)*native_cos(2.0*M_PI*y_12);
-
-						if(index12  < size0){
-							u.u12[base_index +j] = f3_12;
-							ref.u12[base_index +j] = f5_12;
-						}
-
-						//------------COMPUTE UNIT 13  ----------------
-						int index13 = j * 64 + 13;
-						double arg_idx_13 = arg_idx0 + index13;
-
-						double x_13  = dx * (double)(arg_idx[0]+arg0);
-						double y_13 = dy * (double)(arg_idx_13 +arg1);
-
-						float f3_13 = myfun(native_sin(M_PI*x_13),native_cos(2.0*M_PI*y_13))-1.0;
-						float f5_13 = native_sin(M_PI*x_13)*native_cos(2.0*M_PI*y_13);
-
-						if(index13  < size0){
-							u.u13[base_index +j] = f3_13;
-							ref.u13[base_index +j] = f5_13;
-						}
-
-						//------------COMPUTE UNIT 14  ----------------
-						int index14 = j * 64 + 14;
-						double arg_idx_14 = arg_idx0 + index14;
-
-						double x_14  = dx * (double)(arg_idx[0]+arg0);
-						double y_14 = dy * (double)(arg_idx_14 +arg1);
-
-						float f3_14 = myfun(native_sin(M_PI*x_14),native_cos(2.0*M_PI*y_14))-1.0;
-						float f5_14 = native_sin(M_PI*x_14)*native_cos(2.0*M_PI*y_14);
-
-						if(index14  < size0){
-							u.u14[base_index +j] = f3_14;
-							ref.u14[base_index +j] = f5_14;
-						}
-
-						//------------COMPUTE UNIT 15  ----------------
-						int index15 = j * 64 + 15;
-						double arg_idx_15 = arg_idx0 + index15;
-
-						double x_15  = dx * (double)(arg_idx[0]+arg0);
-						double y_15 = dy * (double)(arg_idx_15 +arg1);
-
-						float f3_15 = myfun(native_sin(M_PI*x_15),native_cos(2.0*M_PI*y_15))-1.0;
-						float f5_15 = native_sin(M_PI*x_15)*native_cos(2.0*M_PI*y_15);
-
-						if(index15  < size0){
-							u.u15[base_index +j] = f3_15;
-							ref.u15[base_index +j] = f5_15;
-						}
-
-						//------------COMPUTE UNIT 16  ----------------
-						int index16 = j * 64 + 16;
-						double arg_idx_16 = arg_idx0 + index16;
-
-						double x_16  = dx * (double)(arg_idx[0]+arg0);
-						double y_16 = dy * (double)(arg_idx_16 +arg1);
-
-						float f3_16 = myfun(native_sin(M_PI*x_16),native_cos(2.0*M_PI*y_16))-1.0;
-						float f5_16 = native_sin(M_PI*x_16)*native_cos(2.0*M_PI*y_16);
-
-						if(index16  < size0){
-							u.u16[base_index +j] = f3_16;
-							ref.u16[base_index +j] = f5_16;
-						}
-
-						//------------COMPUTE UNIT 17  ----------------
-						int index17 = j * 64 + 17;
-						double arg_idx_17 = arg_idx0 + index17;
-
-						double x_17  = dx * (double)(arg_idx[0]+arg0);
-						double y_17 = dy * (double)(arg_idx_17 +arg1);
-
-						float f3_17 = myfun(native_sin(M_PI*x_17),native_cos(2.0*M_PI*y_17))-1.0;
-						float f5_17 = native_sin(M_PI*x_17)*native_cos(2.0*M_PI*y_17);
-
-						if(index17  < size0){
-							u.u17[base_index +j] = f3_17;
-							ref.u17[base_index +j] = f5_17;
-						}
-
-						//------------COMPUTE UNIT 18  ----------------
-						int index18 = j * 64 + 18;
-						double arg_idx_18 = arg_idx0 + index18;
-
-						double x_18  = dx * (double)(arg_idx[0]+arg0);
-						double y_18 = dy * (double)(arg_idx_18 +arg1);
-
-						float f3_18 = myfun(native_sin(M_PI*x_18),native_cos(2.0*M_PI*y_18))-1.0;
-						float f5_18 = native_sin(M_PI*x_18)*native_cos(2.0*M_PI*y_18);
-
-						if(index18  < size0){
-							u.u18[base_index +j] = f3_18;
-							ref.u18[base_index +j] = f5_18;
-						}
-
-						//------------COMPUTE UNIT 19  ----------------
-						int index19 = j * 64 + 19;
-						double arg_idx_19 = arg_idx0 + index19;
-
-						double x_19  = dx * (double)(arg_idx[0]+arg0);
-						double y_19 = dy * (double)(arg_idx_19 +arg1);
-
-						float f3_19 = myfun(native_sin(M_PI*x_19),native_cos(2.0*M_PI*y_19))-1.0;
-						float f5_19 = native_sin(M_PI*x_19)*native_cos(2.0*M_PI*y_19);
-
-						if(index19  < size0){
-							u.u19[base_index +j] = f3_19;
-							ref.u19[base_index +j] = f5_19;
-						}
-
-						//------------COMPUTE UNIT 20  ----------------
-						int index20 = j * 64 + 20;
-						double arg_idx_20 = arg_idx0 + index20;
-
-						double x_20  = dx * (double)(arg_idx[0]+arg0);
-						double y_20 = dy * (double)(arg_idx_20 +arg1);
-
-						float f3_20 = myfun(native_sin(M_PI*x_20),native_cos(2.0*M_PI*y_20))-1.0;
-						float f5_20 = native_sin(M_PI*x_20)*native_cos(2.0*M_PI*y_20);
-
-						if(index20  < size0){
-							u.u20[base_index +j] = f3_20;
-							ref.u20[base_index +j] = f5_20;
-						}
-
-						//------------COMPUTE UNIT 21  ----------------
-						int index21 = j * 64 + 21;
-						double arg_idx_21 = arg_idx0 + index21;
-
-						double x_21  = dx * (double)(arg_idx[0]+arg0);
-						double y_21 = dy * (double)(arg_idx_21 +arg1);
-
-						float f3_21 = myfun(native_sin(M_PI*x_21),native_cos(2.0*M_PI*y_21))-1.0;
-						float f5_21 = native_sin(M_PI*x_21)*native_cos(2.0*M_PI*y_21);
-
-						if(index21  < size0){
-							u.u21[base_index +j] = f3_21;
-							ref.u21[base_index +j] = f5_21;
-						}
-
-						//------------COMPUTE UNIT 22  ----------------
-						int index22 = j * 64 + 22;
-						double arg_idx_22 = arg_idx0 + index22;
-
-						double x_22  = dx * (double)(arg_idx[0]+arg0);
-						double y_22 = dy * (double)(arg_idx_22 +arg1);
-
-						float f3_22 = myfun(native_sin(M_PI*x_22),native_cos(2.0*M_PI*y_22))-1.0;
-						float f5_22 = native_sin(M_PI*x_22)*native_cos(2.0*M_PI*y_22);
-
-						if(index22  < size0){
-							u.u22[base_index +j] = f3_22;
-							ref.u22[base_index +j] = f5_22;
-						}
-
-						//------------COMPUTE UNIT 23  ----------------
-						int index23 = j * 64 + 23;
-						double arg_idx_23 = arg_idx0 + index23;
-
-						double x_23  = dx * (double)(arg_idx[0]+arg0);
-						double y_23 = dy * (double)(arg_idx_23 +arg1);
-
-						float f3_23 = myfun(native_sin(M_PI*x_23),native_cos(2.0*M_PI*y_23))-1.0;
-						float f5_23 = native_sin(M_PI*x_23)*native_cos(2.0*M_PI*y_23);
-
-						if(index23  < size0){
-							u.u23[base_index +j] = f3_23;
-							ref.u23[base_index +j] = f5_23;
-						}
-
-						//------------COMPUTE UNIT 24  ----------------
-						int index24 = j * 64 + 24;
-						double arg_idx_24 = arg_idx0 + index24;
-
-						double x_24  = dx * (double)(arg_idx[0]+arg0);
-						double y_24 = dy * (double)(arg_idx_24 +arg1);
-
-						float f3_24 = myfun(native_sin(M_PI*x_24),native_cos(2.0*M_PI*y_24))-1.0;
-						float f5_24 = native_sin(M_PI*x_24)*native_cos(2.0*M_PI*y_24);
-
-						if(index24  < size0){
-							u.u24[base_index +j] = f3_24;
-							ref.u24[base_index +j] = f5_24;
-						}
-
-						//------------COMPUTE UNIT 25  ----------------
-						int index25 = j * 64 + 25;
-						double arg_idx_25 = arg_idx0 + index25;
-
-						double x_25  = dx * (double)(arg_idx[0]+arg0);
-						double y_25 = dy * (double)(arg_idx_25 +arg1);
-
-						float f3_25 = myfun(native_sin(M_PI*x_25),native_cos(2.0*M_PI*y_25))-1.0;
-						float f5_25 = native_sin(M_PI*x_25)*native_cos(2.0*M_PI*y_25);
-
-						if(index25  < size0){
-							u.u25[base_index +j] = f3_25;
-							ref.u25[base_index +j] = f5_25;
-						}
-
-						//------------COMPUTE UNIT 26  ----------------
-						int index26 = j * 64 + 26;
-						double arg_idx_26 = arg_idx0 + index26;
-
-						double x_26  = dx * (double)(arg_idx[0]+arg0);
-						double y_26 = dy * (double)(arg_idx_26 +arg1);
-
-						float f3_26 = myfun(native_sin(M_PI*x_26),native_cos(2.0*M_PI*y_26))-1.0;
-						float f5_26 = native_sin(M_PI*x_26)*native_cos(2.0*M_PI*y_26);
-
-						if(index26  < size0){
-							u.u26[base_index +j] = f3_26;
-							ref.u26[base_index +j] = f5_26;
-						}
-
-						//------------COMPUTE UNIT 27  ----------------
-						int index27 = j * 64 + 27;
-						double arg_idx_27 = arg_idx0 + index27;
-
-						double x_27  = dx * (double)(arg_idx[0]+arg0);
-						double y_27 = dy * (double)(arg_idx_27 +arg1);
-
-						float f3_27 = myfun(native_sin(M_PI*x_27),native_cos(2.0*M_PI*y_27))-1.0;
-						float f5_27 = native_sin(M_PI*x_27)*native_cos(2.0*M_PI*y_27);
-
-						if(index27  < size0){
-							u.u27[base_index +j] = f3_27;
-							ref.u27[base_index +j] = f5_27;
-						}
-
-						//------------COMPUTE UNIT 28  ----------------
-						int index28 = j * 64 + 28;
-						double arg_idx_28 = arg_idx0 + index28;
-
-						double x_28  = dx * (double)(arg_idx[0]+arg0);
-						double y_28 = dy * (double)(arg_idx_28 +arg1);
-
-						float f3_28 = myfun(native_sin(M_PI*x_28),native_cos(2.0*M_PI*y_28))-1.0;
-						float f5_28 = native_sin(M_PI*x_28)*native_cos(2.0*M_PI*y_28);
-
-						if(index28  < size0){
-							u.u28[base_index +j] = f3_28;
-							ref.u28[base_index +j] = f5_28;
-						}
-
-						//------------COMPUTE UNIT 29  ----------------
-						int index29 = j * 64 + 29;
-						double arg_idx_29 = arg_idx0 + index29;
-
-						double x_29  = dx * (double)(arg_idx[0]+arg0);
-						double y_29 = dy * (double)(arg_idx_29 +arg1);
-
-						float f3_29 = myfun(native_sin(M_PI*x_29),native_cos(2.0*M_PI*y_29))-1.0;
-						float f5_29 = native_sin(M_PI*x_29)*native_cos(2.0*M_PI*y_29);
-
-						if(index29  < size0){
-							u.u29[base_index +j] = f3_29;
-							ref.u29[base_index +j] = f5_29;
-						}
-
-						//------------COMPUTE UNIT 30  ----------------
-						int index30 = j * 64 + 30;
-						double arg_idx_30 = arg_idx0 + index30;
-
-						double x_30  = dx * (double)(arg_idx[0]+arg0);
-						double y_30 = dy * (double)(arg_idx_30 +arg1);
-
-						float f3_30 = myfun(native_sin(M_PI*x_30),native_cos(2.0*M_PI*y_30))-1.0;
-						float f5_30 = native_sin(M_PI*x_30)*native_cos(2.0*M_PI*y_30);
-
-						if(index30  < size0){
-							u.u30[base_index +j] = f3_30;
-							ref.u30[base_index +j] = f5_30;
-						}
-
-						//------------COMPUTE UNIT 31  ----------------
-						int index31 = j * 64 + 31;
-						double arg_idx_31 = arg_idx0 + index31;
-
-						double x_31  = dx * (double)(arg_idx[0]+arg0);
-						double y_31 = dy * (double)(arg_idx_31 +arg1);
-
-						float f3_31 = myfun(native_sin(M_PI*x_31),native_cos(2.0*M_PI*y_31))-1.0;
-						float f5_31 = native_sin(M_PI*x_31)*native_cos(2.0*M_PI*y_31);
-
-						if(index31  < size0){
-							u.u31[base_index +j] = f3_31;
-							ref.u31[base_index +j] = f5_31;
-						}
-
-						//------------COMPUTE UNIT 32  ----------------
-						int index32 = j * 64 + 32;
-						double arg_idx_32 = arg_idx0 + index32;
-
-						double x_32  = dx * (double)(arg_idx[0]+arg0);
-						double y_32 = dy * (double)(arg_idx_32 +arg1);
-
-						float f3_32 = myfun(native_sin(M_PI*x_32),native_cos(2.0*M_PI*y_32))-1.0;
-						float f5_32 = native_sin(M_PI*x_32)*native_cos(2.0*M_PI*y_32);
-
-						if(index32  < size0){
-							u.u32[base_index +j] = f3_32;
-							ref.u32[base_index +j] = f5_32;
-						}
-
-						//------------COMPUTE UNIT 33  ----------------
-						int index33 = j * 64 + 33;
-						double arg_idx_33 = arg_idx0 + index33;
-
-						double x_33  = dx * (double)(arg_idx[0]+arg0);
-						double y_33 = dy * (double)(arg_idx_33 +arg1);
-
-						float f3_33 = myfun(native_sin(M_PI*x_33),native_cos(2.0*M_PI*y_33))-1.0;
-						float f5_33 = native_sin(M_PI*x_33)*native_cos(2.0*M_PI*y_33);
-
-						if(index33  < size0){
-							u.u33[base_index +j] = f3_33;
-							ref.u33[base_index +j] = f5_33;
-						}
-
-						//------------COMPUTE UNIT 34  ----------------
-						int index34 = j * 64 + 34;
-						double arg_idx_34 = arg_idx0 + index34;
-
-						double x_34  = dx * (double)(arg_idx[0]+arg0);
-						double y_34 = dy * (double)(arg_idx_34 +arg1);
-
-						float f3_34 = myfun(native_sin(M_PI*x_34),native_cos(2.0*M_PI*y_34))-1.0;
-						float f5_34 = native_sin(M_PI*x_34)*native_cos(2.0*M_PI*y_34);
-
-						if(index34  < size0){
-							u.u34[base_index +j] = f3_34;
-							ref.u34[base_index +j] = f5_34;
-						}
-
-						//------------COMPUTE UNIT 35  ----------------
-						int index35 = j * 64 + 35;
-						double arg_idx_35 = arg_idx0 + index35;
-
-						double x_35  = dx * (double)(arg_idx[0]+arg0);
-						double y_35 = dy * (double)(arg_idx_35 +arg1);
-
-						float f3_35 = myfun(native_sin(M_PI*x_35),native_cos(2.0*M_PI*y_35))-1.0;
-						float f5_35 = native_sin(M_PI*x_35)*native_cos(2.0*M_PI*y_35);
-
-						if(index35  < size0){
-							u.u35[base_index +j] = f3_35;
-							ref.u35[base_index +j] = f5_35;
-						}
-
-						//------------COMPUTE UNIT 36  ----------------
-						int index36 = j * 64 + 36;
-						double arg_idx_36 = arg_idx0 + index36;
-
-						double x_36  = dx * (double)(arg_idx[0]+arg0);
-						double y_36 = dy * (double)(arg_idx_36 +arg1);
-
-						float f3_36 = myfun(native_sin(M_PI*x_36),native_cos(2.0*M_PI*y_36))-1.0;
-						float f5_36 = native_sin(M_PI*x_36)*native_cos(2.0*M_PI*y_36);
-
-						if(index36  < size0){
-							u.u36[base_index +j] = f3_36;
-							ref.u36[base_index +j] = f5_36;
-						}
-
-						//------------COMPUTE UNIT 37  ----------------
-						int index37 = j * 64 + 37;
-						double arg_idx_37 = arg_idx0 + index37;
-
-						double x_37  = dx * (double)(arg_idx[0]+arg0);
-						double y_37 = dy * (double)(arg_idx_37 +arg1);
-
-						float f3_37 = myfun(native_sin(M_PI*x_37),native_cos(2.0*M_PI*y_37))-1.0;
-						float f5_37 = native_sin(M_PI*x_37)*native_cos(2.0*M_PI*y_37);
-
-						if(index37  < size0){
-							u.u37[base_index +j] = f3_37;
-							ref.u37[base_index +j] = f5_37;
-						}
-
-						//------------COMPUTE UNIT 38  ----------------
-						int index38 = j * 64 + 38;
-						double arg_idx_38 = arg_idx0 + index38;
-
-						double x_38  = dx * (double)(arg_idx[0]+arg0);
-						double y_38 = dy * (double)(arg_idx_38 +arg1);
-
-						float f3_38 = myfun(native_sin(M_PI*x_38),native_cos(2.0*M_PI*y_38))-1.0;
-						float f5_38 = native_sin(M_PI*x_38)*native_cos(2.0*M_PI*y_38);
-
-						if(index38  < size0){
-							u.u38[base_index +j] = f3_38;
-							ref.u38[base_index +j] = f5_38;
-						}
-
-						//------------COMPUTE UNIT 39  ----------------
-						int index39 = j * 64 + 39;
-						double arg_idx_39 = arg_idx0 + index39;
-
-						double x_39  = dx * (double)(arg_idx[0]+arg0);
-						double y_39 = dy * (double)(arg_idx_39 +arg1);
-
-						float f3_39 = myfun(native_sin(M_PI*x_39),native_cos(2.0*M_PI*y_39))-1.0;
-						float f5_39 = native_sin(M_PI*x_39)*native_cos(2.0*M_PI*y_39);
-
-						if(index39  < size0){
-							u.u39[base_index +j] = f3_39;
-							ref.u39[base_index +j] = f5_39;
-						}
-
-						//------------COMPUTE UNIT 40  ----------------
-						int index40 = j * 64 + 40;
-						double arg_idx_40 = arg_idx0 + index40;
-
-						double x_40  = dx * (double)(arg_idx[0]+arg0);
-						double y_40 = dy * (double)(arg_idx_40 +arg1);
-
-						float f3_40 = myfun(native_sin(M_PI*x_40),native_cos(2.0*M_PI*y_40))-1.0;
-						float f5_40 = native_sin(M_PI*x_40)*native_cos(2.0*M_PI*y_40);
-
-						if(index40  < size0){
-							u.u40[base_index +j] = f3_40;
-							ref.u40[base_index +j] = f5_40;
-						}
-
-						//------------COMPUTE UNIT 41  ----------------
-						int index41 = j * 64 + 41;
-						double arg_idx_41 = arg_idx0 + index41;
-
-						double x_41  = dx * (double)(arg_idx[0]+arg0);
-						double y_41 = dy * (double)(arg_idx_41 +arg1);
-
-						float f3_41 = myfun(native_sin(M_PI*x_41),native_cos(2.0*M_PI*y_41))-1.0;
-						float f5_41 = native_sin(M_PI*x_41)*native_cos(2.0*M_PI*y_41);
-
-						if(index41  < size0){
-							u.u41[base_index +j] = f3_41;
-							ref.u41[base_index +j] = f5_41;
-						}
-
-						//------------COMPUTE UNIT 42  ----------------
-						int index42 = j * 64 + 42;
-						double arg_idx_42 = arg_idx0 + index42;
-
-						double x_42  = dx * (double)(arg_idx[0]+arg0);
-						double y_42 = dy * (double)(arg_idx_42 +arg1);
-
-						float f3_42 = myfun(native_sin(M_PI*x_42),native_cos(2.0*M_PI*y_42))-1.0;
-						float f5_42 = native_sin(M_PI*x_42)*native_cos(2.0*M_PI*y_42);
-
-						if(index42  < size0){
-							u.u42[base_index +j] = f3_42;
-							ref.u42[base_index +j] = f5_42;
-						}
-
-						//------------COMPUTE UNIT 43  ----------------
-						int index43 = j * 64 + 43;
-						double arg_idx_43 = arg_idx0 + index43;
-
-						double x_43  = dx * (double)(arg_idx[0]+arg0);
-						double y_43 = dy * (double)(arg_idx_43 +arg1);
-
-						float f3_43 = myfun(native_sin(M_PI*x_43),native_cos(2.0*M_PI*y_43))-1.0;
-						float f5_43 = native_sin(M_PI*x_43)*native_cos(2.0*M_PI*y_43);
-
-						if(index43  < size0){
-							u.u43[base_index +j] = f3_43;
-							ref.u43[base_index +j] = f5_43;
-						}
-
-						//------------COMPUTE UNIT 44  ----------------
-						int index44 = j * 64 + 44;
-						double arg_idx_44 = arg_idx0 + index44;
-
-						double x_44  = dx * (double)(arg_idx[0]+arg0);
-						double y_44 = dy * (double)(arg_idx_44 +arg1);
-
-						float f3_44 = myfun(native_sin(M_PI*x_44),native_cos(2.0*M_PI*y_44))-1.0;
-						float f5_44 = native_sin(M_PI*x_44)*native_cos(2.0*M_PI*y_44);
-
-						if(index44  < size0){
-							u.u44[base_index +j] = f3_44;
-							ref.u44[base_index +j] = f5_44;
-						}
-
-						//------------COMPUTE UNIT 45  ----------------
-						int index45 = j * 64 + 45;
-						double arg_idx_45 = arg_idx0 + index45;
-
-						double x_45  = dx * (double)(arg_idx[0]+arg0);
-						double y_45 = dy * (double)(arg_idx_45 +arg1);
-
-						float f3_45 = myfun(native_sin(M_PI*x_45),native_cos(2.0*M_PI*y_45))-1.0;
-						float f5_45 = native_sin(M_PI*x_45)*native_cos(2.0*M_PI*y_45);
-
-						if(index45  < size0){
-							u.u45[base_index +j] = f3_45;
-							ref.u45[base_index +j] = f5_45;
-						}
-
-						//------------COMPUTE UNIT 46  ----------------
-						int index46 = j * 64 + 46;
-						double arg_idx_46 = arg_idx0 + index46;
-
-						double x_46  = dx * (double)(arg_idx[0]+arg0);
-						double y_46 = dy * (double)(arg_idx_46 +arg1);
-
-						float f3_46 = myfun(native_sin(M_PI*x_46),native_cos(2.0*M_PI*y_46))-1.0;
-						float f5_46 = native_sin(M_PI*x_46)*native_cos(2.0*M_PI*y_46);
-
-						if(index46  < size0){
-							u.u46[base_index +j] = f3_46;
-							ref.u46[base_index +j] = f5_46;
-						}
-
-						//------------COMPUTE UNIT 47  ----------------
-						int index47 = j * 64 + 47;
-						double arg_idx_47 = arg_idx0 + index47;
-
-						double x_47  = dx * (double)(arg_idx[0]+arg0);
-						double y_47 = dy * (double)(arg_idx_47 +arg1);
-
-						float f3_47 = myfun(native_sin(M_PI*x_47),native_cos(2.0*M_PI*y_47))-1.0;
-						float f5_47 = native_sin(M_PI*x_47)*native_cos(2.0*M_PI*y_47);
-
-						if(index47  < size0){
-							u.u47[base_index +j] = f3_47;
-							ref.u47[base_index +j] = f5_47;
-						}
-
-						//------------COMPUTE UNIT 48  ----------------
-						int index48 = j * 64 + 48;
-						double arg_idx_48 = arg_idx0 + index48;
-
-						double x_48  = dx * (double)(arg_idx[0]+arg0);
-						double y_48 = dy * (double)(arg_idx_48 +arg1);
-
-						float f3_48 = myfun(native_sin(M_PI*x_48),native_cos(2.0*M_PI*y_48))-1.0;
-						float f5_48 = native_sin(M_PI*x_48)*native_cos(2.0*M_PI*y_48);
-
-						if(index48  < size0){
-							u.u48[base_index +j] = f3_48;
-							ref.u48[base_index +j] = f5_48;
-						}
-
-						//------------COMPUTE UNIT 49  ----------------
-						int index49 = j * 64 + 49;
-						double arg_idx_49 = arg_idx0 + index49;
-
-						double x_49  = dx * (double)(arg_idx[0]+arg0);
-						double y_49 = dy * (double)(arg_idx_49 +arg1);
-
-						float f3_49 = myfun(native_sin(M_PI*x_49),native_cos(2.0*M_PI*y_49))-1.0;
-						float f5_49 = native_sin(M_PI*x_49)*native_cos(2.0*M_PI*y_49);
-
-						if(index49  < size0){
-							u.u49[base_index +j] = f3_49;
-							ref.u49[base_index +j] = f5_49;
-						}
-
-						//------------COMPUTE UNIT 50  ----------------
-						int index50 = j * 64 + 50;
-						double arg_idx_50 = arg_idx0 + index50;
-
-						double x_50  = dx * (double)(arg_idx[0]+arg0);
-						double y_50 = dy * (double)(arg_idx_50 +arg1);
-
-						float f3_50 = myfun(native_sin(M_PI*x_50),native_cos(2.0*M_PI*y_50))-1.0;
-						float f5_50 = native_sin(M_PI*x_50)*native_cos(2.0*M_PI*y_50);
-
-						if(index50  < size0){
-							u.u50[base_index +j] = f3_50;
-							ref.u50[base_index +j] = f5_50;
-						}
-
-						//------------COMPUTE UNIT 51  ----------------
-						int index51 = j * 64 + 51;
-						double arg_idx_51 = arg_idx0 + index51;
-
-						double x_51  = dx * (double)(arg_idx[0]+arg0);
-						double y_51 = dy * (double)(arg_idx_51 +arg1);
-
-						float f3_51 = myfun(native_sin(M_PI*x_51),native_cos(2.0*M_PI*y_51))-1.0;
-						float f5_51 = native_sin(M_PI*x_51)*native_cos(2.0*M_PI*y_51);
-
-						if(index51  < size0){
-							u.u51[base_index +j] = f3_51;
-							ref.u51[base_index +j] = f5_51;
-						}
-
-						//------------COMPUTE UNIT 52  ----------------
-						int index52 = j * 64 + 52;
-						double arg_idx_52 = arg_idx0 + index52;
-
-						double x_52  = dx * (double)(arg_idx[0]+arg0);
-						double y_52 = dy * (double)(arg_idx_52 +arg1);
-
-						float f3_52 = myfun(native_sin(M_PI*x_52),native_cos(2.0*M_PI*y_52))-1.0;
-						float f5_52 = native_sin(M_PI*x_52)*native_cos(2.0*M_PI*y_52);
-
-						if(index52  < size0){
-							u.u52[base_index +j] = f3_52;
-							ref.u52[base_index +j] = f5_52;
-						}
-
-						//------------COMPUTE UNIT 53  ----------------
-						int index53 = j * 64 + 53;
-						double arg_idx_53 = arg_idx0 + index53;
-
-						double x_53  = dx * (double)(arg_idx[0]+arg0);
-						double y_53 = dy * (double)(arg_idx_53 +arg1);
-
-						float f3_53 = myfun(native_sin(M_PI*x_53),native_cos(2.0*M_PI*y_53))-1.0;
-						float f5_53 = native_sin(M_PI*x_53)*native_cos(2.0*M_PI*y_53);
-
-						if(index53  < size0){
-							u.u53[base_index +j] = f3_53;
-							ref.u53[base_index +j] = f5_53;
-						}
-
-						//------------COMPUTE UNIT 54  ----------------
-						int index54 = j * 64 + 54;
-						double arg_idx_54 = arg_idx0 + index54;
-
-						double x_54  = dx * (double)(arg_idx[0]+arg0);
-						double y_54 = dy * (double)(arg_idx_54 +arg1);
-
-						float f3_54 = myfun(native_sin(M_PI*x_54),native_cos(2.0*M_PI*y_54))-1.0;
-						float f5_54 = native_sin(M_PI*x_54)*native_cos(2.0*M_PI*y_54);
-
-						if(index54  < size0){
-							u.u54[base_index +j] = f3_54;
-							ref.u54[base_index +j] = f5_54;
-						}
-
-						//------------COMPUTE UNIT 55  ----------------
-						int index55 = j * 64 + 55;
-						double arg_idx_55 = arg_idx0 + index55;
-
-						double x_55  = dx * (double)(arg_idx[0]+arg0);
-						double y_55 = dy * (double)(arg_idx_55 +arg1);
-
-						float f3_55 = myfun(native_sin(M_PI*x_55),native_cos(2.0*M_PI*y_55))-1.0;
-						float f5_55 = native_sin(M_PI*x_55)*native_cos(2.0*M_PI*y_55);
-
-						if(index55  < size0){
-							u.u55[base_index +j] = f3_55;
-							ref.u55[base_index +j] = f5_55;
-						}
-
-						//------------COMPUTE UNIT 56  ----------------
-						int index56 = j * 64 + 56;
-						double arg_idx_56 = arg_idx0 + index56;
-
-						double x_56  = dx * (double)(arg_idx[0]+arg0);
-						double y_56 = dy * (double)(arg_idx_56 +arg1);
-
-						float f3_56 = myfun(native_sin(M_PI*x_56),native_cos(2.0*M_PI*y_56))-1.0;
-						float f5_56 = native_sin(M_PI*x_56)*native_cos(2.0*M_PI*y_56);
-
-						if(index56  < size0){
-							u.u56[base_index +j] = f3_56;
-							ref.u56[base_index +j] = f5_56;
-						}
-
-						//------------COMPUTE UNIT 57  ----------------
-						int index57 = j * 64 + 57;
-						double arg_idx_57 = arg_idx0 + index57;
-
-						double x_57  = dx * (double)(arg_idx[0]+arg0);
-						double y_57 = dy * (double)(arg_idx_57 +arg1);
-
-						float f3_57 = myfun(native_sin(M_PI*x_57),native_cos(2.0*M_PI*y_57))-1.0;
-						float f5_57 = native_sin(M_PI*x_57)*native_cos(2.0*M_PI*y_57);
-
-						if(index57  < size0){
-							u.u57[base_index +j] = f3_57;
-							ref.u57[base_index +j] = f5_57;
-						}
-
-						//------------COMPUTE UNIT 58  ----------------
-						int index58 = j * 64 + 58;
-						double arg_idx_58 = arg_idx0 + index58;
-
-						double x_58  = dx * (double)(arg_idx[0]+arg0);
-						double y_58 = dy * (double)(arg_idx_58 +arg1);
-
-						float f3_58 = myfun(native_sin(M_PI*x_58),native_cos(2.0*M_PI*y_58))-1.0;
-						float f5_58 = native_sin(M_PI*x_58)*native_cos(2.0*M_PI*y_58);
-
-						if(index58  < size0){
-							u.u58[base_index +j] = f3_58;
-							ref.u58[base_index +j] = f5_58;
-						}
-
-						//------------COMPUTE UNIT 59  ----------------
-						int index59 = j * 64 + 59;
-						double arg_idx_59 = arg_idx0 + index59;
-
-						double x_59  = dx * (double)(arg_idx[0]+arg0);
-						double y_59 = dy * (double)(arg_idx_59 +arg1);
-
-						float f3_59 = myfun(native_sin(M_PI*x_59),native_cos(2.0*M_PI*y_59))-1.0;
-						float f5_59 = native_sin(M_PI*x_59)*native_cos(2.0*M_PI*y_59);
-
-						if(index59  < size0){
-							u.u59[base_index +j] = f3_59;
-							ref.u59[base_index +j] = f5_59;
-						}
-
-						//------------COMPUTE UNIT 60  ----------------
-						int index60 = j * 64 + 60;
-						double arg_idx_60 = arg_idx0 + index60;
-
-						double x_60  = dx * (double)(arg_idx[0]+arg0);
-						double y_60 = dy * (double)(arg_idx_60 +arg1);
-
-						float f3_60 = myfun(native_sin(M_PI*x_60),native_cos(2.0*M_PI*y_60))-1.0;
-						float f5_60 = native_sin(M_PI*x_60)*native_cos(2.0*M_PI*y_60);
-
-						if(index60  < size0){
-							u.u60[base_index +j] = f3_60;
-							ref.u60[base_index +j] = f5_60;
-						}
-
-						//------------COMPUTE UNIT 61  ----------------
-						int index61 = j * 64 + 61;
-						double arg_idx_61 = arg_idx0 + index61;
-
-						double x_61  = dx * (double)(arg_idx[0]+arg0);
-						double y_61 = dy * (double)(arg_idx_61 +arg1);
-
-						float f3_61 = myfun(native_sin(M_PI*x_61),native_cos(2.0*M_PI*y_61))-1.0;
-						float f5_61 = native_sin(M_PI*x_61)*native_cos(2.0*M_PI*y_61);
-
-						if(index61  < size0){
-							u.u61[base_index +j] = f3_61;
-							ref.u61[base_index +j] = f5_61;
-						}
-
-						//------------COMPUTE UNIT 62  ----------------
-						int index62 = j * 64 + 62;
-						double arg_idx_62 = arg_idx0 + index62;
-
-						double x_62  = dx * (double)(arg_idx[0]+arg0);
-						double y_62 = dy * (double)(arg_idx_62 +arg1);
-
-						float f3_62 = myfun(native_sin(M_PI*x_62),native_cos(2.0*M_PI*y_62))-1.0;
-						float f5_62 = native_sin(M_PI*x_62)*native_cos(2.0*M_PI*y_62);
-
-						if(index62  < size0){
-							u.u62[base_index +j] = f3_62;
-							ref.u62[base_index +j] = f5_62;
-						}
-
-						//------------COMPUTE UNIT 63  ----------------
-						int index63 = j * 64 + 63;
-						double arg_idx_63 = arg_idx0 + index63;
-
-						double x_63  = dx * (double)(arg_idx[0]+arg0);
-						double y_63 = dy * (double)(arg_idx_63 +arg1);
-
-						float f3_63 = myfun(native_sin(M_PI*x_63),native_cos(2.0*M_PI*y_63))-1.0;
-						float f5_63 = native_sin(M_PI*x_63)*native_cos(2.0*M_PI*y_63);
-
-						if(index63  < size0){
-							u.u63[base_index +j] = f3_63;
-							ref.u63[base_index +j] = f5_63;
-						}
-
-				}
+__attribute__((xcl_dataflow))
+static void ops_poisson_kernel_populate(
+	const int arg0,
+	const int arg1,
+	struct bram_cluster* u,
+	struct bram_cluster* ref,
+	const float dx,
+	const float dy,
+	const int base3,
+	const int base4,
+	const int base5,
+	int arg_idx0, int arg_idx1,
+	const int size0,
+	const int size1){
+
+
+	v1_rd: __attribute__((xcl_pipeline_loop))
+	for(int i  = 0; i < size1; i++){
+
+		int arg_idx[2];
+		double x, y;
+		int end_loc = (size0 >> 6) + 1;
+		const int row_block = MAX_X_DIM/P_FACTOR;
+		int base_index = i * row_block;
+
+		arg_idx[1] = arg_idx1 + i;
+
+		__attribute__((xcl_pipeline_loop))
+		__attribute__((opencl_unroll_hint(P_FACTOR)))
+		for(int j = 0; j < end_loc ; j++){
+			//------------COMPUTE UNIT 0  ----------------
+			int index0 = j * 64 + 0;
+			double arg_idx_0 = arg_idx0 + index0;
+
+			double x_0  = dx * (double)(arg_idx_0 +arg0);
+			double y_0 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_0 = myfun(native_sin(M_PI*x_0),native_cos(2.0*M_PI*y_0))-1.0;
+			float f5_0 = native_sin(M_PI*x_0)*native_cos(2.0*M_PI*y_0);
+
+			if(index0  < size0){
+				u->u0[base_index +j] = f3_0;
+				ref->u0[base_index +j] = f5_0;
 			}
+
+			//------------COMPUTE UNIT 1  ----------------
+			int index1 = j * 64 + 1;
+			double arg_idx_1 = arg_idx0 + index1;
+
+			double x_1  = dx * (double)(arg_idx_1 +arg0);
+			double y_1 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_1 = myfun(native_sin(M_PI*x_1),native_cos(2.0*M_PI*y_1))-1.0;
+			float f5_1 = native_sin(M_PI*x_1)*native_cos(2.0*M_PI*y_1);
+
+			if(index1  < size0){
+				u->u1[base_index +j] = f3_1;
+				ref->u1[base_index +j] = f5_1;
+			}
+
+			//------------COMPUTE UNIT 2  ----------------
+			int index2 = j * 64 + 2;
+			double arg_idx_2 = arg_idx0 + index2;
+
+			double x_2  = dx * (double)(arg_idx_2 +arg0);
+			double y_2 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_2 = myfun(native_sin(M_PI*x_2),native_cos(2.0*M_PI*y_2))-1.0;
+			float f5_2 = native_sin(M_PI*x_2)*native_cos(2.0*M_PI*y_2);
+
+			if(index2  < size0){
+				u->u2[base_index +j] = f3_2;
+				ref->u2[base_index +j] = f5_2;
+			}
+
+			//------------COMPUTE UNIT 3  ----------------
+			int index3 = j * 64 + 3;
+			double arg_idx_3 = arg_idx0 + index3;
+
+			double x_3  = dx * (double)(arg_idx_3 +arg0);
+			double y_3 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_3 = myfun(native_sin(M_PI*x_3),native_cos(2.0*M_PI*y_3))-1.0;
+			float f5_3 = native_sin(M_PI*x_3)*native_cos(2.0*M_PI*y_3);
+
+			if(index3  < size0){
+				u->u3[base_index +j] = f3_3;
+				ref->u3[base_index +j] = f5_3;
+			}
+
+			//------------COMPUTE UNIT 4  ----------------
+			int index4 = j * 64 + 4;
+			double arg_idx_4 = arg_idx0 + index4;
+
+			double x_4  = dx * (double)(arg_idx_4 +arg0);
+			double y_4 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_4 = myfun(native_sin(M_PI*x_4),native_cos(2.0*M_PI*y_4))-1.0;
+			float f5_4 = native_sin(M_PI*x_4)*native_cos(2.0*M_PI*y_4);
+
+			if(index4  < size0){
+				u->u4[base_index +j] = f3_4;
+				ref->u4[base_index +j] = f5_4;
+			}
+
+			//------------COMPUTE UNIT 5  ----------------
+			int index5 = j * 64 + 5;
+			double arg_idx_5 = arg_idx0 + index5;
+
+			double x_5  = dx * (double)(arg_idx_5 +arg0);
+			double y_5 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_5 = myfun(native_sin(M_PI*x_5),native_cos(2.0*M_PI*y_5))-1.0;
+			float f5_5 = native_sin(M_PI*x_5)*native_cos(2.0*M_PI*y_5);
+
+			if(index5  < size0){
+				u->u5[base_index +j] = f3_5;
+				ref->u5[base_index +j] = f5_5;
+			}
+
+			//------------COMPUTE UNIT 6  ----------------
+			int index6 = j * 64 + 6;
+			double arg_idx_6 = arg_idx0 + index6;
+
+			double x_6  = dx * (double)(arg_idx_6 +arg0);
+			double y_6 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_6 = myfun(native_sin(M_PI*x_6),native_cos(2.0*M_PI*y_6))-1.0;
+			float f5_6 = native_sin(M_PI*x_6)*native_cos(2.0*M_PI*y_6);
+
+			if(index6  < size0){
+				u->u6[base_index +j] = f3_6;
+				ref->u6[base_index +j] = f5_6;
+			}
+
+			//------------COMPUTE UNIT 7  ----------------
+			int index7 = j * 64 + 7;
+			double arg_idx_7 = arg_idx0 + index7;
+
+			double x_7  = dx * (double)(arg_idx_7 +arg0);
+			double y_7 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_7 = myfun(native_sin(M_PI*x_7),native_cos(2.0*M_PI*y_7))-1.0;
+			float f5_7 = native_sin(M_PI*x_7)*native_cos(2.0*M_PI*y_7);
+
+			if(index7  < size0){
+				u->u7[base_index +j] = f3_7;
+				ref->u7[base_index +j] = f5_7;
+			}
+
+			//------------COMPUTE UNIT 8  ----------------
+			int index8 = j * 64 + 8;
+			double arg_idx_8 = arg_idx0 + index8;
+
+			double x_8  = dx * (double)(arg_idx_8 +arg0);
+			double y_8 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_8 = myfun(native_sin(M_PI*x_8),native_cos(2.0*M_PI*y_8))-1.0;
+			float f5_8 = native_sin(M_PI*x_8)*native_cos(2.0*M_PI*y_8);
+
+			if(index8  < size0){
+				u->u8[base_index +j] = f3_8;
+				ref->u8[base_index +j] = f5_8;
+			}
+
+			//------------COMPUTE UNIT 9  ----------------
+			int index9 = j * 64 + 9;
+			double arg_idx_9 = arg_idx0 + index9;
+
+			double x_9  = dx * (double)(arg_idx_9 +arg0);
+			double y_9 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_9 = myfun(native_sin(M_PI*x_9),native_cos(2.0*M_PI*y_9))-1.0;
+			float f5_9 = native_sin(M_PI*x_9)*native_cos(2.0*M_PI*y_9);
+
+			if(index9  < size0){
+				u->u9[base_index +j] = f3_9;
+				ref->u9[base_index +j] = f5_9;
+			}
+
+			//------------COMPUTE UNIT 10  ----------------
+			int index10 = j * 64 + 10;
+			double arg_idx_10 = arg_idx0 + index10;
+
+			double x_10  = dx * (double)(arg_idx_10 +arg0);
+			double y_10 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_10 = myfun(native_sin(M_PI*x_10),native_cos(2.0*M_PI*y_10))-1.0;
+			float f5_10 = native_sin(M_PI*x_10)*native_cos(2.0*M_PI*y_10);
+
+			if(index10  < size0){
+				u->u10[base_index +j] = f3_10;
+				ref->u10[base_index +j] = f5_10;
+			}
+
+			//------------COMPUTE UNIT 11  ----------------
+			int index11 = j * 64 + 11;
+			double arg_idx_11 = arg_idx0 + index11;
+
+			double x_11  = dx * (double)(arg_idx_11 +arg0);
+			double y_11 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_11 = myfun(native_sin(M_PI*x_11),native_cos(2.0*M_PI*y_11))-1.0;
+			float f5_11 = native_sin(M_PI*x_11)*native_cos(2.0*M_PI*y_11);
+
+			if(index11  < size0){
+				u->u11[base_index +j] = f3_11;
+				ref->u11[base_index +j] = f5_11;
+			}
+
+			//------------COMPUTE UNIT 12  ----------------
+			int index12 = j * 64 + 12;
+			double arg_idx_12 = arg_idx0 + index12;
+
+			double x_12  = dx * (double)(arg_idx_12 +arg0);
+			double y_12 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_12 = myfun(native_sin(M_PI*x_12),native_cos(2.0*M_PI*y_12))-1.0;
+			float f5_12 = native_sin(M_PI*x_12)*native_cos(2.0*M_PI*y_12);
+
+			if(index12  < size0){
+				u->u12[base_index +j] = f3_12;
+				ref->u12[base_index +j] = f5_12;
+			}
+
+			//------------COMPUTE UNIT 13  ----------------
+			int index13 = j * 64 + 13;
+			double arg_idx_13 = arg_idx0 + index13;
+
+			double x_13  = dx * (double)(arg_idx_13 +arg0);
+			double y_13 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_13 = myfun(native_sin(M_PI*x_13),native_cos(2.0*M_PI*y_13))-1.0;
+			float f5_13 = native_sin(M_PI*x_13)*native_cos(2.0*M_PI*y_13);
+
+			if(index13  < size0){
+				u->u13[base_index +j] = f3_13;
+				ref->u13[base_index +j] = f5_13;
+			}
+
+			//------------COMPUTE UNIT 14  ----------------
+			int index14 = j * 64 + 14;
+			double arg_idx_14 = arg_idx0 + index14;
+
+			double x_14  = dx * (double)(arg_idx_14 +arg0);
+			double y_14 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_14 = myfun(native_sin(M_PI*x_14),native_cos(2.0*M_PI*y_14))-1.0;
+			float f5_14 = native_sin(M_PI*x_14)*native_cos(2.0*M_PI*y_14);
+
+			if(index14  < size0){
+				u->u14[base_index +j] = f3_14;
+				ref->u14[base_index +j] = f5_14;
+			}
+
+			//------------COMPUTE UNIT 15  ----------------
+			int index15 = j * 64 + 15;
+			double arg_idx_15 = arg_idx0 + index15;
+
+			double x_15  = dx * (double)(arg_idx_15 +arg0);
+			double y_15 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_15 = myfun(native_sin(M_PI*x_15),native_cos(2.0*M_PI*y_15))-1.0;
+			float f5_15 = native_sin(M_PI*x_15)*native_cos(2.0*M_PI*y_15);
+
+			if(index15  < size0){
+				u->u15[base_index +j] = f3_15;
+				ref->u15[base_index +j] = f5_15;
+			}
+
+			//------------COMPUTE UNIT 16  ----------------
+			int index16 = j * 64 + 16;
+			double arg_idx_16 = arg_idx0 + index16;
+
+			double x_16  = dx * (double)(arg_idx_16 +arg0);
+			double y_16 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_16 = myfun(native_sin(M_PI*x_16),native_cos(2.0*M_PI*y_16))-1.0;
+			float f5_16 = native_sin(M_PI*x_16)*native_cos(2.0*M_PI*y_16);
+
+			if(index16  < size0){
+				u->u16[base_index +j] = f3_16;
+				ref->u16[base_index +j] = f5_16;
+			}
+
+			//------------COMPUTE UNIT 17  ----------------
+			int index17 = j * 64 + 17;
+			double arg_idx_17 = arg_idx0 + index17;
+
+			double x_17  = dx * (double)(arg_idx_17 +arg0);
+			double y_17 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_17 = myfun(native_sin(M_PI*x_17),native_cos(2.0*M_PI*y_17))-1.0;
+			float f5_17 = native_sin(M_PI*x_17)*native_cos(2.0*M_PI*y_17);
+
+			if(index17  < size0){
+				u->u17[base_index +j] = f3_17;
+				ref->u17[base_index +j] = f5_17;
+			}
+
+			//------------COMPUTE UNIT 18  ----------------
+			int index18 = j * 64 + 18;
+			double arg_idx_18 = arg_idx0 + index18;
+
+			double x_18  = dx * (double)(arg_idx_18 +arg0);
+			double y_18 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_18 = myfun(native_sin(M_PI*x_18),native_cos(2.0*M_PI*y_18))-1.0;
+			float f5_18 = native_sin(M_PI*x_18)*native_cos(2.0*M_PI*y_18);
+
+			if(index18  < size0){
+				u->u18[base_index +j] = f3_18;
+				ref->u18[base_index +j] = f5_18;
+			}
+
+			//------------COMPUTE UNIT 19  ----------------
+			int index19 = j * 64 + 19;
+			double arg_idx_19 = arg_idx0 + index19;
+
+			double x_19  = dx * (double)(arg_idx_19 +arg0);
+			double y_19 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_19 = myfun(native_sin(M_PI*x_19),native_cos(2.0*M_PI*y_19))-1.0;
+			float f5_19 = native_sin(M_PI*x_19)*native_cos(2.0*M_PI*y_19);
+
+			if(index19  < size0){
+				u->u19[base_index +j] = f3_19;
+				ref->u19[base_index +j] = f5_19;
+			}
+
+			//------------COMPUTE UNIT 20  ----------------
+			int index20 = j * 64 + 20;
+			double arg_idx_20 = arg_idx0 + index20;
+
+			double x_20  = dx * (double)(arg_idx_20 +arg0);
+			double y_20 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_20 = myfun(native_sin(M_PI*x_20),native_cos(2.0*M_PI*y_20))-1.0;
+			float f5_20 = native_sin(M_PI*x_20)*native_cos(2.0*M_PI*y_20);
+
+			if(index20  < size0){
+				u->u20[base_index +j] = f3_20;
+				ref->u20[base_index +j] = f5_20;
+			}
+
+			//------------COMPUTE UNIT 21  ----------------
+			int index21 = j * 64 + 21;
+			double arg_idx_21 = arg_idx0 + index21;
+
+			double x_21  = dx * (double)(arg_idx_21 +arg0);
+			double y_21 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_21 = myfun(native_sin(M_PI*x_21),native_cos(2.0*M_PI*y_21))-1.0;
+			float f5_21 = native_sin(M_PI*x_21)*native_cos(2.0*M_PI*y_21);
+
+			if(index21  < size0){
+				u->u21[base_index +j] = f3_21;
+				ref->u21[base_index +j] = f5_21;
+			}
+
+			//------------COMPUTE UNIT 22  ----------------
+			int index22 = j * 64 + 22;
+			double arg_idx_22 = arg_idx0 + index22;
+
+			double x_22  = dx * (double)(arg_idx_22 +arg0);
+			double y_22 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_22 = myfun(native_sin(M_PI*x_22),native_cos(2.0*M_PI*y_22))-1.0;
+			float f5_22 = native_sin(M_PI*x_22)*native_cos(2.0*M_PI*y_22);
+
+			if(index22  < size0){
+				u->u22[base_index +j] = f3_22;
+				ref->u22[base_index +j] = f5_22;
+			}
+
+			//------------COMPUTE UNIT 23  ----------------
+			int index23 = j * 64 + 23;
+			double arg_idx_23 = arg_idx0 + index23;
+
+			double x_23  = dx * (double)(arg_idx_23 +arg0);
+			double y_23 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_23 = myfun(native_sin(M_PI*x_23),native_cos(2.0*M_PI*y_23))-1.0;
+			float f5_23 = native_sin(M_PI*x_23)*native_cos(2.0*M_PI*y_23);
+
+			if(index23  < size0){
+				u->u23[base_index +j] = f3_23;
+				ref->u23[base_index +j] = f5_23;
+			}
+
+			//------------COMPUTE UNIT 24  ----------------
+			int index24 = j * 64 + 24;
+			double arg_idx_24 = arg_idx0 + index24;
+
+			double x_24  = dx * (double)(arg_idx_24 +arg0);
+			double y_24 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_24 = myfun(native_sin(M_PI*x_24),native_cos(2.0*M_PI*y_24))-1.0;
+			float f5_24 = native_sin(M_PI*x_24)*native_cos(2.0*M_PI*y_24);
+
+			if(index24  < size0){
+				u->u24[base_index +j] = f3_24;
+				ref->u24[base_index +j] = f5_24;
+			}
+
+			//------------COMPUTE UNIT 25  ----------------
+			int index25 = j * 64 + 25;
+			double arg_idx_25 = arg_idx0 + index25;
+
+			double x_25  = dx * (double)(arg_idx_25 +arg0);
+			double y_25 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_25 = myfun(native_sin(M_PI*x_25),native_cos(2.0*M_PI*y_25))-1.0;
+			float f5_25 = native_sin(M_PI*x_25)*native_cos(2.0*M_PI*y_25);
+
+			if(index25  < size0){
+				u->u25[base_index +j] = f3_25;
+				ref->u25[base_index +j] = f5_25;
+			}
+
+			//------------COMPUTE UNIT 26  ----------------
+			int index26 = j * 64 + 26;
+			double arg_idx_26 = arg_idx0 + index26;
+
+			double x_26  = dx * (double)(arg_idx_26 +arg0);
+			double y_26 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_26 = myfun(native_sin(M_PI*x_26),native_cos(2.0*M_PI*y_26))-1.0;
+			float f5_26 = native_sin(M_PI*x_26)*native_cos(2.0*M_PI*y_26);
+
+			if(index26  < size0){
+				u->u26[base_index +j] = f3_26;
+				ref->u26[base_index +j] = f5_26;
+			}
+
+			//------------COMPUTE UNIT 27  ----------------
+			int index27 = j * 64 + 27;
+			double arg_idx_27 = arg_idx0 + index27;
+
+			double x_27  = dx * (double)(arg_idx_27 +arg0);
+			double y_27 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_27 = myfun(native_sin(M_PI*x_27),native_cos(2.0*M_PI*y_27))-1.0;
+			float f5_27 = native_sin(M_PI*x_27)*native_cos(2.0*M_PI*y_27);
+
+			if(index27  < size0){
+				u->u27[base_index +j] = f3_27;
+				ref->u27[base_index +j] = f5_27;
+			}
+
+			//------------COMPUTE UNIT 28  ----------------
+			int index28 = j * 64 + 28;
+			double arg_idx_28 = arg_idx0 + index28;
+
+			double x_28  = dx * (double)(arg_idx_28 +arg0);
+			double y_28 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_28 = myfun(native_sin(M_PI*x_28),native_cos(2.0*M_PI*y_28))-1.0;
+			float f5_28 = native_sin(M_PI*x_28)*native_cos(2.0*M_PI*y_28);
+
+			if(index28  < size0){
+				u->u28[base_index +j] = f3_28;
+				ref->u28[base_index +j] = f5_28;
+			}
+
+			//------------COMPUTE UNIT 29  ----------------
+			int index29 = j * 64 + 29;
+			double arg_idx_29 = arg_idx0 + index29;
+
+			double x_29  = dx * (double)(arg_idx_29 +arg0);
+			double y_29 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_29 = myfun(native_sin(M_PI*x_29),native_cos(2.0*M_PI*y_29))-1.0;
+			float f5_29 = native_sin(M_PI*x_29)*native_cos(2.0*M_PI*y_29);
+
+			if(index29  < size0){
+				u->u29[base_index +j] = f3_29;
+				ref->u29[base_index +j] = f5_29;
+			}
+
+			//------------COMPUTE UNIT 30  ----------------
+			int index30 = j * 64 + 30;
+			double arg_idx_30 = arg_idx0 + index30;
+
+			double x_30  = dx * (double)(arg_idx_30 +arg0);
+			double y_30 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_30 = myfun(native_sin(M_PI*x_30),native_cos(2.0*M_PI*y_30))-1.0;
+			float f5_30 = native_sin(M_PI*x_30)*native_cos(2.0*M_PI*y_30);
+
+			if(index30  < size0){
+				u->u30[base_index +j] = f3_30;
+				ref->u30[base_index +j] = f5_30;
+			}
+
+			//------------COMPUTE UNIT 31  ----------------
+			int index31 = j * 64 + 31;
+			double arg_idx_31 = arg_idx0 + index31;
+
+			double x_31  = dx * (double)(arg_idx_31 +arg0);
+			double y_31 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_31 = myfun(native_sin(M_PI*x_31),native_cos(2.0*M_PI*y_31))-1.0;
+			float f5_31 = native_sin(M_PI*x_31)*native_cos(2.0*M_PI*y_31);
+
+			if(index31  < size0){
+				u->u31[base_index +j] = f3_31;
+				ref->u31[base_index +j] = f5_31;
+			}
+
+			//------------COMPUTE UNIT 32  ----------------
+			int index32 = j * 64 + 32;
+			double arg_idx_32 = arg_idx0 + index32;
+
+			double x_32  = dx * (double)(arg_idx_32 +arg0);
+			double y_32 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_32 = myfun(native_sin(M_PI*x_32),native_cos(2.0*M_PI*y_32))-1.0;
+			float f5_32 = native_sin(M_PI*x_32)*native_cos(2.0*M_PI*y_32);
+
+			if(index32  < size0){
+				u->u32[base_index +j] = f3_32;
+				ref->u32[base_index +j] = f5_32;
+			}
+
+			//------------COMPUTE UNIT 33  ----------------
+			int index33 = j * 64 + 33;
+			double arg_idx_33 = arg_idx0 + index33;
+
+			double x_33  = dx * (double)(arg_idx_33 +arg0);
+			double y_33 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_33 = myfun(native_sin(M_PI*x_33),native_cos(2.0*M_PI*y_33))-1.0;
+			float f5_33 = native_sin(M_PI*x_33)*native_cos(2.0*M_PI*y_33);
+
+			if(index33  < size0){
+				u->u33[base_index +j] = f3_33;
+				ref->u33[base_index +j] = f5_33;
+			}
+
+			//------------COMPUTE UNIT 34  ----------------
+			int index34 = j * 64 + 34;
+			double arg_idx_34 = arg_idx0 + index34;
+
+			double x_34  = dx * (double)(arg_idx_34 +arg0);
+			double y_34 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_34 = myfun(native_sin(M_PI*x_34),native_cos(2.0*M_PI*y_34))-1.0;
+			float f5_34 = native_sin(M_PI*x_34)*native_cos(2.0*M_PI*y_34);
+
+			if(index34  < size0){
+				u->u34[base_index +j] = f3_34;
+				ref->u34[base_index +j] = f5_34;
+			}
+
+			//------------COMPUTE UNIT 35  ----------------
+			int index35 = j * 64 + 35;
+			double arg_idx_35 = arg_idx0 + index35;
+
+			double x_35  = dx * (double)(arg_idx_35 +arg0);
+			double y_35 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_35 = myfun(native_sin(M_PI*x_35),native_cos(2.0*M_PI*y_35))-1.0;
+			float f5_35 = native_sin(M_PI*x_35)*native_cos(2.0*M_PI*y_35);
+
+			if(index35  < size0){
+				u->u35[base_index +j] = f3_35;
+				ref->u35[base_index +j] = f5_35;
+			}
+
+			//------------COMPUTE UNIT 36  ----------------
+			int index36 = j * 64 + 36;
+			double arg_idx_36 = arg_idx0 + index36;
+
+			double x_36  = dx * (double)(arg_idx_36 +arg0);
+			double y_36 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_36 = myfun(native_sin(M_PI*x_36),native_cos(2.0*M_PI*y_36))-1.0;
+			float f5_36 = native_sin(M_PI*x_36)*native_cos(2.0*M_PI*y_36);
+
+			if(index36  < size0){
+				u->u36[base_index +j] = f3_36;
+				ref->u36[base_index +j] = f5_36;
+			}
+
+			//------------COMPUTE UNIT 37  ----------------
+			int index37 = j * 64 + 37;
+			double arg_idx_37 = arg_idx0 + index37;
+
+			double x_37  = dx * (double)(arg_idx_37 +arg0);
+			double y_37 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_37 = myfun(native_sin(M_PI*x_37),native_cos(2.0*M_PI*y_37))-1.0;
+			float f5_37 = native_sin(M_PI*x_37)*native_cos(2.0*M_PI*y_37);
+
+			if(index37  < size0){
+				u->u37[base_index +j] = f3_37;
+				ref->u37[base_index +j] = f5_37;
+			}
+
+			//------------COMPUTE UNIT 38  ----------------
+			int index38 = j * 64 + 38;
+			double arg_idx_38 = arg_idx0 + index38;
+
+			double x_38  = dx * (double)(arg_idx_38 +arg0);
+			double y_38 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_38 = myfun(native_sin(M_PI*x_38),native_cos(2.0*M_PI*y_38))-1.0;
+			float f5_38 = native_sin(M_PI*x_38)*native_cos(2.0*M_PI*y_38);
+
+			if(index38  < size0){
+				u->u38[base_index +j] = f3_38;
+				ref->u38[base_index +j] = f5_38;
+			}
+
+			//------------COMPUTE UNIT 39  ----------------
+			int index39 = j * 64 + 39;
+			double arg_idx_39 = arg_idx0 + index39;
+
+			double x_39  = dx * (double)(arg_idx_39 +arg0);
+			double y_39 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_39 = myfun(native_sin(M_PI*x_39),native_cos(2.0*M_PI*y_39))-1.0;
+			float f5_39 = native_sin(M_PI*x_39)*native_cos(2.0*M_PI*y_39);
+
+			if(index39  < size0){
+				u->u39[base_index +j] = f3_39;
+				ref->u39[base_index +j] = f5_39;
+			}
+
+			//------------COMPUTE UNIT 40  ----------------
+			int index40 = j * 64 + 40;
+			double arg_idx_40 = arg_idx0 + index40;
+
+			double x_40  = dx * (double)(arg_idx_40 +arg0);
+			double y_40 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_40 = myfun(native_sin(M_PI*x_40),native_cos(2.0*M_PI*y_40))-1.0;
+			float f5_40 = native_sin(M_PI*x_40)*native_cos(2.0*M_PI*y_40);
+
+			if(index40  < size0){
+				u->u40[base_index +j] = f3_40;
+				ref->u40[base_index +j] = f5_40;
+			}
+
+			//------------COMPUTE UNIT 41  ----------------
+			int index41 = j * 64 + 41;
+			double arg_idx_41 = arg_idx0 + index41;
+
+			double x_41  = dx * (double)(arg_idx_41 +arg0);
+			double y_41 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_41 = myfun(native_sin(M_PI*x_41),native_cos(2.0*M_PI*y_41))-1.0;
+			float f5_41 = native_sin(M_PI*x_41)*native_cos(2.0*M_PI*y_41);
+
+			if(index41  < size0){
+				u->u41[base_index +j] = f3_41;
+				ref->u41[base_index +j] = f5_41;
+			}
+
+			//------------COMPUTE UNIT 42  ----------------
+			int index42 = j * 64 + 42;
+			double arg_idx_42 = arg_idx0 + index42;
+
+			double x_42  = dx * (double)(arg_idx_42 +arg0);
+			double y_42 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_42 = myfun(native_sin(M_PI*x_42),native_cos(2.0*M_PI*y_42))-1.0;
+			float f5_42 = native_sin(M_PI*x_42)*native_cos(2.0*M_PI*y_42);
+
+			if(index42  < size0){
+				u->u42[base_index +j] = f3_42;
+				ref->u42[base_index +j] = f5_42;
+			}
+
+			//------------COMPUTE UNIT 43  ----------------
+			int index43 = j * 64 + 43;
+			double arg_idx_43 = arg_idx0 + index43;
+
+			double x_43  = dx * (double)(arg_idx_43 +arg0);
+			double y_43 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_43 = myfun(native_sin(M_PI*x_43),native_cos(2.0*M_PI*y_43))-1.0;
+			float f5_43 = native_sin(M_PI*x_43)*native_cos(2.0*M_PI*y_43);
+
+			if(index43  < size0){
+				u->u43[base_index +j] = f3_43;
+				ref->u43[base_index +j] = f5_43;
+			}
+
+			//------------COMPUTE UNIT 44  ----------------
+			int index44 = j * 64 + 44;
+			double arg_idx_44 = arg_idx0 + index44;
+
+			double x_44  = dx * (double)(arg_idx_44 +arg0);
+			double y_44 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_44 = myfun(native_sin(M_PI*x_44),native_cos(2.0*M_PI*y_44))-1.0;
+			float f5_44 = native_sin(M_PI*x_44)*native_cos(2.0*M_PI*y_44);
+
+			if(index44  < size0){
+				u->u44[base_index +j] = f3_44;
+				ref->u44[base_index +j] = f5_44;
+			}
+
+			//------------COMPUTE UNIT 45  ----------------
+			int index45 = j * 64 + 45;
+			double arg_idx_45 = arg_idx0 + index45;
+
+			double x_45  = dx * (double)(arg_idx_45 +arg0);
+			double y_45 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_45 = myfun(native_sin(M_PI*x_45),native_cos(2.0*M_PI*y_45))-1.0;
+			float f5_45 = native_sin(M_PI*x_45)*native_cos(2.0*M_PI*y_45);
+
+			if(index45  < size0){
+				u->u45[base_index +j] = f3_45;
+				ref->u45[base_index +j] = f5_45;
+			}
+
+			//------------COMPUTE UNIT 46  ----------------
+			int index46 = j * 64 + 46;
+			double arg_idx_46 = arg_idx0 + index46;
+
+			double x_46  = dx * (double)(arg_idx_46 +arg0);
+			double y_46 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_46 = myfun(native_sin(M_PI*x_46),native_cos(2.0*M_PI*y_46))-1.0;
+			float f5_46 = native_sin(M_PI*x_46)*native_cos(2.0*M_PI*y_46);
+
+			if(index46  < size0){
+				u->u46[base_index +j] = f3_46;
+				ref->u46[base_index +j] = f5_46;
+			}
+
+			//------------COMPUTE UNIT 47  ----------------
+			int index47 = j * 64 + 47;
+			double arg_idx_47 = arg_idx0 + index47;
+
+			double x_47  = dx * (double)(arg_idx_47 +arg0);
+			double y_47 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_47 = myfun(native_sin(M_PI*x_47),native_cos(2.0*M_PI*y_47))-1.0;
+			float f5_47 = native_sin(M_PI*x_47)*native_cos(2.0*M_PI*y_47);
+
+			if(index47  < size0){
+				u->u47[base_index +j] = f3_47;
+				ref->u47[base_index +j] = f5_47;
+			}
+
+			//------------COMPUTE UNIT 48  ----------------
+			int index48 = j * 64 + 48;
+			double arg_idx_48 = arg_idx0 + index48;
+
+			double x_48  = dx * (double)(arg_idx_48 +arg0);
+			double y_48 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_48 = myfun(native_sin(M_PI*x_48),native_cos(2.0*M_PI*y_48))-1.0;
+			float f5_48 = native_sin(M_PI*x_48)*native_cos(2.0*M_PI*y_48);
+
+			if(index48  < size0){
+				u->u48[base_index +j] = f3_48;
+				ref->u48[base_index +j] = f5_48;
+			}
+
+			//------------COMPUTE UNIT 49  ----------------
+			int index49 = j * 64 + 49;
+			double arg_idx_49 = arg_idx0 + index49;
+
+			double x_49  = dx * (double)(arg_idx_49 +arg0);
+			double y_49 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_49 = myfun(native_sin(M_PI*x_49),native_cos(2.0*M_PI*y_49))-1.0;
+			float f5_49 = native_sin(M_PI*x_49)*native_cos(2.0*M_PI*y_49);
+
+			if(index49  < size0){
+				u->u49[base_index +j] = f3_49;
+				ref->u49[base_index +j] = f5_49;
+			}
+
+			//------------COMPUTE UNIT 50  ----------------
+			int index50 = j * 64 + 50;
+			double arg_idx_50 = arg_idx0 + index50;
+
+			double x_50  = dx * (double)(arg_idx_50 +arg0);
+			double y_50 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_50 = myfun(native_sin(M_PI*x_50),native_cos(2.0*M_PI*y_50))-1.0;
+			float f5_50 = native_sin(M_PI*x_50)*native_cos(2.0*M_PI*y_50);
+
+			if(index50  < size0){
+				u->u50[base_index +j] = f3_50;
+				ref->u50[base_index +j] = f5_50;
+			}
+
+			//------------COMPUTE UNIT 51  ----------------
+			int index51 = j * 64 + 51;
+			double arg_idx_51 = arg_idx0 + index51;
+
+			double x_51  = dx * (double)(arg_idx_51 +arg0);
+			double y_51 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_51 = myfun(native_sin(M_PI*x_51),native_cos(2.0*M_PI*y_51))-1.0;
+			float f5_51 = native_sin(M_PI*x_51)*native_cos(2.0*M_PI*y_51);
+
+			if(index51  < size0){
+				u->u51[base_index +j] = f3_51;
+				ref->u51[base_index +j] = f5_51;
+			}
+
+			//------------COMPUTE UNIT 52  ----------------
+			int index52 = j * 64 + 52;
+			double arg_idx_52 = arg_idx0 + index52;
+
+			double x_52  = dx * (double)(arg_idx_52 +arg0);
+			double y_52 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_52 = myfun(native_sin(M_PI*x_52),native_cos(2.0*M_PI*y_52))-1.0;
+			float f5_52 = native_sin(M_PI*x_52)*native_cos(2.0*M_PI*y_52);
+
+			if(index52  < size0){
+				u->u52[base_index +j] = f3_52;
+				ref->u52[base_index +j] = f5_52;
+			}
+
+			//------------COMPUTE UNIT 53  ----------------
+			int index53 = j * 64 + 53;
+			double arg_idx_53 = arg_idx0 + index53;
+
+			double x_53  = dx * (double)(arg_idx_53 +arg0);
+			double y_53 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_53 = myfun(native_sin(M_PI*x_53),native_cos(2.0*M_PI*y_53))-1.0;
+			float f5_53 = native_sin(M_PI*x_53)*native_cos(2.0*M_PI*y_53);
+
+			if(index53  < size0){
+				u->u53[base_index +j] = f3_53;
+				ref->u53[base_index +j] = f5_53;
+			}
+
+			//------------COMPUTE UNIT 54  ----------------
+			int index54 = j * 64 + 54;
+			double arg_idx_54 = arg_idx0 + index54;
+
+			double x_54  = dx * (double)(arg_idx_54 +arg0);
+			double y_54 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_54 = myfun(native_sin(M_PI*x_54),native_cos(2.0*M_PI*y_54))-1.0;
+			float f5_54 = native_sin(M_PI*x_54)*native_cos(2.0*M_PI*y_54);
+
+			if(index54  < size0){
+				u->u54[base_index +j] = f3_54;
+				ref->u54[base_index +j] = f5_54;
+			}
+
+			//------------COMPUTE UNIT 55  ----------------
+			int index55 = j * 64 + 55;
+			double arg_idx_55 = arg_idx0 + index55;
+
+			double x_55  = dx * (double)(arg_idx_55 +arg0);
+			double y_55 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_55 = myfun(native_sin(M_PI*x_55),native_cos(2.0*M_PI*y_55))-1.0;
+			float f5_55 = native_sin(M_PI*x_55)*native_cos(2.0*M_PI*y_55);
+
+			if(index55  < size0){
+				u->u55[base_index +j] = f3_55;
+				ref->u55[base_index +j] = f5_55;
+			}
+
+			//------------COMPUTE UNIT 56  ----------------
+			int index56 = j * 64 + 56;
+			double arg_idx_56 = arg_idx0 + index56;
+
+			double x_56  = dx * (double)(arg_idx_56 +arg0);
+			double y_56 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_56 = myfun(native_sin(M_PI*x_56),native_cos(2.0*M_PI*y_56))-1.0;
+			float f5_56 = native_sin(M_PI*x_56)*native_cos(2.0*M_PI*y_56);
+
+			if(index56  < size0){
+				u->u56[base_index +j] = f3_56;
+				ref->u56[base_index +j] = f5_56;
+			}
+
+			//------------COMPUTE UNIT 57  ----------------
+			int index57 = j * 64 + 57;
+			double arg_idx_57 = arg_idx0 + index57;
+
+			double x_57  = dx * (double)(arg_idx_57 +arg0);
+			double y_57 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_57 = myfun(native_sin(M_PI*x_57),native_cos(2.0*M_PI*y_57))-1.0;
+			float f5_57 = native_sin(M_PI*x_57)*native_cos(2.0*M_PI*y_57);
+
+			if(index57  < size0){
+				u->u57[base_index +j] = f3_57;
+				ref->u57[base_index +j] = f5_57;
+			}
+
+			//------------COMPUTE UNIT 58  ----------------
+			int index58 = j * 64 + 58;
+			double arg_idx_58 = arg_idx0 + index58;
+
+			double x_58  = dx * (double)(arg_idx_58 +arg0);
+			double y_58 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_58 = myfun(native_sin(M_PI*x_58),native_cos(2.0*M_PI*y_58))-1.0;
+			float f5_58 = native_sin(M_PI*x_58)*native_cos(2.0*M_PI*y_58);
+
+			if(index58  < size0){
+				u->u58[base_index +j] = f3_58;
+				ref->u58[base_index +j] = f5_58;
+			}
+
+			//------------COMPUTE UNIT 59  ----------------
+			int index59 = j * 64 + 59;
+			double arg_idx_59 = arg_idx0 + index59;
+
+			double x_59  = dx * (double)(arg_idx_59 +arg0);
+			double y_59 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_59 = myfun(native_sin(M_PI*x_59),native_cos(2.0*M_PI*y_59))-1.0;
+			float f5_59 = native_sin(M_PI*x_59)*native_cos(2.0*M_PI*y_59);
+
+			if(index59  < size0){
+				u->u59[base_index +j] = f3_59;
+				ref->u59[base_index +j] = f5_59;
+			}
+
+			//------------COMPUTE UNIT 60  ----------------
+			int index60 = j * 64 + 60;
+			double arg_idx_60 = arg_idx0 + index60;
+
+			double x_60  = dx * (double)(arg_idx_60 +arg0);
+			double y_60 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_60 = myfun(native_sin(M_PI*x_60),native_cos(2.0*M_PI*y_60))-1.0;
+			float f5_60 = native_sin(M_PI*x_60)*native_cos(2.0*M_PI*y_60);
+
+			if(index60  < size0){
+				u->u60[base_index +j] = f3_60;
+				ref->u60[base_index +j] = f5_60;
+			}
+
+			//------------COMPUTE UNIT 61  ----------------
+			int index61 = j * 64 + 61;
+			double arg_idx_61 = arg_idx0 + index61;
+
+			double x_61  = dx * (double)(arg_idx_61 +arg0);
+			double y_61 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_61 = myfun(native_sin(M_PI*x_61),native_cos(2.0*M_PI*y_61))-1.0;
+			float f5_61 = native_sin(M_PI*x_61)*native_cos(2.0*M_PI*y_61);
+
+			if(index61  < size0){
+				u->u61[base_index +j] = f3_61;
+				ref->u61[base_index +j] = f5_61;
+			}
+
+			//------------COMPUTE UNIT 62  ----------------
+			int index62 = j * 64 + 62;
+			double arg_idx_62 = arg_idx0 + index62;
+
+			double x_62  = dx * (double)(arg_idx_62 +arg0);
+			double y_62 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_62 = myfun(native_sin(M_PI*x_62),native_cos(2.0*M_PI*y_62))-1.0;
+			float f5_62 = native_sin(M_PI*x_62)*native_cos(2.0*M_PI*y_62);
+
+			if(index62  < size0){
+				u->u62[base_index +j] = f3_62;
+				ref->u62[base_index +j] = f5_62;
+			}
+
+			//------------COMPUTE UNIT 63  ----------------
+			int index63 = j * 64 + 63;
+			double arg_idx_63 = arg_idx0 + index63;
+
+			double x_63  = dx * (double)(arg_idx_63 +arg0);
+			double y_63 = dy * (double)(arg_idx[1] +arg1);
+
+			float f3_63 = myfun(native_sin(M_PI*x_63),native_cos(2.0*M_PI*y_63))-1.0;
+			float f5_63 = native_sin(M_PI*x_63)*native_cos(2.0*M_PI*y_63);
+
+			if(index63  < size0){
+				u->u63[base_index +j] = f3_63;
+				ref->u63[base_index +j] = f5_63;
+			}
+		}
+	}
 
 }
 
-	__attribute__((xcl_dataflow))
-	static void ops_poisson_kernel_stencil(
-			struct bram_cluster u1,
-			struct bram_cluster u2,
-			const int base0,
-			const int base1,
-			const int size0,
-			const int size1){
+__attribute__((xcl_dataflow))
+static void ops_poisson_kernel_stencil(
+		struct bram_cluster u1,
+		struct bram_cluster* u2,
+		const int base0,
+		const int base1,
+		const int size0,
+		const int size1){
 
 
-		float first_element = 0;
-		int base_index1, base_index2, base_index3, base_index0;
+	float first_element = 0;
+	int base_index1, base_index2, base_index3, base_index0;
+	int end_loc =  (size0 >> 6) + 1;
+	const int row_block = MAX_X_DIM/P_FACTOR;
+
+
+
+
+	for(int i = 0; i < size1; i++){
+
+		int base_index0 = (i) * row_block;
+		int base_index1 = (i+1) * row_block;
+		int base_index2 = (i+2) * row_block;
+
+		__attribute__((xcl_pipeline_loop))
+		for(int j = 0; j < end_loc ; j++){
+
+
+			int index0 = j * 64 + 0;
+			if( index0 > 0 && index0  < size0){
+				float f1_0 = (u1.u0[base_index0+j] + u1.u0[base_index2+j]) * 0.125;
+				float f2_0 = (u1.u63[base_index1+j-1] + u1.u1[base_index1+j]) * 0.125;
+				float f3_0 = u1.u0[base_index1+j] * 0.5;
+				float result_0 = f1_0 + f2_0 + f3_0;
+				u2->u0[base_index1+j] = result_0;
+			}
+
+			int index1 = j * 64 + 1;
+			if(index1  < size0){
+				float f1_1 = (u1.u1[base_index0+j] + u1.u1[base_index2+j]) * 0.125;
+				float f2_1 = (u1.u0[base_index1+j] + u1.u2[base_index1+j]) * 0.125;
+				float f3_1 = u1.u1[base_index1+j] * 0.5;
+				float result_1 = f1_1 + f2_1 + f3_1;
+				u2->u1[base_index1+j] = result_1;
+			}
+
+			int index2 = j * 64 + 2;
+			if(index2  < size0){
+				float f1_2 = (u1.u2[base_index0+j] + u1.u2[base_index2+j]) * 0.125;
+				float f2_2 = (u1.u1[base_index1+j] + u1.u3[base_index1+j]) * 0.125;
+				float f3_2 = u1.u2[base_index1+j] * 0.5;
+				float result_2 = f1_2 + f2_2 + f3_2;
+				u2->u2[base_index1+j] = result_2;
+			}
+
+			int index3 = j * 64 + 3;
+			if(index3  < size0){
+				float f1_3 = (u1.u3[base_index0+j] + u1.u3[base_index2+j]) * 0.125;
+				float f2_3 = (u1.u2[base_index1+j] + u1.u4[base_index1+j]) * 0.125;
+				float f3_3 = u1.u3[base_index1+j] * 0.5;
+				float result_3 = f1_3 + f2_3 + f3_3;
+				u2->u3[base_index1+j] = result_3;
+			}
+
+			int index4 = j * 64 + 4;
+			if(index4  < size0){
+				float f1_4 = (u1.u4[base_index0+j] + u1.u4[base_index2+j]) * 0.125;
+				float f2_4 = (u1.u3[base_index1+j] + u1.u5[base_index1+j]) * 0.125;
+				float f3_4 = u1.u4[base_index1+j] * 0.5;
+				float result_4 = f1_4 + f2_4 + f3_4;
+				u2->u4[base_index1+j] = result_4;
+			}
+
+			int index5 = j * 64 + 5;
+			if(index5  < size0){
+				float f1_5 = (u1.u5[base_index0+j] + u1.u5[base_index2+j]) * 0.125;
+				float f2_5 = (u1.u4[base_index1+j] + u1.u6[base_index1+j]) * 0.125;
+				float f3_5 = u1.u5[base_index1+j] * 0.5;
+				float result_5 = f1_5 + f2_5 + f3_5;
+				u2->u5[base_index1+j] = result_5;
+			}
+
+			int index6 = j * 64 + 6;
+			if(index6  < size0){
+				float f1_6 = (u1.u6[base_index0+j] + u1.u6[base_index2+j]) * 0.125;
+				float f2_6 = (u1.u5[base_index1+j] + u1.u7[base_index1+j]) * 0.125;
+				float f3_6 = u1.u6[base_index1+j] * 0.5;
+				float result_6 = f1_6 + f2_6 + f3_6;
+				u2->u6[base_index1+j] = result_6;
+			}
+
+			int index7 = j * 64 + 7;
+			if(index7  < size0){
+				float f1_7 = (u1.u7[base_index0+j] + u1.u7[base_index2+j]) * 0.125;
+				float f2_7 = (u1.u6[base_index1+j] + u1.u8[base_index1+j]) * 0.125;
+				float f3_7 = u1.u7[base_index1+j] * 0.5;
+				float result_7 = f1_7 + f2_7 + f3_7;
+				u2->u7[base_index1+j] = result_7;
+			}
+
+			int index8 = j * 64 + 8;
+			if(index8  < size0){
+				float f1_8 = (u1.u8[base_index0+j] + u1.u8[base_index2+j]) * 0.125;
+				float f2_8 = (u1.u7[base_index1+j] + u1.u9[base_index1+j]) * 0.125;
+				float f3_8 = u1.u8[base_index1+j] * 0.5;
+				float result_8 = f1_8 + f2_8 + f3_8;
+				u2->u8[base_index1+j] = result_8;
+			}
+
+			int index9 = j * 64 + 9;
+			if(index9  < size0){
+				float f1_9 = (u1.u9[base_index0+j] + u1.u9[base_index2+j]) * 0.125;
+				float f2_9 = (u1.u8[base_index1+j] + u1.u10[base_index1+j]) * 0.125;
+				float f3_9 = u1.u9[base_index1+j] * 0.5;
+				float result_9 = f1_9 + f2_9 + f3_9;
+				u2->u9[base_index1+j] = result_9;
+			}
+
+			int index10 = j * 64 + 10;
+			if(index10  < size0){
+				float f1_10 = (u1.u10[base_index0+j] + u1.u10[base_index2+j]) * 0.125;
+				float f2_10 = (u1.u9[base_index1+j] + u1.u11[base_index1+j]) * 0.125;
+				float f3_10 = u1.u10[base_index1+j] * 0.5;
+				float result_10 = f1_10 + f2_10 + f3_10;
+				u2->u10[base_index1+j] = result_10;
+			}
+
+			int index11 = j * 64 + 11;
+			if(index11  < size0){
+				float f1_11 = (u1.u11[base_index0+j] + u1.u11[base_index2+j]) * 0.125;
+				float f2_11 = (u1.u10[base_index1+j] + u1.u12[base_index1+j]) * 0.125;
+				float f3_11 = u1.u11[base_index1+j] * 0.5;
+				float result_11 = f1_11 + f2_11 + f3_11;
+				u2->u11[base_index1+j] = result_11;
+			}
+
+			int index12 = j * 64 + 12;
+			if(index12  < size0){
+				float f1_12 = (u1.u12[base_index0+j] + u1.u12[base_index2+j]) * 0.125;
+				float f2_12 = (u1.u11[base_index1+j] + u1.u13[base_index1+j]) * 0.125;
+				float f3_12 = u1.u12[base_index1+j] * 0.5;
+				float result_12 = f1_12 + f2_12 + f3_12;
+				u2->u12[base_index1+j] = result_12;
+			}
+
+			int index13 = j * 64 + 13;
+			if(index13  < size0){
+				float f1_13 = (u1.u13[base_index0+j] + u1.u13[base_index2+j]) * 0.125;
+				float f2_13 = (u1.u12[base_index1+j] + u1.u14[base_index1+j]) * 0.125;
+				float f3_13 = u1.u13[base_index1+j] * 0.5;
+				float result_13 = f1_13 + f2_13 + f3_13;
+				u2->u13[base_index1+j] = result_13;
+			}
+
+			int index14 = j * 64 + 14;
+			if(index14  < size0){
+				float f1_14 = (u1.u14[base_index0+j] + u1.u14[base_index2+j]) * 0.125;
+				float f2_14 = (u1.u13[base_index1+j] + u1.u15[base_index1+j]) * 0.125;
+				float f3_14 = u1.u14[base_index1+j] * 0.5;
+				float result_14 = f1_14 + f2_14 + f3_14;
+				u2->u14[base_index1+j] = result_14;
+			}
+
+			int index15 = j * 64 + 15;
+			if(index15  < size0){
+				float f1_15 = (u1.u15[base_index0+j] + u1.u15[base_index2+j]) * 0.125;
+				float f2_15 = (u1.u14[base_index1+j] + u1.u16[base_index1+j]) * 0.125;
+				float f3_15 = u1.u15[base_index1+j] * 0.5;
+				float result_15 = f1_15 + f2_15 + f3_15;
+				u2->u15[base_index1+j] = result_15;
+			}
+
+			int index16 = j * 64 + 16;
+			if(index16  < size0){
+				float f1_16 = (u1.u16[base_index0+j] + u1.u16[base_index2+j]) * 0.125;
+				float f2_16 = (u1.u15[base_index1+j] + u1.u17[base_index1+j]) * 0.125;
+				float f3_16 = u1.u16[base_index1+j] * 0.5;
+				float result_16 = f1_16 + f2_16 + f3_16;
+				u2->u16[base_index1+j] = result_16;
+			}
+
+			int index17 = j * 64 + 17;
+			if(index17  < size0){
+				float f1_17 = (u1.u17[base_index0+j] + u1.u17[base_index2+j]) * 0.125;
+				float f2_17 = (u1.u16[base_index1+j] + u1.u18[base_index1+j]) * 0.125;
+				float f3_17 = u1.u17[base_index1+j] * 0.5;
+				float result_17 = f1_17 + f2_17 + f3_17;
+				u2->u17[base_index1+j] = result_17;
+			}
+
+			int index18 = j * 64 + 18;
+			if(index18  < size0){
+				float f1_18 = (u1.u18[base_index0+j] + u1.u18[base_index2+j]) * 0.125;
+				float f2_18 = (u1.u17[base_index1+j] + u1.u19[base_index1+j]) * 0.125;
+				float f3_18 = u1.u18[base_index1+j] * 0.5;
+				float result_18 = f1_18 + f2_18 + f3_18;
+				u2->u18[base_index1+j] = result_18;
+			}
+
+			int index19 = j * 64 + 19;
+			if(index19  < size0){
+				float f1_19 = (u1.u19[base_index0+j] + u1.u19[base_index2+j]) * 0.125;
+				float f2_19 = (u1.u18[base_index1+j] + u1.u20[base_index1+j]) * 0.125;
+				float f3_19 = u1.u19[base_index1+j] * 0.5;
+				float result_19 = f1_19 + f2_19 + f3_19;
+				u2->u19[base_index1+j] = result_19;
+			}
+
+			int index20 = j * 64 + 20;
+			if(index20  < size0){
+				float f1_20 = (u1.u20[base_index0+j] + u1.u20[base_index2+j]) * 0.125;
+				float f2_20 = (u1.u19[base_index1+j] + u1.u21[base_index1+j]) * 0.125;
+				float f3_20 = u1.u20[base_index1+j] * 0.5;
+				float result_20 = f1_20 + f2_20 + f3_20;
+				u2->u20[base_index1+j] = result_20;
+			}
+
+			int index21 = j * 64 + 21;
+			if(index21  < size0){
+				float f1_21 = (u1.u21[base_index0+j] + u1.u21[base_index2+j]) * 0.125;
+				float f2_21 = (u1.u20[base_index1+j] + u1.u22[base_index1+j]) * 0.125;
+				float f3_21 = u1.u21[base_index1+j] * 0.5;
+				float result_21 = f1_21 + f2_21 + f3_21;
+				u2->u21[base_index1+j] = result_21;
+			}
+
+			int index22 = j * 64 + 22;
+			if(index22  < size0){
+				float f1_22 = (u1.u22[base_index0+j] + u1.u22[base_index2+j]) * 0.125;
+				float f2_22 = (u1.u21[base_index1+j] + u1.u23[base_index1+j]) * 0.125;
+				float f3_22 = u1.u22[base_index1+j] * 0.5;
+				float result_22 = f1_22 + f2_22 + f3_22;
+				u2->u22[base_index1+j] = result_22;
+			}
+
+			int index23 = j * 64 + 23;
+			if(index23  < size0){
+				float f1_23 = (u1.u23[base_index0+j] + u1.u23[base_index2+j]) * 0.125;
+				float f2_23 = (u1.u22[base_index1+j] + u1.u24[base_index1+j]) * 0.125;
+				float f3_23 = u1.u23[base_index1+j] * 0.5;
+				float result_23 = f1_23 + f2_23 + f3_23;
+				u2->u23[base_index1+j] = result_23;
+			}
+
+			int index24 = j * 64 + 24;
+			if(index24  < size0){
+				float f1_24 = (u1.u24[base_index0+j] + u1.u24[base_index2+j]) * 0.125;
+				float f2_24 = (u1.u23[base_index1+j] + u1.u25[base_index1+j]) * 0.125;
+				float f3_24 = u1.u24[base_index1+j] * 0.5;
+				float result_24 = f1_24 + f2_24 + f3_24;
+				u2->u24[base_index1+j] = result_24;
+			}
+
+			int index25 = j * 64 + 25;
+			if(index25  < size0){
+				float f1_25 = (u1.u25[base_index0+j] + u1.u25[base_index2+j]) * 0.125;
+				float f2_25 = (u1.u24[base_index1+j] + u1.u26[base_index1+j]) * 0.125;
+				float f3_25 = u1.u25[base_index1+j] * 0.5;
+				float result_25 = f1_25 + f2_25 + f3_25;
+				u2->u25[base_index1+j] = result_25;
+			}
+
+			int index26 = j * 64 + 26;
+			if(index26  < size0){
+				float f1_26 = (u1.u26[base_index0+j] + u1.u26[base_index2+j]) * 0.125;
+				float f2_26 = (u1.u25[base_index1+j] + u1.u27[base_index1+j]) * 0.125;
+				float f3_26 = u1.u26[base_index1+j] * 0.5;
+				float result_26 = f1_26 + f2_26 + f3_26;
+				u2->u26[base_index1+j] = result_26;
+			}
+
+			int index27 = j * 64 + 27;
+			if(index27  < size0){
+				float f1_27 = (u1.u27[base_index0+j] + u1.u27[base_index2+j]) * 0.125;
+				float f2_27 = (u1.u26[base_index1+j] + u1.u28[base_index1+j]) * 0.125;
+				float f3_27 = u1.u27[base_index1+j] * 0.5;
+				float result_27 = f1_27 + f2_27 + f3_27;
+				u2->u27[base_index1+j] = result_27;
+			}
+
+			int index28 = j * 64 + 28;
+			if(index28  < size0){
+				float f1_28 = (u1.u28[base_index0+j] + u1.u28[base_index2+j]) * 0.125;
+				float f2_28 = (u1.u27[base_index1+j] + u1.u29[base_index1+j]) * 0.125;
+				float f3_28 = u1.u28[base_index1+j] * 0.5;
+				float result_28 = f1_28 + f2_28 + f3_28;
+				u2->u28[base_index1+j] = result_28;
+			}
+
+			int index29 = j * 64 + 29;
+			if(index29  < size0){
+				float f1_29 = (u1.u29[base_index0+j] + u1.u29[base_index2+j]) * 0.125;
+				float f2_29 = (u1.u28[base_index1+j] + u1.u30[base_index1+j]) * 0.125;
+				float f3_29 = u1.u29[base_index1+j] * 0.5;
+				float result_29 = f1_29 + f2_29 + f3_29;
+				u2->u29[base_index1+j] = result_29;
+			}
+
+			int index30 = j * 64 + 30;
+			if(index30  < size0){
+				float f1_30 = (u1.u30[base_index0+j] + u1.u30[base_index2+j]) * 0.125;
+				float f2_30 = (u1.u29[base_index1+j] + u1.u31[base_index1+j]) * 0.125;
+				float f3_30 = u1.u30[base_index1+j] * 0.5;
+				float result_30 = f1_30 + f2_30 + f3_30;
+				u2->u30[base_index1+j] = result_30;
+			}
+
+			int index31 = j * 64 + 31;
+			if(index31  < size0){
+				float f1_31 = (u1.u31[base_index0+j] + u1.u31[base_index2+j]) * 0.125;
+				float f2_31 = (u1.u30[base_index1+j] + u1.u32[base_index1+j]) * 0.125;
+				float f3_31 = u1.u31[base_index1+j] * 0.5;
+				float result_31 = f1_31 + f2_31 + f3_31;
+				u2->u31[base_index1+j] = result_31;
+			}
+
+			int index32 = j * 64 + 32;
+			if(index32  < size0){
+				float f1_32 = (u1.u32[base_index0+j] + u1.u32[base_index2+j]) * 0.125;
+				float f2_32 = (u1.u31[base_index1+j] + u1.u33[base_index1+j]) * 0.125;
+				float f3_32 = u1.u32[base_index1+j] * 0.5;
+				float result_32 = f1_32 + f2_32 + f3_32;
+				u2->u32[base_index1+j] = result_32;
+			}
+
+			int index33 = j * 64 + 33;
+			if(index33  < size0){
+				float f1_33 = (u1.u33[base_index0+j] + u1.u33[base_index2+j]) * 0.125;
+				float f2_33 = (u1.u32[base_index1+j] + u1.u34[base_index1+j]) * 0.125;
+				float f3_33 = u1.u33[base_index1+j] * 0.5;
+				float result_33 = f1_33 + f2_33 + f3_33;
+				u2->u33[base_index1+j] = result_33;
+			}
+
+			int index34 = j * 64 + 34;
+			if(index34  < size0){
+				float f1_34 = (u1.u34[base_index0+j] + u1.u34[base_index2+j]) * 0.125;
+				float f2_34 = (u1.u33[base_index1+j] + u1.u35[base_index1+j]) * 0.125;
+				float f3_34 = u1.u34[base_index1+j] * 0.5;
+				float result_34 = f1_34 + f2_34 + f3_34;
+				u2->u34[base_index1+j] = result_34;
+			}
+
+			int index35 = j * 64 + 35;
+			if(index35  < size0){
+				float f1_35 = (u1.u35[base_index0+j] + u1.u35[base_index2+j]) * 0.125;
+				float f2_35 = (u1.u34[base_index1+j] + u1.u36[base_index1+j]) * 0.125;
+				float f3_35 = u1.u35[base_index1+j] * 0.5;
+				float result_35 = f1_35 + f2_35 + f3_35;
+				u2->u35[base_index1+j] = result_35;
+			}
+
+			int index36 = j * 64 + 36;
+			if(index36  < size0){
+				float f1_36 = (u1.u36[base_index0+j] + u1.u36[base_index2+j]) * 0.125;
+				float f2_36 = (u1.u35[base_index1+j] + u1.u37[base_index1+j]) * 0.125;
+				float f3_36 = u1.u36[base_index1+j] * 0.5;
+				float result_36 = f1_36 + f2_36 + f3_36;
+				u2->u36[base_index1+j] = result_36;
+			}
+
+			int index37 = j * 64 + 37;
+			if(index37  < size0){
+				float f1_37 = (u1.u37[base_index0+j] + u1.u37[base_index2+j]) * 0.125;
+				float f2_37 = (u1.u36[base_index1+j] + u1.u38[base_index1+j]) * 0.125;
+				float f3_37 = u1.u37[base_index1+j] * 0.5;
+				float result_37 = f1_37 + f2_37 + f3_37;
+				u2->u37[base_index1+j] = result_37;
+			}
+
+			int index38 = j * 64 + 38;
+			if(index38  < size0){
+				float f1_38 = (u1.u38[base_index0+j] + u1.u38[base_index2+j]) * 0.125;
+				float f2_38 = (u1.u37[base_index1+j] + u1.u39[base_index1+j]) * 0.125;
+				float f3_38 = u1.u38[base_index1+j] * 0.5;
+				float result_38 = f1_38 + f2_38 + f3_38;
+				u2->u38[base_index1+j] = result_38;
+			}
+
+			int index39 = j * 64 + 39;
+			if(index39  < size0){
+				float f1_39 = (u1.u39[base_index0+j] + u1.u39[base_index2+j]) * 0.125;
+				float f2_39 = (u1.u38[base_index1+j] + u1.u40[base_index1+j]) * 0.125;
+				float f3_39 = u1.u39[base_index1+j] * 0.5;
+				float result_39 = f1_39 + f2_39 + f3_39;
+				u2->u39[base_index1+j] = result_39;
+			}
+
+			int index40 = j * 64 + 40;
+			if(index40  < size0){
+				float f1_40 = (u1.u40[base_index0+j] + u1.u40[base_index2+j]) * 0.125;
+				float f2_40 = (u1.u39[base_index1+j] + u1.u41[base_index1+j]) * 0.125;
+				float f3_40 = u1.u40[base_index1+j] * 0.5;
+				float result_40 = f1_40 + f2_40 + f3_40;
+				u2->u40[base_index1+j] = result_40;
+			}
+
+			int index41 = j * 64 + 41;
+			if(index41  < size0){
+				float f1_41 = (u1.u41[base_index0+j] + u1.u41[base_index2+j]) * 0.125;
+				float f2_41 = (u1.u40[base_index1+j] + u1.u42[base_index1+j]) * 0.125;
+				float f3_41 = u1.u41[base_index1+j] * 0.5;
+				float result_41 = f1_41 + f2_41 + f3_41;
+				u2->u41[base_index1+j] = result_41;
+			}
+
+			int index42 = j * 64 + 42;
+			if(index42  < size0){
+				float f1_42 = (u1.u42[base_index0+j] + u1.u42[base_index2+j]) * 0.125;
+				float f2_42 = (u1.u41[base_index1+j] + u1.u43[base_index1+j]) * 0.125;
+				float f3_42 = u1.u42[base_index1+j] * 0.5;
+				float result_42 = f1_42 + f2_42 + f3_42;
+				u2->u42[base_index1+j] = result_42;
+			}
+
+			int index43 = j * 64 + 43;
+			if(index43  < size0){
+				float f1_43 = (u1.u43[base_index0+j] + u1.u43[base_index2+j]) * 0.125;
+				float f2_43 = (u1.u42[base_index1+j] + u1.u44[base_index1+j]) * 0.125;
+				float f3_43 = u1.u43[base_index1+j] * 0.5;
+				float result_43 = f1_43 + f2_43 + f3_43;
+				u2->u43[base_index1+j] = result_43;
+			}
+
+			int index44 = j * 64 + 44;
+			if(index44  < size0){
+				float f1_44 = (u1.u44[base_index0+j] + u1.u44[base_index2+j]) * 0.125;
+				float f2_44 = (u1.u43[base_index1+j] + u1.u45[base_index1+j]) * 0.125;
+				float f3_44 = u1.u44[base_index1+j] * 0.5;
+				float result_44 = f1_44 + f2_44 + f3_44;
+				u2->u44[base_index1+j] = result_44;
+			}
+
+			int index45 = j * 64 + 45;
+			if(index45  < size0){
+				float f1_45 = (u1.u45[base_index0+j] + u1.u45[base_index2+j]) * 0.125;
+				float f2_45 = (u1.u44[base_index1+j] + u1.u46[base_index1+j]) * 0.125;
+				float f3_45 = u1.u45[base_index1+j] * 0.5;
+				float result_45 = f1_45 + f2_45 + f3_45;
+				u2->u45[base_index1+j] = result_45;
+			}
+
+			int index46 = j * 64 + 46;
+			if(index46  < size0){
+				float f1_46 = (u1.u46[base_index0+j] + u1.u46[base_index2+j]) * 0.125;
+				float f2_46 = (u1.u45[base_index1+j] + u1.u47[base_index1+j]) * 0.125;
+				float f3_46 = u1.u46[base_index1+j] * 0.5;
+				float result_46 = f1_46 + f2_46 + f3_46;
+				u2->u46[base_index1+j] = result_46;
+			}
+
+			int index47 = j * 64 + 47;
+			if(index47  < size0){
+				float f1_47 = (u1.u47[base_index0+j] + u1.u47[base_index2+j]) * 0.125;
+				float f2_47 = (u1.u46[base_index1+j] + u1.u48[base_index1+j]) * 0.125;
+				float f3_47 = u1.u47[base_index1+j] * 0.5;
+				float result_47 = f1_47 + f2_47 + f3_47;
+				u2->u47[base_index1+j] = result_47;
+			}
+
+			int index48 = j * 64 + 48;
+			if(index48  < size0){
+				float f1_48 = (u1.u48[base_index0+j] + u1.u48[base_index2+j]) * 0.125;
+				float f2_48 = (u1.u47[base_index1+j] + u1.u49[base_index1+j]) * 0.125;
+				float f3_48 = u1.u48[base_index1+j] * 0.5;
+				float result_48 = f1_48 + f2_48 + f3_48;
+				u2->u48[base_index1+j] = result_48;
+			}
+
+			int index49 = j * 64 + 49;
+			if(index49  < size0){
+				float f1_49 = (u1.u49[base_index0+j] + u1.u49[base_index2+j]) * 0.125;
+				float f2_49 = (u1.u48[base_index1+j] + u1.u50[base_index1+j]) * 0.125;
+				float f3_49 = u1.u49[base_index1+j] * 0.5;
+				float result_49 = f1_49 + f2_49 + f3_49;
+				u2->u49[base_index1+j] = result_49;
+			}
+
+			int index50 = j * 64 + 50;
+			if(index50  < size0){
+				float f1_50 = (u1.u50[base_index0+j] + u1.u50[base_index2+j]) * 0.125;
+				float f2_50 = (u1.u49[base_index1+j] + u1.u51[base_index1+j]) * 0.125;
+				float f3_50 = u1.u50[base_index1+j] * 0.5;
+				float result_50 = f1_50 + f2_50 + f3_50;
+				u2->u50[base_index1+j] = result_50;
+			}
+
+			int index51 = j * 64 + 51;
+			if(index51  < size0){
+				float f1_51 = (u1.u51[base_index0+j] + u1.u51[base_index2+j]) * 0.125;
+				float f2_51 = (u1.u50[base_index1+j] + u1.u52[base_index1+j]) * 0.125;
+				float f3_51 = u1.u51[base_index1+j] * 0.5;
+				float result_51 = f1_51 + f2_51 + f3_51;
+				u2->u51[base_index1+j] = result_51;
+			}
+
+			int index52 = j * 64 + 52;
+			if(index52  < size0){
+				float f1_52 = (u1.u52[base_index0+j] + u1.u52[base_index2+j]) * 0.125;
+				float f2_52 = (u1.u51[base_index1+j] + u1.u53[base_index1+j]) * 0.125;
+				float f3_52 = u1.u52[base_index1+j] * 0.5;
+				float result_52 = f1_52 + f2_52 + f3_52;
+				u2->u52[base_index1+j] = result_52;
+			}
+
+			int index53 = j * 64 + 53;
+			if(index53  < size0){
+				float f1_53 = (u1.u53[base_index0+j] + u1.u53[base_index2+j]) * 0.125;
+				float f2_53 = (u1.u52[base_index1+j] + u1.u54[base_index1+j]) * 0.125;
+				float f3_53 = u1.u53[base_index1+j] * 0.5;
+				float result_53 = f1_53 + f2_53 + f3_53;
+				u2->u53[base_index1+j] = result_53;
+			}
+
+			int index54 = j * 64 + 54;
+			if(index54  < size0){
+				float f1_54 = (u1.u54[base_index0+j] + u1.u54[base_index2+j]) * 0.125;
+				float f2_54 = (u1.u53[base_index1+j] + u1.u55[base_index1+j]) * 0.125;
+				float f3_54 = u1.u54[base_index1+j] * 0.5;
+				float result_54 = f1_54 + f2_54 + f3_54;
+				u2->u54[base_index1+j] = result_54;
+			}
+
+			int index55 = j * 64 + 55;
+			if(index55  < size0){
+				float f1_55 = (u1.u55[base_index0+j] + u1.u55[base_index2+j]) * 0.125;
+				float f2_55 = (u1.u54[base_index1+j] + u1.u56[base_index1+j]) * 0.125;
+				float f3_55 = u1.u55[base_index1+j] * 0.5;
+				float result_55 = f1_55 + f2_55 + f3_55;
+				u2->u55[base_index1+j] = result_55;
+			}
+
+			int index56 = j * 64 + 56;
+			if(index56  < size0){
+				float f1_56 = (u1.u56[base_index0+j] + u1.u56[base_index2+j]) * 0.125;
+				float f2_56 = (u1.u55[base_index1+j] + u1.u57[base_index1+j]) * 0.125;
+				float f3_56 = u1.u56[base_index1+j] * 0.5;
+				float result_56 = f1_56 + f2_56 + f3_56;
+				u2->u56[base_index1+j] = result_56;
+			}
+
+			int index57 = j * 64 + 57;
+			if(index57  < size0){
+				float f1_57 = (u1.u57[base_index0+j] + u1.u57[base_index2+j]) * 0.125;
+				float f2_57 = (u1.u56[base_index1+j] + u1.u58[base_index1+j]) * 0.125;
+				float f3_57 = u1.u57[base_index1+j] * 0.5;
+				float result_57 = f1_57 + f2_57 + f3_57;
+				u2->u57[base_index1+j] = result_57;
+			}
+
+			int index58 = j * 64 + 58;
+			if(index58  < size0){
+				float f1_58 = (u1.u58[base_index0+j] + u1.u58[base_index2+j]) * 0.125;
+				float f2_58 = (u1.u57[base_index1+j] + u1.u59[base_index1+j]) * 0.125;
+				float f3_58 = u1.u58[base_index1+j] * 0.5;
+				float result_58 = f1_58 + f2_58 + f3_58;
+				u2->u58[base_index1+j] = result_58;
+			}
+
+			int index59 = j * 64 + 59;
+			if(index59  < size0){
+				float f1_59 = (u1.u59[base_index0+j] + u1.u59[base_index2+j]) * 0.125;
+				float f2_59 = (u1.u58[base_index1+j] + u1.u60[base_index1+j]) * 0.125;
+				float f3_59 = u1.u59[base_index1+j] * 0.5;
+				float result_59 = f1_59 + f2_59 + f3_59;
+				u2->u59[base_index1+j] = result_59;
+			}
+
+			int index60 = j * 64 + 60;
+			if(index60  < size0){
+				float f1_60 = (u1.u60[base_index0+j] + u1.u60[base_index2+j]) * 0.125;
+				float f2_60 = (u1.u59[base_index1+j] + u1.u61[base_index1+j]) * 0.125;
+				float f3_60 = u1.u60[base_index1+j] * 0.5;
+				float result_60 = f1_60 + f2_60 + f3_60;
+				u2->u60[base_index1+j] = result_60;
+			}
+
+			int index61 = j * 64 + 61;
+			if(index61  < size0){
+				float f1_61 = (u1.u61[base_index0+j] + u1.u61[base_index2+j]) * 0.125;
+				float f2_61 = (u1.u60[base_index1+j] + u1.u62[base_index1+j]) * 0.125;
+				float f3_61 = u1.u61[base_index1+j] * 0.5;
+				float result_61 = f1_61 + f2_61 + f3_61;
+				u2->u61[base_index1+j] = result_61;
+			}
+
+			int index62 = j * 64 + 62;
+			if(index62  < size0){
+				float f1_62 = (u1.u62[base_index0+j] + u1.u62[base_index2+j]) * 0.125;
+				float f2_62 = (u1.u61[base_index1+j] + u1.u63[base_index1+j]) * 0.125;
+				float f3_62 = u1.u62[base_index1+j] * 0.5;
+				float result_62 = f1_62 + f2_62 + f3_62;
+				u2->u62[base_index1+j] = result_62;
+			}
+
+			int index63 = j * 64 + 0;
+			if(index63  < size0){
+				float f1_63 = (u1.u63[base_index0+j] + u1.u63[base_index2+j]) * 0.125;
+				float f2_63 = (u1.u0[base_index1+j+1] + u1.u62[base_index1+j]) * 0.125;
+				float f3_63 = u1.u63[base_index1+j] * 0.5;
+				float result_63 = f1_63 + f2_63 + f3_63;
+				u2->u63[base_index1+j] = result_63;
+			}
+
+		}
+	}
+}
+
+
+__attribute__((xcl_dataflow))
+static void ops_poisson_kernel_update(
+		struct bram_cluster u,
+		struct bram_cluster* u2,
+		const int base0,
+		const int base1,
+		const int size0,
+		const int size1){
+
+
+	for(int i = 0; i < size1; i++){
 		int end_loc =  (size0 >> 6) + 1;
 		const int row_block = MAX_X_DIM/P_FACTOR;
-
-
-
-
-		for(int i = 0; i < size1; i++){
-
-			int base_index0 = (i) * row_block;
-			int base_index1 = (i+1) * row_block;
-			int base_index2 = (i+2) * row_block;
-
-			__attribute__((xcl_pipeline_loop))
-			for(int j = 0; j < end_loc ; j++){
-
-
-				int index0 = j * 64 + 0;
-				if( index0 > 0 && index0  < size0){
-					float f1_0 = (u1.u0[base_index0+j] + u1.u0[base_index2+j]) * 0.125;
-					float f2_0 = (u1.u63[base_index1+j-1] + u1.u1[base_index1+j]) * 0.125;
-					float f3_0 = u1.u0[base_index1+j] * 0.5;
-					float result_0 = f1_0 + f2_0 + f3_0;
-					u2.u0[base_index1+j] = result_0;
-				}
-
-				int index1 = j * 64 + 1;
-				if(index1  < size0){
-					float f1_1 = (u1.u1[base_index0+j] + u1.u1[base_index2+j]) * 0.125;
-					float f2_1 = (u1.u0[base_index1+j] + u1.u2[base_index1+j]) * 0.125;
-					float f3_1 = u1.u1[base_index1+j] * 0.5;
-					float result_1 = f1_1 + f2_1 + f3_1;
-					u2.u1[base_index1+j] = result_1;
-				}
-
-				int index2 = j * 64 + 2;
-				if(index2  < size0){
-					float f1_2 = (u1.u2[base_index0+j] + u1.u2[base_index2+j]) * 0.125;
-					float f2_2 = (u1.u1[base_index1+j] + u1.u3[base_index1+j]) * 0.125;
-					float f3_2 = u1.u2[base_index1+j] * 0.5;
-					float result_2 = f1_2 + f2_2 + f3_2;
-					u2.u2[base_index1+j] = result_2;
-				}
-
-				int index3 = j * 64 + 3;
-				if(index3  < size0){
-					float f1_3 = (u1.u3[base_index0+j] + u1.u3[base_index2+j]) * 0.125;
-					float f2_3 = (u1.u2[base_index1+j] + u1.u4[base_index1+j]) * 0.125;
-					float f3_3 = u1.u3[base_index1+j] * 0.5;
-					float result_3 = f1_3 + f2_3 + f3_3;
-					u2.u3[base_index1+j] = result_3;
-				}
-
-				int index4 = j * 64 + 4;
-				if(index4  < size0){
-					float f1_4 = (u1.u4[base_index0+j] + u1.u4[base_index2+j]) * 0.125;
-					float f2_4 = (u1.u3[base_index1+j] + u1.u5[base_index1+j]) * 0.125;
-					float f3_4 = u1.u4[base_index1+j] * 0.5;
-					float result_4 = f1_4 + f2_4 + f3_4;
-					u2.u4[base_index1+j] = result_4;
-				}
-
-				int index5 = j * 64 + 5;
-				if(index5  < size0){
-					float f1_5 = (u1.u5[base_index0+j] + u1.u5[base_index2+j]) * 0.125;
-					float f2_5 = (u1.u4[base_index1+j] + u1.u6[base_index1+j]) * 0.125;
-					float f3_5 = u1.u5[base_index1+j] * 0.5;
-					float result_5 = f1_5 + f2_5 + f3_5;
-					u2.u5[base_index1+j] = result_5;
-				}
-
-				int index6 = j * 64 + 6;
-				if(index6  < size0){
-					float f1_6 = (u1.u6[base_index0+j] + u1.u6[base_index2+j]) * 0.125;
-					float f2_6 = (u1.u5[base_index1+j] + u1.u7[base_index1+j]) * 0.125;
-					float f3_6 = u1.u6[base_index1+j] * 0.5;
-					float result_6 = f1_6 + f2_6 + f3_6;
-					u2.u6[base_index1+j] = result_6;
-				}
-
-				int index7 = j * 64 + 7;
-				if(index7  < size0){
-					float f1_7 = (u1.u7[base_index0+j] + u1.u7[base_index2+j]) * 0.125;
-					float f2_7 = (u1.u6[base_index1+j] + u1.u8[base_index1+j]) * 0.125;
-					float f3_7 = u1.u7[base_index1+j] * 0.5;
-					float result_7 = f1_7 + f2_7 + f3_7;
-					u2.u7[base_index1+j] = result_7;
-				}
-
-				int index8 = j * 64 + 8;
-				if(index8  < size0){
-					float f1_8 = (u1.u8[base_index0+j] + u1.u8[base_index2+j]) * 0.125;
-					float f2_8 = (u1.u7[base_index1+j] + u1.u9[base_index1+j]) * 0.125;
-					float f3_8 = u1.u8[base_index1+j] * 0.5;
-					float result_8 = f1_8 + f2_8 + f3_8;
-					u2.u8[base_index1+j] = result_8;
-				}
-
-				int index9 = j * 64 + 9;
-				if(index9  < size0){
-					float f1_9 = (u1.u9[base_index0+j] + u1.u9[base_index2+j]) * 0.125;
-					float f2_9 = (u1.u8[base_index1+j] + u1.u10[base_index1+j]) * 0.125;
-					float f3_9 = u1.u9[base_index1+j] * 0.5;
-					float result_9 = f1_9 + f2_9 + f3_9;
-					u2.u9[base_index1+j] = result_9;
-				}
-
-				int index10 = j * 64 + 10;
-				if(index10  < size0){
-					float f1_10 = (u1.u10[base_index0+j] + u1.u10[base_index2+j]) * 0.125;
-					float f2_10 = (u1.u9[base_index1+j] + u1.u11[base_index1+j]) * 0.125;
-					float f3_10 = u1.u10[base_index1+j] * 0.5;
-					float result_10 = f1_10 + f2_10 + f3_10;
-					u2.u10[base_index1+j] = result_10;
-				}
-
-				int index11 = j * 64 + 11;
-				if(index11  < size0){
-					float f1_11 = (u1.u11[base_index0+j] + u1.u11[base_index2+j]) * 0.125;
-					float f2_11 = (u1.u10[base_index1+j] + u1.u12[base_index1+j]) * 0.125;
-					float f3_11 = u1.u11[base_index1+j] * 0.5;
-					float result_11 = f1_11 + f2_11 + f3_11;
-					u2.u11[base_index1+j] = result_11;
-				}
-
-				int index12 = j * 64 + 12;
-				if(index12  < size0){
-					float f1_12 = (u1.u12[base_index0+j] + u1.u12[base_index2+j]) * 0.125;
-					float f2_12 = (u1.u11[base_index1+j] + u1.u13[base_index1+j]) * 0.125;
-					float f3_12 = u1.u12[base_index1+j] * 0.5;
-					float result_12 = f1_12 + f2_12 + f3_12;
-					u2.u12[base_index1+j] = result_12;
-				}
-
-				int index13 = j * 64 + 13;
-				if(index13  < size0){
-					float f1_13 = (u1.u13[base_index0+j] + u1.u13[base_index2+j]) * 0.125;
-					float f2_13 = (u1.u12[base_index1+j] + u1.u14[base_index1+j]) * 0.125;
-					float f3_13 = u1.u13[base_index1+j] * 0.5;
-					float result_13 = f1_13 + f2_13 + f3_13;
-					u2.u13[base_index1+j] = result_13;
-				}
-
-				int index14 = j * 64 + 14;
-				if(index14  < size0){
-					float f1_14 = (u1.u14[base_index0+j] + u1.u14[base_index2+j]) * 0.125;
-					float f2_14 = (u1.u13[base_index1+j] + u1.u15[base_index1+j]) * 0.125;
-					float f3_14 = u1.u14[base_index1+j] * 0.5;
-					float result_14 = f1_14 + f2_14 + f3_14;
-					u2.u14[base_index1+j] = result_14;
-				}
-
-				int index15 = j * 64 + 15;
-				if(index15  < size0){
-					float f1_15 = (u1.u15[base_index0+j] + u1.u15[base_index2+j]) * 0.125;
-					float f2_15 = (u1.u14[base_index1+j] + u1.u16[base_index1+j]) * 0.125;
-					float f3_15 = u1.u15[base_index1+j] * 0.5;
-					float result_15 = f1_15 + f2_15 + f3_15;
-					u2.u15[base_index1+j] = result_15;
-				}
-
-				int index16 = j * 64 + 16;
-				if(index16  < size0){
-					float f1_16 = (u1.u16[base_index0+j] + u1.u16[base_index2+j]) * 0.125;
-					float f2_16 = (u1.u15[base_index1+j] + u1.u17[base_index1+j]) * 0.125;
-					float f3_16 = u1.u16[base_index1+j] * 0.5;
-					float result_16 = f1_16 + f2_16 + f3_16;
-					u2.u16[base_index1+j] = result_16;
-				}
-
-				int index17 = j * 64 + 17;
-				if(index17  < size0){
-					float f1_17 = (u1.u17[base_index0+j] + u1.u17[base_index2+j]) * 0.125;
-					float f2_17 = (u1.u16[base_index1+j] + u1.u18[base_index1+j]) * 0.125;
-					float f3_17 = u1.u17[base_index1+j] * 0.5;
-					float result_17 = f1_17 + f2_17 + f3_17;
-					u2.u17[base_index1+j] = result_17;
-				}
-
-				int index18 = j * 64 + 18;
-				if(index18  < size0){
-					float f1_18 = (u1.u18[base_index0+j] + u1.u18[base_index2+j]) * 0.125;
-					float f2_18 = (u1.u17[base_index1+j] + u1.u19[base_index1+j]) * 0.125;
-					float f3_18 = u1.u18[base_index1+j] * 0.5;
-					float result_18 = f1_18 + f2_18 + f3_18;
-					u2.u18[base_index1+j] = result_18;
-				}
-
-				int index19 = j * 64 + 19;
-				if(index19  < size0){
-					float f1_19 = (u1.u19[base_index0+j] + u1.u19[base_index2+j]) * 0.125;
-					float f2_19 = (u1.u18[base_index1+j] + u1.u20[base_index1+j]) * 0.125;
-					float f3_19 = u1.u19[base_index1+j] * 0.5;
-					float result_19 = f1_19 + f2_19 + f3_19;
-					u2.u19[base_index1+j] = result_19;
-				}
-
-				int index20 = j * 64 + 20;
-				if(index20  < size0){
-					float f1_20 = (u1.u20[base_index0+j] + u1.u20[base_index2+j]) * 0.125;
-					float f2_20 = (u1.u19[base_index1+j] + u1.u21[base_index1+j]) * 0.125;
-					float f3_20 = u1.u20[base_index1+j] * 0.5;
-					float result_20 = f1_20 + f2_20 + f3_20;
-					u2.u20[base_index1+j] = result_20;
-				}
-
-				int index21 = j * 64 + 21;
-				if(index21  < size0){
-					float f1_21 = (u1.u21[base_index0+j] + u1.u21[base_index2+j]) * 0.125;
-					float f2_21 = (u1.u20[base_index1+j] + u1.u22[base_index1+j]) * 0.125;
-					float f3_21 = u1.u21[base_index1+j] * 0.5;
-					float result_21 = f1_21 + f2_21 + f3_21;
-					u2.u21[base_index1+j] = result_21;
-				}
-
-				int index22 = j * 64 + 22;
-				if(index22  < size0){
-					float f1_22 = (u1.u22[base_index0+j] + u1.u22[base_index2+j]) * 0.125;
-					float f2_22 = (u1.u21[base_index1+j] + u1.u23[base_index1+j]) * 0.125;
-					float f3_22 = u1.u22[base_index1+j] * 0.5;
-					float result_22 = f1_22 + f2_22 + f3_22;
-					u2.u22[base_index1+j] = result_22;
-				}
-
-				int index23 = j * 64 + 23;
-				if(index23  < size0){
-					float f1_23 = (u1.u23[base_index0+j] + u1.u23[base_index2+j]) * 0.125;
-					float f2_23 = (u1.u22[base_index1+j] + u1.u24[base_index1+j]) * 0.125;
-					float f3_23 = u1.u23[base_index1+j] * 0.5;
-					float result_23 = f1_23 + f2_23 + f3_23;
-					u2.u23[base_index1+j] = result_23;
-				}
-
-				int index24 = j * 64 + 24;
-				if(index24  < size0){
-					float f1_24 = (u1.u24[base_index0+j] + u1.u24[base_index2+j]) * 0.125;
-					float f2_24 = (u1.u23[base_index1+j] + u1.u25[base_index1+j]) * 0.125;
-					float f3_24 = u1.u24[base_index1+j] * 0.5;
-					float result_24 = f1_24 + f2_24 + f3_24;
-					u2.u24[base_index1+j] = result_24;
-				}
-
-				int index25 = j * 64 + 25;
-				if(index25  < size0){
-					float f1_25 = (u1.u25[base_index0+j] + u1.u25[base_index2+j]) * 0.125;
-					float f2_25 = (u1.u24[base_index1+j] + u1.u26[base_index1+j]) * 0.125;
-					float f3_25 = u1.u25[base_index1+j] * 0.5;
-					float result_25 = f1_25 + f2_25 + f3_25;
-					u2.u25[base_index1+j] = result_25;
-				}
-
-				int index26 = j * 64 + 26;
-				if(index26  < size0){
-					float f1_26 = (u1.u26[base_index0+j] + u1.u26[base_index2+j]) * 0.125;
-					float f2_26 = (u1.u25[base_index1+j] + u1.u27[base_index1+j]) * 0.125;
-					float f3_26 = u1.u26[base_index1+j] * 0.5;
-					float result_26 = f1_26 + f2_26 + f3_26;
-					u2.u26[base_index1+j] = result_26;
-				}
-
-				int index27 = j * 64 + 27;
-				if(index27  < size0){
-					float f1_27 = (u1.u27[base_index0+j] + u1.u27[base_index2+j]) * 0.125;
-					float f2_27 = (u1.u26[base_index1+j] + u1.u28[base_index1+j]) * 0.125;
-					float f3_27 = u1.u27[base_index1+j] * 0.5;
-					float result_27 = f1_27 + f2_27 + f3_27;
-					u2.u27[base_index1+j] = result_27;
-				}
-
-				int index28 = j * 64 + 28;
-				if(index28  < size0){
-					float f1_28 = (u1.u28[base_index0+j] + u1.u28[base_index2+j]) * 0.125;
-					float f2_28 = (u1.u27[base_index1+j] + u1.u29[base_index1+j]) * 0.125;
-					float f3_28 = u1.u28[base_index1+j] * 0.5;
-					float result_28 = f1_28 + f2_28 + f3_28;
-					u2.u28[base_index1+j] = result_28;
-				}
-
-				int index29 = j * 64 + 29;
-				if(index29  < size0){
-					float f1_29 = (u1.u29[base_index0+j] + u1.u29[base_index2+j]) * 0.125;
-					float f2_29 = (u1.u28[base_index1+j] + u1.u30[base_index1+j]) * 0.125;
-					float f3_29 = u1.u29[base_index1+j] * 0.5;
-					float result_29 = f1_29 + f2_29 + f3_29;
-					u2.u29[base_index1+j] = result_29;
-				}
-
-				int index30 = j * 64 + 30;
-				if(index30  < size0){
-					float f1_30 = (u1.u30[base_index0+j] + u1.u30[base_index2+j]) * 0.125;
-					float f2_30 = (u1.u29[base_index1+j] + u1.u31[base_index1+j]) * 0.125;
-					float f3_30 = u1.u30[base_index1+j] * 0.5;
-					float result_30 = f1_30 + f2_30 + f3_30;
-					u2.u30[base_index1+j] = result_30;
-				}
-
-				int index31 = j * 64 + 31;
-				if(index31  < size0){
-					float f1_31 = (u1.u31[base_index0+j] + u1.u31[base_index2+j]) * 0.125;
-					float f2_31 = (u1.u30[base_index1+j] + u1.u32[base_index1+j]) * 0.125;
-					float f3_31 = u1.u31[base_index1+j] * 0.5;
-					float result_31 = f1_31 + f2_31 + f3_31;
-					u2.u31[base_index1+j] = result_31;
-				}
-
-				int index32 = j * 64 + 32;
-				if(index32  < size0){
-					float f1_32 = (u1.u32[base_index0+j] + u1.u32[base_index2+j]) * 0.125;
-					float f2_32 = (u1.u31[base_index1+j] + u1.u33[base_index1+j]) * 0.125;
-					float f3_32 = u1.u32[base_index1+j] * 0.5;
-					float result_32 = f1_32 + f2_32 + f3_32;
-					u2.u32[base_index1+j] = result_32;
-				}
-
-				int index33 = j * 64 + 33;
-				if(index33  < size0){
-					float f1_33 = (u1.u33[base_index0+j] + u1.u33[base_index2+j]) * 0.125;
-					float f2_33 = (u1.u32[base_index1+j] + u1.u34[base_index1+j]) * 0.125;
-					float f3_33 = u1.u33[base_index1+j] * 0.5;
-					float result_33 = f1_33 + f2_33 + f3_33;
-					u2.u33[base_index1+j] = result_33;
-				}
-
-				int index34 = j * 64 + 34;
-				if(index34  < size0){
-					float f1_34 = (u1.u34[base_index0+j] + u1.u34[base_index2+j]) * 0.125;
-					float f2_34 = (u1.u33[base_index1+j] + u1.u35[base_index1+j]) * 0.125;
-					float f3_34 = u1.u34[base_index1+j] * 0.5;
-					float result_34 = f1_34 + f2_34 + f3_34;
-					u2.u34[base_index1+j] = result_34;
-				}
-
-				int index35 = j * 64 + 35;
-				if(index35  < size0){
-					float f1_35 = (u1.u35[base_index0+j] + u1.u35[base_index2+j]) * 0.125;
-					float f2_35 = (u1.u34[base_index1+j] + u1.u36[base_index1+j]) * 0.125;
-					float f3_35 = u1.u35[base_index1+j] * 0.5;
-					float result_35 = f1_35 + f2_35 + f3_35;
-					u2.u35[base_index1+j] = result_35;
-				}
-
-				int index36 = j * 64 + 36;
-				if(index36  < size0){
-					float f1_36 = (u1.u36[base_index0+j] + u1.u36[base_index2+j]) * 0.125;
-					float f2_36 = (u1.u35[base_index1+j] + u1.u37[base_index1+j]) * 0.125;
-					float f3_36 = u1.u36[base_index1+j] * 0.5;
-					float result_36 = f1_36 + f2_36 + f3_36;
-					u2.u36[base_index1+j] = result_36;
-				}
-
-				int index37 = j * 64 + 37;
-				if(index37  < size0){
-					float f1_37 = (u1.u37[base_index0+j] + u1.u37[base_index2+j]) * 0.125;
-					float f2_37 = (u1.u36[base_index1+j] + u1.u38[base_index1+j]) * 0.125;
-					float f3_37 = u1.u37[base_index1+j] * 0.5;
-					float result_37 = f1_37 + f2_37 + f3_37;
-					u2.u37[base_index1+j] = result_37;
-				}
-
-				int index38 = j * 64 + 38;
-				if(index38  < size0){
-					float f1_38 = (u1.u38[base_index0+j] + u1.u38[base_index2+j]) * 0.125;
-					float f2_38 = (u1.u37[base_index1+j] + u1.u39[base_index1+j]) * 0.125;
-					float f3_38 = u1.u38[base_index1+j] * 0.5;
-					float result_38 = f1_38 + f2_38 + f3_38;
-					u2.u38[base_index1+j] = result_38;
-				}
-
-				int index39 = j * 64 + 39;
-				if(index39  < size0){
-					float f1_39 = (u1.u39[base_index0+j] + u1.u39[base_index2+j]) * 0.125;
-					float f2_39 = (u1.u38[base_index1+j] + u1.u40[base_index1+j]) * 0.125;
-					float f3_39 = u1.u39[base_index1+j] * 0.5;
-					float result_39 = f1_39 + f2_39 + f3_39;
-					u2.u39[base_index1+j] = result_39;
-				}
-
-				int index40 = j * 64 + 40;
-				if(index40  < size0){
-					float f1_40 = (u1.u40[base_index0+j] + u1.u40[base_index2+j]) * 0.125;
-					float f2_40 = (u1.u39[base_index1+j] + u1.u41[base_index1+j]) * 0.125;
-					float f3_40 = u1.u40[base_index1+j] * 0.5;
-					float result_40 = f1_40 + f2_40 + f3_40;
-					u2.u40[base_index1+j] = result_40;
-				}
-
-				int index41 = j * 64 + 41;
-				if(index41  < size0){
-					float f1_41 = (u1.u41[base_index0+j] + u1.u41[base_index2+j]) * 0.125;
-					float f2_41 = (u1.u40[base_index1+j] + u1.u42[base_index1+j]) * 0.125;
-					float f3_41 = u1.u41[base_index1+j] * 0.5;
-					float result_41 = f1_41 + f2_41 + f3_41;
-					u2.u41[base_index1+j] = result_41;
-				}
-
-				int index42 = j * 64 + 42;
-				if(index42  < size0){
-					float f1_42 = (u1.u42[base_index0+j] + u1.u42[base_index2+j]) * 0.125;
-					float f2_42 = (u1.u41[base_index1+j] + u1.u43[base_index1+j]) * 0.125;
-					float f3_42 = u1.u42[base_index1+j] * 0.5;
-					float result_42 = f1_42 + f2_42 + f3_42;
-					u2.u42[base_index1+j] = result_42;
-				}
-
-				int index43 = j * 64 + 43;
-				if(index43  < size0){
-					float f1_43 = (u1.u43[base_index0+j] + u1.u43[base_index2+j]) * 0.125;
-					float f2_43 = (u1.u42[base_index1+j] + u1.u44[base_index1+j]) * 0.125;
-					float f3_43 = u1.u43[base_index1+j] * 0.5;
-					float result_43 = f1_43 + f2_43 + f3_43;
-					u2.u43[base_index1+j] = result_43;
-				}
-
-				int index44 = j * 64 + 44;
-				if(index44  < size0){
-					float f1_44 = (u1.u44[base_index0+j] + u1.u44[base_index2+j]) * 0.125;
-					float f2_44 = (u1.u43[base_index1+j] + u1.u45[base_index1+j]) * 0.125;
-					float f3_44 = u1.u44[base_index1+j] * 0.5;
-					float result_44 = f1_44 + f2_44 + f3_44;
-					u2.u44[base_index1+j] = result_44;
-				}
-
-				int index45 = j * 64 + 45;
-				if(index45  < size0){
-					float f1_45 = (u1.u45[base_index0+j] + u1.u45[base_index2+j]) * 0.125;
-					float f2_45 = (u1.u44[base_index1+j] + u1.u46[base_index1+j]) * 0.125;
-					float f3_45 = u1.u45[base_index1+j] * 0.5;
-					float result_45 = f1_45 + f2_45 + f3_45;
-					u2.u45[base_index1+j] = result_45;
-				}
-
-				int index46 = j * 64 + 46;
-				if(index46  < size0){
-					float f1_46 = (u1.u46[base_index0+j] + u1.u46[base_index2+j]) * 0.125;
-					float f2_46 = (u1.u45[base_index1+j] + u1.u47[base_index1+j]) * 0.125;
-					float f3_46 = u1.u46[base_index1+j] * 0.5;
-					float result_46 = f1_46 + f2_46 + f3_46;
-					u2.u46[base_index1+j] = result_46;
-				}
-
-				int index47 = j * 64 + 47;
-				if(index47  < size0){
-					float f1_47 = (u1.u47[base_index0+j] + u1.u47[base_index2+j]) * 0.125;
-					float f2_47 = (u1.u46[base_index1+j] + u1.u48[base_index1+j]) * 0.125;
-					float f3_47 = u1.u47[base_index1+j] * 0.5;
-					float result_47 = f1_47 + f2_47 + f3_47;
-					u2.u47[base_index1+j] = result_47;
-				}
-
-				int index48 = j * 64 + 48;
-				if(index48  < size0){
-					float f1_48 = (u1.u48[base_index0+j] + u1.u48[base_index2+j]) * 0.125;
-					float f2_48 = (u1.u47[base_index1+j] + u1.u49[base_index1+j]) * 0.125;
-					float f3_48 = u1.u48[base_index1+j] * 0.5;
-					float result_48 = f1_48 + f2_48 + f3_48;
-					u2.u48[base_index1+j] = result_48;
-				}
-
-				int index49 = j * 64 + 49;
-				if(index49  < size0){
-					float f1_49 = (u1.u49[base_index0+j] + u1.u49[base_index2+j]) * 0.125;
-					float f2_49 = (u1.u48[base_index1+j] + u1.u50[base_index1+j]) * 0.125;
-					float f3_49 = u1.u49[base_index1+j] * 0.5;
-					float result_49 = f1_49 + f2_49 + f3_49;
-					u2.u49[base_index1+j] = result_49;
-				}
-
-				int index50 = j * 64 + 50;
-				if(index50  < size0){
-					float f1_50 = (u1.u50[base_index0+j] + u1.u50[base_index2+j]) * 0.125;
-					float f2_50 = (u1.u49[base_index1+j] + u1.u51[base_index1+j]) * 0.125;
-					float f3_50 = u1.u50[base_index1+j] * 0.5;
-					float result_50 = f1_50 + f2_50 + f3_50;
-					u2.u50[base_index1+j] = result_50;
-				}
-
-				int index51 = j * 64 + 51;
-				if(index51  < size0){
-					float f1_51 = (u1.u51[base_index0+j] + u1.u51[base_index2+j]) * 0.125;
-					float f2_51 = (u1.u50[base_index1+j] + u1.u52[base_index1+j]) * 0.125;
-					float f3_51 = u1.u51[base_index1+j] * 0.5;
-					float result_51 = f1_51 + f2_51 + f3_51;
-					u2.u51[base_index1+j] = result_51;
-				}
-
-				int index52 = j * 64 + 52;
-				if(index52  < size0){
-					float f1_52 = (u1.u52[base_index0+j] + u1.u52[base_index2+j]) * 0.125;
-					float f2_52 = (u1.u51[base_index1+j] + u1.u53[base_index1+j]) * 0.125;
-					float f3_52 = u1.u52[base_index1+j] * 0.5;
-					float result_52 = f1_52 + f2_52 + f3_52;
-					u2.u52[base_index1+j] = result_52;
-				}
-
-				int index53 = j * 64 + 53;
-				if(index53  < size0){
-					float f1_53 = (u1.u53[base_index0+j] + u1.u53[base_index2+j]) * 0.125;
-					float f2_53 = (u1.u52[base_index1+j] + u1.u54[base_index1+j]) * 0.125;
-					float f3_53 = u1.u53[base_index1+j] * 0.5;
-					float result_53 = f1_53 + f2_53 + f3_53;
-					u2.u53[base_index1+j] = result_53;
-				}
-
-				int index54 = j * 64 + 54;
-				if(index54  < size0){
-					float f1_54 = (u1.u54[base_index0+j] + u1.u54[base_index2+j]) * 0.125;
-					float f2_54 = (u1.u53[base_index1+j] + u1.u55[base_index1+j]) * 0.125;
-					float f3_54 = u1.u54[base_index1+j] * 0.5;
-					float result_54 = f1_54 + f2_54 + f3_54;
-					u2.u54[base_index1+j] = result_54;
-				}
-
-				int index55 = j * 64 + 55;
-				if(index55  < size0){
-					float f1_55 = (u1.u55[base_index0+j] + u1.u55[base_index2+j]) * 0.125;
-					float f2_55 = (u1.u54[base_index1+j] + u1.u56[base_index1+j]) * 0.125;
-					float f3_55 = u1.u55[base_index1+j] * 0.5;
-					float result_55 = f1_55 + f2_55 + f3_55;
-					u2.u55[base_index1+j] = result_55;
-				}
-
-				int index56 = j * 64 + 56;
-				if(index56  < size0){
-					float f1_56 = (u1.u56[base_index0+j] + u1.u56[base_index2+j]) * 0.125;
-					float f2_56 = (u1.u55[base_index1+j] + u1.u57[base_index1+j]) * 0.125;
-					float f3_56 = u1.u56[base_index1+j] * 0.5;
-					float result_56 = f1_56 + f2_56 + f3_56;
-					u2.u56[base_index1+j] = result_56;
-				}
-
-				int index57 = j * 64 + 57;
-				if(index57  < size0){
-					float f1_57 = (u1.u57[base_index0+j] + u1.u57[base_index2+j]) * 0.125;
-					float f2_57 = (u1.u56[base_index1+j] + u1.u58[base_index1+j]) * 0.125;
-					float f3_57 = u1.u57[base_index1+j] * 0.5;
-					float result_57 = f1_57 + f2_57 + f3_57;
-					u2.u57[base_index1+j] = result_57;
-				}
-
-				int index58 = j * 64 + 58;
-				if(index58  < size0){
-					float f1_58 = (u1.u58[base_index0+j] + u1.u58[base_index2+j]) * 0.125;
-					float f2_58 = (u1.u57[base_index1+j] + u1.u59[base_index1+j]) * 0.125;
-					float f3_58 = u1.u58[base_index1+j] * 0.5;
-					float result_58 = f1_58 + f2_58 + f3_58;
-					u2.u58[base_index1+j] = result_58;
-				}
-
-				int index59 = j * 64 + 59;
-				if(index59  < size0){
-					float f1_59 = (u1.u59[base_index0+j] + u1.u59[base_index2+j]) * 0.125;
-					float f2_59 = (u1.u58[base_index1+j] + u1.u60[base_index1+j]) * 0.125;
-					float f3_59 = u1.u59[base_index1+j] * 0.5;
-					float result_59 = f1_59 + f2_59 + f3_59;
-					u2.u59[base_index1+j] = result_59;
-				}
-
-				int index60 = j * 64 + 60;
-				if(index60  < size0){
-					float f1_60 = (u1.u60[base_index0+j] + u1.u60[base_index2+j]) * 0.125;
-					float f2_60 = (u1.u59[base_index1+j] + u1.u61[base_index1+j]) * 0.125;
-					float f3_60 = u1.u60[base_index1+j] * 0.5;
-					float result_60 = f1_60 + f2_60 + f3_60;
-					u2.u60[base_index1+j] = result_60;
-				}
-
-				int index61 = j * 64 + 61;
-				if(index61  < size0){
-					float f1_61 = (u1.u61[base_index0+j] + u1.u61[base_index2+j]) * 0.125;
-					float f2_61 = (u1.u60[base_index1+j] + u1.u62[base_index1+j]) * 0.125;
-					float f3_61 = u1.u61[base_index1+j] * 0.5;
-					float result_61 = f1_61 + f2_61 + f3_61;
-					u2.u61[base_index1+j] = result_61;
-				}
-
-				int index62 = j * 64 + 62;
-				if(index62  < size0){
-					float f1_62 = (u1.u62[base_index0+j] + u1.u62[base_index2+j]) * 0.125;
-					float f2_62 = (u1.u61[base_index1+j] + u1.u63[base_index1+j]) * 0.125;
-					float f3_62 = u1.u62[base_index1+j] * 0.5;
-					float result_62 = f1_62 + f2_62 + f3_62;
-					u2.u62[base_index1+j] = result_62;
-				}
-
-				int index63 = j * 64 + 0;
-				if(index63  < size0){
-					float f1_63 = (u1.u63[base_index0+j] + u1.u63[base_index2+j]) * 0.125;
-					float f2_63 = (u1.u0[base_index1+j+1] + u1.u62[base_index1+j]) * 0.125;
-					float f3_63 = u1.u63[base_index1+j] * 0.5;
-					float result_63 = f1_63 + f2_63 + f3_63;
-					u2.u63[base_index1+j] = result_63;
-				}
-
-			}
-		}
-}
-
-	__attribute__((xcl_dataflow))
-	static void ops_poisson_kernel_update(
-			struct bram_cluster u,
-			struct bram_cluster u2,
-			const int base0,
-			const int base1,
-			const int size0,
-			const int size1){
-
-
-		for(int i = 0; i < size1; i++){
-			int end_loc =  (size0 >> 6) + 1;
-			const int row_block = MAX_X_DIM/P_FACTOR;
-			int base_index =  i * row_block;
-			__attribute__((xcl_pipeline_loop))
-			for(int j = 0; j < end_loc ; j++){
-
-				int index0 = j * 64 + 0;
-				if(index0  < size0)
-					u.u0[base_index+j] = u2.u0[base_index+j];
-
-				int index1 = j * 64 + 1;
-				if(index1  < size0)
-					u.u1[base_index+j] = u2.u1[base_index+j];
-
-				int index2 = j * 64 + 2;
-				if(index2  < size0)
-					u.u2[base_index+j] = u2.u2[base_index+j];
-
-				int index3 = j * 64 + 3;
-				if(index3  < size0)
-					u.u3[base_index+j] = u2.u3[base_index+j];
-
-				int index4 = j * 64 + 4;
-				if(index4  < size0)
-					u.u4[base_index+j] = u2.u4[base_index+j];
-
-				int index5 = j * 64 + 5;
-				if(index5  < size0)
-					u.u5[base_index+j] = u2.u5[base_index+j];
-
-				int index6 = j * 64 + 6;
-				if(index6  < size0)
-					u.u6[base_index+j] = u2.u6[base_index+j];
-
-				int index7 = j * 64 + 7;
-				if(index7  < size0)
-					u.u7[base_index+j] = u2.u7[base_index+j];
-
-				int index8 = j * 64 + 8;
-				if(index8  < size0)
-					u.u8[base_index+j] = u2.u8[base_index+j];
-
-				int index9 = j * 64 + 9;
-				if(index9  < size0)
-					u.u9[base_index+j] = u2.u9[base_index+j];
-
-				int index10 = j * 64 + 10;
-				if(index10  < size0)
-					u.u10[base_index+j] = u2.u10[base_index+j];
-
-				int index11 = j * 64 + 11;
-				if(index11  < size0)
-					u.u11[base_index+j] = u2.u11[base_index+j];
-
-				int index12 = j * 64 + 12;
-				if(index12  < size0)
-					u.u12[base_index+j] = u2.u12[base_index+j];
-
-				int index13 = j * 64 + 13;
-				if(index13  < size0)
-					u.u13[base_index+j] = u2.u13[base_index+j];
-
-				int index14 = j * 64 + 14;
-				if(index14  < size0)
-					u.u14[base_index+j] = u2.u14[base_index+j];
-
-				int index15 = j * 64 + 15;
-				if(index15  < size0)
-					u.u15[base_index+j] = u2.u15[base_index+j];
-
-				int index16 = j * 64 + 16;
-				if(index16  < size0)
-					u.u16[base_index+j] = u2.u16[base_index+j];
-
-				int index17 = j * 64 + 17;
-				if(index17  < size0)
-					u.u17[base_index+j] = u2.u17[base_index+j];
-
-				int index18 = j * 64 + 18;
-				if(index18  < size0)
-					u.u18[base_index+j] = u2.u18[base_index+j];
-
-				int index19 = j * 64 + 19;
-				if(index19  < size0)
-					u.u19[base_index+j] = u2.u19[base_index+j];
-
-				int index20 = j * 64 + 20;
-				if(index20  < size0)
-					u.u20[base_index+j] = u2.u20[base_index+j];
-
-				int index21 = j * 64 + 21;
-				if(index21  < size0)
-					u.u21[base_index+j] = u2.u21[base_index+j];
-
-				int index22 = j * 64 + 22;
-				if(index22  < size0)
-					u.u22[base_index+j] = u2.u22[base_index+j];
-
-				int index23 = j * 64 + 23;
-				if(index23  < size0)
-					u.u23[base_index+j] = u2.u23[base_index+j];
-
-				int index24 = j * 64 + 24;
-				if(index24  < size0)
-					u.u24[base_index+j] = u2.u24[base_index+j];
-
-				int index25 = j * 64 + 25;
-				if(index25  < size0)
-					u.u25[base_index+j] = u2.u25[base_index+j];
-
-				int index26 = j * 64 + 26;
-				if(index26  < size0)
-					u.u26[base_index+j] = u2.u26[base_index+j];
-
-				int index27 = j * 64 + 27;
-				if(index27  < size0)
-					u.u27[base_index+j] = u2.u27[base_index+j];
-
-				int index28 = j * 64 + 28;
-				if(index28  < size0)
-					u.u28[base_index+j] = u2.u28[base_index+j];
-
-				int index29 = j * 64 + 29;
-				if(index29  < size0)
-					u.u29[base_index+j] = u2.u29[base_index+j];
-
-				int index30 = j * 64 + 30;
-				if(index30  < size0)
-					u.u30[base_index+j] = u2.u30[base_index+j];
-
-				int index31 = j * 64 + 31;
-				if(index31  < size0)
-					u.u31[base_index+j] = u2.u31[base_index+j];
-
-				int index32 = j * 64 + 32;
-				if(index32  < size0)
-					u.u32[base_index+j] = u2.u32[base_index+j];
-
-				int index33 = j * 64 + 33;
-				if(index33  < size0)
-					u.u33[base_index+j] = u2.u33[base_index+j];
-
-				int index34 = j * 64 + 34;
-				if(index34  < size0)
-					u.u34[base_index+j] = u2.u34[base_index+j];
-
-				int index35 = j * 64 + 35;
-				if(index35  < size0)
-					u.u35[base_index+j] = u2.u35[base_index+j];
-
-				int index36 = j * 64 + 36;
-				if(index36  < size0)
-					u.u36[base_index+j] = u2.u36[base_index+j];
-
-				int index37 = j * 64 + 37;
-				if(index37  < size0)
-					u.u37[base_index+j] = u2.u37[base_index+j];
-
-				int index38 = j * 64 + 38;
-				if(index38  < size0)
-					u.u38[base_index+j] = u2.u38[base_index+j];
-
-				int index39 = j * 64 + 39;
-				if(index39  < size0)
-					u.u39[base_index+j] = u2.u39[base_index+j];
-
-				int index40 = j * 64 + 40;
-				if(index40  < size0)
-					u.u40[base_index+j] = u2.u40[base_index+j];
-
-				int index41 = j * 64 + 41;
-				if(index41  < size0)
-					u.u41[base_index+j] = u2.u41[base_index+j];
-
-				int index42 = j * 64 + 42;
-				if(index42  < size0)
-					u.u42[base_index+j] = u2.u42[base_index+j];
-
-				int index43 = j * 64 + 43;
-				if(index43  < size0)
-					u.u43[base_index+j] = u2.u43[base_index+j];
-
-				int index44 = j * 64 + 44;
-				if(index44  < size0)
-					u.u44[base_index+j] = u2.u44[base_index+j];
-
-				int index45 = j * 64 + 45;
-				if(index45  < size0)
-					u.u45[base_index+j] = u2.u45[base_index+j];
-
-				int index46 = j * 64 + 46;
-				if(index46  < size0)
-					u.u46[base_index+j] = u2.u46[base_index+j];
-
-				int index47 = j * 64 + 47;
-				if(index47  < size0)
-					u.u47[base_index+j] = u2.u47[base_index+j];
-
-				int index48 = j * 64 + 48;
-				if(index48  < size0)
-					u.u48[base_index+j] = u2.u48[base_index+j];
-
-				int index49 = j * 64 + 49;
-				if(index49  < size0)
-					u.u49[base_index+j] = u2.u49[base_index+j];
-
-				int index50 = j * 64 + 50;
-				if(index50  < size0)
-					u.u50[base_index+j] = u2.u50[base_index+j];
-
-				int index51 = j * 64 + 51;
-				if(index51  < size0)
-					u.u51[base_index+j] = u2.u51[base_index+j];
-
-				int index52 = j * 64 + 52;
-				if(index52  < size0)
-					u.u52[base_index+j] = u2.u52[base_index+j];
-
-				int index53 = j * 64 + 53;
-				if(index53  < size0)
-					u.u53[base_index+j] = u2.u53[base_index+j];
-
-				int index54 = j * 64 + 54;
-				if(index54  < size0)
-					u.u54[base_index+j] = u2.u54[base_index+j];
-
-				int index55 = j * 64 + 55;
-				if(index55  < size0)
-					u.u55[base_index+j] = u2.u55[base_index+j];
-
-				int index56 = j * 64 + 56;
-				if(index56  < size0)
-					u.u56[base_index+j] = u2.u56[base_index+j];
-
-				int index57 = j * 64 + 57;
-				if(index57  < size0)
-					u.u57[base_index+j] = u2.u57[base_index+j];
-
-				int index58 = j * 64 + 58;
-				if(index58  < size0)
-					u.u58[base_index+j] = u2.u58[base_index+j];
-
-				int index59 = j * 64 + 59;
-				if(index59  < size0)
-					u.u59[base_index+j] = u2.u59[base_index+j];
-
-				int index60 = j * 64 + 60;
-				if(index60  < size0)
-					u.u60[base_index+j] = u2.u60[base_index+j];
-
-				int index61 = j * 64 + 61;
-				if(index61  < size0)
-					u.u61[base_index+j] = u2.u61[base_index+j];
-
-				int index62 = j * 64 + 62;
-				if(index62  < size0)
-					u.u62[base_index+j] = u2.u62[base_index+j];
-
-				int index63 = j * 64 + 63;
-				if(index63  < size0)
-					u.u63[base_index+j] = u2.u63[base_index+j];
+		int base_index =  i * row_block;
+		__attribute__((xcl_pipeline_loop))
+		for(int j = 0; j < end_loc ; j++){
+
+			int index0 = j * 64 + 0;
+			if(index0  < size0)
+				u2->u0[base_index+j] = u.u0[base_index+j];
+
+			int index1 = j * 64 + 1;
+			if(index1  < size0)
+				u2->u1[base_index+j] = u.u1[base_index+j];
+
+			int index2 = j * 64 + 2;
+			if(index2  < size0)
+				u2->u2[base_index+j] = u.u2[base_index+j];
+
+			int index3 = j * 64 + 3;
+			if(index3  < size0)
+				u2->u3[base_index+j] = u.u3[base_index+j];
+
+			int index4 = j * 64 + 4;
+			if(index4  < size0)
+				u2->u4[base_index+j] = u.u4[base_index+j];
+
+			int index5 = j * 64 + 5;
+			if(index5  < size0)
+				u2->u5[base_index+j] = u.u5[base_index+j];
+
+			int index6 = j * 64 + 6;
+			if(index6  < size0)
+				u2->u6[base_index+j] = u.u6[base_index+j];
+
+			int index7 = j * 64 + 7;
+			if(index7  < size0)
+				u2->u7[base_index+j] = u.u7[base_index+j];
+
+			int index8 = j * 64 + 8;
+			if(index8  < size0)
+				u2->u8[base_index+j] = u.u8[base_index+j];
+
+			int index9 = j * 64 + 9;
+			if(index9  < size0)
+				u2->u9[base_index+j] = u.u9[base_index+j];
+
+			int index10 = j * 64 + 10;
+			if(index10  < size0)
+				u2->u10[base_index+j] = u.u10[base_index+j];
+
+			int index11 = j * 64 + 11;
+			if(index11  < size0)
+				u2->u11[base_index+j] = u.u11[base_index+j];
+
+			int index12 = j * 64 + 12;
+			if(index12  < size0)
+				u2->u12[base_index+j] = u.u12[base_index+j];
+
+			int index13 = j * 64 + 13;
+			if(index13  < size0)
+				u2->u13[base_index+j] = u.u13[base_index+j];
+
+			int index14 = j * 64 + 14;
+			if(index14  < size0)
+				u2->u14[base_index+j] = u.u14[base_index+j];
+
+			int index15 = j * 64 + 15;
+			if(index15  < size0)
+				u2->u15[base_index+j] = u.u15[base_index+j];
+
+			int index16 = j * 64 + 16;
+			if(index16  < size0)
+				u2->u16[base_index+j] = u.u16[base_index+j];
+
+			int index17 = j * 64 + 17;
+			if(index17  < size0)
+				u2->u17[base_index+j] = u.u17[base_index+j];
+
+			int index18 = j * 64 + 18;
+			if(index18  < size0)
+				u2->u18[base_index+j] = u.u18[base_index+j];
+
+			int index19 = j * 64 + 19;
+			if(index19  < size0)
+				u2->u19[base_index+j] = u.u19[base_index+j];
+
+			int index20 = j * 64 + 20;
+			if(index20  < size0)
+				u2->u20[base_index+j] = u.u20[base_index+j];
+
+			int index21 = j * 64 + 21;
+			if(index21  < size0)
+				u2->u21[base_index+j] = u.u21[base_index+j];
+
+			int index22 = j * 64 + 22;
+			if(index22  < size0)
+				u2->u22[base_index+j] = u.u22[base_index+j];
+
+			int index23 = j * 64 + 23;
+			if(index23  < size0)
+				u2->u23[base_index+j] = u.u23[base_index+j];
+
+			int index24 = j * 64 + 24;
+			if(index24  < size0)
+				u2->u24[base_index+j] = u.u24[base_index+j];
+
+			int index25 = j * 64 + 25;
+			if(index25  < size0)
+				u2->u25[base_index+j] = u.u25[base_index+j];
+
+			int index26 = j * 64 + 26;
+			if(index26  < size0)
+				u2->u26[base_index+j] = u.u26[base_index+j];
+
+			int index27 = j * 64 + 27;
+			if(index27  < size0)
+				u2->u27[base_index+j] = u.u27[base_index+j];
+
+			int index28 = j * 64 + 28;
+			if(index28  < size0)
+				u2->u28[base_index+j] = u.u28[base_index+j];
+
+			int index29 = j * 64 + 29;
+			if(index29  < size0)
+				u2->u29[base_index+j] = u.u29[base_index+j];
+
+			int index30 = j * 64 + 30;
+			if(index30  < size0)
+				u2->u30[base_index+j] = u.u30[base_index+j];
+
+			int index31 = j * 64 + 31;
+			if(index31  < size0)
+				u2->u31[base_index+j] = u.u31[base_index+j];
+
+			int index32 = j * 64 + 32;
+			if(index32  < size0)
+				u2->u32[base_index+j] = u.u32[base_index+j];
+
+			int index33 = j * 64 + 33;
+			if(index33  < size0)
+				u2->u33[base_index+j] = u.u33[base_index+j];
+
+			int index34 = j * 64 + 34;
+			if(index34  < size0)
+				u2->u34[base_index+j] = u.u34[base_index+j];
+
+			int index35 = j * 64 + 35;
+			if(index35  < size0)
+				u2->u35[base_index+j] = u.u35[base_index+j];
+
+			int index36 = j * 64 + 36;
+			if(index36  < size0)
+				u2->u36[base_index+j] = u.u36[base_index+j];
+
+			int index37 = j * 64 + 37;
+			if(index37  < size0)
+				u2->u37[base_index+j] = u.u37[base_index+j];
+
+			int index38 = j * 64 + 38;
+			if(index38  < size0)
+				u2->u38[base_index+j] = u.u38[base_index+j];
+
+			int index39 = j * 64 + 39;
+			if(index39  < size0)
+				u2->u39[base_index+j] = u.u39[base_index+j];
+
+			int index40 = j * 64 + 40;
+			if(index40  < size0)
+				u2->u40[base_index+j] = u.u40[base_index+j];
+
+			int index41 = j * 64 + 41;
+			if(index41  < size0)
+				u2->u41[base_index+j] = u.u41[base_index+j];
+
+			int index42 = j * 64 + 42;
+			if(index42  < size0)
+				u2->u42[base_index+j] = u.u42[base_index+j];
+
+			int index43 = j * 64 + 43;
+			if(index43  < size0)
+				u2->u43[base_index+j] = u.u43[base_index+j];
+
+			int index44 = j * 64 + 44;
+			if(index44  < size0)
+				u2->u44[base_index+j] = u.u44[base_index+j];
+
+			int index45 = j * 64 + 45;
+			if(index45  < size0)
+				u2->u45[base_index+j] = u.u45[base_index+j];
+
+			int index46 = j * 64 + 46;
+			if(index46  < size0)
+				u2->u46[base_index+j] = u.u46[base_index+j];
+
+			int index47 = j * 64 + 47;
+			if(index47  < size0)
+				u2->u47[base_index+j] = u.u47[base_index+j];
+
+			int index48 = j * 64 + 48;
+			if(index48  < size0)
+				u2->u48[base_index+j] = u.u48[base_index+j];
+
+			int index49 = j * 64 + 49;
+			if(index49  < size0)
+				u2->u49[base_index+j] = u.u49[base_index+j];
+
+			int index50 = j * 64 + 50;
+			if(index50  < size0)
+				u2->u50[base_index+j] = u.u50[base_index+j];
+
+			int index51 = j * 64 + 51;
+			if(index51  < size0)
+				u2->u51[base_index+j] = u.u51[base_index+j];
+
+			int index52 = j * 64 + 52;
+			if(index52  < size0)
+				u2->u52[base_index+j] = u.u52[base_index+j];
+
+			int index53 = j * 64 + 53;
+			if(index53  < size0)
+				u2->u53[base_index+j] = u.u53[base_index+j];
+
+			int index54 = j * 64 + 54;
+			if(index54  < size0)
+				u2->u54[base_index+j] = u.u54[base_index+j];
+
+			int index55 = j * 64 + 55;
+			if(index55  < size0)
+				u2->u55[base_index+j] = u.u55[base_index+j];
+
+			int index56 = j * 64 + 56;
+			if(index56  < size0)
+				u2->u56[base_index+j] = u.u56[base_index+j];
+
+			int index57 = j * 64 + 57;
+			if(index57  < size0)
+				u2->u57[base_index+j] = u.u57[base_index+j];
+
+			int index58 = j * 64 + 58;
+			if(index58  < size0)
+				u2->u58[base_index+j] = u.u58[base_index+j];
+
+			int index59 = j * 64 + 59;
+			if(index59  < size0)
+				u2->u59[base_index+j] = u.u59[base_index+j];
+
+			int index60 = j * 64 + 60;
+			if(index60  < size0)
+				u2->u60[base_index+j] = u.u60[base_index+j];
+
+			int index61 = j * 64 + 61;
+			if(index61  < size0)
+				u2->u61[base_index+j] = u.u61[base_index+j];
+
+			int index62 = j * 64 + 62;
+			if(index62  < size0)
+				u2->u62[base_index+j] = u.u62[base_index+j];
+
+			int index63 = j * 64 + 63;
+			if(index63  < size0)
+				u2->u63[base_index+j] = u.u63[base_index+j];
 
 		}
 	}
@@ -2798,337 +2798,335 @@ static void ops_poisson_kernel_initial(
 
 
 
-
-
-void print_grid(struct bram_cluster u, int size0, int size1){
-	for(int i = 0; i < size1; i++){
-				int end_loc =  (size0 >> 6) + 1;
-				const int row_block = MAX_X_DIM/P_FACTOR;
-				int base_index =  i * row_block;
-				__attribute__((xcl_pipeline_loop))
-				for(int j = 0; j < end_loc ; j++){
-					int index_0 = j * 64 + 0;
-					if(index_0   < size0)
-						printf("%f ", u.u0[base_index+j]);
-
-
-					int index_1 = j * 64 + 1;
-					if(index_1   < size0)
-						printf("%f ", u.u1[base_index+j]);
-
-
-					int index_2 = j * 64 + 2;
-					if(index_2   < size0)
-						printf("%f ", u.u2[base_index+j]);
-
-
-					int index_3 = j * 64 + 3;
-					if(index_3   < size0)
-						printf("%f ", u.u3[base_index+j]);
-
-
-					int index_4 = j * 64 + 4;
-					if(index_4   < size0)
-						printf("%f ", u.u4[base_index+j]);
-
-
-					int index_5 = j * 64 + 5;
-					if(index_5   < size0)
-						printf("%f ", u.u5[base_index+j]);
-
-
-					int index_6 = j * 64 + 6;
-					if(index_6   < size0)
-						printf("%f ", u.u6[base_index+j]);
-
-
-					int index_7 = j * 64 + 7;
-					if(index_7   < size0)
-						printf("%f ", u.u7[base_index+j]);
-
-
-					int index_8 = j * 64 + 8;
-					if(index_8   < size0)
-						printf("%f ", u.u8[base_index+j]);
-
-
-					int index_9 = j * 64 + 9;
-					if(index_9   < size0)
-						printf("%f ", u.u9[base_index+j]);
-
-
-					int index_10 = j * 64 + 10;
-					if(index_10   < size0)
-						printf("%f ", u.u10[base_index+j]);
-
-
-					int index_11 = j * 64 + 11;
-					if(index_11   < size0)
-						printf("%f ", u.u11[base_index+j]);
-
-
-					int index_12 = j * 64 + 12;
-					if(index_12   < size0)
-						printf("%f ", u.u12[base_index+j]);
-
-
-					int index_13 = j * 64 + 13;
-					if(index_13   < size0)
-						printf("%f ", u.u13[base_index+j]);
-
-
-					int index_14 = j * 64 + 14;
-					if(index_14   < size0)
-						printf("%f ", u.u14[base_index+j]);
-
-
-					int index_15 = j * 64 + 15;
-					if(index_15   < size0)
-						printf("%f ", u.u15[base_index+j]);
-
-
-					int index_16 = j * 64 + 16;
-					if(index_16   < size0)
-						printf("%f ", u.u16[base_index+j]);
-
-
-					int index_17 = j * 64 + 17;
-					if(index_17   < size0)
-						printf("%f ", u.u17[base_index+j]);
-
-
-					int index_18 = j * 64 + 18;
-					if(index_18   < size0)
-						printf("%f ", u.u18[base_index+j]);
-
-
-					int index_19 = j * 64 + 19;
-					if(index_19   < size0)
-						printf("%f ", u.u19[base_index+j]);
-
-
-					int index_20 = j * 64 + 20;
-					if(index_20   < size0)
-						printf("%f ", u.u20[base_index+j]);
-
-
-					int index_21 = j * 64 + 21;
-					if(index_21   < size0)
-						printf("%f ", u.u21[base_index+j]);
-
-
-					int index_22 = j * 64 + 22;
-					if(index_22   < size0)
-						printf("%f ", u.u22[base_index+j]);
-
-
-					int index_23 = j * 64 + 23;
-					if(index_23   < size0)
-						printf("%f ", u.u23[base_index+j]);
-
-
-					int index_24 = j * 64 + 24;
-					if(index_24   < size0)
-						printf("%f ", u.u24[base_index+j]);
-
-
-					int index_25 = j * 64 + 25;
-					if(index_25   < size0)
-						printf("%f ", u.u25[base_index+j]);
-
-
-					int index_26 = j * 64 + 26;
-					if(index_26   < size0)
-						printf("%f ", u.u26[base_index+j]);
-
-
-					int index_27 = j * 64 + 27;
-					if(index_27   < size0)
-						printf("%f ", u.u27[base_index+j]);
-
-
-					int index_28 = j * 64 + 28;
-					if(index_28   < size0)
-						printf("%f ", u.u28[base_index+j]);
-
-
-					int index_29 = j * 64 + 29;
-					if(index_29   < size0)
-						printf("%f ", u.u29[base_index+j]);
-
-
-					int index_30 = j * 64 + 30;
-					if(index_30   < size0)
-						printf("%f ", u.u30[base_index+j]);
-
-
-					int index_31 = j * 64 + 31;
-					if(index_31   < size0)
-						printf("%f ", u.u31[base_index+j]);
-
-
-					int index_32 = j * 64 + 32;
-					if(index_32   < size0)
-						printf("%f ", u.u32[base_index+j]);
-
-
-					int index_33 = j * 64 + 33;
-					if(index_33   < size0)
-						printf("%f ", u.u33[base_index+j]);
-
-
-					int index_34 = j * 64 + 34;
-					if(index_34   < size0)
-						printf("%f ", u.u34[base_index+j]);
-
-
-					int index_35 = j * 64 + 35;
-					if(index_35   < size0)
-						printf("%f ", u.u35[base_index+j]);
-
-
-					int index_36 = j * 64 + 36;
-					if(index_36   < size0)
-						printf("%f ", u.u36[base_index+j]);
-
-
-					int index_37 = j * 64 + 37;
-					if(index_37   < size0)
-						printf("%f ", u.u37[base_index+j]);
-
-
-					int index_38 = j * 64 + 38;
-					if(index_38   < size0)
-						printf("%f ", u.u38[base_index+j]);
-
-
-					int index_39 = j * 64 + 39;
-					if(index_39   < size0)
-						printf("%f ", u.u39[base_index+j]);
-
-
-					int index_40 = j * 64 + 40;
-					if(index_40   < size0)
-						printf("%f ", u.u40[base_index+j]);
-
-
-					int index_41 = j * 64 + 41;
-					if(index_41   < size0)
-						printf("%f ", u.u41[base_index+j]);
-
-
-					int index_42 = j * 64 + 42;
-					if(index_42   < size0)
-						printf("%f ", u.u42[base_index+j]);
-
-
-					int index_43 = j * 64 + 43;
-					if(index_43   < size0)
-						printf("%f ", u.u43[base_index+j]);
-
-
-					int index_44 = j * 64 + 44;
-					if(index_44   < size0)
-						printf("%f ", u.u44[base_index+j]);
-
-
-					int index_45 = j * 64 + 45;
-					if(index_45   < size0)
-						printf("%f ", u.u45[base_index+j]);
-
-
-					int index_46 = j * 64 + 46;
-					if(index_46   < size0)
-						printf("%f ", u.u46[base_index+j]);
-
-
-					int index_47 = j * 64 + 47;
-					if(index_47   < size0)
-						printf("%f ", u.u47[base_index+j]);
-
-
-					int index_48 = j * 64 + 48;
-					if(index_48   < size0)
-						printf("%f ", u.u48[base_index+j]);
-
-
-					int index_49 = j * 64 + 49;
-					if(index_49   < size0)
-						printf("%f ", u.u49[base_index+j]);
-
-
-					int index_50 = j * 64 + 50;
-					if(index_50   < size0)
-						printf("%f ", u.u50[base_index+j]);
-
-
-					int index_51 = j * 64 + 51;
-					if(index_51   < size0)
-						printf("%f ", u.u51[base_index+j]);
-
-
-					int index_52 = j * 64 + 52;
-					if(index_52   < size0)
-						printf("%f ", u.u52[base_index+j]);
-
-
-					int index_53 = j * 64 + 53;
-					if(index_53   < size0)
-						printf("%f ", u.u53[base_index+j]);
-
-
-					int index_54 = j * 64 + 54;
-					if(index_54   < size0)
-						printf("%f ", u.u54[base_index+j]);
-
-
-					int index_55 = j * 64 + 55;
-					if(index_55   < size0)
-						printf("%f ", u.u55[base_index+j]);
-
-
-					int index_56 = j * 64 + 56;
-					if(index_56   < size0)
-						printf("%f ", u.u56[base_index+j]);
-
-
-					int index_57 = j * 64 + 57;
-					if(index_57   < size0)
-						printf("%f ", u.u57[base_index+j]);
-
-
-					int index_58 = j * 64 + 58;
-					if(index_58   < size0)
-						printf("%f ", u.u58[base_index+j]);
-
-
-					int index_59 = j * 64 + 59;
-					if(index_59   < size0)
-						printf("%f ", u.u59[base_index+j]);
-
-
-					int index_60 = j * 64 + 60;
-					if(index_60   < size0)
-						printf("%f ", u.u60[base_index+j]);
-
-
-					int index_61 = j * 64 + 61;
-					if(index_61   < size0)
-						printf("%f ", u.u61[base_index+j]);
-
-
-					int index_62 = j * 64 + 62;
-					if(index_62   < size0)
-						printf("%f ", u.u62[base_index+j]);
-
-
-					int index_63 = j * 64 + 63;
-					if(index_63   < size0)
-						printf("%f ", u.u63[base_index+j]);
-				}
-				printf("\n");
-		}
-}
+//void print_grid(struct bram_cluster u, int size0, int size1){
+//	for(int i = 0; i < size1; i++){
+//		int end_loc =  (size0 >> 6) + 1;
+//		const int row_block = MAX_X_DIM/P_FACTOR;
+//		int base_index =  i * row_block;
+//		__attribute__((xcl_pipeline_loop))
+//		for(int j = 0; j < end_loc ; j++){
+//			int index_0 = j * 64 + 0;
+//			if(index_0   < size0)
+//				printf("%f ", u.u0[base_index+j]);
+//
+//
+//			int index_1 = j * 64 + 1;
+//			if(index_1   < size0)
+//				printf("%f ", u.u1[base_index+j]);
+//
+//
+//			int index_2 = j * 64 + 2;
+//			if(index_2   < size0)
+//				printf("%f ", u.u2[base_index+j]);
+//
+//
+//			int index_3 = j * 64 + 3;
+//			if(index_3   < size0)
+//				printf("%f ", u.u3[base_index+j]);
+//
+//
+//			int index_4 = j * 64 + 4;
+//			if(index_4   < size0)
+//				printf("%f ", u.u4[base_index+j]);
+//
+//
+//			int index_5 = j * 64 + 5;
+//			if(index_5   < size0)
+//				printf("%f ", u.u5[base_index+j]);
+//
+//
+//			int index_6 = j * 64 + 6;
+//			if(index_6   < size0)
+//				printf("%f ", u.u6[base_index+j]);
+//
+//
+//			int index_7 = j * 64 + 7;
+//			if(index_7   < size0)
+//				printf("%f ", u.u7[base_index+j]);
+//
+//
+//			int index_8 = j * 64 + 8;
+//			if(index_8   < size0)
+//				printf("%f ", u.u8[base_index+j]);
+//
+//
+//			int index_9 = j * 64 + 9;
+//			if(index_9   < size0)
+//				printf("%f ", u.u9[base_index+j]);
+//
+//
+//			int index_10 = j * 64 + 10;
+//			if(index_10   < size0)
+//				printf("%f ", u.u10[base_index+j]);
+//
+//
+//			int index_11 = j * 64 + 11;
+//			if(index_11   < size0)
+//				printf("%f ", u.u11[base_index+j]);
+//
+//
+//			int index_12 = j * 64 + 12;
+//			if(index_12   < size0)
+//				printf("%f ", u.u12[base_index+j]);
+//
+//
+//			int index_13 = j * 64 + 13;
+//			if(index_13   < size0)
+//				printf("%f ", u.u13[base_index+j]);
+//
+//
+//			int index_14 = j * 64 + 14;
+//			if(index_14   < size0)
+//				printf("%f ", u.u14[base_index+j]);
+//
+//
+//			int index_15 = j * 64 + 15;
+//			if(index_15   < size0)
+//				printf("%f ", u.u15[base_index+j]);
+//
+//
+//			int index_16 = j * 64 + 16;
+//			if(index_16   < size0)
+//				printf("%f ", u.u16[base_index+j]);
+//
+//
+//			int index_17 = j * 64 + 17;
+//			if(index_17   < size0)
+//				printf("%f ", u.u17[base_index+j]);
+//
+//
+//			int index_18 = j * 64 + 18;
+//			if(index_18   < size0)
+//				printf("%f ", u.u18[base_index+j]);
+//
+//
+//			int index_19 = j * 64 + 19;
+//			if(index_19   < size0)
+//				printf("%f ", u.u19[base_index+j]);
+//
+//
+//			int index_20 = j * 64 + 20;
+//			if(index_20   < size0)
+//				printf("%f ", u.u20[base_index+j]);
+//
+//
+//			int index_21 = j * 64 + 21;
+//			if(index_21   < size0)
+//				printf("%f ", u.u21[base_index+j]);
+//
+//
+//			int index_22 = j * 64 + 22;
+//			if(index_22   < size0)
+//				printf("%f ", u.u22[base_index+j]);
+//
+//
+//			int index_23 = j * 64 + 23;
+//			if(index_23   < size0)
+//				printf("%f ", u.u23[base_index+j]);
+//
+//
+//			int index_24 = j * 64 + 24;
+//			if(index_24   < size0)
+//				printf("%f ", u.u24[base_index+j]);
+//
+//
+//			int index_25 = j * 64 + 25;
+//			if(index_25   < size0)
+//				printf("%f ", u.u25[base_index+j]);
+//
+//
+//			int index_26 = j * 64 + 26;
+//			if(index_26   < size0)
+//				printf("%f ", u.u26[base_index+j]);
+//
+//
+//			int index_27 = j * 64 + 27;
+//			if(index_27   < size0)
+//				printf("%f ", u.u27[base_index+j]);
+//
+//
+//			int index_28 = j * 64 + 28;
+//			if(index_28   < size0)
+//				printf("%f ", u.u28[base_index+j]);
+//
+//
+//			int index_29 = j * 64 + 29;
+//			if(index_29   < size0)
+//				printf("%f ", u.u29[base_index+j]);
+//
+//
+//			int index_30 = j * 64 + 30;
+//			if(index_30   < size0)
+//				printf("%f ", u.u30[base_index+j]);
+//
+//
+//			int index_31 = j * 64 + 31;
+//			if(index_31   < size0)
+//				printf("%f ", u.u31[base_index+j]);
+//
+//
+//			int index_32 = j * 64 + 32;
+//			if(index_32   < size0)
+//				printf("%f ", u.u32[base_index+j]);
+//
+//
+//			int index_33 = j * 64 + 33;
+//			if(index_33   < size0)
+//				printf("%f ", u.u33[base_index+j]);
+//
+//
+//			int index_34 = j * 64 + 34;
+//			if(index_34   < size0)
+//				printf("%f ", u.u34[base_index+j]);
+//
+//
+//			int index_35 = j * 64 + 35;
+//			if(index_35   < size0)
+//				printf("%f ", u.u35[base_index+j]);
+//
+//
+//			int index_36 = j * 64 + 36;
+//			if(index_36   < size0)
+//				printf("%f ", u.u36[base_index+j]);
+//
+//
+//			int index_37 = j * 64 + 37;
+//			if(index_37   < size0)
+//				printf("%f ", u.u37[base_index+j]);
+//
+//
+//			int index_38 = j * 64 + 38;
+//			if(index_38   < size0)
+//				printf("%f ", u.u38[base_index+j]);
+//
+//
+//			int index_39 = j * 64 + 39;
+//			if(index_39   < size0)
+//				printf("%f ", u.u39[base_index+j]);
+//
+//
+//			int index_40 = j * 64 + 40;
+//			if(index_40   < size0)
+//				printf("%f ", u.u40[base_index+j]);
+//
+//
+//			int index_41 = j * 64 + 41;
+//			if(index_41   < size0)
+//				printf("%f ", u.u41[base_index+j]);
+//
+//
+//			int index_42 = j * 64 + 42;
+//			if(index_42   < size0)
+//				printf("%f ", u.u42[base_index+j]);
+//
+//
+//			int index_43 = j * 64 + 43;
+//			if(index_43   < size0)
+//				printf("%f ", u.u43[base_index+j]);
+//
+//
+//			int index_44 = j * 64 + 44;
+//			if(index_44   < size0)
+//				printf("%f ", u.u44[base_index+j]);
+//
+//
+//			int index_45 = j * 64 + 45;
+//			if(index_45   < size0)
+//				printf("%f ", u.u45[base_index+j]);
+//
+//
+//			int index_46 = j * 64 + 46;
+//			if(index_46   < size0)
+//				printf("%f ", u.u46[base_index+j]);
+//
+//
+//			int index_47 = j * 64 + 47;
+//			if(index_47   < size0)
+//				printf("%f ", u.u47[base_index+j]);
+//
+//
+//			int index_48 = j * 64 + 48;
+//			if(index_48   < size0)
+//				printf("%f ", u.u48[base_index+j]);
+//
+//
+//			int index_49 = j * 64 + 49;
+//			if(index_49   < size0)
+//				printf("%f ", u.u49[base_index+j]);
+//
+//
+//			int index_50 = j * 64 + 50;
+//			if(index_50   < size0)
+//				printf("%f ", u.u50[base_index+j]);
+//
+//
+//			int index_51 = j * 64 + 51;
+//			if(index_51   < size0)
+//				printf("%f ", u.u51[base_index+j]);
+//
+//
+//			int index_52 = j * 64 + 52;
+//			if(index_52   < size0)
+//				printf("%f ", u.u52[base_index+j]);
+//
+//
+//			int index_53 = j * 64 + 53;
+//			if(index_53   < size0)
+//				printf("%f ", u.u53[base_index+j]);
+//
+//
+//			int index_54 = j * 64 + 54;
+//			if(index_54   < size0)
+//				printf("%f ", u.u54[base_index+j]);
+//
+//
+//			int index_55 = j * 64 + 55;
+//			if(index_55   < size0)
+//				printf("%f ", u.u55[base_index+j]);
+//
+//
+//			int index_56 = j * 64 + 56;
+//			if(index_56   < size0)
+//				printf("%f ", u.u56[base_index+j]);
+//
+//
+//			int index_57 = j * 64 + 57;
+//			if(index_57   < size0)
+//				printf("%f ", u.u57[base_index+j]);
+//
+//
+//			int index_58 = j * 64 + 58;
+//			if(index_58   < size0)
+//				printf("%f ", u.u58[base_index+j]);
+//
+//
+//			int index_59 = j * 64 + 59;
+//			if(index_59   < size0)
+//				printf("%f ", u.u59[base_index+j]);
+//
+//
+//			int index_60 = j * 64 + 60;
+//			if(index_60   < size0)
+//				printf("%f ", u.u60[base_index+j]);
+//
+//
+//			int index_61 = j * 64 + 61;
+//			if(index_61   < size0)
+//				printf("%f ", u.u61[base_index+j]);
+//
+//
+//			int index_62 = j * 64 + 62;
+//			if(index_62   < size0)
+//				printf("%f ", u.u62[base_index+j]);
+//
+//
+//			int index_63 = j * 64 + 63;
+//			if(index_63   < size0)
+//				printf("%f ", u.u63[base_index+j]);
+//		}
+//		printf("\n");
+//	}
+//}
 
 
 
@@ -3159,8 +3157,8 @@ __kernel void ops_poisson_kernel(
 	ops_poisson_kernel_populate(
 			populate_arg0,
 			populate_arg1,
-			U,
-			ref,
+			&U,
+			&ref,
 			populate_dx,
 			populate_dy,
 			0,
@@ -3170,11 +3168,11 @@ __kernel void ops_poisson_kernel(
 			size0+2,
 			size1+2);
 
-	print_grid(U, size0+2, size1+2);
+	//print_grid(U, size0+2,size1+2);
 
 	ops_poisson_kernel_update(
 			U,
-			U2,
+			&U2,
 			0,
 			0,
 			size0+2,
@@ -3183,7 +3181,7 @@ __kernel void ops_poisson_kernel(
 
 
 	ops_poisson_kernel_initial(
-			U,
+			&U,
 			MAX_X_DIM+1,
 			size0,
 			size1);
@@ -3193,7 +3191,7 @@ __kernel void ops_poisson_kernel(
 
 		ops_poisson_kernel_stencil(
 				U,
-				U2,
+				&U2,
 				MAX_X_DIM+1,
 				MAX_X_DIM+1,
 				size0,
@@ -3201,7 +3199,7 @@ __kernel void ops_poisson_kernel(
 
 		ops_poisson_kernel_update(
 				U2,
-				U,
+				&U,
 				0,
 				0,
 				size0+2,
@@ -3210,8 +3208,8 @@ __kernel void ops_poisson_kernel(
 
 
 	ops_poisson_kernel_error(
-			U,
-			ref,
+			&U,
+			&ref,
 			arg2,
 			scratch2,
 			r_bytes2,
