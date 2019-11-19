@@ -2800,6 +2800,339 @@ static void ops_poisson_kernel_initial(
 
 
 
+void print_grid(struct bram_cluster u, int size0, int size1){
+	for(int i = 0; i < size1; i++){
+				int end_loc =  (size0 >> 6) + 1;
+				const int row_block = MAX_X_DIM/P_FACTOR;
+				int base_index =  i * row_block;
+				__attribute__((xcl_pipeline_loop))
+				for(int j = 0; j < end_loc ; j++){
+					int index_0 = j * 64 + 0;
+					if(index_0   < size0)
+						printf("%f ", u.u0[base_index+j]);
+
+
+					int index_1 = j * 64 + 1;
+					if(index_1   < size0)
+						printf("%f ", u.u1[base_index+j]);
+
+
+					int index_2 = j * 64 + 2;
+					if(index_2   < size0)
+						printf("%f ", u.u2[base_index+j]);
+
+
+					int index_3 = j * 64 + 3;
+					if(index_3   < size0)
+						printf("%f ", u.u3[base_index+j]);
+
+
+					int index_4 = j * 64 + 4;
+					if(index_4   < size0)
+						printf("%f ", u.u4[base_index+j]);
+
+
+					int index_5 = j * 64 + 5;
+					if(index_5   < size0)
+						printf("%f ", u.u5[base_index+j]);
+
+
+					int index_6 = j * 64 + 6;
+					if(index_6   < size0)
+						printf("%f ", u.u6[base_index+j]);
+
+
+					int index_7 = j * 64 + 7;
+					if(index_7   < size0)
+						printf("%f ", u.u7[base_index+j]);
+
+
+					int index_8 = j * 64 + 8;
+					if(index_8   < size0)
+						printf("%f ", u.u8[base_index+j]);
+
+
+					int index_9 = j * 64 + 9;
+					if(index_9   < size0)
+						printf("%f ", u.u9[base_index+j]);
+
+
+					int index_10 = j * 64 + 10;
+					if(index_10   < size0)
+						printf("%f ", u.u10[base_index+j]);
+
+
+					int index_11 = j * 64 + 11;
+					if(index_11   < size0)
+						printf("%f ", u.u11[base_index+j]);
+
+
+					int index_12 = j * 64 + 12;
+					if(index_12   < size0)
+						printf("%f ", u.u12[base_index+j]);
+
+
+					int index_13 = j * 64 + 13;
+					if(index_13   < size0)
+						printf("%f ", u.u13[base_index+j]);
+
+
+					int index_14 = j * 64 + 14;
+					if(index_14   < size0)
+						printf("%f ", u.u14[base_index+j]);
+
+
+					int index_15 = j * 64 + 15;
+					if(index_15   < size0)
+						printf("%f ", u.u15[base_index+j]);
+
+
+					int index_16 = j * 64 + 16;
+					if(index_16   < size0)
+						printf("%f ", u.u16[base_index+j]);
+
+
+					int index_17 = j * 64 + 17;
+					if(index_17   < size0)
+						printf("%f ", u.u17[base_index+j]);
+
+
+					int index_18 = j * 64 + 18;
+					if(index_18   < size0)
+						printf("%f ", u.u18[base_index+j]);
+
+
+					int index_19 = j * 64 + 19;
+					if(index_19   < size0)
+						printf("%f ", u.u19[base_index+j]);
+
+
+					int index_20 = j * 64 + 20;
+					if(index_20   < size0)
+						printf("%f ", u.u20[base_index+j]);
+
+
+					int index_21 = j * 64 + 21;
+					if(index_21   < size0)
+						printf("%f ", u.u21[base_index+j]);
+
+
+					int index_22 = j * 64 + 22;
+					if(index_22   < size0)
+						printf("%f ", u.u22[base_index+j]);
+
+
+					int index_23 = j * 64 + 23;
+					if(index_23   < size0)
+						printf("%f ", u.u23[base_index+j]);
+
+
+					int index_24 = j * 64 + 24;
+					if(index_24   < size0)
+						printf("%f ", u.u24[base_index+j]);
+
+
+					int index_25 = j * 64 + 25;
+					if(index_25   < size0)
+						printf("%f ", u.u25[base_index+j]);
+
+
+					int index_26 = j * 64 + 26;
+					if(index_26   < size0)
+						printf("%f ", u.u26[base_index+j]);
+
+
+					int index_27 = j * 64 + 27;
+					if(index_27   < size0)
+						printf("%f ", u.u27[base_index+j]);
+
+
+					int index_28 = j * 64 + 28;
+					if(index_28   < size0)
+						printf("%f ", u.u28[base_index+j]);
+
+
+					int index_29 = j * 64 + 29;
+					if(index_29   < size0)
+						printf("%f ", u.u29[base_index+j]);
+
+
+					int index_30 = j * 64 + 30;
+					if(index_30   < size0)
+						printf("%f ", u.u30[base_index+j]);
+
+
+					int index_31 = j * 64 + 31;
+					if(index_31   < size0)
+						printf("%f ", u.u31[base_index+j]);
+
+
+					int index_32 = j * 64 + 32;
+					if(index_32   < size0)
+						printf("%f ", u.u32[base_index+j]);
+
+
+					int index_33 = j * 64 + 33;
+					if(index_33   < size0)
+						printf("%f ", u.u33[base_index+j]);
+
+
+					int index_34 = j * 64 + 34;
+					if(index_34   < size0)
+						printf("%f ", u.u34[base_index+j]);
+
+
+					int index_35 = j * 64 + 35;
+					if(index_35   < size0)
+						printf("%f ", u.u35[base_index+j]);
+
+
+					int index_36 = j * 64 + 36;
+					if(index_36   < size0)
+						printf("%f ", u.u36[base_index+j]);
+
+
+					int index_37 = j * 64 + 37;
+					if(index_37   < size0)
+						printf("%f ", u.u37[base_index+j]);
+
+
+					int index_38 = j * 64 + 38;
+					if(index_38   < size0)
+						printf("%f ", u.u38[base_index+j]);
+
+
+					int index_39 = j * 64 + 39;
+					if(index_39   < size0)
+						printf("%f ", u.u39[base_index+j]);
+
+
+					int index_40 = j * 64 + 40;
+					if(index_40   < size0)
+						printf("%f ", u.u40[base_index+j]);
+
+
+					int index_41 = j * 64 + 41;
+					if(index_41   < size0)
+						printf("%f ", u.u41[base_index+j]);
+
+
+					int index_42 = j * 64 + 42;
+					if(index_42   < size0)
+						printf("%f ", u.u42[base_index+j]);
+
+
+					int index_43 = j * 64 + 43;
+					if(index_43   < size0)
+						printf("%f ", u.u43[base_index+j]);
+
+
+					int index_44 = j * 64 + 44;
+					if(index_44   < size0)
+						printf("%f ", u.u44[base_index+j]);
+
+
+					int index_45 = j * 64 + 45;
+					if(index_45   < size0)
+						printf("%f ", u.u45[base_index+j]);
+
+
+					int index_46 = j * 64 + 46;
+					if(index_46   < size0)
+						printf("%f ", u.u46[base_index+j]);
+
+
+					int index_47 = j * 64 + 47;
+					if(index_47   < size0)
+						printf("%f ", u.u47[base_index+j]);
+
+
+					int index_48 = j * 64 + 48;
+					if(index_48   < size0)
+						printf("%f ", u.u48[base_index+j]);
+
+
+					int index_49 = j * 64 + 49;
+					if(index_49   < size0)
+						printf("%f ", u.u49[base_index+j]);
+
+
+					int index_50 = j * 64 + 50;
+					if(index_50   < size0)
+						printf("%f ", u.u50[base_index+j]);
+
+
+					int index_51 = j * 64 + 51;
+					if(index_51   < size0)
+						printf("%f ", u.u51[base_index+j]);
+
+
+					int index_52 = j * 64 + 52;
+					if(index_52   < size0)
+						printf("%f ", u.u52[base_index+j]);
+
+
+					int index_53 = j * 64 + 53;
+					if(index_53   < size0)
+						printf("%f ", u.u53[base_index+j]);
+
+
+					int index_54 = j * 64 + 54;
+					if(index_54   < size0)
+						printf("%f ", u.u54[base_index+j]);
+
+
+					int index_55 = j * 64 + 55;
+					if(index_55   < size0)
+						printf("%f ", u.u55[base_index+j]);
+
+
+					int index_56 = j * 64 + 56;
+					if(index_56   < size0)
+						printf("%f ", u.u56[base_index+j]);
+
+
+					int index_57 = j * 64 + 57;
+					if(index_57   < size0)
+						printf("%f ", u.u57[base_index+j]);
+
+
+					int index_58 = j * 64 + 58;
+					if(index_58   < size0)
+						printf("%f ", u.u58[base_index+j]);
+
+
+					int index_59 = j * 64 + 59;
+					if(index_59   < size0)
+						printf("%f ", u.u59[base_index+j]);
+
+
+					int index_60 = j * 64 + 60;
+					if(index_60   < size0)
+						printf("%f ", u.u60[base_index+j]);
+
+
+					int index_61 = j * 64 + 61;
+					if(index_61   < size0)
+						printf("%f ", u.u61[base_index+j]);
+
+
+					int index_62 = j * 64 + 62;
+					if(index_62   < size0)
+						printf("%f ", u.u62[base_index+j]);
+
+
+					int index_63 = j * 64 + 63;
+					if(index_63   < size0)
+						printf("%f ", u.u63[base_index+j]);
+				}
+				printf("\n");
+		}
+}
+
+
+
+
 __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 __kernel void ops_poisson_kernel(
 		const int populate_arg0,
@@ -2837,7 +3170,7 @@ __kernel void ops_poisson_kernel(
 			size0+2,
 			size1+2);
 
-
+	print_grid(U, size0+2, size1+2);
 
 	ops_poisson_kernel_update(
 			U,
