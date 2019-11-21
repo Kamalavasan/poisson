@@ -1196,6 +1196,9 @@ static void ops_poisson_kernel_populate(
 		__attribute__((xcl_pipeline_loop))
 		__attribute__((opencl_unroll_hint(P_FACTOR)))
 		for(int j = 0; j < end_loc ; j++){
+
+			float f3_0_3;
+			float f5_0_3;
 			//------------COMPUTE UNIT 0  ----------------
 			int index0 = j * 64 + 0;
 			double arg_idx_0 = arg_idx0 + index0;
@@ -1203,12 +1206,12 @@ static void ops_poisson_kernel_populate(
 			double x_0  = dx * (double)(arg_idx_0 +arg0);
 			double y_0 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_0 = myfun(native_sin(M_PI*x_0),native_cos(2.0*M_PI*y_0))-1.0;
-			float f5_0 = native_sin(M_PI*x_0)*native_cos(2.0*M_PI*y_0);
+			f3_0_3 = myfun(native_sin(M_PI*x_0),native_cos(2.0*M_PI*y_0))-1.0;
+			f5_0_3 = native_sin(M_PI*x_0)*native_cos(2.0*M_PI*y_0);
 
 			if(index0  < size0){
-				u0[base_index +j] = f3_0;
-				ref_0[base_index +j] = f5_0;
+				u0[base_index +j] = f3_0_3;
+				ref_0[base_index +j] = f5_0_3;
 			}
 
 			//------------COMPUTE UNIT 1  ----------------
@@ -1218,12 +1221,12 @@ static void ops_poisson_kernel_populate(
 			double x_1  = dx * (double)(arg_idx_1 +arg0);
 			double y_1 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_1 = myfun(native_sin(M_PI*x_1),native_cos(2.0*M_PI*y_1))-1.0;
-			float f5_1 = native_sin(M_PI*x_1)*native_cos(2.0*M_PI*y_1);
+			f3_0_3 = myfun(native_sin(M_PI*x_1),native_cos(2.0*M_PI*y_1))-1.0;
+			f5_0_3 = native_sin(M_PI*x_1)*native_cos(2.0*M_PI*y_1);
 
 			if(index1  < size0){
-				u1[base_index +j] = f3_1;
-				ref_1[base_index +j] = f5_1;
+				u1[base_index +j] = f3_0_3;
+				ref_1[base_index +j] = f5_0_3;
 			}
 
 			//------------COMPUTE UNIT 2  ----------------
@@ -1233,12 +1236,12 @@ static void ops_poisson_kernel_populate(
 			double x_2  = dx * (double)(arg_idx_2 +arg0);
 			double y_2 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_2 = myfun(native_sin(M_PI*x_2),native_cos(2.0*M_PI*y_2))-1.0;
-			float f5_2 = native_sin(M_PI*x_2)*native_cos(2.0*M_PI*y_2);
+			f3_0_3 = myfun(native_sin(M_PI*x_2),native_cos(2.0*M_PI*y_2))-1.0;
+			f5_0_3 = native_sin(M_PI*x_2)*native_cos(2.0*M_PI*y_2);
 
 			if(index2  < size0){
-				u2[base_index +j] = f3_2;
-				ref_2[base_index +j] = f5_2;
+				u2[base_index +j] = f3_0_3;
+				ref_2[base_index +j] = f5_0_3;
 			}
 
 			//------------COMPUTE UNIT 3  ----------------
@@ -1248,14 +1251,17 @@ static void ops_poisson_kernel_populate(
 			double x_3  = dx * (double)(arg_idx_3 +arg0);
 			double y_3 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_3 = myfun(native_sin(M_PI*x_3),native_cos(2.0*M_PI*y_3))-1.0;
-			float f5_3 = native_sin(M_PI*x_3)*native_cos(2.0*M_PI*y_3);
+			f3_0_3 = myfun(native_sin(M_PI*x_3),native_cos(2.0*M_PI*y_3))-1.0;
+			f5_0_3 = native_sin(M_PI*x_3)*native_cos(2.0*M_PI*y_3);
 
 			if(index3  < size0){
-				u3[base_index +j] = f3_3;
-				ref_3[base_index +j] = f5_3;
+				u3[base_index +j] = f3_0_3;
+				ref_3[base_index +j] = f5_0_3;
 			}
 
+
+			float f3_4_7;
+			float f5_4_7;
 			//------------COMPUTE UNIT 4  ----------------
 			int index4 = j * 64 + 4;
 			double arg_idx_4 = arg_idx0 + index4;
@@ -1263,12 +1269,12 @@ static void ops_poisson_kernel_populate(
 			double x_4  = dx * (double)(arg_idx_4 +arg0);
 			double y_4 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_4 = myfun(native_sin(M_PI*x_4),native_cos(2.0*M_PI*y_4))-1.0;
-			float f5_4 = native_sin(M_PI*x_4)*native_cos(2.0*M_PI*y_4);
+			f3_4_7 = myfun(native_sin(M_PI*x_4),native_cos(2.0*M_PI*y_4))-1.0;
+			f5_4_7 = native_sin(M_PI*x_4)*native_cos(2.0*M_PI*y_4);
 
 			if(index4  < size0){
-				u4[base_index +j] = f3_4;
-				ref_4[base_index +j] = f5_4;
+				u4[base_index +j] = f3_4_7;
+				ref_4[base_index +j] = f5_4_7;
 			}
 
 			//------------COMPUTE UNIT 5  ----------------
@@ -1278,12 +1284,12 @@ static void ops_poisson_kernel_populate(
 			double x_5  = dx * (double)(arg_idx_5 +arg0);
 			double y_5 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_5 = myfun(native_sin(M_PI*x_5),native_cos(2.0*M_PI*y_5))-1.0;
-			float f5_5 = native_sin(M_PI*x_5)*native_cos(2.0*M_PI*y_5);
+			f3_4_7 = myfun(native_sin(M_PI*x_5),native_cos(2.0*M_PI*y_5))-1.0;
+			f5_4_7 = native_sin(M_PI*x_5)*native_cos(2.0*M_PI*y_5);
 
 			if(index5  < size0){
-				u5[base_index +j] = f3_5;
-				ref_5[base_index +j] = f5_5;
+				u5[base_index +j] = f3_4_7;
+				ref_5[base_index +j] = f5_4_7;
 			}
 
 			//------------COMPUTE UNIT 6  ----------------
@@ -1293,12 +1299,12 @@ static void ops_poisson_kernel_populate(
 			double x_6  = dx * (double)(arg_idx_6 +arg0);
 			double y_6 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_6 = myfun(native_sin(M_PI*x_6),native_cos(2.0*M_PI*y_6))-1.0;
-			float f5_6 = native_sin(M_PI*x_6)*native_cos(2.0*M_PI*y_6);
+			f3_4_7 = myfun(native_sin(M_PI*x_6),native_cos(2.0*M_PI*y_6))-1.0;
+			f5_4_7 = native_sin(M_PI*x_6)*native_cos(2.0*M_PI*y_6);
 
 			if(index6  < size0){
-				u6[base_index +j] = f3_6;
-				ref_6[base_index +j] = f5_6;
+				u6[base_index +j] = f3_4_7;
+				ref_6[base_index +j] = f5_4_7;
 			}
 
 			//------------COMPUTE UNIT 7  ----------------
@@ -1308,14 +1314,17 @@ static void ops_poisson_kernel_populate(
 			double x_7  = dx * (double)(arg_idx_7 +arg0);
 			double y_7 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_7 = myfun(native_sin(M_PI*x_7),native_cos(2.0*M_PI*y_7))-1.0;
-			float f5_7 = native_sin(M_PI*x_7)*native_cos(2.0*M_PI*y_7);
+			f3_4_7 = myfun(native_sin(M_PI*x_7),native_cos(2.0*M_PI*y_7))-1.0;
+			f5_4_7 = native_sin(M_PI*x_7)*native_cos(2.0*M_PI*y_7);
 
 			if(index7  < size0){
-				u7[base_index +j] = f3_7;
-				ref_7[base_index +j] = f5_7;
+				u7[base_index +j] = f3_4_7;
+				ref_7[base_index +j] = f5_4_7;
 			}
 
+
+			float f3_8_11;
+			float f5_8_11;
 			//------------COMPUTE UNIT 8  ----------------
 			int index8 = j * 64 + 8;
 			double arg_idx_8 = arg_idx0 + index8;
@@ -1323,12 +1332,12 @@ static void ops_poisson_kernel_populate(
 			double x_8  = dx * (double)(arg_idx_8 +arg0);
 			double y_8 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_8 = myfun(native_sin(M_PI*x_8),native_cos(2.0*M_PI*y_8))-1.0;
-			float f5_8 = native_sin(M_PI*x_8)*native_cos(2.0*M_PI*y_8);
+			f3_8_11 = myfun(native_sin(M_PI*x_8),native_cos(2.0*M_PI*y_8))-1.0;
+			f5_8_11 = native_sin(M_PI*x_8)*native_cos(2.0*M_PI*y_8);
 
 			if(index8  < size0){
-				u8[base_index +j] = f3_8;
-				ref_8[base_index +j] = f5_8;
+				u8[base_index +j] = f3_8_11;
+				ref_8[base_index +j] = f5_8_11;
 			}
 
 			//------------COMPUTE UNIT 9  ----------------
@@ -1338,12 +1347,12 @@ static void ops_poisson_kernel_populate(
 			double x_9  = dx * (double)(arg_idx_9 +arg0);
 			double y_9 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_9 = myfun(native_sin(M_PI*x_9),native_cos(2.0*M_PI*y_9))-1.0;
-			float f5_9 = native_sin(M_PI*x_9)*native_cos(2.0*M_PI*y_9);
+			f3_8_11 = myfun(native_sin(M_PI*x_9),native_cos(2.0*M_PI*y_9))-1.0;
+			f5_8_11 = native_sin(M_PI*x_9)*native_cos(2.0*M_PI*y_9);
 
 			if(index9  < size0){
-				u9[base_index +j] = f3_9;
-				ref_9[base_index +j] = f5_9;
+				u9[base_index +j] = f3_8_11;
+				ref_9[base_index +j] = f5_8_11;
 			}
 
 			//------------COMPUTE UNIT 10  ----------------
@@ -1353,12 +1362,12 @@ static void ops_poisson_kernel_populate(
 			double x_10  = dx * (double)(arg_idx_10 +arg0);
 			double y_10 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_10 = myfun(native_sin(M_PI*x_10),native_cos(2.0*M_PI*y_10))-1.0;
-			float f5_10 = native_sin(M_PI*x_10)*native_cos(2.0*M_PI*y_10);
+			f3_8_11 = myfun(native_sin(M_PI*x_10),native_cos(2.0*M_PI*y_10))-1.0;
+			f5_8_11 = native_sin(M_PI*x_10)*native_cos(2.0*M_PI*y_10);
 
 			if(index10  < size0){
-				u10[base_index +j] = f3_10;
-				ref_10[base_index +j] = f5_10;
+				u10[base_index +j] = f3_8_11;
+				ref_10[base_index +j] = f5_8_11;
 			}
 
 			//------------COMPUTE UNIT 11  ----------------
@@ -1368,14 +1377,17 @@ static void ops_poisson_kernel_populate(
 			double x_11  = dx * (double)(arg_idx_11 +arg0);
 			double y_11 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_11 = myfun(native_sin(M_PI*x_11),native_cos(2.0*M_PI*y_11))-1.0;
-			float f5_11 = native_sin(M_PI*x_11)*native_cos(2.0*M_PI*y_11);
+			f3_8_11 = myfun(native_sin(M_PI*x_11),native_cos(2.0*M_PI*y_11))-1.0;
+			f5_8_11 = native_sin(M_PI*x_11)*native_cos(2.0*M_PI*y_11);
 
 			if(index11  < size0){
-				u11[base_index +j] = f3_11;
-				ref_11[base_index +j] = f5_11;
+				u11[base_index +j] = f3_8_11;
+				ref_11[base_index +j] = f5_8_11;
 			}
 
+
+			float f3_12_15;
+			float f5_12_15;
 			//------------COMPUTE UNIT 12  ----------------
 			int index12 = j * 64 + 12;
 			double arg_idx_12 = arg_idx0 + index12;
@@ -1383,12 +1395,12 @@ static void ops_poisson_kernel_populate(
 			double x_12  = dx * (double)(arg_idx_12 +arg0);
 			double y_12 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_12 = myfun(native_sin(M_PI*x_12),native_cos(2.0*M_PI*y_12))-1.0;
-			float f5_12 = native_sin(M_PI*x_12)*native_cos(2.0*M_PI*y_12);
+			f3_12_15 = myfun(native_sin(M_PI*x_12),native_cos(2.0*M_PI*y_12))-1.0;
+			f5_12_15 = native_sin(M_PI*x_12)*native_cos(2.0*M_PI*y_12);
 
 			if(index12  < size0){
-				u12[base_index +j] = f3_12;
-				ref_12[base_index +j] = f5_12;
+				u12[base_index +j] = f3_12_15;
+				ref_12[base_index +j] = f5_12_15;
 			}
 
 			//------------COMPUTE UNIT 13  ----------------
@@ -1398,12 +1410,12 @@ static void ops_poisson_kernel_populate(
 			double x_13  = dx * (double)(arg_idx_13 +arg0);
 			double y_13 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_13 = myfun(native_sin(M_PI*x_13),native_cos(2.0*M_PI*y_13))-1.0;
-			float f5_13 = native_sin(M_PI*x_13)*native_cos(2.0*M_PI*y_13);
+			f3_12_15 = myfun(native_sin(M_PI*x_13),native_cos(2.0*M_PI*y_13))-1.0;
+			f5_12_15 = native_sin(M_PI*x_13)*native_cos(2.0*M_PI*y_13);
 
 			if(index13  < size0){
-				u13[base_index +j] = f3_13;
-				ref_13[base_index +j] = f5_13;
+				u13[base_index +j] = f3_12_15;
+				ref_13[base_index +j] = f5_12_15;
 			}
 
 			//------------COMPUTE UNIT 14  ----------------
@@ -1413,12 +1425,12 @@ static void ops_poisson_kernel_populate(
 			double x_14  = dx * (double)(arg_idx_14 +arg0);
 			double y_14 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_14 = myfun(native_sin(M_PI*x_14),native_cos(2.0*M_PI*y_14))-1.0;
-			float f5_14 = native_sin(M_PI*x_14)*native_cos(2.0*M_PI*y_14);
+			f3_12_15 = myfun(native_sin(M_PI*x_14),native_cos(2.0*M_PI*y_14))-1.0;
+			f5_12_15 = native_sin(M_PI*x_14)*native_cos(2.0*M_PI*y_14);
 
 			if(index14  < size0){
-				u14[base_index +j] = f3_14;
-				ref_14[base_index +j] = f5_14;
+				u14[base_index +j] = f3_12_15;
+				ref_14[base_index +j] = f5_12_15;
 			}
 
 			//------------COMPUTE UNIT 15  ----------------
@@ -1428,14 +1440,17 @@ static void ops_poisson_kernel_populate(
 			double x_15  = dx * (double)(arg_idx_15 +arg0);
 			double y_15 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_15 = myfun(native_sin(M_PI*x_15),native_cos(2.0*M_PI*y_15))-1.0;
-			float f5_15 = native_sin(M_PI*x_15)*native_cos(2.0*M_PI*y_15);
+			f3_12_15 = myfun(native_sin(M_PI*x_15),native_cos(2.0*M_PI*y_15))-1.0;
+			f5_12_15 = native_sin(M_PI*x_15)*native_cos(2.0*M_PI*y_15);
 
 			if(index15  < size0){
-				u15[base_index +j] = f3_15;
-				ref_15[base_index +j] = f5_15;
+				u15[base_index +j] = f3_12_15;
+				ref_15[base_index +j] = f5_12_15;
 			}
 
+
+			float f3_16_19;
+			float f5_16_19;
 			//------------COMPUTE UNIT 16  ----------------
 			int index16 = j * 64 + 16;
 			double arg_idx_16 = arg_idx0 + index16;
@@ -1443,12 +1458,12 @@ static void ops_poisson_kernel_populate(
 			double x_16  = dx * (double)(arg_idx_16 +arg0);
 			double y_16 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_16 = myfun(native_sin(M_PI*x_16),native_cos(2.0*M_PI*y_16))-1.0;
-			float f5_16 = native_sin(M_PI*x_16)*native_cos(2.0*M_PI*y_16);
+			f3_16_19 = myfun(native_sin(M_PI*x_16),native_cos(2.0*M_PI*y_16))-1.0;
+			f5_16_19 = native_sin(M_PI*x_16)*native_cos(2.0*M_PI*y_16);
 
 			if(index16  < size0){
-				u16[base_index +j] = f3_16;
-				ref_16[base_index +j] = f5_16;
+				u16[base_index +j] = f3_16_19;
+				ref_16[base_index +j] = f5_16_19;
 			}
 
 			//------------COMPUTE UNIT 17  ----------------
@@ -1458,12 +1473,12 @@ static void ops_poisson_kernel_populate(
 			double x_17  = dx * (double)(arg_idx_17 +arg0);
 			double y_17 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_17 = myfun(native_sin(M_PI*x_17),native_cos(2.0*M_PI*y_17))-1.0;
-			float f5_17 = native_sin(M_PI*x_17)*native_cos(2.0*M_PI*y_17);
+			f3_16_19 = myfun(native_sin(M_PI*x_17),native_cos(2.0*M_PI*y_17))-1.0;
+			f5_16_19 = native_sin(M_PI*x_17)*native_cos(2.0*M_PI*y_17);
 
 			if(index17  < size0){
-				u17[base_index +j] = f3_17;
-				ref_17[base_index +j] = f5_17;
+				u17[base_index +j] = f3_16_19;
+				ref_17[base_index +j] = f5_16_19;
 			}
 
 			//------------COMPUTE UNIT 18  ----------------
@@ -1473,12 +1488,12 @@ static void ops_poisson_kernel_populate(
 			double x_18  = dx * (double)(arg_idx_18 +arg0);
 			double y_18 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_18 = myfun(native_sin(M_PI*x_18),native_cos(2.0*M_PI*y_18))-1.0;
-			float f5_18 = native_sin(M_PI*x_18)*native_cos(2.0*M_PI*y_18);
+			f3_16_19 = myfun(native_sin(M_PI*x_18),native_cos(2.0*M_PI*y_18))-1.0;
+			f5_16_19 = native_sin(M_PI*x_18)*native_cos(2.0*M_PI*y_18);
 
 			if(index18  < size0){
-				u18[base_index +j] = f3_18;
-				ref_18[base_index +j] = f5_18;
+				u18[base_index +j] = f3_16_19;
+				ref_18[base_index +j] = f5_16_19;
 			}
 
 			//------------COMPUTE UNIT 19  ----------------
@@ -1488,14 +1503,17 @@ static void ops_poisson_kernel_populate(
 			double x_19  = dx * (double)(arg_idx_19 +arg0);
 			double y_19 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_19 = myfun(native_sin(M_PI*x_19),native_cos(2.0*M_PI*y_19))-1.0;
-			float f5_19 = native_sin(M_PI*x_19)*native_cos(2.0*M_PI*y_19);
+			f3_16_19 = myfun(native_sin(M_PI*x_19),native_cos(2.0*M_PI*y_19))-1.0;
+			f5_16_19 = native_sin(M_PI*x_19)*native_cos(2.0*M_PI*y_19);
 
 			if(index19  < size0){
-				u19[base_index +j] = f3_19;
-				ref_19[base_index +j] = f5_19;
+				u19[base_index +j] = f3_16_19;
+				ref_19[base_index +j] = f5_16_19;
 			}
 
+
+			float f3_20_23;
+			float f5_20_23;
 			//------------COMPUTE UNIT 20  ----------------
 			int index20 = j * 64 + 20;
 			double arg_idx_20 = arg_idx0 + index20;
@@ -1503,12 +1521,12 @@ static void ops_poisson_kernel_populate(
 			double x_20  = dx * (double)(arg_idx_20 +arg0);
 			double y_20 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_20 = myfun(native_sin(M_PI*x_20),native_cos(2.0*M_PI*y_20))-1.0;
-			float f5_20 = native_sin(M_PI*x_20)*native_cos(2.0*M_PI*y_20);
+			f3_20_23 = myfun(native_sin(M_PI*x_20),native_cos(2.0*M_PI*y_20))-1.0;
+			f5_20_23 = native_sin(M_PI*x_20)*native_cos(2.0*M_PI*y_20);
 
 			if(index20  < size0){
-				u20[base_index +j] = f3_20;
-				ref_20[base_index +j] = f5_20;
+				u20[base_index +j] = f3_20_23;
+				ref_20[base_index +j] = f5_20_23;
 			}
 
 			//------------COMPUTE UNIT 21  ----------------
@@ -1518,12 +1536,12 @@ static void ops_poisson_kernel_populate(
 			double x_21  = dx * (double)(arg_idx_21 +arg0);
 			double y_21 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_21 = myfun(native_sin(M_PI*x_21),native_cos(2.0*M_PI*y_21))-1.0;
-			float f5_21 = native_sin(M_PI*x_21)*native_cos(2.0*M_PI*y_21);
+			f3_20_23 = myfun(native_sin(M_PI*x_21),native_cos(2.0*M_PI*y_21))-1.0;
+			f5_20_23 = native_sin(M_PI*x_21)*native_cos(2.0*M_PI*y_21);
 
 			if(index21  < size0){
-				u21[base_index +j] = f3_21;
-				ref_21[base_index +j] = f5_21;
+				u21[base_index +j] = f3_20_23;
+				ref_21[base_index +j] = f5_20_23;
 			}
 
 			//------------COMPUTE UNIT 22  ----------------
@@ -1533,12 +1551,12 @@ static void ops_poisson_kernel_populate(
 			double x_22  = dx * (double)(arg_idx_22 +arg0);
 			double y_22 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_22 = myfun(native_sin(M_PI*x_22),native_cos(2.0*M_PI*y_22))-1.0;
-			float f5_22 = native_sin(M_PI*x_22)*native_cos(2.0*M_PI*y_22);
+			f3_20_23 = myfun(native_sin(M_PI*x_22),native_cos(2.0*M_PI*y_22))-1.0;
+			f5_20_23 = native_sin(M_PI*x_22)*native_cos(2.0*M_PI*y_22);
 
 			if(index22  < size0){
-				u22[base_index +j] = f3_22;
-				ref_22[base_index +j] = f5_22;
+				u22[base_index +j] = f3_20_23;
+				ref_22[base_index +j] = f5_20_23;
 			}
 
 			//------------COMPUTE UNIT 23  ----------------
@@ -1548,14 +1566,17 @@ static void ops_poisson_kernel_populate(
 			double x_23  = dx * (double)(arg_idx_23 +arg0);
 			double y_23 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_23 = myfun(native_sin(M_PI*x_23),native_cos(2.0*M_PI*y_23))-1.0;
-			float f5_23 = native_sin(M_PI*x_23)*native_cos(2.0*M_PI*y_23);
+			f3_20_23 = myfun(native_sin(M_PI*x_23),native_cos(2.0*M_PI*y_23))-1.0;
+			f5_20_23 = native_sin(M_PI*x_23)*native_cos(2.0*M_PI*y_23);
 
 			if(index23  < size0){
-				u23[base_index +j] = f3_23;
-				ref_23[base_index +j] = f5_23;
+				u23[base_index +j] = f3_20_23;
+				ref_23[base_index +j] = f5_20_23;
 			}
 
+
+			float f3_24_27;
+			float f5_24_27;
 			//------------COMPUTE UNIT 24  ----------------
 			int index24 = j * 64 + 24;
 			double arg_idx_24 = arg_idx0 + index24;
@@ -1563,12 +1584,12 @@ static void ops_poisson_kernel_populate(
 			double x_24  = dx * (double)(arg_idx_24 +arg0);
 			double y_24 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_24 = myfun(native_sin(M_PI*x_24),native_cos(2.0*M_PI*y_24))-1.0;
-			float f5_24 = native_sin(M_PI*x_24)*native_cos(2.0*M_PI*y_24);
+			f3_24_27 = myfun(native_sin(M_PI*x_24),native_cos(2.0*M_PI*y_24))-1.0;
+			f5_24_27 = native_sin(M_PI*x_24)*native_cos(2.0*M_PI*y_24);
 
 			if(index24  < size0){
-				u24[base_index +j] = f3_24;
-				ref_24[base_index +j] = f5_24;
+				u24[base_index +j] = f3_24_27;
+				ref_24[base_index +j] = f5_24_27;
 			}
 
 			//------------COMPUTE UNIT 25  ----------------
@@ -1578,12 +1599,12 @@ static void ops_poisson_kernel_populate(
 			double x_25  = dx * (double)(arg_idx_25 +arg0);
 			double y_25 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_25 = myfun(native_sin(M_PI*x_25),native_cos(2.0*M_PI*y_25))-1.0;
-			float f5_25 = native_sin(M_PI*x_25)*native_cos(2.0*M_PI*y_25);
+			f3_24_27 = myfun(native_sin(M_PI*x_25),native_cos(2.0*M_PI*y_25))-1.0;
+			f5_24_27 = native_sin(M_PI*x_25)*native_cos(2.0*M_PI*y_25);
 
 			if(index25  < size0){
-				u25[base_index +j] = f3_25;
-				ref_25[base_index +j] = f5_25;
+				u25[base_index +j] = f3_24_27;
+				ref_25[base_index +j] = f5_24_27;
 			}
 
 			//------------COMPUTE UNIT 26  ----------------
@@ -1593,12 +1614,12 @@ static void ops_poisson_kernel_populate(
 			double x_26  = dx * (double)(arg_idx_26 +arg0);
 			double y_26 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_26 = myfun(native_sin(M_PI*x_26),native_cos(2.0*M_PI*y_26))-1.0;
-			float f5_26 = native_sin(M_PI*x_26)*native_cos(2.0*M_PI*y_26);
+			f3_24_27 = myfun(native_sin(M_PI*x_26),native_cos(2.0*M_PI*y_26))-1.0;
+			f5_24_27 = native_sin(M_PI*x_26)*native_cos(2.0*M_PI*y_26);
 
 			if(index26  < size0){
-				u26[base_index +j] = f3_26;
-				ref_26[base_index +j] = f5_26;
+				u26[base_index +j] = f3_24_27;
+				ref_26[base_index +j] = f5_24_27;
 			}
 
 			//------------COMPUTE UNIT 27  ----------------
@@ -1608,13 +1629,17 @@ static void ops_poisson_kernel_populate(
 			double x_27  = dx * (double)(arg_idx_27 +arg0);
 			double y_27 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_27 = myfun(native_sin(M_PI*x_27),native_cos(2.0*M_PI*y_27))-1.0;
-			float f5_27 = native_sin(M_PI*x_27)*native_cos(2.0*M_PI*y_27);
+			f3_24_27 = myfun(native_sin(M_PI*x_27),native_cos(2.0*M_PI*y_27))-1.0;
+			f5_24_27 = native_sin(M_PI*x_27)*native_cos(2.0*M_PI*y_27);
 
 			if(index27  < size0){
-				u27[base_index +j] = f3_27;
-				ref_27[base_index +j] = f5_27;
+				u27[base_index +j] = f3_24_27;
+				ref_27[base_index +j] = f5_24_27;
 			}
+
+
+			float f3_28_31;
+			float f5_28_31;
 
 			//------------COMPUTE UNIT 28  ----------------
 			int index28 = j * 64 + 28;
@@ -1623,12 +1648,12 @@ static void ops_poisson_kernel_populate(
 			double x_28  = dx * (double)(arg_idx_28 +arg0);
 			double y_28 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_28 = myfun(native_sin(M_PI*x_28),native_cos(2.0*M_PI*y_28))-1.0;
-			float f5_28 = native_sin(M_PI*x_28)*native_cos(2.0*M_PI*y_28);
+			f3_28_31 = myfun(native_sin(M_PI*x_28),native_cos(2.0*M_PI*y_28))-1.0;
+			f5_28_31 = native_sin(M_PI*x_28)*native_cos(2.0*M_PI*y_28);
 
 			if(index28  < size0){
-				u28[base_index +j] = f3_28;
-				ref_28[base_index +j] = f5_28;
+				u28[base_index +j] = f3_28_31;
+				ref_28[base_index +j] = f5_28_31;
 			}
 
 			//------------COMPUTE UNIT 29  ----------------
@@ -1638,12 +1663,12 @@ static void ops_poisson_kernel_populate(
 			double x_29  = dx * (double)(arg_idx_29 +arg0);
 			double y_29 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_29 = myfun(native_sin(M_PI*x_29),native_cos(2.0*M_PI*y_29))-1.0;
-			float f5_29 = native_sin(M_PI*x_29)*native_cos(2.0*M_PI*y_29);
+			f3_28_31 = myfun(native_sin(M_PI*x_29),native_cos(2.0*M_PI*y_29))-1.0;
+			f5_28_31 = native_sin(M_PI*x_29)*native_cos(2.0*M_PI*y_29);
 
 			if(index29  < size0){
-				u29[base_index +j] = f3_29;
-				ref_29[base_index +j] = f5_29;
+				u29[base_index +j] = f3_28_31;
+				ref_29[base_index +j] = f5_28_31;
 			}
 
 			//------------COMPUTE UNIT 30  ----------------
@@ -1653,13 +1678,14 @@ static void ops_poisson_kernel_populate(
 			double x_30  = dx * (double)(arg_idx_30 +arg0);
 			double y_30 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_30 = myfun(native_sin(M_PI*x_30),native_cos(2.0*M_PI*y_30))-1.0;
-			float f5_30 = native_sin(M_PI*x_30)*native_cos(2.0*M_PI*y_30);
+			f3_28_31 = myfun(native_sin(M_PI*x_30),native_cos(2.0*M_PI*y_30))-1.0;
+			f5_28_31 = native_sin(M_PI*x_30)*native_cos(2.0*M_PI*y_30);
 
 			if(index30  < size0){
-				u30[base_index +j] = f3_30;
-				ref_30[base_index +j] = f5_30;
+				u30[base_index +j] = f3_28_31;
+				ref_30[base_index +j] = f5_28_31;
 			}
+
 
 			//------------COMPUTE UNIT 31  ----------------
 			int index31 = j * 64 + 31;
@@ -1668,13 +1694,17 @@ static void ops_poisson_kernel_populate(
 			double x_31  = dx * (double)(arg_idx_31 +arg0);
 			double y_31 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_31 = myfun(native_sin(M_PI*x_31),native_cos(2.0*M_PI*y_31))-1.0;
-			float f5_31 = native_sin(M_PI*x_31)*native_cos(2.0*M_PI*y_31);
+			f3_28_31 = myfun(native_sin(M_PI*x_31),native_cos(2.0*M_PI*y_31))-1.0;
+			f5_28_31 = native_sin(M_PI*x_31)*native_cos(2.0*M_PI*y_31);
 
 			if(index31  < size0){
-				u31[base_index +j] = f3_31;
-				ref_31[base_index +j] = f5_31;
+				u31[base_index +j] = f3_28_31;
+				ref_31[base_index +j] = f5_28_31;
 			}
+
+
+			float f3_32_35;
+			float f5_32_35;
 
 			//------------COMPUTE UNIT 32  ----------------
 			int index32 = j * 64 + 32;
@@ -1683,12 +1713,12 @@ static void ops_poisson_kernel_populate(
 			double x_32  = dx * (double)(arg_idx_32 +arg0);
 			double y_32 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_32 = myfun(native_sin(M_PI*x_32),native_cos(2.0*M_PI*y_32))-1.0;
-			float f5_32 = native_sin(M_PI*x_32)*native_cos(2.0*M_PI*y_32);
+			f3_32_35 = myfun(native_sin(M_PI*x_32),native_cos(2.0*M_PI*y_32))-1.0;
+			f5_32_35 = native_sin(M_PI*x_32)*native_cos(2.0*M_PI*y_32);
 
 			if(index32  < size0){
-				u32[base_index +j] = f3_32;
-				ref_32[base_index +j] = f5_32;
+				u32[base_index +j] = f3_32_35;
+				ref_32[base_index +j] = f5_32_35;
 			}
 
 			//------------COMPUTE UNIT 33  ----------------
@@ -1698,12 +1728,12 @@ static void ops_poisson_kernel_populate(
 			double x_33  = dx * (double)(arg_idx_33 +arg0);
 			double y_33 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_33 = myfun(native_sin(M_PI*x_33),native_cos(2.0*M_PI*y_33))-1.0;
-			float f5_33 = native_sin(M_PI*x_33)*native_cos(2.0*M_PI*y_33);
+			f3_32_35 = myfun(native_sin(M_PI*x_33),native_cos(2.0*M_PI*y_33))-1.0;
+			f5_32_35 = native_sin(M_PI*x_33)*native_cos(2.0*M_PI*y_33);
 
 			if(index33  < size0){
-				u33[base_index +j] = f3_33;
-				ref_33[base_index +j] = f5_33;
+				u33[base_index +j] = f3_32_35;
+				ref_33[base_index +j] = f5_32_35;
 			}
 
 			//------------COMPUTE UNIT 34  ----------------
@@ -1713,12 +1743,12 @@ static void ops_poisson_kernel_populate(
 			double x_34  = dx * (double)(arg_idx_34 +arg0);
 			double y_34 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_34 = myfun(native_sin(M_PI*x_34),native_cos(2.0*M_PI*y_34))-1.0;
-			float f5_34 = native_sin(M_PI*x_34)*native_cos(2.0*M_PI*y_34);
+			f3_32_35 = myfun(native_sin(M_PI*x_34),native_cos(2.0*M_PI*y_34))-1.0;
+			f5_32_35 = native_sin(M_PI*x_34)*native_cos(2.0*M_PI*y_34);
 
 			if(index34  < size0){
-				u34[base_index +j] = f3_34;
-				ref_34[base_index +j] = f5_34;
+				u34[base_index +j] = f3_32_35;
+				ref_34[base_index +j] = f5_32_35;
 			}
 
 			//------------COMPUTE UNIT 35  ----------------
@@ -1728,13 +1758,17 @@ static void ops_poisson_kernel_populate(
 			double x_35  = dx * (double)(arg_idx_35 +arg0);
 			double y_35 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_35 = myfun(native_sin(M_PI*x_35),native_cos(2.0*M_PI*y_35))-1.0;
-			float f5_35 = native_sin(M_PI*x_35)*native_cos(2.0*M_PI*y_35);
+			f3_32_35 = myfun(native_sin(M_PI*x_35),native_cos(2.0*M_PI*y_35))-1.0;
+			f5_32_35 = native_sin(M_PI*x_35)*native_cos(2.0*M_PI*y_35);
 
 			if(index35  < size0){
-				u35[base_index +j] = f3_35;
-				ref_35[base_index +j] = f5_35;
+				u35[base_index +j] = f3_32_35;
+				ref_35[base_index +j] = f5_32_35;
 			}
+
+
+			float f3_36_39;
+			float f5_36_39;
 
 			//------------COMPUTE UNIT 36  ----------------
 			int index36 = j * 64 + 36;
@@ -1743,12 +1777,12 @@ static void ops_poisson_kernel_populate(
 			double x_36  = dx * (double)(arg_idx_36 +arg0);
 			double y_36 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_36 = myfun(native_sin(M_PI*x_36),native_cos(2.0*M_PI*y_36))-1.0;
-			float f5_36 = native_sin(M_PI*x_36)*native_cos(2.0*M_PI*y_36);
+			f3_36_39 = myfun(native_sin(M_PI*x_36),native_cos(2.0*M_PI*y_36))-1.0;
+			f5_36_39 = native_sin(M_PI*x_36)*native_cos(2.0*M_PI*y_36);
 
 			if(index36  < size0){
-				u36[base_index +j] = f3_36;
-				ref_36[base_index +j] = f5_36;
+				u36[base_index +j] = f3_36_39;
+				ref_36[base_index +j] = f5_36_39;
 			}
 
 			//------------COMPUTE UNIT 37  ----------------
@@ -1758,12 +1792,12 @@ static void ops_poisson_kernel_populate(
 			double x_37  = dx * (double)(arg_idx_37 +arg0);
 			double y_37 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_37 = myfun(native_sin(M_PI*x_37),native_cos(2.0*M_PI*y_37))-1.0;
-			float f5_37 = native_sin(M_PI*x_37)*native_cos(2.0*M_PI*y_37);
+			f3_36_39 = myfun(native_sin(M_PI*x_37),native_cos(2.0*M_PI*y_37))-1.0;
+			f5_36_39 = native_sin(M_PI*x_37)*native_cos(2.0*M_PI*y_37);
 
 			if(index37  < size0){
-				u37[base_index +j] = f3_37;
-				ref_37[base_index +j] = f5_37;
+				u37[base_index +j] = f3_36_39;
+				ref_37[base_index +j] = f5_36_39;
 			}
 
 			//------------COMPUTE UNIT 38  ----------------
@@ -1773,12 +1807,12 @@ static void ops_poisson_kernel_populate(
 			double x_38  = dx * (double)(arg_idx_38 +arg0);
 			double y_38 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_38 = myfun(native_sin(M_PI*x_38),native_cos(2.0*M_PI*y_38))-1.0;
-			float f5_38 = native_sin(M_PI*x_38)*native_cos(2.0*M_PI*y_38);
+			f3_36_39 = myfun(native_sin(M_PI*x_38),native_cos(2.0*M_PI*y_38))-1.0;
+			f5_36_39 = native_sin(M_PI*x_38)*native_cos(2.0*M_PI*y_38);
 
 			if(index38  < size0){
-				u38[base_index +j] = f3_38;
-				ref_38[base_index +j] = f5_38;
+				u38[base_index +j] = f3_36_39;
+				ref_38[base_index +j] = f5_36_39;
 			}
 
 			//------------COMPUTE UNIT 39  ----------------
@@ -1788,13 +1822,17 @@ static void ops_poisson_kernel_populate(
 			double x_39  = dx * (double)(arg_idx_39 +arg0);
 			double y_39 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_39 = myfun(native_sin(M_PI*x_39),native_cos(2.0*M_PI*y_39))-1.0;
-			float f5_39 = native_sin(M_PI*x_39)*native_cos(2.0*M_PI*y_39);
+			f3_36_39 = myfun(native_sin(M_PI*x_39),native_cos(2.0*M_PI*y_39))-1.0;
+			f5_36_39 = native_sin(M_PI*x_39)*native_cos(2.0*M_PI*y_39);
 
 			if(index39  < size0){
-				u39[base_index +j] = f3_39;
-				ref_39[base_index +j] = f5_39;
+				u39[base_index +j] = f3_36_39;
+				ref_39[base_index +j] = f5_36_39;
 			}
+
+
+			float f3_40_43;
+			float f5_40_43;
 
 			//------------COMPUTE UNIT 40  ----------------
 			int index40 = j * 64 + 40;
@@ -1803,12 +1841,12 @@ static void ops_poisson_kernel_populate(
 			double x_40  = dx * (double)(arg_idx_40 +arg0);
 			double y_40 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_40 = myfun(native_sin(M_PI*x_40),native_cos(2.0*M_PI*y_40))-1.0;
-			float f5_40 = native_sin(M_PI*x_40)*native_cos(2.0*M_PI*y_40);
+			f3_40_43 = myfun(native_sin(M_PI*x_40),native_cos(2.0*M_PI*y_40))-1.0;
+			f5_40_43 = native_sin(M_PI*x_40)*native_cos(2.0*M_PI*y_40);
 
 			if(index40  < size0){
-				u40[base_index +j] = f3_40;
-				ref_40[base_index +j] = f5_40;
+				u40[base_index +j] = f3_40_43;
+				ref_40[base_index +j] = f5_40_43;
 			}
 
 			//------------COMPUTE UNIT 41  ----------------
@@ -1818,12 +1856,12 @@ static void ops_poisson_kernel_populate(
 			double x_41  = dx * (double)(arg_idx_41 +arg0);
 			double y_41 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_41 = myfun(native_sin(M_PI*x_41),native_cos(2.0*M_PI*y_41))-1.0;
-			float f5_41 = native_sin(M_PI*x_41)*native_cos(2.0*M_PI*y_41);
+			f3_40_43 = myfun(native_sin(M_PI*x_41),native_cos(2.0*M_PI*y_41))-1.0;
+			f5_40_43 = native_sin(M_PI*x_41)*native_cos(2.0*M_PI*y_41);
 
 			if(index41  < size0){
-				u41[base_index +j] = f3_41;
-				ref_41[base_index +j] = f5_41;
+				u41[base_index +j] = f3_40_43;
+				ref_41[base_index +j] = f5_40_43;
 			}
 
 			//------------COMPUTE UNIT 42  ----------------
@@ -1833,12 +1871,12 @@ static void ops_poisson_kernel_populate(
 			double x_42  = dx * (double)(arg_idx_42 +arg0);
 			double y_42 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_42 = myfun(native_sin(M_PI*x_42),native_cos(2.0*M_PI*y_42))-1.0;
-			float f5_42 = native_sin(M_PI*x_42)*native_cos(2.0*M_PI*y_42);
+			3_40_43 = myfun(native_sin(M_PI*x_42),native_cos(2.0*M_PI*y_42))-1.0;
+			5_40_43 = native_sin(M_PI*x_42)*native_cos(2.0*M_PI*y_42);
 
 			if(index42  < size0){
-				u42[base_index +j] = f3_42;
-				ref_42[base_index +j] = f5_42;
+				u42[base_index +j] = f3_40_43;
+				ref_42[base_index +j] = f5_40_43;
 			}
 
 			//------------COMPUTE UNIT 43  ----------------
@@ -1848,14 +1886,17 @@ static void ops_poisson_kernel_populate(
 			double x_43  = dx * (double)(arg_idx_43 +arg0);
 			double y_43 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_43 = myfun(native_sin(M_PI*x_43),native_cos(2.0*M_PI*y_43))-1.0;
-			float f5_43 = native_sin(M_PI*x_43)*native_cos(2.0*M_PI*y_43);
+			f3_40_43 = myfun(native_sin(M_PI*x_43),native_cos(2.0*M_PI*y_43))-1.0;
+			f5_40_43 = native_sin(M_PI*x_43)*native_cos(2.0*M_PI*y_43);
 
 			if(index43  < size0){
-				u43[base_index +j] = f3_43;
-				ref_43[base_index +j] = f5_43;
+				u43[base_index +j] = f3_40_43;
+				ref_43[base_index +j] = f5_40_43;
 			}
 
+
+			float f3_44_47;
+			float f5_44_47;
 			//------------COMPUTE UNIT 44  ----------------
 			int index44 = j * 64 + 44;
 			double arg_idx_44 = arg_idx0 + index44;
@@ -1863,12 +1904,12 @@ static void ops_poisson_kernel_populate(
 			double x_44  = dx * (double)(arg_idx_44 +arg0);
 			double y_44 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_44 = myfun(native_sin(M_PI*x_44),native_cos(2.0*M_PI*y_44))-1.0;
-			float f5_44 = native_sin(M_PI*x_44)*native_cos(2.0*M_PI*y_44);
+			f3_44_47 = myfun(native_sin(M_PI*x_44),native_cos(2.0*M_PI*y_44))-1.0;
+			f5_44_47 = native_sin(M_PI*x_44)*native_cos(2.0*M_PI*y_44);
 
 			if(index44  < size0){
-				u44[base_index +j] = f3_44;
-				ref_44[base_index +j] = f5_44;
+				u44[base_index +j] = f3_44_47;
+				ref_44[base_index +j] = f5_44_47;
 			}
 
 			//------------COMPUTE UNIT 45  ----------------
@@ -1878,12 +1919,12 @@ static void ops_poisson_kernel_populate(
 			double x_45  = dx * (double)(arg_idx_45 +arg0);
 			double y_45 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_45 = myfun(native_sin(M_PI*x_45),native_cos(2.0*M_PI*y_45))-1.0;
-			float f5_45 = native_sin(M_PI*x_45)*native_cos(2.0*M_PI*y_45);
+			f3_44_47 = myfun(native_sin(M_PI*x_45),native_cos(2.0*M_PI*y_45))-1.0;
+			f5_44_47 = native_sin(M_PI*x_45)*native_cos(2.0*M_PI*y_45);
 
 			if(index45  < size0){
-				u45[base_index +j] = f3_45;
-				ref_45[base_index +j] = f5_45;
+				u45[base_index +j] = f3_44_47;
+				ref_45[base_index +j] = f5_44_47;
 			}
 
 			//------------COMPUTE UNIT 46  ----------------
@@ -1893,12 +1934,12 @@ static void ops_poisson_kernel_populate(
 			double x_46  = dx * (double)(arg_idx_46 +arg0);
 			double y_46 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_46 = myfun(native_sin(M_PI*x_46),native_cos(2.0*M_PI*y_46))-1.0;
-			float f5_46 = native_sin(M_PI*x_46)*native_cos(2.0*M_PI*y_46);
+			f3_44_47 = myfun(native_sin(M_PI*x_46),native_cos(2.0*M_PI*y_46))-1.0;
+			f5_44_47 = native_sin(M_PI*x_46)*native_cos(2.0*M_PI*y_46);
 
 			if(index46  < size0){
-				u46[base_index +j] = f3_46;
-				ref_46[base_index +j] = f5_46;
+				u46[base_index +j] = f3_44_47;
+				ref_46[base_index +j] = f5_44_47;
 			}
 
 			//------------COMPUTE UNIT 47  ----------------
@@ -1908,14 +1949,17 @@ static void ops_poisson_kernel_populate(
 			double x_47  = dx * (double)(arg_idx_47 +arg0);
 			double y_47 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_47 = myfun(native_sin(M_PI*x_47),native_cos(2.0*M_PI*y_47))-1.0;
-			float f5_47 = native_sin(M_PI*x_47)*native_cos(2.0*M_PI*y_47);
+			3_44_47 = myfun(native_sin(M_PI*x_47),native_cos(2.0*M_PI*y_47))-1.0;
+			5_44_47 = native_sin(M_PI*x_47)*native_cos(2.0*M_PI*y_47);
 
 			if(index47  < size0){
-				u47[base_index +j] = f3_47;
-				ref_47[base_index +j] = f5_47;
+				u47[base_index +j] = f3_44_47;
+				ref_47[base_index +j] = f5_44_47;
 			}
 
+
+			float f3_48_51;
+			float f5_48_51;
 			//------------COMPUTE UNIT 48  ----------------
 			int index48 = j * 64 + 48;
 			double arg_idx_48 = arg_idx0 + index48;
@@ -1923,12 +1967,12 @@ static void ops_poisson_kernel_populate(
 			double x_48  = dx * (double)(arg_idx_48 +arg0);
 			double y_48 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_48 = myfun(native_sin(M_PI*x_48),native_cos(2.0*M_PI*y_48))-1.0;
-			float f5_48 = native_sin(M_PI*x_48)*native_cos(2.0*M_PI*y_48);
+			3_48_51 = myfun(native_sin(M_PI*x_48),native_cos(2.0*M_PI*y_48))-1.0;
+			5_48_51 = native_sin(M_PI*x_48)*native_cos(2.0*M_PI*y_48);
 
 			if(index48  < size0){
-				u48[base_index +j] = f3_48;
-				ref_48[base_index +j] = f5_48;
+				u48[base_index +j] = f3_48_51;
+				ref_48[base_index +j] = f5_48_51;
 			}
 
 			//------------COMPUTE UNIT 49  ----------------
@@ -1938,12 +1982,12 @@ static void ops_poisson_kernel_populate(
 			double x_49  = dx * (double)(arg_idx_49 +arg0);
 			double y_49 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_49 = myfun(native_sin(M_PI*x_49),native_cos(2.0*M_PI*y_49))-1.0;
-			float f5_49 = native_sin(M_PI*x_49)*native_cos(2.0*M_PI*y_49);
+			f3_48_51 = myfun(native_sin(M_PI*x_49),native_cos(2.0*M_PI*y_49))-1.0;
+			f5_48_51 = native_sin(M_PI*x_49)*native_cos(2.0*M_PI*y_49);
 
 			if(index49  < size0){
-				u49[base_index +j] = f3_49;
-				ref_49[base_index +j] = f5_49;
+				u49[base_index +j] = f3_48_51;
+				ref_49[base_index +j] = f5_48_51;
 			}
 
 			//------------COMPUTE UNIT 50  ----------------
@@ -1953,12 +1997,12 @@ static void ops_poisson_kernel_populate(
 			double x_50  = dx * (double)(arg_idx_50 +arg0);
 			double y_50 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_50 = myfun(native_sin(M_PI*x_50),native_cos(2.0*M_PI*y_50))-1.0;
-			float f5_50 = native_sin(M_PI*x_50)*native_cos(2.0*M_PI*y_50);
+			f3_48_51 = myfun(native_sin(M_PI*x_50),native_cos(2.0*M_PI*y_50))-1.0;
+			f5_48_51 = native_sin(M_PI*x_50)*native_cos(2.0*M_PI*y_50);
 
 			if(index50  < size0){
-				u50[base_index +j] = f3_50;
-				ref_50[base_index +j] = f5_50;
+				u50[base_index +j] = f3_48_51;
+				ref_50[base_index +j] = f5_48_51;
 			}
 
 			//------------COMPUTE UNIT 51  ----------------
@@ -1968,14 +2012,17 @@ static void ops_poisson_kernel_populate(
 			double x_51  = dx * (double)(arg_idx_51 +arg0);
 			double y_51 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_51 = myfun(native_sin(M_PI*x_51),native_cos(2.0*M_PI*y_51))-1.0;
-			float f5_51 = native_sin(M_PI*x_51)*native_cos(2.0*M_PI*y_51);
+			f3_48_51 = myfun(native_sin(M_PI*x_51),native_cos(2.0*M_PI*y_51))-1.0;
+			f5_48_51 = native_sin(M_PI*x_51)*native_cos(2.0*M_PI*y_51);
 
 			if(index51  < size0){
-				u51[base_index +j] = f3_51;
-				ref_51[base_index +j] = f5_51;
+				u51[base_index +j] = f3_48_51;
+				ref_51[base_index +j] = f5_48_51;
 			}
 
+
+			float f3_52_55;
+			float f5_52_55;
 			//------------COMPUTE UNIT 52  ----------------
 			int index52 = j * 64 + 52;
 			double arg_idx_52 = arg_idx0 + index52;
@@ -1983,12 +2030,12 @@ static void ops_poisson_kernel_populate(
 			double x_52  = dx * (double)(arg_idx_52 +arg0);
 			double y_52 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_52 = myfun(native_sin(M_PI*x_52),native_cos(2.0*M_PI*y_52))-1.0;
-			float f5_52 = native_sin(M_PI*x_52)*native_cos(2.0*M_PI*y_52);
+			f3_52_55 = myfun(native_sin(M_PI*x_52),native_cos(2.0*M_PI*y_52))-1.0;
+			f5_52_55 = native_sin(M_PI*x_52)*native_cos(2.0*M_PI*y_52);
 
 			if(index52  < size0){
-				u52[base_index +j] = f3_52;
-				ref_52[base_index +j] = f5_52;
+				u52[base_index +j] = f3_52_55;
+				ref_52[base_index +j] = f5_52_55;
 			}
 
 			//------------COMPUTE UNIT 53  ----------------
@@ -1998,12 +2045,12 @@ static void ops_poisson_kernel_populate(
 			double x_53  = dx * (double)(arg_idx_53 +arg0);
 			double y_53 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_53 = myfun(native_sin(M_PI*x_53),native_cos(2.0*M_PI*y_53))-1.0;
-			float f5_53 = native_sin(M_PI*x_53)*native_cos(2.0*M_PI*y_53);
+			f3_52_55 = myfun(native_sin(M_PI*x_53),native_cos(2.0*M_PI*y_53))-1.0;
+			f5_52_55 = native_sin(M_PI*x_53)*native_cos(2.0*M_PI*y_53);
 
 			if(index53  < size0){
-				u53[base_index +j] = f3_53;
-				ref_53[base_index +j] = f5_53;
+				u53[base_index +j] = f3_52_55;
+				ref_53[base_index +j] = f5_52_55;
 			}
 
 			//------------COMPUTE UNIT 54  ----------------
@@ -2013,12 +2060,12 @@ static void ops_poisson_kernel_populate(
 			double x_54  = dx * (double)(arg_idx_54 +arg0);
 			double y_54 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_54 = myfun(native_sin(M_PI*x_54),native_cos(2.0*M_PI*y_54))-1.0;
-			float f5_54 = native_sin(M_PI*x_54)*native_cos(2.0*M_PI*y_54);
+			f3_52_55 = myfun(native_sin(M_PI*x_54),native_cos(2.0*M_PI*y_54))-1.0;
+			f5_52_55 = native_sin(M_PI*x_54)*native_cos(2.0*M_PI*y_54);
 
-			if(index54  < size0){
-				u54[base_index +j] = f3_54;
-				ref_54[base_index +j] = f5_54;
+			if(index54  < size0){f3_52_55
+				u54[base_index +j] = f3_52_55;
+				ref_54[base_index +j] = f5_52_55;
 			}
 
 			//------------COMPUTE UNIT 55  ----------------
@@ -2028,14 +2075,17 @@ static void ops_poisson_kernel_populate(
 			double x_55  = dx * (double)(arg_idx_55 +arg0);
 			double y_55 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_55 = myfun(native_sin(M_PI*x_55),native_cos(2.0*M_PI*y_55))-1.0;
-			float f5_55 = native_sin(M_PI*x_55)*native_cos(2.0*M_PI*y_55);
+			f3_52_55 = myfun(native_sin(M_PI*x_55),native_cos(2.0*M_PI*y_55))-1.0;
+			f5_52_55 = native_sin(M_PI*x_55)*native_cos(2.0*M_PI*y_55);
 
 			if(index55  < size0){
-				u55[base_index +j] = f3_55;
-				ref_55[base_index +j] = f5_55;
+				u55[base_index +j] = f3_52_55;
+				ref_55[base_index +j] = f5_52_55;
 			}
 
+
+			float f3_56_59;
+			float f5_56_59;
 			//------------COMPUTE UNIT 56  ----------------
 			int index56 = j * 64 + 56;
 			double arg_idx_56 = arg_idx0 + index56;
@@ -2043,12 +2093,12 @@ static void ops_poisson_kernel_populate(
 			double x_56  = dx * (double)(arg_idx_56 +arg0);
 			double y_56 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_56 = myfun(native_sin(M_PI*x_56),native_cos(2.0*M_PI*y_56))-1.0;
-			float f5_56 = native_sin(M_PI*x_56)*native_cos(2.0*M_PI*y_56);
+			f3_56_59 = myfun(native_sin(M_PI*x_56),native_cos(2.0*M_PI*y_56))-1.0;
+			f5_56_59 = native_sin(M_PI*x_56)*native_cos(2.0*M_PI*y_56);
 
 			if(index56  < size0){
-				u56[base_index +j] = f3_56;
-				ref_56[base_index +j] = f5_56;
+				u56[base_index +j] = f3_56_59;
+				ref_56[base_index +j] = f5_56_59;
 			}
 
 			//------------COMPUTE UNIT 57  ----------------
@@ -2058,11 +2108,11 @@ static void ops_poisson_kernel_populate(
 			double x_57  = dx * (double)(arg_idx_57 +arg0);
 			double y_57 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_57 = myfun(native_sin(M_PI*x_57),native_cos(2.0*M_PI*y_57))-1.0;
-			float f5_57 = native_sin(M_PI*x_57)*native_cos(2.0*M_PI*y_57);
+			f3_56_59 = myfun(native_sin(M_PI*x_57),native_cos(2.0*M_PI*y_57))-1.0;
+			f5_56_59 = native_sin(M_PI*x_57)*native_cos(2.0*M_PI*y_57);
 
 			if(index57  < size0){
-				u57[base_index +j] = f3_57;
+				u57[base_index +j] = f3_56_59;
 				ref_57[base_index +j] = f5_57;
 			}
 
@@ -2073,12 +2123,12 @@ static void ops_poisson_kernel_populate(
 			double x_58  = dx * (double)(arg_idx_58 +arg0);
 			double y_58 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_58 = myfun(native_sin(M_PI*x_58),native_cos(2.0*M_PI*y_58))-1.0;
-			float f5_58 = native_sin(M_PI*x_58)*native_cos(2.0*M_PI*y_58);
+			f3_56_59 = myfun(native_sin(M_PI*x_58),native_cos(2.0*M_PI*y_58))-1.0;
+			f5_56_59 = native_sin(M_PI*x_58)*native_cos(2.0*M_PI*y_58);
 
 			if(index58  < size0){
-				u58[base_index +j] = f3_58;
-				ref_58[base_index +j] = f5_58;
+				u58[base_index +j] = f3_56_59;
+				ref_58[base_index +j] = f5_56_59;
 			}
 
 			//------------COMPUTE UNIT 59  ----------------
@@ -2088,14 +2138,16 @@ static void ops_poisson_kernel_populate(
 			double x_59  = dx * (double)(arg_idx_59 +arg0);
 			double y_59 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_59 = myfun(native_sin(M_PI*x_59),native_cos(2.0*M_PI*y_59))-1.0;
-			float f5_59 = native_sin(M_PI*x_59)*native_cos(2.0*M_PI*y_59);
+			f3_56_59 = myfun(native_sin(M_PI*x_59),native_cos(2.0*M_PI*y_59))-1.0;
+			f5_56_59 = native_sin(M_PI*x_59)*native_cos(2.0*M_PI*y_59);
 
 			if(index59  < size0){
-				u59[base_index +j] = f3_59;
-				ref_59[base_index +j] = f5_59;
+				u59[base_index +j] = f3_56_59;
+				ref_59[base_index +j] = f5_56_59;
 			}
 
+			float f3_60_63;
+			float f5_60_63;
 			//------------COMPUTE UNIT 60  ----------------
 			int index60 = j * 64 + 60;
 			double arg_idx_60 = arg_idx0 + index60;
@@ -2103,12 +2155,12 @@ static void ops_poisson_kernel_populate(
 			double x_60  = dx * (double)(arg_idx_60 +arg0);
 			double y_60 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_60 = myfun(native_sin(M_PI*x_60),native_cos(2.0*M_PI*y_60))-1.0;
-			float f5_60 = native_sin(M_PI*x_60)*native_cos(2.0*M_PI*y_60);
+			f3_60_63 = myfun(native_sin(M_PI*x_60),native_cos(2.0*M_PI*y_60))-1.0;
+			f5_60_63 = native_sin(M_PI*x_60)*native_cos(2.0*M_PI*y_60);
 
 			if(index60  < size0){
-				u60[base_index +j] = f3_60;
-				ref_60[base_index +j] = f5_60;
+				u60[base_index +j] = f3_60_63;
+				ref_60[base_index +j] = f5_60_63;
 			}
 
 			//------------COMPUTE UNIT 61  ----------------
@@ -2118,12 +2170,12 @@ static void ops_poisson_kernel_populate(
 			double x_61  = dx * (double)(arg_idx_61 +arg0);
 			double y_61 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_61 = myfun(native_sin(M_PI*x_61),native_cos(2.0*M_PI*y_61))-1.0;
-			float f5_61 = native_sin(M_PI*x_61)*native_cos(2.0*M_PI*y_61);
+			f3_60_63 = myfun(native_sin(M_PI*x_61),native_cos(2.0*M_PI*y_61))-1.0;
+			f5_60_63 = native_sin(M_PI*x_61)*native_cos(2.0*M_PI*y_61);
 
 			if(index61  < size0){
-				u61[base_index +j] = f3_61;
-				ref_61[base_index +j] = f5_61;
+				u61[base_index +j] = f3_60_63;
+				ref_61[base_index +j] = f5_60_63;
 			}
 
 			//------------COMPUTE UNIT 62  ----------------
@@ -2133,12 +2185,12 @@ static void ops_poisson_kernel_populate(
 			double x_62  = dx * (double)(arg_idx_62 +arg0);
 			double y_62 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_62 = myfun(native_sin(M_PI*x_62),native_cos(2.0*M_PI*y_62))-1.0;
-			float f5_62 = native_sin(M_PI*x_62)*native_cos(2.0*M_PI*y_62);
+			f3_60_63 = myfun(native_sin(M_PI*x_62),native_cos(2.0*M_PI*y_62))-1.0;
+			f5_60_63 = native_sin(M_PI*x_62)*native_cos(2.0*M_PI*y_62);
 
 			if(index62  < size0){
-				u62[base_index +j] = f3_62;
-				ref_62[base_index +j] = f5_62;
+				u62[base_index +j] = f3_60_63;
+				ref_62[base_index +j] = f5_60_63;
 			}
 
 			//------------COMPUTE UNIT 63  ----------------
@@ -2148,12 +2200,12 @@ static void ops_poisson_kernel_populate(
 			double x_63  = dx * (double)(arg_idx_63 +arg0);
 			double y_63 = dy * (double)(arg_idx[1] +arg1);
 
-			float f3_63 = myfun(native_sin(M_PI*x_63),native_cos(2.0*M_PI*y_63))-1.0;
-			float f5_63 = native_sin(M_PI*x_63)*native_cos(2.0*M_PI*y_63);
+			f3_60_63 = myfun(native_sin(M_PI*x_63),native_cos(2.0*M_PI*y_63))-1.0;
+			f5_60_63 = native_sin(M_PI*x_63)*native_cos(2.0*M_PI*y_63);
 
 			if(index63  < size0){
-				u63[base_index +j] = f3_63;
-				ref_63[base_index +j] = f5_63;
+				u63[base_index +j] = f3_60_63;
+				ref_63[base_index +j] = f5_60_63;
 			}
 		}
 	}
