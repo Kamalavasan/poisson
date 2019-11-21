@@ -1871,8 +1871,8 @@ static void ops_poisson_kernel_populate(
 			double x_42  = dx * (double)(arg_idx_42 +arg0);
 			double y_42 = dy * (double)(arg_idx[1] +arg1);
 
-			3_40_43 = myfun(native_sin(M_PI*x_42),native_cos(2.0*M_PI*y_42))-1.0;
-			5_40_43 = native_sin(M_PI*x_42)*native_cos(2.0*M_PI*y_42);
+			f3_40_43 = myfun(native_sin(M_PI*x_42),native_cos(2.0*M_PI*y_42))-1.0;
+			f5_40_43 = native_sin(M_PI*x_42)*native_cos(2.0*M_PI*y_42);
 
 			if(index42  < size0){
 				u42[base_index +j] = f3_40_43;
@@ -1949,8 +1949,8 @@ static void ops_poisson_kernel_populate(
 			double x_47  = dx * (double)(arg_idx_47 +arg0);
 			double y_47 = dy * (double)(arg_idx[1] +arg1);
 
-			3_44_47 = myfun(native_sin(M_PI*x_47),native_cos(2.0*M_PI*y_47))-1.0;
-			5_44_47 = native_sin(M_PI*x_47)*native_cos(2.0*M_PI*y_47);
+			f3_44_47 = myfun(native_sin(M_PI*x_47),native_cos(2.0*M_PI*y_47))-1.0;
+			f5_44_47 = native_sin(M_PI*x_47)*native_cos(2.0*M_PI*y_47);
 
 			if(index47  < size0){
 				u47[base_index +j] = f3_44_47;
@@ -1967,8 +1967,8 @@ static void ops_poisson_kernel_populate(
 			double x_48  = dx * (double)(arg_idx_48 +arg0);
 			double y_48 = dy * (double)(arg_idx[1] +arg1);
 
-			3_48_51 = myfun(native_sin(M_PI*x_48),native_cos(2.0*M_PI*y_48))-1.0;
-			5_48_51 = native_sin(M_PI*x_48)*native_cos(2.0*M_PI*y_48);
+			f3_48_51 = myfun(native_sin(M_PI*x_48),native_cos(2.0*M_PI*y_48))-1.0;
+			f5_48_51 = native_sin(M_PI*x_48)*native_cos(2.0*M_PI*y_48);
 
 			if(index48  < size0){
 				u48[base_index +j] = f3_48_51;
@@ -2063,7 +2063,7 @@ static void ops_poisson_kernel_populate(
 			f3_52_55 = myfun(native_sin(M_PI*x_54),native_cos(2.0*M_PI*y_54))-1.0;
 			f5_52_55 = native_sin(M_PI*x_54)*native_cos(2.0*M_PI*y_54);
 
-			if(index54  < size0){f3_52_55
+			if(index54  < size0){
 				u54[base_index +j] = f3_52_55;
 				ref_54[base_index +j] = f5_52_55;
 			}
@@ -2113,7 +2113,7 @@ static void ops_poisson_kernel_populate(
 
 			if(index57  < size0){
 				u57[base_index +j] = f3_56_59;
-				ref_57[base_index +j] = f5_57;
+				ref_57[base_index +j] = f5_56_59;
 			}
 
 			//------------COMPUTE UNIT 58  ----------------
