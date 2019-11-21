@@ -18,7 +18,7 @@
             <args name="base1" memory=""/>
             <args name="size0" memory=""/>
             <args name="size1" memory=""/>
-            <args name="xdim_poisson_kernel" memory=""/>
+            <args name="n_iters" memory=""/>
           </computeUnits>
           <args name="populate_arg0"/>
           <args name="populate_arg1"/>
@@ -33,7 +33,7 @@
           <args name="base1"/>
           <args name="size0"/>
           <args name="size1"/>
-          <args name="xdim_poisson_kernel"/>
+          <args name="n_iters"/>
         </kernels>
       </binaryContainers>
     </configBuildOptions>
@@ -54,7 +54,7 @@
             <args name="base1" memory=""/>
             <args name="size0" memory=""/>
             <args name="size1" memory=""/>
-            <args name="xdim_poisson_kernel" memory=""/>
+            <args name="n_iters" memory=""/>
           </computeUnits>
           <args name="populate_arg0"/>
           <args name="populate_arg1"/>
@@ -69,7 +69,7 @@
           <args name="base1"/>
           <args name="size0"/>
           <args name="size1"/>
-          <args name="xdim_poisson_kernel"/>
+          <args name="n_iters"/>
         </kernels>
       </binaryContainers>
     </lastBuildOptions>
@@ -92,7 +92,7 @@
             <args name="base1" memory=""/>
             <args name="size0" memory=""/>
             <args name="size1" memory=""/>
-            <args name="xdim_poisson_kernel" memory=""/>
+            <args name="n_iters" memory=""/>
           </computeUnits>
           <args name="populate_arg0"/>
           <args name="populate_arg1"/>
@@ -107,20 +107,48 @@
           <args name="base1"/>
           <args name="size0"/>
           <args name="size1"/>
-          <args name="xdim_poisson_kernel"/>
+          <args name="n_iters"/>
         </kernels>
       </binaryContainers>
     </configBuildOptions>
     <lastBuildOptions xsi:type="openclProject:OpenCLOptions" kernelDebug="true" target="hw_emu">
       <binaryContainers name="ops_poisson_kernels">
-        <kernels name="ops_poisson_kernel" sourceFile="src/OpenCL/poisson_kernels.cl">
-          <computeUnits name="ops_poisson_kernel_1" slr="">
-            <args name="populate_arg0" memory=""/>
-            <args name="populate_arg1" memory=""/>
-            <args name="populate_dx" memory=""/>
-            <args name="populate_dy" memory=""/>
-            <args name="populate_arg_idx0" memory=""/>
-            <args name="populate_arg_idx1" memory=""/>
+        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true" memoryPortDataWidth="512">
+          <computeUnits name="ops_poisson_kernel_populate_1" slr="">
+            <args name="arg0" memory=""/>
+            <args name="arg1" memory=""/>
+            <args name="arg3" master="true" memory=""/>
+            <args name="arg4" master="true" memory=""/>
+            <args name="arg5" master="true" memory=""/>
+            <args name="dx" memory=""/>
+            <args name="dy" memory=""/>
+            <args name="base3" memory=""/>
+            <args name="base4" memory=""/>
+            <args name="base5" memory=""/>
+            <args name="arg_idx0" memory=""/>
+            <args name="arg_idx1" memory=""/>
+            <args name="size0" memory=""/>
+            <args name="size1" memory=""/>
+          </computeUnits>
+          <args name="arg0"/>
+          <args name="arg1"/>
+          <args name="arg3" master="true"/>
+          <args name="arg4" master="true"/>
+          <args name="arg5" master="true"/>
+          <args name="dx"/>
+          <args name="dy"/>
+          <args name="base3"/>
+          <args name="base4"/>
+          <args name="base5"/>
+          <args name="arg_idx0"/>
+          <args name="arg_idx1"/>
+          <args name="size0"/>
+          <args name="size1"/>
+        </kernels>
+        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
+          <computeUnits name="ops_poisson_kernel_error_1" slr="">
+            <args name="arg0" master="true" memory=""/>
+            <args name="arg1" master="true" memory=""/>
             <args name="arg2" master="true" memory=""/>
             <args name="scratch2" master="true" memory=""/>
             <args name="r_bytes2" memory=""/>
@@ -128,14 +156,11 @@
             <args name="base1" memory=""/>
             <args name="size0" memory=""/>
             <args name="size1" memory=""/>
-            <args name="xdim_poisson_kernel" memory=""/>
+            <args name="xdim0_poisson_kernel_error" memory=""/>
+            <args name="xdim1_poisson_kernel_error" memory=""/>
           </computeUnits>
-          <args name="populate_arg0"/>
-          <args name="populate_arg1"/>
-          <args name="populate_dx"/>
-          <args name="populate_dy"/>
-          <args name="populate_arg_idx0"/>
-          <args name="populate_arg_idx1"/>
+          <args name="arg0" master="true"/>
+          <args name="arg1" master="true"/>
           <args name="arg2" master="true"/>
           <args name="scratch2" master="true"/>
           <args name="r_bytes2"/>
@@ -143,7 +168,62 @@
           <args name="base1"/>
           <args name="size0"/>
           <args name="size1"/>
-          <args name="xdim_poisson_kernel"/>
+          <args name="xdim0_poisson_kernel_error"/>
+          <args name="xdim1_poisson_kernel_error"/>
+        </kernels>
+        <kernels name="ops_poisson_kernel_initial" sourceFile="src/OpenCL/poisson_kernel_initial.cl" maxMemoryPorts="true" memoryPortDataWidth="512">
+          <computeUnits name="ops_poisson_kernel_initial_1" slr="">
+            <args name="arg0" master="true" memory=""/>
+            <args name="base0" memory=""/>
+            <args name="size0" memory=""/>
+            <args name="size1" memory=""/>
+            <args name="xdim0_poisson_kernel_initial" memory=""/>
+          </computeUnits>
+          <args name="arg0" master="true"/>
+          <args name="base0"/>
+          <args name="size0"/>
+          <args name="size1"/>
+          <args name="xdim0_poisson_kernel_initial"/>
+        </kernels>
+        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
+          <computeUnits name="ops_poisson_kernel_stencil_1" slr="">
+            <args name="arg0" master="true" memory=""/>
+            <args name="arg1" master="true" memory=""/>
+            <args name="base0" memory=""/>
+            <args name="base1" memory=""/>
+            <args name="size0" memory=""/>
+            <args name="size1" memory=""/>
+            <args name="xdim0_poisson_kernel_stencil" memory=""/>
+            <args name="xdim1_poisson_kernel_stencil" memory=""/>
+          </computeUnits>
+          <args name="arg0" master="true"/>
+          <args name="arg1" master="true"/>
+          <args name="base0"/>
+          <args name="base1"/>
+          <args name="size0"/>
+          <args name="size1"/>
+          <args name="xdim0_poisson_kernel_stencil"/>
+          <args name="xdim1_poisson_kernel_stencil"/>
+        </kernels>
+        <kernels name="ops_poisson_kernel_update" sourceFile="src/OpenCL/poisson_kernel_update.cl" maxMemoryPorts="true" memoryPortDataWidth="512">
+          <computeUnits name="ops_poisson_kernel_update_1" slr="">
+            <args name="arg0" master="true" memory=""/>
+            <args name="arg1" master="true" memory=""/>
+            <args name="base0" memory=""/>
+            <args name="base1" memory=""/>
+            <args name="size0" memory=""/>
+            <args name="size1" memory=""/>
+            <args name="xdim0_poisson_kernel_update" memory=""/>
+            <args name="xdim1_poisson_kernel_update" memory=""/>
+          </computeUnits>
+          <args name="arg0" master="true"/>
+          <args name="arg1" master="true"/>
+          <args name="base0"/>
+          <args name="base1"/>
+          <args name="size0"/>
+          <args name="size1"/>
+          <args name="xdim0_poisson_kernel_update"/>
+          <args name="xdim1_poisson_kernel_update"/>
         </kernels>
       </binaryContainers>
     </lastBuildOptions>
@@ -166,7 +246,7 @@
             <args name="base1" memory=""/>
             <args name="size0" memory=""/>
             <args name="size1" memory=""/>
-            <args name="xdim_poisson_kernel" memory=""/>
+            <args name="n_iters" memory=""/>
           </computeUnits>
           <args name="populate_arg0"/>
           <args name="populate_arg1"/>
@@ -181,7 +261,7 @@
           <args name="base1"/>
           <args name="size0"/>
           <args name="size1"/>
-          <args name="xdim_poisson_kernel"/>
+          <args name="n_iters"/>
         </kernels>
       </binaryContainers>
     </configBuildOptions>
@@ -202,7 +282,7 @@
             <args name="base1" memory=""/>
             <args name="size0" memory=""/>
             <args name="size1" memory=""/>
-            <args name="xdim_poisson_kernel" memory=""/>
+            <args name="n_iters" memory=""/>
           </computeUnits>
           <args name="populate_arg0"/>
           <args name="populate_arg1"/>
@@ -217,7 +297,7 @@
           <args name="base1"/>
           <args name="size0"/>
           <args name="size1"/>
-          <args name="xdim_poisson_kernel"/>
+          <args name="n_iters"/>
         </kernels>
       </binaryContainers>
     </lastBuildOptions>
