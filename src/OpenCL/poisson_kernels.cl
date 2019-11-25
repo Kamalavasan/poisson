@@ -210,385 +210,385 @@ static void ops_poisson_kernel_error(
 		for(int j = 0; j < end_loc ; j++){
 
 			int index0 = j * 64 + 0;
-			if(index0 != 0 || index0  < size0){
+			if(index0 != 0 && index0  <= size0){
 				float diff_0 = u0[base_index+j] - u2_0[base_index+j];
 				arr_focus[0] = arr_focus[0] +  diff_0 * diff_0;
 			}
 
 			int index1 = j * 64 + 1;
-			if(index1 != 0 || index1  < size0){
+			if(index1 != 0 && index1  <= size0){
 				float diff_1 = u1[base_index+j] - u2_1[base_index+j];
 				arr_focus[1] = arr_focus[1] +  diff_1 * diff_1;
 			}
 
 			int index2 = j * 64 + 2;
-			if(index2 != 0 || index2  < size0){
+			if(index2 != 0 && index2  <= size0){
 				float diff_2 = u2[base_index+j] - u2_2[base_index+j];
 				arr_focus[2] = arr_focus[2] +  diff_2 * diff_2;
 			}
 
 			int index3 = j * 64 + 3;
-			if(index3 != 0 || index3  < size0){
+			if(index3 != 0 && index3  <= size0){
 				float diff_3 = u3[base_index+j] - u2_3[base_index+j];
 				arr_focus[3] = arr_focus[3] +  diff_3 * diff_3;
 			}
 
 			int index4 = j * 64 + 4;
-			if(index4 != 0 || index4  < size0){
+			if(index4 != 0 && index4  <= size0){
 				float diff_4 = u4[base_index+j] - u2_4[base_index+j];
 				arr_focus[4] = arr_focus[4] +  diff_4 * diff_4;
 			}
 
 			int index5 = j * 64 + 5;
-			if(index5 != 0 || index5  < size0){
+			if(index5 != 0 && index5  <= size0){
 				float diff_5 = u5[base_index+j] - u2_5[base_index+j];
 				arr_focus[5] = arr_focus[5] +  diff_5 * diff_5;
 			}
 
 			int index6 = j * 64 + 6;
-			if(index6 != 0 || index6  < size0){
+			if(index6 != 0 && index6  <= size0){
 				float diff_6 = u6[base_index+j] - u2_6[base_index+j];
 				arr_focus[6] = arr_focus[6] +  diff_6 * diff_6;
 			}
 
 			int index7 = j * 64 + 7;
-			if(index7 != 0 || index7  < size0){
+			if(index7 != 0 && index7  <= size0){
 				float diff_7 = u7[base_index+j] - u2_7[base_index+j];
 				arr_focus[7] = arr_focus[7] +  diff_7 * diff_7;
 			}
 
 			int index8 = j * 64 + 8;
-			if(index8 != 0 || index8  < size0){
+			if(index8 != 0 && index8  <= size0){
 				float diff_8 = u8[base_index+j] - u2_8[base_index+j];
 				arr_focus[8] = arr_focus[8] +  diff_8 * diff_8;
 			}
 
 			int index9 = j * 64 + 9;
-			if(index9 != 0 || index9  < size0){
+			if(index9 != 0 && index9  <= size0){
 				float diff_9 = u9[base_index+j] - u2_9[base_index+j];
 				arr_focus[9] = arr_focus[9] +  diff_9 * diff_9;
 			}
 
 			int index10 = j * 64 + 10;
-			if(index10 != 0 || index10  < size0){
+			if(index10 != 0 && index10  <= size0){
 				float diff_10 = u10[base_index+j] - u2_10[base_index+j];
 				arr_focus[10] = arr_focus[10] +  diff_10 * diff_10;
 			}
 
 			int index11 = j * 64 + 11;
-			if(index11 != 0 || index11  < size0){
+			if(index11 != 0 && index11  <= size0){
 				float diff_11 = u11[base_index+j] - u2_11[base_index+j];
 				arr_focus[11] = arr_focus[11] +  diff_11 * diff_11;
 			}
 
 			int index12 = j * 64 + 12;
-			if(index12 != 0 || index12  < size0){
+			if(index12 != 0 && index12  < size0){
 				float diff_12 = u12[base_index+j] - u2_12[base_index+j];
 				arr_focus[12] = arr_focus[12] +  diff_12 * diff_12;
 			}
 
 			int index13 = j * 64 + 13;
-			if(index13 != 0 || index13  < size0){
+			if(index13 != 0 && index13  <= size0){
 				float diff_13 = u13[base_index+j] - u2_13[base_index+j];
 				arr_focus[13] = arr_focus[13] +  diff_13 * diff_13;
 			}
 
 			int index14 = j * 64 + 14;
-			if(index14 != 0 || index14  < size0){
+			if(index14 != 0 && index14  <= size0){
 				float diff_14 = u14[base_index+j] - u2_14[base_index+j];
 				arr_focus[14] = arr_focus[14] +  diff_14 * diff_14;
 			}
 
 			int index15 = j * 64 + 15;
-			if(index15 != 0 || index15  < size0){
+			if(index15 != 0 && index15  < size0){
 				float diff_15 = u15[base_index+j] - u2_15[base_index+j];
 				arr_focus[15] = arr_focus[15] +  diff_15 * diff_15;
 			}
 
 			int index16 = j * 64 + 16;
-			if(index16 != 0 || index16  < size0){
+			if(index16 != 0 && index16  <= size0){
 				float diff_16 = u16[base_index+j] - u2_16[base_index+j];
 				arr_focus[16] = arr_focus[16] +  diff_16 * diff_16;
 			}
 
 			int index17 = j * 64 + 17;
-			if(index17 != 0 || index17  < size0){
+			if(index17 != 0 && index17  <= size0){
 				float diff_17 = u17[base_index+j] - u2_17[base_index+j];
 				arr_focus[17] = arr_focus[17] +  diff_17 * diff_17;
 			}
 
 			int index18 = j * 64 + 18;
-			if(index18 != 0 || index18  < size0){
+			if(index18 != 0 && index18  <= size0){
 				float diff_18 = u18[base_index+j] - u2_18[base_index+j];
 				arr_focus[18] = arr_focus[18] +  diff_18 * diff_18;
 			}
 
 			int index19 = j * 64 + 19;
-			if(index19 != 0 || index19  < size0){
+			if(index19 != 0 && index19  < size0){
 				float diff_19 = u19[base_index+j] - u2_19[base_index+j];
 				arr_focus[19] = arr_focus[19] +  diff_19 * diff_19;
 			}
 
 			int index20 = j * 64 + 20;
-			if(index20 != 0 || index20  < size0){
+			if(index20 != 0 && index20  <= size0){
 				float diff_20 = u20[base_index+j] - u2_20[base_index+j];
 				arr_focus[20] = arr_focus[20] +  diff_20 * diff_20;
 			}
 
 			int index21 = j * 64 + 21;
-			if(index21 != 0 || index21  < size0){
+			if(index21 != 0 && index21  <= size0){
 				float diff_21 = u21[base_index+j] - u2_21[base_index+j];
 				arr_focus[21] = arr_focus[21] +  diff_21 * diff_21;
 			}
 
 			int index22 = j * 64 + 22;
-			if(index22 != 0 || index22  < size0){
+			if(index22 != 0 && index22  <= size0){
 				float diff_22 = u22[base_index+j] - u2_22[base_index+j];
 				arr_focus[22] = arr_focus[22] +  diff_22 * diff_22;
 			}
 
 			int index23 = j * 64 + 23;
-			if(index23 != 0 || index23  < size0){
+			if(index23 != 0 && index23  <= size0){
 				float diff_23 = u23[base_index+j] - u2_23[base_index+j];
 				arr_focus[23] = arr_focus[23] +  diff_23 * diff_23;
 			}
 
 			int index24 = j * 64 + 24;
-			if(index24 != 0 || index24  < size0){
+			if(index24 != 0 && index24  <= size0){
 				float diff_24 = u24[base_index+j] - u2_24[base_index+j];
 				arr_focus[24] = arr_focus[24] +  diff_24 * diff_24;
 			}
 
 			int index25 = j * 64 + 25;
-			if(index25 != 0 || index25  < size0){
+			if(index25 != 0 && index25  <= size0){
 				float diff_25 = u25[base_index+j] - u2_25[base_index+j];
 				arr_focus[25] = arr_focus[25] +  diff_25 * diff_25;
 			}
 
 			int index26 = j * 64 + 26;
-			if(index26 != 0 || index26  < size0){
+			if(index26 != 0 && index26  <= size0){
 				float diff_26 = u26[base_index+j] - u2_26[base_index+j];
 				arr_focus[26] = arr_focus[26] +  diff_26 * diff_26;
 			}
 
 			int index27 = j * 64 + 27;
-			if(index27 != 0 || index27  < size0){
+			if(index27 != 0 && index27  <= size0){
 				float diff_27 = u27[base_index+j] - u2_27[base_index+j];
 				arr_focus[27] = arr_focus[27] +  diff_27 * diff_27;
 			}
 
 			int index28 = j * 64 + 28;
-			if(index28 != 0 || index28  < size0){
+			if(index28 != 0 && index28  <= size0){
 				float diff_28 = u28[base_index+j] - u2_28[base_index+j];
 				arr_focus[28] = arr_focus[28] +  diff_28 * diff_28;
 			}
 
 			int index29 = j * 64 + 29;
-			if(index29 != 0 || index29  < size0){
+			if(index29 != 0 && index29  <= size0){
 				float diff_29 = u29[base_index+j] - u2_29[base_index+j];
 				arr_focus[29] = arr_focus[29] +  diff_29 * diff_29;
 			}
 
 			int index30 = j * 64 + 30;
-			if(index30 != 0 || index30  < size0){
+			if(index30 != 0 && index30  <= size0){
 				float diff_30 = u30[base_index+j] - u2_30[base_index+j];
 				arr_focus[30] = arr_focus[30] +  diff_30 * diff_30;
 			}
 
 			int index31 = j * 64 + 31;
-			if(index31 != 0 || index31  < size0){
+			if(index31 != 0 && index31  <= size0){
 				float diff_31 = u31[base_index+j] - u2_31[base_index+j];
 				arr_focus[31] = arr_focus[31] +  diff_31 * diff_31;
 			}
 
 			int index32 = j * 64 + 32;
-			if(index32 != 0 || index32  < size0){
+			if(index32 != 0 && index32  <= size0){
 				float diff_32 = u32[base_index+j] - u2_32[base_index+j];
 				arr_focus[32] = arr_focus[32] +  diff_32 * diff_32;
 			}
 
 			int index33 = j * 64 + 33;
-			if(index33 != 0 || index33  < size0){
+			if(index33 != 0 && index33  <= size0){
 				float diff_33 = u33[base_index+j] - u2_33[base_index+j];
 				arr_focus[33] = arr_focus[33] +  diff_33 * diff_33;
 			}
 
 			int index34 = j * 64 + 34;
-			if(index34 != 0 || index34  < size0){
+			if(index34 != 0 && index34  <= size0){
 				float diff_34 = u34[base_index+j] - u2_34[base_index+j];
 				arr_focus[34] = arr_focus[34] +  diff_34 * diff_34;
 			}
 
 			int index35 = j * 64 + 35;
-			if(index35 != 0 || index35  < size0){
+			if(index35 != 0 && index35  <= size0){
 				float diff_35 = u35[base_index+j] - u2_35[base_index+j];
 				arr_focus[35] = arr_focus[35] +  diff_35 * diff_35;
 			}
 
 			int index36 = j * 64 + 36;
-			if(index36 != 0 || index36  < size0){
+			if(index36 != 0 && index36  <= size0){
 				float diff_36 = u36[base_index+j] - u2_36[base_index+j];
 				arr_focus[36] = arr_focus[36] +  diff_36 * diff_36;
 			}
 
 			int index37 = j * 64 + 37;
-			if(index37 != 0 || index37  < size0){
+			if(index37 != 0 && index37  <= size0){
 				float diff_37 = u37[base_index+j] - u2_37[base_index+j];
 				arr_focus[37] = arr_focus[37] +  diff_37 * diff_37;
 			}
 
 			int index38 = j * 64 + 38;
-			if(index38 != 0 || index38  < size0){
+			if(index38 != 0 && index38  <= size0){
 				float diff_38 = u38[base_index+j] - u2_38[base_index+j];
 				arr_focus[38] = arr_focus[38] +  diff_38 * diff_38;
 			}
 
 			int index39 = j * 64 + 39;
-			if(index39 != 0 || index39  < size0){
+			if(index39 != 0 && index39  <= size0){
 				float diff_39 = u39[base_index+j] - u2_39[base_index+j];
 				arr_focus[39] = arr_focus[39] +  diff_39 * diff_39;
 			}
 
 			int index40 = j * 64 + 40;
-			if(index40 != 0 || index40  < size0){
+			if(index40 != 0 && index40  <= size0){
 				float diff_40 = u40[base_index+j] - u2_40[base_index+j];
 				arr_focus[40] = arr_focus[40] +  diff_40 * diff_40;
 			}
 
 			int index41 = j * 64 + 41;
-			if(index41 != 0 || index41  < size0){
+			if(index41 != 0 && index41  <= size0){
 				float diff_41 = u41[base_index+j] - u2_41[base_index+j];
 				arr_focus[41] = arr_focus[41] +  diff_41 * diff_41;
 			}
 
 			int index42 = j * 64 + 42;
-			if(index42 != 0 || index42  < size0){
+			if(index42 != 0 && index42  <= size0){
 				float diff_42 = u42[base_index+j] - u2_42[base_index+j];
 				arr_focus[42] = arr_focus[42] +  diff_42 * diff_42;
 			}
 
 			int index43 = j * 64 + 43;
-			if(index43 != 0 || index43  < size0){
+			if(index43 != 0 && index43  <= size0){
 				float diff_43 = u43[base_index+j] - u2_43[base_index+j];
 				arr_focus[43] = arr_focus[43] +  diff_43 * diff_43;
 			}
 
 			int index44 = j * 64 + 44;
-			if(index44 != 0 || index44  < size0){
+			if(index44 != 0 && index44  <= size0){
 				float diff_44 = u44[base_index+j] - u2_44[base_index+j];
 				arr_focus[44] = arr_focus[44] +  diff_44 * diff_44;
 			}
 
 			int index45 = j * 64 + 45;
-			if(index45 != 0 || index45  < size0){
+			if(index45 != 0 && index45  <= size0){
 				float diff_45 = u45[base_index+j] - u2_45[base_index+j];
 				arr_focus[45] = arr_focus[45] +  diff_45 * diff_45;
 			}
 
 			int index46 = j * 64 + 46;
-			if(index46 != 0 || index46  < size0){
+			if(index46 != 0 && index46  <= size0){
 				float diff_46 = u46[base_index+j] - u2_46[base_index+j];
 				arr_focus[46] = arr_focus[46] +  diff_46 * diff_46;
 			}
 
 			int index47 = j * 64 + 47;
-			if(index47 != 0 || index47  < size0){
+			if(index47 != 0 && index47  <= size0){
 				float diff_47 = u47[base_index+j] - u2_47[base_index+j];
 				arr_focus[47] = arr_focus[47] +  diff_47 * diff_47;
 			}
 
 			int index48 = j * 64 + 48;
-			if(index48 != 0 || index48  < size0){
+			if(index48 != 0 && index48  <= size0){
 				float diff_48 = u48[base_index+j] - u2_48[base_index+j];
 				arr_focus[48] = arr_focus[48] +  diff_48 * diff_48;
 			}
 
 			int index49 = j * 64 + 49;
-			if(index49 != 0 || index49  < size0){
+			if(index49 != 0 && index49  <= size0){
 				float diff_49 = u49[base_index+j] - u2_49[base_index+j];
 				arr_focus[49] = arr_focus[49] +  diff_49 * diff_49;
 			}
 
 			int index50 = j * 64 + 50;
-			if(index50 != 0 || index50  < size0){
+			if(index50 != 0 && index50  <= size0){
 				float diff_50 = u50[base_index+j] - u2_50[base_index+j];
 				arr_focus[50] = arr_focus[50] +  diff_50 * diff_50;
 			}
 
 			int index51 = j * 64 + 51;
-			if(index51 != 0 || index51  < size0){
+			if(index51 != 0 && index51  <= size0){
 				float diff_51 = u51[base_index+j] - u2_51[base_index+j];
 				arr_focus[51] = arr_focus[51] +  diff_51 * diff_51;
 			}
 
 			int index52 = j * 64 + 52;
-			if(index52 != 0 || index52  < size0){
+			if(index52 != 0 && index52  <= size0){
 				float diff_52 = u52[base_index+j] - u2_52[base_index+j];
 				arr_focus[52] = arr_focus[52] +  diff_52 * diff_52;
 			}
 
 			int index53 = j * 64 + 53;
-			if(index53 != 0 || index53  < size0){
+			if(index53 != 0 && index53  <= size0){
 				float diff_53 = u53[base_index+j] - u2_53[base_index+j];
 				arr_focus[53] = arr_focus[53] +  diff_53 * diff_53;
 			}
 
 			int index54 = j * 64 + 54;
-			if(index54 != 0 || index54  < size0){
+			if(index54 != 0 && index54  <= size0){
 				float diff_54 = u54[base_index+j] - u2_54[base_index+j];
 				arr_focus[54] = arr_focus[54] +  diff_54 * diff_54;
 			}
 
 			int index55 = j * 64 + 55;
-			if(index55 != 0 || index55  < size0){
+			if(index55 != 0 && index55  <= size0){
 				float diff_55 = u55[base_index+j] - u2_55[base_index+j];
 				arr_focus[55] = arr_focus[55] +  diff_55 * diff_55;
 			}
 
 			int index56 = j * 64 + 56;
-			if(index56 != 0 || index56  < size0){
+			if(index56 != 0 && index56  <= size0){
 				float diff_56 = u56[base_index+j] - u2_56[base_index+j];
 				arr_focus[56] = arr_focus[56] +  diff_56 * diff_56;
 			}
 
 			int index57 = j * 64 + 57;
-			if(index57 != 0 || index57  < size0){
+			if(index57 != 0 && index57  <= size0){
 				float diff_57 = u57[base_index+j] - u2_57[base_index+j];
 				arr_focus[57] = arr_focus[57] +  diff_57 * diff_57;
 			}
 
 			int index58 = j * 64 + 58;
-			if(index58 != 0 || index58  < size0){
+			if(index58 != 0 && index58  <= size0){
 				float diff_58 = u58[base_index+j] - u2_58[base_index+j];
 				arr_focus[58] = arr_focus[58] +  diff_58 * diff_58;
 			}
 
 			int index59 = j * 64 + 59;
-			if(index59 != 0 || index59  < size0){
+			if(index59 != 0 && index59  <= size0){
 				float diff_59 = u59[base_index+j] - u2_59[base_index+j];
 				arr_focus[59] = arr_focus[59] +  diff_59 * diff_59;
 			}
 
 			int index60 = j * 64 + 60;
-			if(index60 != 0 || index60  < size0){
+			if(index60 != 0 && index60  <= size0){
 				float diff_60 = u60[base_index+j] - u2_60[base_index+j];
 				arr_focus[60] = arr_focus[60] +  diff_60 * diff_60;
 			}
 
 			int index61 = j * 64 + 61;
-			if(index61 != 0 || index61  < size0){
+			if(index61 != 0 && index61  <= size0){
 				float diff_61 = u61[base_index+j] - u2_61[base_index+j];
 				arr_focus[61] = arr_focus[61] +  diff_61 * diff_61;
 			}
 
 			int index62 = j * 64 + 62;
-			if(index62 != 0 || index62  < size0){
+			if(index62 != 0 && index62  <= size0){
 				float diff_62 = u62[base_index+j] - u2_62[base_index+j];
 				arr_focus[62] = arr_focus[62] +  diff_62 * diff_62;
 			}
 
 			int index63 = j * 64 + 63;
-			if(index63 != 0 || index63  < size0){
+			if(index63 != 0 && index63  <= size0){
 				float diff_63 = u63[base_index+j] - u2_63[base_index+j];
 				arr_focus[63] = arr_focus[63] +  diff_63 * diff_63;
 			}
@@ -715,322 +715,322 @@ static void ops_poisson_kernel_initial(
 		for(int j = 0; j < end_loc ; j++){
 
 			int index0 = j * 64 + 0;
-			if(index0 != 0 || index0  < size0)
+			if(index0 != 0 && index0  <= size0)
 				u0[base_index+j] = 0;
 
 
 			int index1 = j * 64 + 1;
-			if(index1 != 0 || index1  < size0)
+			if(index1 != 0 && index1  <= size0)
 				u1[base_index+j] = 0;
 
 
 			int index2 = j * 64 + 2;
-			if(index2 != 0 || index2  < size0)
+			if(index2 != 0 && index2  <= size0)
 				u2[base_index+j] = 0;
 
 
 			int index3 = j * 64 + 3;
-			if(index3 != 0 || index3  < size0)
+			if(index3 != 0 && index3  <= size0)
 				u3[base_index+j] = 0;
 
 
 			int index4 = j * 64 + 4;
-			if(index4 != 0 || index4  < size0)
+			if(index4 != 0 && index4  <= size0)
 				u4[base_index+j] = 0;
 
 
 			int index5 = j * 64 + 5;
-			if(index5 != 0 || index5  < size0)
+			if(index5 != 0 && index5  <= size0)
 				u5[base_index+j] = 0;
 
 
 			int index6 = j * 64 + 6;
-			if(index6 != 0 || index6  < size0)
+			if(index6 != 0 && index6  <= size0)
 				u6[base_index+j] = 0;
 
 
 			int index7 = j * 64 + 7;
-			if(index7 != 0 || index7  < size0)
+			if(index7 != 0 && index7  <= size0)
 				u7[base_index+j] = 0;
 
 
 			int index8 = j * 64 + 8;
-			if(index8 != 0 || index8  < size0)
+			if(index8 != 0 && index8  <= size0)
 				u8[base_index+j] = 0;
 
 
 			int index9 = j * 64 + 9;
-			if(index9 != 0 || index9  < size0)
+			if(index9 != 0 && index9  <= size0)
 				u9[base_index+j] = 0;
 
 
 			int index10 = j * 64 + 10;
-			if(index10 != 0 || index10  < size0)
+			if(index10 != 0 && index10  <= size0)
 				u10[base_index+j] = 0;
 
 
 			int index11 = j * 64 + 11;
-			if(index11 != 0 || index11  < size0)
+			if(index11 != 0 && index11  <= size0)
 				u11[base_index+j] = 0;
 
 
 			int index12 = j * 64 + 12;
-			if(index12 != 0 || index12  < size0)
+			if(index12 != 0 && index12  <= size0)
 				u12[base_index+j] = 0;
 
 
 			int index13 = j * 64 + 13;
-			if(index13 != 0 || index13  < size0)
+			if(index13 != 0 && index13  <= size0)
 				u13[base_index+j] = 0;
 
 
 			int index14 = j * 64 + 14;
-			if(index14 != 0 || index14  < size0)
+			if(index14 != 0 && index14  <= size0)
 				u14[base_index+j] = 0;
 
 
 			int index15 = j * 64 + 15;
-			if(index15 != 0 || index15  < size0)
+			if(index15 != 0 && index15  <= size0)
 				u15[base_index+j] = 0;
 
 
 			int index16 = j * 64 + 16;
-			if(index16 != 0 || index16  < size0)
+			if(index16 != 0 && index16  <= size0)
 				u16[base_index+j] = 0;
 
 
 			int index17 = j * 64 + 17;
-			if(index17 != 0 || index17  < size0)
+			if(index17 != 0 && index17  <= size0)
 				u17[base_index+j] = 0;
 
 
 			int index18 = j * 64 + 18;
-			if(index18 != 0 || index18  < size0)
+			if(index18 != 0 && index18  <= size0)
 				u18[base_index+j] = 0;
 
 
 			int index19 = j * 64 + 19;
-			if(index19 != 0 || index19  < size0)
+			if(index19 != 0 && index19  <= size0)
 				u19[base_index+j] = 0;
 
 
 			int index20 = j * 64 + 20;
-			if(index20 != 0 || index20  < size0)
+			if(index20 != 0 && index20  <= size0)
 				u20[base_index+j] = 0;
 
 
 			int index21 = j * 64 + 21;
-			if(index21 != 0 || index21  < size0)
+			if(index21 != 0 && index21  <= size0)
 				u21[base_index+j] = 0;
 
 
 			int index22 = j * 64 + 22;
-			if(index22 != 0 || index22  < size0)
+			if(index22 != 0 && index22  <= size0)
 				u22[base_index+j] = 0;
 
 
 			int index23 = j * 64 + 23;
-			if(index23 != 0 || index23  < size0)
+			if(index23 != 0 && index23  <= size0)
 				u23[base_index+j] = 0;
 
 
 			int index24 = j * 64 + 24;
-			if(index24 != 0 || index24  < size0)
+			if(index24 != 0 && index24  <= size0)
 				u24[base_index+j] = 0;
 
 
 			int index25 = j * 64 + 25;
-			if(index25 != 0 || index25  < size0)
+			if(index25 != 0 && index25  <= size0)
 				u25[base_index+j] = 0;
 
 
 			int index26 = j * 64 + 26;
-			if(index26 != 0 || index26  < size0)
+			if(index26 != 0 && index26  <= size0)
 				u26[base_index+j] = 0;
 
 
 			int index27 = j * 64 + 27;
-			if(index27 != 0 || index27  < size0)
+			if(index27 != 0 && index27  <= size0)
 				u27[base_index+j] = 0;
 
 
 			int index28 = j * 64 + 28;
-			if(index28 != 0 || index28  < size0)
+			if(index28 != 0 && index28  <= size0)
 				u28[base_index+j] = 0;
 
 
 			int index29 = j * 64 + 29;
-			if(index29 != 0 || index29  < size0)
+			if(index29 != 0 && index29  <= size0)
 				u29[base_index+j] = 0;
 
 
 			int index30 = j * 64 + 30;
-			if(index30 != 0 || index30  < size0)
+			if(index30 != 0 && index30  <= size0)
 				u30[base_index+j] = 0;
 
 
 			int index31 = j * 64 + 31;
-			if(index31 != 0 || index31  < size0)
+			if(index31 != 0 && index31  <= size0)
 				u31[base_index+j] = 0;
 
 
 			int index32 = j * 64 + 32;
-			if(index32 != 0 || index32  < size0)
+			if(index32 != 0 && index32  <= size0)
 				u32[base_index+j] = 0;
 
 
 			int index33 = j * 64 + 33;
-			if(index33 != 0 || index33  < size0)
+			if(index33 != 0 && index33  <= size0)
 				u33[base_index+j] = 0;
 
 
 			int index34 = j * 64 + 34;
-			if(index34 != 0 || index34  < size0)
+			if(index34 != 0 && index34  <= size0)
 				u34[base_index+j] = 0;
 
 
 			int index35 = j * 64 + 35;
-			if(index35 != 0 || index35  < size0)
+			if(index35 != 0 && index35  <= size0)
 				u35[base_index+j] = 0;
 
 
 			int index36 = j * 64 + 36;
-			if(index36 != 0 || index36  < size0)
+			if(index36 != 0 && index36  <= size0)
 				u36[base_index+j] = 0;
 
 
 			int index37 = j * 64 + 37;
-			if(index37 != 0 || index37  < size0)
+			if(index37 != 0 && index37  <= size0)
 				u37[base_index+j] = 0;
 
 
 			int index38 = j * 64 + 38;
-			if(index38 != 0 || index38  < size0)
+			if(index38 != 0 && index38  <= size0)
 				u38[base_index+j] = 0;
 
 
 			int index39 = j * 64 + 39;
-			if(index39 != 0 || index39  < size0)
+			if(index39 != 0 && index39  <= size0)
 				u39[base_index+j] = 0;
 
 
 			int index40 = j * 64 + 40;
-			if(index40 != 0 || index40  < size0)
+			if(index40 != 0 && index40  <= size0)
 				u40[base_index+j] = 0;
 
 
 			int index41 = j * 64 + 41;
-			if(index41 != 0 || index41  < size0)
+			if(index41 != 0 && index41  <= size0)
 				u41[base_index+j] = 0;
 
 
 			int index42 = j * 64 + 42;
-			if(index42 != 0 || index42  < size0)
+			if(index42 != 0 && index42  <= size0)
 				u42[base_index+j] = 0;
 
 
 			int index43 = j * 64 + 43;
-			if(index43 != 0 || index43  < size0)
+			if(index43 != 0 && index43  <= size0)
 				u43[base_index+j] = 0;
 
 
 			int index44 = j * 64 + 44;
-			if(index44 != 0 || index44  < size0)
+			if(index44 != 0 && index44  <= size0)
 				u44[base_index+j] = 0;
 
 
 			int index45 = j * 64 + 45;
-			if(index45 != 0 || index45  < size0)
+			if(index45 != 0 && index45  <= size0)
 				u45[base_index+j] = 0;
 
 
 			int index46 = j * 64 + 46;
-			if(index46 != 0 || index46  < size0)
+			if(index46 != 0 && index46  <= size0)
 				u46[base_index+j] = 0;
 
 
 			int index47 = j * 64 + 47;
-			if(index47 != 0 || index47  < size0)
+			if(index47 != 0 && index47  <= size0)
 				u47[base_index+j] = 0;
 
 
 			int index48 = j * 64 + 48;
-			if(index48 != 0 || index48  < size0)
+			if(index48 != 0 && index48  <= size0)
 				u48[base_index+j] = 0;
 
 
 			int index49 = j * 64 + 49;
-			if(index49 != 0 || index49  < size0)
+			if(index49 != 0 && index49  <= size0)
 				u49[base_index+j] = 0;
 
 
 			int index50 = j * 64 + 50;
-			if(index50 != 0 || index50  < size0)
+			if(index50 != 0 && index50  <= size0)
 				u50[base_index+j] = 0;
 
 
 			int index51 = j * 64 + 51;
-			if(index51 != 0 || index51  < size0)
+			if(index51 != 0 && index51  <= size0)
 				u51[base_index+j] = 0;
 
 
 			int index52 = j * 64 + 52;
-			if(index52 != 0 || index52  < size0)
+			if(index52 != 0 && index52  <= size0)
 				u52[base_index+j] = 0;
 
 
 			int index53 = j * 64 + 53;
-			if(index53 != 0 || index53  < size0)
+			if(index53 != 0 && index53  <= size0)
 				u53[base_index+j] = 0;
 
 
 			int index54 = j * 64 + 54;
-			if(index54 != 0 || index54  < size0)
+			if(index54 != 0 && index54  <= size0)
 				u54[base_index+j] = 0;
 
 
 			int index55 = j * 64 + 55;
-			if(index55 != 0 || index55  < size0)
+			if(index55 != 0 && index55  <= size0)
 				u55[base_index+j] = 0;
 
 
 			int index56 = j * 64 + 56;
-			if(index56 != 0 || index56  < size0)
+			if(index56 != 0 && index56  <= size0)
 				u56[base_index+j] = 0;
 
 
 			int index57 = j * 64 + 57;
-			if(index57 != 0 || index57  < size0)
+			if(index57 != 0 && index57  <= size0)
 				u57[base_index+j] = 0;
 
 
 			int index58 = j * 64 + 58;
-			if(index58 != 0 || index58  < size0)
+			if(index58 != 0 && index58  <= size0)
 				u58[base_index+j] = 0;
 
 
 			int index59 = j * 64 + 59;
-			if(index59 != 0 || index59  < size0)
+			if(index59 != 0 && index59  <= size0)
 				u59[base_index+j] = 0;
 
 
 			int index60 = j * 64 + 60;
-			if(index60 != 0 || index60  < size0)
+			if(index60 != 0 && index60  <= size0)
 				u60[base_index+j] = 0;
 
 
 			int index61 = j * 64 + 61;
-			if(index61 != 0 || index61  < size0)
+			if(index61 != 0 && index61  <= size0)
 				u61[base_index+j] = 0;
 
 
 			int index62 = j * 64 + 62;
-			if(index62 != 0 || index62  < size0)
+			if(index62 != 0 && index62  <= size0)
 				u62[base_index+j] = 0;
 
 
 			int index63 = j * 64 + 63;
-			if(index63 != 0 || index63  < size0)
+			if(index63 != 0 && index63  <= size0)
 				u63[base_index+j] = 0;
 
 		}
@@ -1194,7 +1194,6 @@ static void ops_poisson_kernel_populate(
 		arg_idx[1] = arg_idx1 + i;
 
 		__attribute__((xcl_pipeline_loop))
-		__attribute__((opencl_unroll_hint(P_FACTOR)))
 		for(int j = 0; j < end_loc ; j++){
 			//------------COMPUTE UNIT 0  ----------------
 			float f3_0_3[4];
@@ -1203,7 +1202,7 @@ static void ops_poisson_kernel_populate(
 			double x_0_3;
 			double y_0_3;
 			__attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < 3; k++){
+			for(int k = 0; k < 4; k++){
 				index_0_3[k] = j * 64 + k+0;
 				double arg_idx_0_3 = arg_idx0 + index_0_3[k];
 
@@ -1241,7 +1240,7 @@ static void ops_poisson_kernel_populate(
 			double x_4_7;
 			double y_4_7;
 			__attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < 3; k++){
+			for(int k = 0; k < 4; k++){
 				index_4_7[k] = j * 64 + k+4;
 				double arg_idx_4_7 = arg_idx0 + index_4_7[k];
 
@@ -1279,7 +1278,7 @@ static void ops_poisson_kernel_populate(
 			double x_8_11;
 			double y_8_11;
 			__attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < 3; k++){
+			for(int k = 0; k < 4; k++){
 				index_8_11[k] = j * 64 + k+8;
 				double arg_idx_8_11 = arg_idx0 + index_8_11[k];
 
@@ -1317,7 +1316,7 @@ static void ops_poisson_kernel_populate(
 			double x_12_15;
 			double y_12_15;
 			__attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < 3; k++){
+			for(int k = 0; k < 4; k++){
 				index_12_15[k] = j * 64 + k+12;
 				double arg_idx_12_15 = arg_idx0 + index_12_15[k];
 
@@ -1355,7 +1354,7 @@ static void ops_poisson_kernel_populate(
 			double x_16_19;
 			double y_16_19;
 			__attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < 3; k++){
+			for(int k = 0; k < 4; k++){
 				index_16_19[k] = j * 64 + k+16;
 				double arg_idx_16_19 = arg_idx0 + index_16_19[k];
 
@@ -1393,7 +1392,7 @@ static void ops_poisson_kernel_populate(
 			double x_20_23;
 			double y_20_23;
 			__attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < 3; k++){
+			for(int k = 0; k < 4; k++){
 				index_20_23[k] = j * 64 + k+20;
 				double arg_idx_20_23 = arg_idx0 + index_20_23[k];
 
@@ -1431,7 +1430,7 @@ static void ops_poisson_kernel_populate(
 			double x_24_27;
 			double y_24_27;
 			__attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < 3; k++){
+			for(int k = 0; k < 4; k++){
 				index_24_27[k] = j * 64 + k+24;
 				double arg_idx_24_27 = arg_idx0 + index_24_27[k];
 
@@ -1469,7 +1468,7 @@ static void ops_poisson_kernel_populate(
 			double x_28_31;
 			double y_28_31;
 			__attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < 3; k++){
+			for(int k = 0; k < 4; k++){
 				index_28_31[k] = j * 64 + k+28;
 				double arg_idx_28_31 = arg_idx0 + index_28_31[k];
 
@@ -1507,7 +1506,7 @@ static void ops_poisson_kernel_populate(
 			double x_32_35;
 			double y_32_35;
 			__attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < 3; k++){
+			for(int k = 0; k < 4; k++){
 				index_32_35[k] = j * 64 + k+32;
 				double arg_idx_32_35 = arg_idx0 + index_32_35[k];
 
@@ -1545,7 +1544,7 @@ static void ops_poisson_kernel_populate(
 			double x_36_39;
 			double y_36_39;
 			__attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < 3; k++){
+			for(int k = 0; k < 4; k++){
 				index_36_39[k] = j * 64 + k+36;
 				double arg_idx_36_39 = arg_idx0 + index_36_39[k];
 
@@ -1583,7 +1582,7 @@ static void ops_poisson_kernel_populate(
 			double x_40_43;
 			double y_40_43;
 			__attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < 3; k++){
+			for(int k = 0; k < 4; k++){
 				index_40_43[k] = j * 64 + k+40;
 				double arg_idx_40_43 = arg_idx0 + index_40_43[k];
 
@@ -1621,7 +1620,7 @@ static void ops_poisson_kernel_populate(
 			double x_44_47;
 			double y_44_47;
 			__attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < 3; k++){
+			for(int k = 0; k < 4; k++){
 				index_44_47[k] = j * 64 + k+44;
 				double arg_idx_44_47 = arg_idx0 + index_44_47[k];
 
@@ -1659,7 +1658,7 @@ static void ops_poisson_kernel_populate(
 			double x_48_51;
 			double y_48_51;
 			__attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < 3; k++){
+			for(int k = 0; k < 4; k++){
 				index_48_51[k] = j * 64 + k+48;
 				double arg_idx_48_51 = arg_idx0 + index_48_51[k];
 
@@ -1697,7 +1696,7 @@ static void ops_poisson_kernel_populate(
 			double x_52_55;
 			double y_52_55;
 			__attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < 3; k++){
+			for(int k = 0; k < 4; k++){
 				index_52_55[k] = j * 64 + k+52;
 				double arg_idx_52_55 = arg_idx0 + index_52_55[k];
 
@@ -1735,7 +1734,7 @@ static void ops_poisson_kernel_populate(
 			double x_56_59;
 			double y_56_59;
 			__attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < 3; k++){
+			for(int k = 0; k < 4; k++){
 				index_56_59[k] = j * 64 + k+56;
 				double arg_idx_56_59 = arg_idx0 + index_56_59[k];
 
@@ -1773,7 +1772,7 @@ static void ops_poisson_kernel_populate(
 			double x_60_63;
 			double y_60_63;
 			__attribute__((xcl_pipeline_loop))
-			for(int k = 0; k < 3; k++){
+			for(int k = 0; k < 4; k++){
 				index_60_63[k] = j * 64 + k+60;
 				double arg_idx_60_63 = arg_idx0 + index_60_63[k];
 
@@ -1951,8 +1950,6 @@ static void ops_poisson_kernel_stencil(
 	const int row_block = MAX_X_DIM/P_FACTOR;
 
 
-
-
 	for(int i = 0; i < size1; i++){
 
 		int base_index0 = (i) * row_block;
@@ -1964,7 +1961,7 @@ static void ops_poisson_kernel_stencil(
 
 
 			int index0 = j * 64 + 0;
-			if( index0 > 0 && index0  < size0){
+			if( index0 > 0 && index0  <= size0){
 				float f1_0 = (u0[base_index0+j] + u0[base_index2+j]) * 0.125;
 				float f2_0 = (u63[base_index1+j-1] + u1[base_index1+j]) * 0.125;
 				float f3_0 = u0[base_index1+j] * 0.5;
@@ -1973,7 +1970,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index1 = j * 64 + 1;
-			if(index1  < size0){
+			if(index1  <= size0){
 				float f1_1 = (u1[base_index0+j] + u1[base_index2+j]) * 0.125;
 				float f2_1 = (u0[base_index1+j] + u2[base_index1+j]) * 0.125;
 				float f3_1 = u1[base_index1+j] * 0.5;
@@ -1982,7 +1979,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index2 = j * 64 + 2;
-			if(index2  < size0){
+			if(index2  <= size0){
 				float f1_2 = (u2[base_index0+j] + u2[base_index2+j]) * 0.125;
 				float f2_2 = (u1[base_index1+j] + u3[base_index1+j]) * 0.125;
 				float f3_2 = u2[base_index1+j] * 0.5;
@@ -1991,7 +1988,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index3 = j * 64 + 3;
-			if(index3  < size0){
+			if(index3  <= size0){
 				float f1_3 = (u3[base_index0+j] + u3[base_index2+j]) * 0.125;
 				float f2_3 = (u2[base_index1+j] + u4[base_index1+j]) * 0.125;
 				float f3_3 = u3[base_index1+j] * 0.5;
@@ -2000,7 +1997,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index4 = j * 64 + 4;
-			if(index4  < size0){
+			if(index4  <= size0){
 				float f1_4 = (u4[base_index0+j] + u4[base_index2+j]) * 0.125;
 				float f2_4 = (u3[base_index1+j] + u5[base_index1+j]) * 0.125;
 				float f3_4 = u4[base_index1+j] * 0.5;
@@ -2009,7 +2006,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index5 = j * 64 + 5;
-			if(index5  < size0){
+			if(index5  <= size0){
 				float f1_5 = (u5[base_index0+j] + u5[base_index2+j]) * 0.125;
 				float f2_5 = (u4[base_index1+j] + u6[base_index1+j]) * 0.125;
 				float f3_5 = u5[base_index1+j] * 0.5;
@@ -2018,7 +2015,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index6 = j * 64 + 6;
-			if(index6  < size0){
+			if(index6  <= size0){
 				float f1_6 = (u6[base_index0+j] + u6[base_index2+j]) * 0.125;
 				float f2_6 = (u5[base_index1+j] + u7[base_index1+j]) * 0.125;
 				float f3_6 = u6[base_index1+j] * 0.5;
@@ -2027,7 +2024,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index7 = j * 64 + 7;
-			if(index7  < size0){
+			if(index7  <= size0){
 				float f1_7 = (u7[base_index0+j] + u7[base_index2+j]) * 0.125;
 				float f2_7 = (u6[base_index1+j] + u8[base_index1+j]) * 0.125;
 				float f3_7 = u7[base_index1+j] * 0.5;
@@ -2036,7 +2033,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index8 = j * 64 + 8;
-			if(index8  < size0){
+			if(index8  <= size0){
 				float f1_8 = (u8[base_index0+j] + u8[base_index2+j]) * 0.125;
 				float f2_8 = (u7[base_index1+j] + u9[base_index1+j]) * 0.125;
 				float f3_8 = u8[base_index1+j] * 0.5;
@@ -2045,7 +2042,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index9 = j * 64 + 9;
-			if(index9  < size0){
+			if(index9  <= size0){
 				float f1_9 = (u9[base_index0+j] + u9[base_index2+j]) * 0.125;
 				float f2_9 = (u8[base_index1+j] + u10[base_index1+j]) * 0.125;
 				float f3_9 = u9[base_index1+j] * 0.5;
@@ -2054,7 +2051,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index10 = j * 64 + 10;
-			if(index10  < size0){
+			if(index10  <= size0){
 				float f1_10 = (u10[base_index0+j] + u10[base_index2+j]) * 0.125;
 				float f2_10 = (u9[base_index1+j] + u11[base_index1+j]) * 0.125;
 				float f3_10 = u10[base_index1+j] * 0.5;
@@ -2063,7 +2060,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index11 = j * 64 + 11;
-			if(index11  < size0){
+			if(index11  <= size0){
 				float f1_11 = (u11[base_index0+j] + u11[base_index2+j]) * 0.125;
 				float f2_11 = (u10[base_index1+j] + u12[base_index1+j]) * 0.125;
 				float f3_11 = u11[base_index1+j] * 0.5;
@@ -2072,7 +2069,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index12 = j * 64 + 12;
-			if(index12  < size0){
+			if(index12  <= size0){
 				float f1_12 = (u12[base_index0+j] + u12[base_index2+j]) * 0.125;
 				float f2_12 = (u11[base_index1+j] + u13[base_index1+j]) * 0.125;
 				float f3_12 = u12[base_index1+j] * 0.5;
@@ -2081,7 +2078,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index13 = j * 64 + 13;
-			if(index13  < size0){
+			if(index13  <= size0){
 				float f1_13 = (u13[base_index0+j] + u13[base_index2+j]) * 0.125;
 				float f2_13 = (u12[base_index1+j] + u14[base_index1+j]) * 0.125;
 				float f3_13 = u13[base_index1+j] * 0.5;
@@ -2090,7 +2087,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index14 = j * 64 + 14;
-			if(index14  < size0){
+			if(index14  <= size0){
 				float f1_14 = (u14[base_index0+j] + u14[base_index2+j]) * 0.125;
 				float f2_14 = (u13[base_index1+j] + u15[base_index1+j]) * 0.125;
 				float f3_14 = u14[base_index1+j] * 0.5;
@@ -2099,7 +2096,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index15 = j * 64 + 15;
-			if(index15  < size0){
+			if(index15  <= size0){
 				float f1_15 = (u15[base_index0+j] + u15[base_index2+j]) * 0.125;
 				float f2_15 = (u14[base_index1+j] + u16[base_index1+j]) * 0.125;
 				float f3_15 = u15[base_index1+j] * 0.5;
@@ -2108,7 +2105,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index16 = j * 64 + 16;
-			if(index16  < size0){
+			if(index16  <= size0){
 				float f1_16 = (u16[base_index0+j] + u16[base_index2+j]) * 0.125;
 				float f2_16 = (u15[base_index1+j] + u17[base_index1+j]) * 0.125;
 				float f3_16 = u16[base_index1+j] * 0.5;
@@ -2117,7 +2114,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index17 = j * 64 + 17;
-			if(index17  < size0){
+			if(index17  <= size0){
 				float f1_17 = (u17[base_index0+j] + u17[base_index2+j]) * 0.125;
 				float f2_17 = (u16[base_index1+j] + u18[base_index1+j]) * 0.125;
 				float f3_17 = u17[base_index1+j] * 0.5;
@@ -2126,7 +2123,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index18 = j * 64 + 18;
-			if(index18  < size0){
+			if(index18  <= size0){
 				float f1_18 = (u18[base_index0+j] + u18[base_index2+j]) * 0.125;
 				float f2_18 = (u17[base_index1+j] + u19[base_index1+j]) * 0.125;
 				float f3_18 = u18[base_index1+j] * 0.5;
@@ -2135,7 +2132,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index19 = j * 64 + 19;
-			if(index19  < size0){
+			if(index19  <= size0){
 				float f1_19 = (u19[base_index0+j] + u19[base_index2+j]) * 0.125;
 				float f2_19 = (u18[base_index1+j] + u20[base_index1+j]) * 0.125;
 				float f3_19 = u19[base_index1+j] * 0.5;
@@ -2144,7 +2141,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index20 = j * 64 + 20;
-			if(index20  < size0){
+			if(index20  <= size0){
 				float f1_20 = (u20[base_index0+j] + u20[base_index2+j]) * 0.125;
 				float f2_20 = (u19[base_index1+j] + u21[base_index1+j]) * 0.125;
 				float f3_20 = u20[base_index1+j] * 0.5;
@@ -2153,7 +2150,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index21 = j * 64 + 21;
-			if(index21  < size0){
+			if(index21  <= size0){
 				float f1_21 = (u21[base_index0+j] + u21[base_index2+j]) * 0.125;
 				float f2_21 = (u20[base_index1+j] + u22[base_index1+j]) * 0.125;
 				float f3_21 = u21[base_index1+j] * 0.5;
@@ -2162,7 +2159,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index22 = j * 64 + 22;
-			if(index22  < size0){
+			if(index22  <= size0){
 				float f1_22 = (u22[base_index0+j] + u22[base_index2+j]) * 0.125;
 				float f2_22 = (u21[base_index1+j] + u23[base_index1+j]) * 0.125;
 				float f3_22 = u22[base_index1+j] * 0.5;
@@ -2171,7 +2168,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index23 = j * 64 + 23;
-			if(index23  < size0){
+			if(index23  <= size0){
 				float f1_23 = (u23[base_index0+j] + u23[base_index2+j]) * 0.125;
 				float f2_23 = (u22[base_index1+j] + u24[base_index1+j]) * 0.125;
 				float f3_23 = u23[base_index1+j] * 0.5;
@@ -2180,7 +2177,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index24 = j * 64 + 24;
-			if(index24  < size0){
+			if(index24  <= size0){
 				float f1_24 = (u24[base_index0+j] + u24[base_index2+j]) * 0.125;
 				float f2_24 = (u23[base_index1+j] + u25[base_index1+j]) * 0.125;
 				float f3_24 = u24[base_index1+j] * 0.5;
@@ -2189,7 +2186,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index25 = j * 64 + 25;
-			if(index25  < size0){
+			if(index25  <= size0){
 				float f1_25 = (u25[base_index0+j] + u25[base_index2+j]) * 0.125;
 				float f2_25 = (u24[base_index1+j] + u26[base_index1+j]) * 0.125;
 				float f3_25 = u25[base_index1+j] * 0.5;
@@ -2198,7 +2195,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index26 = j * 64 + 26;
-			if(index26  < size0){
+			if(index26  <= size0){
 				float f1_26 = (u26[base_index0+j] + u26[base_index2+j]) * 0.125;
 				float f2_26 = (u25[base_index1+j] + u27[base_index1+j]) * 0.125;
 				float f3_26 = u26[base_index1+j] * 0.5;
@@ -2207,7 +2204,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index27 = j * 64 + 27;
-			if(index27  < size0){
+			if(index27  <= size0){
 				float f1_27 = (u27[base_index0+j] + u27[base_index2+j]) * 0.125;
 				float f2_27 = (u26[base_index1+j] + u28[base_index1+j]) * 0.125;
 				float f3_27 = u27[base_index1+j] * 0.5;
@@ -2216,7 +2213,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index28 = j * 64 + 28;
-			if(index28  < size0){
+			if(index28  <= size0){
 				float f1_28 = (u28[base_index0+j] + u28[base_index2+j]) * 0.125;
 				float f2_28 = (u27[base_index1+j] + u29[base_index1+j]) * 0.125;
 				float f3_28 = u28[base_index1+j] * 0.5;
@@ -2225,7 +2222,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index29 = j * 64 + 29;
-			if(index29  < size0){
+			if(index29  <= size0){
 				float f1_29 = (u29[base_index0+j] + u29[base_index2+j]) * 0.125;
 				float f2_29 = (u28[base_index1+j] + u30[base_index1+j]) * 0.125;
 				float f3_29 = u29[base_index1+j] * 0.5;
@@ -2234,7 +2231,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index30 = j * 64 + 30;
-			if(index30  < size0){
+			if(index30  <= size0){
 				float f1_30 = (u30[base_index0+j] + u30[base_index2+j]) * 0.125;
 				float f2_30 = (u29[base_index1+j] + u31[base_index1+j]) * 0.125;
 				float f3_30 = u30[base_index1+j] * 0.5;
@@ -2243,7 +2240,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index31 = j * 64 + 31;
-			if(index31  < size0){
+			if(index31  <= size0){
 				float f1_31 = (u31[base_index0+j] + u31[base_index2+j]) * 0.125;
 				float f2_31 = (u30[base_index1+j] + u32[base_index1+j]) * 0.125;
 				float f3_31 = u31[base_index1+j] * 0.5;
@@ -2252,7 +2249,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index32 = j * 64 + 32;
-			if(index32  < size0){
+			if(index32  <= size0){
 				float f1_32 = (u32[base_index0+j] + u32[base_index2+j]) * 0.125;
 				float f2_32 = (u31[base_index1+j] + u33[base_index1+j]) * 0.125;
 				float f3_32 = u32[base_index1+j] * 0.5;
@@ -2261,7 +2258,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index33 = j * 64 + 33;
-			if(index33  < size0){
+			if(index33  <= size0){
 				float f1_33 = (u33[base_index0+j] + u33[base_index2+j]) * 0.125;
 				float f2_33 = (u32[base_index1+j] + u34[base_index1+j]) * 0.125;
 				float f3_33 = u33[base_index1+j] * 0.5;
@@ -2270,7 +2267,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index34 = j * 64 + 34;
-			if(index34  < size0){
+			if(index34  <= size0){
 				float f1_34 = (u34[base_index0+j] + u34[base_index2+j]) * 0.125;
 				float f2_34 = (u33[base_index1+j] + u35[base_index1+j]) * 0.125;
 				float f3_34 = u34[base_index1+j] * 0.5;
@@ -2279,7 +2276,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index35 = j * 64 + 35;
-			if(index35  < size0){
+			if(index35  <= size0){
 				float f1_35 = (u35[base_index0+j] + u35[base_index2+j]) * 0.125;
 				float f2_35 = (u34[base_index1+j] + u36[base_index1+j]) * 0.125;
 				float f3_35 = u35[base_index1+j] * 0.5;
@@ -2288,7 +2285,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index36 = j * 64 + 36;
-			if(index36  < size0){
+			if(index36  <= size0){
 				float f1_36 = (u36[base_index0+j] + u36[base_index2+j]) * 0.125;
 				float f2_36 = (u35[base_index1+j] + u37[base_index1+j]) * 0.125;
 				float f3_36 = u36[base_index1+j] * 0.5;
@@ -2297,7 +2294,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index37 = j * 64 + 37;
-			if(index37  < size0){
+			if(index37  <= size0){
 				float f1_37 = (u37[base_index0+j] + u37[base_index2+j]) * 0.125;
 				float f2_37 = (u36[base_index1+j] + u38[base_index1+j]) * 0.125;
 				float f3_37 = u37[base_index1+j] * 0.5;
@@ -2306,7 +2303,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index38 = j * 64 + 38;
-			if(index38  < size0){
+			if(index38  <= size0){
 				float f1_38 = (u38[base_index0+j] + u38[base_index2+j]) * 0.125;
 				float f2_38 = (u37[base_index1+j] + u39[base_index1+j]) * 0.125;
 				float f3_38 = u38[base_index1+j] * 0.5;
@@ -2315,7 +2312,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index39 = j * 64 + 39;
-			if(index39  < size0){
+			if(index39  <= size0){
 				float f1_39 = (u39[base_index0+j] + u39[base_index2+j]) * 0.125;
 				float f2_39 = (u38[base_index1+j] + u40[base_index1+j]) * 0.125;
 				float f3_39 = u39[base_index1+j] * 0.5;
@@ -2324,7 +2321,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index40 = j * 64 + 40;
-			if(index40  < size0){
+			if(index40  <= size0){
 				float f1_40 = (u40[base_index0+j] + u40[base_index2+j]) * 0.125;
 				float f2_40 = (u39[base_index1+j] + u41[base_index1+j]) * 0.125;
 				float f3_40 = u40[base_index1+j] * 0.5;
@@ -2333,7 +2330,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index41 = j * 64 + 41;
-			if(index41  < size0){
+			if(index41  <= size0){
 				float f1_41 = (u41[base_index0+j] + u41[base_index2+j]) * 0.125;
 				float f2_41 = (u40[base_index1+j] + u42[base_index1+j]) * 0.125;
 				float f3_41 = u41[base_index1+j] * 0.5;
@@ -2342,7 +2339,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index42 = j * 64 + 42;
-			if(index42  < size0){
+			if(index42  <= size0){
 				float f1_42 = (u42[base_index0+j] + u42[base_index2+j]) * 0.125;
 				float f2_42 = (u41[base_index1+j] + u43[base_index1+j]) * 0.125;
 				float f3_42 = u42[base_index1+j] * 0.5;
@@ -2351,7 +2348,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index43 = j * 64 + 43;
-			if(index43  < size0){
+			if(index43  <= size0){
 				float f1_43 = (u43[base_index0+j] + u43[base_index2+j]) * 0.125;
 				float f2_43 = (u42[base_index1+j] + u44[base_index1+j]) * 0.125;
 				float f3_43 = u43[base_index1+j] * 0.5;
@@ -2360,7 +2357,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index44 = j * 64 + 44;
-			if(index44  < size0){
+			if(index44  <= size0){
 				float f1_44 = (u44[base_index0+j] + u44[base_index2+j]) * 0.125;
 				float f2_44 = (u43[base_index1+j] + u45[base_index1+j]) * 0.125;
 				float f3_44 = u44[base_index1+j] * 0.5;
@@ -2369,7 +2366,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index45 = j * 64 + 45;
-			if(index45  < size0){
+			if(index45  <= size0){
 				float f1_45 = (u45[base_index0+j] + u45[base_index2+j]) * 0.125;
 				float f2_45 = (u44[base_index1+j] + u46[base_index1+j]) * 0.125;
 				float f3_45 = u45[base_index1+j] * 0.5;
@@ -2378,7 +2375,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index46 = j * 64 + 46;
-			if(index46  < size0){
+			if(index46  <= size0){
 				float f1_46 = (u46[base_index0+j] + u46[base_index2+j]) * 0.125;
 				float f2_46 = (u45[base_index1+j] + u47[base_index1+j]) * 0.125;
 				float f3_46 = u46[base_index1+j] * 0.5;
@@ -2387,7 +2384,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index47 = j * 64 + 47;
-			if(index47  < size0){
+			if(index47  <= size0){
 				float f1_47 = (u47[base_index0+j] + u47[base_index2+j]) * 0.125;
 				float f2_47 = (u46[base_index1+j] + u48[base_index1+j]) * 0.125;
 				float f3_47 = u47[base_index1+j] * 0.5;
@@ -2396,7 +2393,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index48 = j * 64 + 48;
-			if(index48  < size0){
+			if(index48  <= size0){
 				float f1_48 = (u48[base_index0+j] + u48[base_index2+j]) * 0.125;
 				float f2_48 = (u47[base_index1+j] + u49[base_index1+j]) * 0.125;
 				float f3_48 = u48[base_index1+j] * 0.5;
@@ -2405,7 +2402,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index49 = j * 64 + 49;
-			if(index49  < size0){
+			if(index49  <= size0){
 				float f1_49 = (u49[base_index0+j] + u49[base_index2+j]) * 0.125;
 				float f2_49 = (u48[base_index1+j] + u50[base_index1+j]) * 0.125;
 				float f3_49 = u49[base_index1+j] * 0.5;
@@ -2414,7 +2411,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index50 = j * 64 + 50;
-			if(index50  < size0){
+			if(index50  <= size0){
 				float f1_50 = (u50[base_index0+j] + u50[base_index2+j]) * 0.125;
 				float f2_50 = (u49[base_index1+j] + u51[base_index1+j]) * 0.125;
 				float f3_50 = u50[base_index1+j] * 0.5;
@@ -2423,7 +2420,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index51 = j * 64 + 51;
-			if(index51  < size0){
+			if(index51  <= size0){
 				float f1_51 = (u51[base_index0+j] + u51[base_index2+j]) * 0.125;
 				float f2_51 = (u50[base_index1+j] + u52[base_index1+j]) * 0.125;
 				float f3_51 = u51[base_index1+j] * 0.5;
@@ -2432,7 +2429,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index52 = j * 64 + 52;
-			if(index52  < size0){
+			if(index52  <= size0){
 				float f1_52 = (u52[base_index0+j] + u52[base_index2+j]) * 0.125;
 				float f2_52 = (u51[base_index1+j] + u53[base_index1+j]) * 0.125;
 				float f3_52 = u52[base_index1+j] * 0.5;
@@ -2441,7 +2438,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index53 = j * 64 + 53;
-			if(index53  < size0){
+			if(index53  <= size0){
 				float f1_53 = (u53[base_index0+j] + u53[base_index2+j]) * 0.125;
 				float f2_53 = (u52[base_index1+j] + u54[base_index1+j]) * 0.125;
 				float f3_53 = u53[base_index1+j] * 0.5;
@@ -2450,7 +2447,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index54 = j * 64 + 54;
-			if(index54  < size0){
+			if(index54  <= size0){
 				float f1_54 = (u54[base_index0+j] + u54[base_index2+j]) * 0.125;
 				float f2_54 = (u53[base_index1+j] + u55[base_index1+j]) * 0.125;
 				float f3_54 = u54[base_index1+j] * 0.5;
@@ -2459,7 +2456,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index55 = j * 64 + 55;
-			if(index55  < size0){
+			if(index55  <= size0){
 				float f1_55 = (u55[base_index0+j] + u55[base_index2+j]) * 0.125;
 				float f2_55 = (u54[base_index1+j] + u56[base_index1+j]) * 0.125;
 				float f3_55 = u55[base_index1+j] * 0.5;
@@ -2468,7 +2465,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index56 = j * 64 + 56;
-			if(index56  < size0){
+			if(index56  <= size0){
 				float f1_56 = (u56[base_index0+j] + u56[base_index2+j]) * 0.125;
 				float f2_56 = (u55[base_index1+j] + u57[base_index1+j]) * 0.125;
 				float f3_56 = u56[base_index1+j] * 0.5;
@@ -2477,7 +2474,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index57 = j * 64 + 57;
-			if(index57  < size0){
+			if(index57  <= size0){
 				float f1_57 = (u57[base_index0+j] + u57[base_index2+j]) * 0.125;
 				float f2_57 = (u56[base_index1+j] + u58[base_index1+j]) * 0.125;
 				float f3_57 = u57[base_index1+j] * 0.5;
@@ -2486,7 +2483,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index58 = j * 64 + 58;
-			if(index58  < size0){
+			if(index58  <= size0){
 				float f1_58 = (u58[base_index0+j] + u58[base_index2+j]) * 0.125;
 				float f2_58 = (u57[base_index1+j] + u59[base_index1+j]) * 0.125;
 				float f3_58 = u58[base_index1+j] * 0.5;
@@ -2495,7 +2492,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index59 = j * 64 + 59;
-			if(index59  < size0){
+			if(index59  <= size0){
 				float f1_59 = (u59[base_index0+j] + u59[base_index2+j]) * 0.125;
 				float f2_59 = (u58[base_index1+j] + u60[base_index1+j]) * 0.125;
 				float f3_59 = u59[base_index1+j] * 0.5;
@@ -2504,7 +2501,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index60 = j * 64 + 60;
-			if(index60  < size0){
+			if(index60  <= size0){
 				float f1_60 = (u60[base_index0+j] + u60[base_index2+j]) * 0.125;
 				float f2_60 = (u59[base_index1+j] + u61[base_index1+j]) * 0.125;
 				float f3_60 = u60[base_index1+j] * 0.5;
@@ -2513,7 +2510,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index61 = j * 64 + 61;
-			if(index61  < size0){
+			if(index61  <= size0){
 				float f1_61 = (u61[base_index0+j] + u61[base_index2+j]) * 0.125;
 				float f2_61 = (u60[base_index1+j] + u62[base_index1+j]) * 0.125;
 				float f3_61 = u61[base_index1+j] * 0.5;
@@ -2522,7 +2519,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index62 = j * 64 + 62;
-			if(index62  < size0){
+			if(index62  <= size0){
 				float f1_62 = (u62[base_index0+j] + u62[base_index2+j]) * 0.125;
 				float f2_62 = (u61[base_index1+j] + u63[base_index1+j]) * 0.125;
 				float f3_62 = u62[base_index1+j] * 0.5;
@@ -2531,7 +2528,7 @@ static void ops_poisson_kernel_stencil(
 			}
 
 			int index63 = j * 64 + 0;
-			if(index63  < size0){
+			if(index63  <= size0){
 				float f1_63 = (u63[base_index0+j] + u63[base_index2+j]) * 0.125;
 				float f2_63 = (u0[base_index1+j+1] + u62[base_index1+j]) * 0.125;
 				float f3_63 = u63[base_index1+j] * 0.5;
@@ -3505,145 +3502,145 @@ __kernel void ops_poisson_kernel(
 	local float ref_63[SINGLE_RAM_SIZE];
 
 
-	// ops_poisson_kernel_populate(
-	// 			populate_arg0,
-	// 			populate_arg1,
-	// 			u0,
-	// 			u1,
-	// 			u2,
-	// 			u3,
-	// 			u4,
-	// 			u5,
-	// 			u6,
-	// 			u7,
-	// 			u8,
-	// 			u9,
-	// 			u10,
-	// 			u11,
-	// 			u12,
-	// 			u13,
-	// 			u14,
-	// 			u15,
-	// 			u16,
-	// 			u17,
-	// 			u18,
-	// 			u19,
-	// 			u20,
-	// 			u21,
-	// 			u22,
-	// 			u23,
-	// 			u24,
-	// 			u25,
-	// 			u26,
-	// 			u27,
-	// 			u28,
-	// 			u29,
-	// 			u30,
-	// 			u31,
-	// 			u32,
-	// 			u33,
-	// 			u34,
-	// 			u35,
-	// 			u36,
-	// 			u37,
-	// 			u38,
-	// 			u39,
-	// 			u40,
-	// 			u41,
-	// 			u42,
-	// 			u43,
-	// 			u44,
-	// 			u45,
-	// 			u46,
-	// 			u47,
-	// 			u48,
-	// 			u49,
-	// 			u50,
-	// 			u51,
-	// 			u52,
-	// 			u53,
-	// 			u54,
-	// 			u55,
-	// 			u56,
-	// 			u57,
-	// 			u58,
-	// 			u59,
-	// 			u60,
-	// 			u61,
-	// 			u62,
-	// 			u63,
-	// 			ref_0,
-	// 			ref_1,
-	// 			ref_2,
-	// 			ref_3,
-	// 			ref_4,
-	// 			ref_5,
-	// 			ref_6,
-	// 			ref_7,
-	// 			ref_8,
-	// 			ref_9,
-	// 			ref_10,
-	// 			ref_11,
-	// 			ref_12,
-	// 			ref_13,
-	// 			ref_14,
-	// 			ref_15,
-	// 			ref_16,
-	// 			ref_17,
-	// 			ref_18,
-	// 			ref_19,
-	// 			ref_20,
-	// 			ref_21,
-	// 			ref_22,
-	// 			ref_23,
-	// 			ref_24,
-	// 			ref_25,
-	// 			ref_26,
-	// 			ref_27,
-	// 			ref_28,
-	// 			ref_29,
-	// 			ref_30,
-	// 			ref_31,
-	// 			ref_32,
-	// 			ref_33,
-	// 			ref_34,
-	// 			ref_35,
-	// 			ref_36,
-	// 			ref_37,
-	// 			ref_38,
-	// 			ref_39,
-	// 			ref_40,
-	// 			ref_41,
-	// 			ref_42,
-	// 			ref_43,
-	// 			ref_44,
-	// 			ref_45,
-	// 			ref_46,
-	// 			ref_47,
-	// 			ref_48,
-	// 			ref_49,
-	// 			ref_50,
-	// 			ref_51,
-	// 			ref_52,
-	// 			ref_53,
-	// 			ref_54,
-	// 			ref_55,
-	// 			ref_56,
-	// 			ref_57,
-	// 			ref_58,
-	// 			ref_59,
-	// 			ref_60,
-	// 			ref_61,
-	// 			ref_62,
-	// 			ref_63,
-	// 			populate_dx,
-	// 			populate_dy,
-	// 			0,
-	// 			0,
-	// 			0,
-	// 			populate_arg_idx0, populate_arg_idx1,
-	// 			size0+2,
-	// 			size1+2);;
+	 ops_poisson_kernel_populate(
+	 			populate_arg0,
+	 			populate_arg1,
+	 			u0,
+	 			u1,
+	 			u2,
+	 			u3,
+	 			u4,
+	 			u5,
+	 			u6,
+	 			u7,
+	 			u8,
+	 			u9,
+	 			u10,
+	 			u11,
+	 			u12,
+	 			u13,
+	 			u14,
+	 			u15,
+	 			u16,
+	 			u17,
+	 			u18,
+	 			u19,
+	 			u20,
+	 			u21,
+	 			u22,
+	 			u23,
+	 			u24,
+	 			u25,
+	 			u26,
+	 			u27,
+	 			u28,
+	 			u29,
+	 			u30,
+	 			u31,
+	 			u32,
+	 			u33,
+	 			u34,
+	 			u35,
+	 			u36,
+	 			u37,
+	 			u38,
+	 			u39,
+	 			u40,
+	 			u41,
+	 			u42,
+	 			u43,
+	 			u44,
+	 			u45,
+	 			u46,
+	 			u47,
+	 			u48,
+	 			u49,
+	 			u50,
+	 			u51,
+	 			u52,
+	 			u53,
+	 			u54,
+	 			u55,
+	 			u56,
+	 			u57,
+	 			u58,
+	 			u59,
+	 			u60,
+	 			u61,
+	 			u62,
+	 			u63,
+	 			ref_0,
+	 			ref_1,
+	 			ref_2,
+	 			ref_3,
+	 			ref_4,
+	 			ref_5,
+	 			ref_6,
+	 			ref_7,
+	 			ref_8,
+	 			ref_9,
+	 			ref_10,
+	 			ref_11,
+	 			ref_12,
+	 			ref_13,
+	 			ref_14,
+	 			ref_15,
+	 			ref_16,
+	 			ref_17,
+	 			ref_18,
+	 			ref_19,
+	 			ref_20,
+	 			ref_21,
+	 			ref_22,
+	 			ref_23,
+	 			ref_24,
+	 			ref_25,
+	 			ref_26,
+	 			ref_27,
+	 			ref_28,
+	 			ref_29,
+	 			ref_30,
+	 			ref_31,
+	 			ref_32,
+	 			ref_33,
+	 			ref_34,
+	 			ref_35,
+	 			ref_36,
+	 			ref_37,
+	 			ref_38,
+	 			ref_39,
+	 			ref_40,
+	 			ref_41,
+	 			ref_42,
+	 			ref_43,
+	 			ref_44,
+	 			ref_45,
+	 			ref_46,
+	 			ref_47,
+	 			ref_48,
+	 			ref_49,
+	 			ref_50,
+	 			ref_51,
+	 			ref_52,
+	 			ref_53,
+	 			ref_54,
+	 			ref_55,
+	 			ref_56,
+	 			ref_57,
+	 			ref_58,
+	 			ref_59,
+	 			ref_60,
+	 			ref_61,
+	 			ref_62,
+	 			ref_63,
+	 			populate_dx,
+	 			populate_dy,
+	 			0,
+	 			0,
+	 			0,
+	 			populate_arg_idx0, populate_arg_idx1,
+	 			size0+2,
+	 			size1+2);
 
 	//print_grid(U, size0+2,size1+2);
 
