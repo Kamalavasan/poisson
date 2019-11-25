@@ -1197,1030 +1197,614 @@ static void ops_poisson_kernel_populate(
 		__attribute__((opencl_unroll_hint(P_FACTOR)))
 		for(int j = 0; j < end_loc ; j++){
 			//------------COMPUTE UNIT 0  ----------------
-			float f3_0_3;
-			float f5_0_3;
+			float f3_0_3[4];
+			float f5_0_3[4];
+			int index_0_3[4];
 			double x_0_3;
 			double y_0_3;
-			int index0 = j * 64 + 0;
-			double arg_idx_0 = arg_idx0 + index0;
+			__attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < 3; k++){
+				index_0_3[k] = j * 64 + k+0;
+				double arg_idx_0_3 = arg_idx0 + index_0_3[k];
 
-			x_0_3  = dx * (double)(arg_idx_0 +arg0);
-			y_0_3 = dy * (double)(arg_idx[1] +arg1);
+				x_0_3  = dx * (double)(arg_idx_0_3 +arg0);
+				y_0_3 = dy * (double)(arg_idx[1] +arg1);
 
-			f3_0_3 = myfun(native_sin(M_PI*x_0_3),native_cos(2.0*M_PI*y_0_3))-1.0;
-			f5_0_3 = native_sin(M_PI*x_0_3)*native_cos(2.0*M_PI*y_0_3);
+				f3_0_3[k] = myfun(native_sin(M_PI*x_0_3),native_cos(2.0*M_PI*y_0_3))-1.0;
+				f5_0_3[k] = native_sin(M_PI*x_0_3)*native_cos(2.0*M_PI*y_0_3);
 
-			if(index0  < size0){
-				u0[base_index +j] =f3_0_3;
-				ref_0[base_index +j] =f5_0_3;
+			}
+			if(index_0_3[0]  < size0){
+				u0[base_index +j] =f3_0_3[0];
+				ref_0[base_index +j] =f5_0_3[0];
+			}
+
+			if(index_0_3[1]  < size0){
+				u1[base_index +j] =f3_0_3[1];
+				ref_1[base_index +j] =f5_0_3[1];
+			}
+
+			if(index_0_3[2]  < size0){
+				u2[base_index +j] =f3_0_3[2];
+				ref_2[base_index +j] =f5_0_3[2];
+			}
+
+			if(index_0_3[3]  < size0){
+				u3[base_index +j] =f3_0_3[3];
+				ref_3[base_index +j] =f5_0_3[3];
 			}
 
 			//------------COMPUTE UNIT 1  ----------------
-			int index1 = j * 64 + 1;
-			double arg_idx_1 = arg_idx0 + index1;
+			float f3_4_7[4];
+			float f5_4_7[4];
+			int index_4_7[4];
+			double x_4_7;
+			double y_4_7;
+			__attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < 3; k++){
+				index_4_7[k] = j * 64 + k+4;
+				double arg_idx_4_7 = arg_idx0 + index_4_7[k];
 
-			x_0_3  = dx * (double)(arg_idx_1 +arg0);
-			y_0_3 = dy * (double)(arg_idx[1] +arg1);
+				x_4_7  = dx * (double)(arg_idx_4_7 +arg0);
+				y_4_7 = dy * (double)(arg_idx[1] +arg1);
 
-			f3_0_3 = myfun(native_sin(M_PI*x_0_3),native_cos(2.0*M_PI*y_0_3))-1.0;
-			f5_0_3 = native_sin(M_PI*x_0_3)*native_cos(2.0*M_PI*y_0_3);
+				f3_4_7[k] = myfun(native_sin(M_PI*x_4_7),native_cos(2.0*M_PI*y_4_7))-1.0;
+				f5_4_7[k] = native_sin(M_PI*x_4_7)*native_cos(2.0*M_PI*y_4_7);
 
-			if(index1  < size0){
-				u1[base_index +j] =f3_0_3;
-				ref_1[base_index +j] =f5_0_3;
+			}
+			if(index_4_7[0]  < size0){
+				u4[base_index +j] =f3_4_7[0];
+				ref_4[base_index +j] =f5_4_7[0];
+			}
+
+			if(index_4_7[1]  < size0){
+				u5[base_index +j] =f3_4_7[1];
+				ref_5[base_index +j] =f5_4_7[1];
+			}
+
+			if(index_4_7[2]  < size0){
+				u6[base_index +j] =f3_4_7[2];
+				ref_6[base_index +j] =f5_4_7[2];
+			}
+
+			if(index_4_7[3]  < size0){
+				u7[base_index +j] =f3_4_7[3];
+				ref_7[base_index +j] =f5_4_7[3];
 			}
 
 			//------------COMPUTE UNIT 2  ----------------
-			int index2 = j * 64 + 2;
-			double arg_idx_2 = arg_idx0 + index2;
+			float f3_8_11[4];
+			float f5_8_11[4];
+			int index_8_11[4];
+			double x_8_11;
+			double y_8_11;
+			__attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < 3; k++){
+				index_8_11[k] = j * 64 + k+8;
+				double arg_idx_8_11 = arg_idx0 + index_8_11[k];
 
-			x_0_3  = dx * (double)(arg_idx_2 +arg0);
-			y_0_3 = dy * (double)(arg_idx[1] +arg1);
+				x_8_11  = dx * (double)(arg_idx_8_11 +arg0);
+				y_8_11 = dy * (double)(arg_idx[1] +arg1);
 
-			f3_0_3 = myfun(native_sin(M_PI*x_0_3),native_cos(2.0*M_PI*y_0_3))-1.0;
-			f5_0_3 = native_sin(M_PI*x_0_3)*native_cos(2.0*M_PI*y_0_3);
+				f3_8_11[k] = myfun(native_sin(M_PI*x_8_11),native_cos(2.0*M_PI*y_8_11))-1.0;
+				f5_8_11[k] = native_sin(M_PI*x_8_11)*native_cos(2.0*M_PI*y_8_11);
 
-			if(index2  < size0){
-				u2[base_index +j] =f3_0_3;
-				ref_2[base_index +j] =f5_0_3;
+			}
+			if(index_8_11[0]  < size0){
+				u8[base_index +j] =f3_8_11[0];
+				ref_8[base_index +j] =f5_8_11[0];
+			}
+
+			if(index_8_11[1]  < size0){
+				u9[base_index +j] =f3_8_11[1];
+				ref_9[base_index +j] =f5_8_11[1];
+			}
+
+			if(index_8_11[2]  < size0){
+				u10[base_index +j] =f3_8_11[2];
+				ref_10[base_index +j] =f5_8_11[2];
+			}
+
+			if(index_8_11[3]  < size0){
+				u11[base_index +j] =f3_8_11[3];
+				ref_11[base_index +j] =f5_8_11[3];
 			}
 
 			//------------COMPUTE UNIT 3  ----------------
-			int index3 = j * 64 + 3;
-			double arg_idx_3 = arg_idx0 + index3;
+			float f3_12_15[4];
+			float f5_12_15[4];
+			int index_12_15[4];
+			double x_12_15;
+			double y_12_15;
+			__attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < 3; k++){
+				index_12_15[k] = j * 64 + k+12;
+				double arg_idx_12_15 = arg_idx0 + index_12_15[k];
 
-			x_0_3  = dx * (double)(arg_idx_3 +arg0);
-			y_0_3 = dy * (double)(arg_idx[1] +arg1);
+				x_12_15  = dx * (double)(arg_idx_12_15 +arg0);
+				y_12_15 = dy * (double)(arg_idx[1] +arg1);
 
-			f3_0_3 = myfun(native_sin(M_PI*x_0_3),native_cos(2.0*M_PI*y_0_3))-1.0;
-			f5_0_3 = native_sin(M_PI*x_0_3)*native_cos(2.0*M_PI*y_0_3);
+				f3_12_15[k] = myfun(native_sin(M_PI*x_12_15),native_cos(2.0*M_PI*y_12_15))-1.0;
+				f5_12_15[k] = native_sin(M_PI*x_12_15)*native_cos(2.0*M_PI*y_12_15);
 
-			if(index3  < size0){
-				u3[base_index +j] =f3_0_3;
-				ref_3[base_index +j] =f5_0_3;
+			}
+			if(index_12_15[0]  < size0){
+				u12[base_index +j] =f3_12_15[0];
+				ref_12[base_index +j] =f5_12_15[0];
+			}
+
+			if(index_12_15[1]  < size0){
+				u13[base_index +j] =f3_12_15[1];
+				ref_13[base_index +j] =f5_12_15[1];
+			}
+
+			if(index_12_15[2]  < size0){
+				u14[base_index +j] =f3_12_15[2];
+				ref_14[base_index +j] =f5_12_15[2];
+			}
+
+			if(index_12_15[3]  < size0){
+				u15[base_index +j] =f3_12_15[3];
+				ref_15[base_index +j] =f5_12_15[3];
 			}
 
 			//------------COMPUTE UNIT 4  ----------------
-			float f3_4_7;
-			float f5_4_7;
-			double x_4_7;
-			double y_4_7;
-			int index4 = j * 64 + 4;
-			double arg_idx_4 = arg_idx0 + index4;
+			float f3_16_19[4];
+			float f5_16_19[4];
+			int index_16_19[4];
+			double x_16_19;
+			double y_16_19;
+			__attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < 3; k++){
+				index_16_19[k] = j * 64 + k+16;
+				double arg_idx_16_19 = arg_idx0 + index_16_19[k];
 
-			x_4_7  = dx * (double)(arg_idx_4 +arg0);
-			y_4_7 = dy * (double)(arg_idx[1] +arg1);
+				x_16_19  = dx * (double)(arg_idx_16_19 +arg0);
+				y_16_19 = dy * (double)(arg_idx[1] +arg1);
 
-			f3_4_7 = myfun(native_sin(M_PI*x_4_7),native_cos(2.0*M_PI*y_4_7))-1.0;
-			f5_4_7 = native_sin(M_PI*x_4_7)*native_cos(2.0*M_PI*y_4_7);
+				f3_16_19[k] = myfun(native_sin(M_PI*x_16_19),native_cos(2.0*M_PI*y_16_19))-1.0;
+				f5_16_19[k] = native_sin(M_PI*x_16_19)*native_cos(2.0*M_PI*y_16_19);
 
-			if(index4  < size0){
-				u4[base_index +j] =f3_4_7;
-				ref_4[base_index +j] =f5_4_7;
+			}
+			if(index_16_19[0]  < size0){
+				u16[base_index +j] =f3_16_19[0];
+				ref_16[base_index +j] =f5_16_19[0];
+			}
+
+			if(index_16_19[1]  < size0){
+				u17[base_index +j] =f3_16_19[1];
+				ref_17[base_index +j] =f5_16_19[1];
+			}
+
+			if(index_16_19[2]  < size0){
+				u18[base_index +j] =f3_16_19[2];
+				ref_18[base_index +j] =f5_16_19[2];
+			}
+
+			if(index_16_19[3]  < size0){
+				u19[base_index +j] =f3_16_19[3];
+				ref_19[base_index +j] =f5_16_19[3];
 			}
 
 			//------------COMPUTE UNIT 5  ----------------
-			int index5 = j * 64 + 5;
-			double arg_idx_5 = arg_idx0 + index5;
+			float f3_20_23[4];
+			float f5_20_23[4];
+			int index_20_23[4];
+			double x_20_23;
+			double y_20_23;
+			__attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < 3; k++){
+				index_20_23[k] = j * 64 + k+20;
+				double arg_idx_20_23 = arg_idx0 + index_20_23[k];
 
-			x_4_7  = dx * (double)(arg_idx_5 +arg0);
-			y_4_7 = dy * (double)(arg_idx[1] +arg1);
+				x_20_23  = dx * (double)(arg_idx_20_23 +arg0);
+				y_20_23 = dy * (double)(arg_idx[1] +arg1);
 
-			f3_4_7 = myfun(native_sin(M_PI*x_4_7),native_cos(2.0*M_PI*y_4_7))-1.0;
-			f5_4_7 = native_sin(M_PI*x_4_7)*native_cos(2.0*M_PI*y_4_7);
+				f3_20_23[k] = myfun(native_sin(M_PI*x_20_23),native_cos(2.0*M_PI*y_20_23))-1.0;
+				f5_20_23[k] = native_sin(M_PI*x_20_23)*native_cos(2.0*M_PI*y_20_23);
 
-			if(index5  < size0){
-				u5[base_index +j] =f3_4_7;
-				ref_5[base_index +j] =f5_4_7;
+			}
+			if(index_20_23[0]  < size0){
+				u20[base_index +j] =f3_20_23[0];
+				ref_20[base_index +j] =f5_20_23[0];
+			}
+
+			if(index_20_23[1]  < size0){
+				u21[base_index +j] =f3_20_23[1];
+				ref_21[base_index +j] =f5_20_23[1];
+			}
+
+			if(index_20_23[2]  < size0){
+				u22[base_index +j] =f3_20_23[2];
+				ref_22[base_index +j] =f5_20_23[2];
+			}
+
+			if(index_20_23[3]  < size0){
+				u23[base_index +j] =f3_20_23[3];
+				ref_23[base_index +j] =f5_20_23[3];
 			}
 
 			//------------COMPUTE UNIT 6  ----------------
-			int index6 = j * 64 + 6;
-			double arg_idx_6 = arg_idx0 + index6;
+			float f3_24_27[4];
+			float f5_24_27[4];
+			int index_24_27[4];
+			double x_24_27;
+			double y_24_27;
+			__attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < 3; k++){
+				index_24_27[k] = j * 64 + k+24;
+				double arg_idx_24_27 = arg_idx0 + index_24_27[k];
 
-			x_4_7  = dx * (double)(arg_idx_6 +arg0);
-			y_4_7 = dy * (double)(arg_idx[1] +arg1);
+				x_24_27  = dx * (double)(arg_idx_24_27 +arg0);
+				y_24_27 = dy * (double)(arg_idx[1] +arg1);
 
-			f3_4_7 = myfun(native_sin(M_PI*x_4_7),native_cos(2.0*M_PI*y_4_7))-1.0;
-			f5_4_7 = native_sin(M_PI*x_4_7)*native_cos(2.0*M_PI*y_4_7);
+				f3_24_27[k] = myfun(native_sin(M_PI*x_24_27),native_cos(2.0*M_PI*y_24_27))-1.0;
+				f5_24_27[k] = native_sin(M_PI*x_24_27)*native_cos(2.0*M_PI*y_24_27);
 
-			if(index6  < size0){
-				u6[base_index +j] =f3_4_7;
-				ref_6[base_index +j] =f5_4_7;
+			}
+			if(index_24_27[0]  < size0){
+				u24[base_index +j] =f3_24_27[0];
+				ref_24[base_index +j] =f5_24_27[0];
+			}
+
+			if(index_24_27[1]  < size0){
+				u25[base_index +j] =f3_24_27[1];
+				ref_25[base_index +j] =f5_24_27[1];
+			}
+
+			if(index_24_27[2]  < size0){
+				u26[base_index +j] =f3_24_27[2];
+				ref_26[base_index +j] =f5_24_27[2];
+			}
+
+			if(index_24_27[3]  < size0){
+				u27[base_index +j] =f3_24_27[3];
+				ref_27[base_index +j] =f5_24_27[3];
 			}
 
 			//------------COMPUTE UNIT 7  ----------------
-			int index7 = j * 64 + 7;
-			double arg_idx_7 = arg_idx0 + index7;
+			float f3_28_31[4];
+			float f5_28_31[4];
+			int index_28_31[4];
+			double x_28_31;
+			double y_28_31;
+			__attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < 3; k++){
+				index_28_31[k] = j * 64 + k+28;
+				double arg_idx_28_31 = arg_idx0 + index_28_31[k];
 
-			x_4_7  = dx * (double)(arg_idx_7 +arg0);
-			y_4_7 = dy * (double)(arg_idx[1] +arg1);
+				x_28_31  = dx * (double)(arg_idx_28_31 +arg0);
+				y_28_31 = dy * (double)(arg_idx[1] +arg1);
 
-			f3_4_7 = myfun(native_sin(M_PI*x_4_7),native_cos(2.0*M_PI*y_4_7))-1.0;
-			f5_4_7 = native_sin(M_PI*x_4_7)*native_cos(2.0*M_PI*y_4_7);
+				f3_28_31[k] = myfun(native_sin(M_PI*x_28_31),native_cos(2.0*M_PI*y_28_31))-1.0;
+				f5_28_31[k] = native_sin(M_PI*x_28_31)*native_cos(2.0*M_PI*y_28_31);
 
-			if(index7  < size0){
-				u7[base_index +j] =f3_4_7;
-				ref_7[base_index +j] =f5_4_7;
+			}
+			if(index_28_31[0]  < size0){
+				u28[base_index +j] =f3_28_31[0];
+				ref_28[base_index +j] =f5_28_31[0];
+			}
+
+			if(index_28_31[1]  < size0){
+				u29[base_index +j] =f3_28_31[1];
+				ref_29[base_index +j] =f5_28_31[1];
+			}
+
+			if(index_28_31[2]  < size0){
+				u30[base_index +j] =f3_28_31[2];
+				ref_30[base_index +j] =f5_28_31[2];
+			}
+
+			if(index_28_31[3]  < size0){
+				u31[base_index +j] =f3_28_31[3];
+				ref_31[base_index +j] =f5_28_31[3];
 			}
 
 			//------------COMPUTE UNIT 8  ----------------
-			float f3_8_11;
-			float f5_8_11;
-			double x_8_11;
-			double y_8_11;
-			int index8 = j * 64 + 8;
-			double arg_idx_8 = arg_idx0 + index8;
+			float f3_32_35[4];
+			float f5_32_35[4];
+			int index_32_35[4];
+			double x_32_35;
+			double y_32_35;
+			__attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < 3; k++){
+				index_32_35[k] = j * 64 + k+32;
+				double arg_idx_32_35 = arg_idx0 + index_32_35[k];
 
-			x_8_11  = dx * (double)(arg_idx_8 +arg0);
-			y_8_11 = dy * (double)(arg_idx[1] +arg1);
+				x_32_35  = dx * (double)(arg_idx_32_35 +arg0);
+				y_32_35 = dy * (double)(arg_idx[1] +arg1);
 
-			f3_8_11 = myfun(native_sin(M_PI*x_8_11),native_cos(2.0*M_PI*y_8_11))-1.0;
-			f5_8_11 = native_sin(M_PI*x_8_11)*native_cos(2.0*M_PI*y_8_11);
+				f3_32_35[k] = myfun(native_sin(M_PI*x_32_35),native_cos(2.0*M_PI*y_32_35))-1.0;
+				f5_32_35[k] = native_sin(M_PI*x_32_35)*native_cos(2.0*M_PI*y_32_35);
 
-			if(index8  < size0){
-				u8[base_index +j] =f3_8_11;
-				ref_8[base_index +j] =f5_8_11;
+			}
+			if(index_32_35[0]  < size0){
+				u32[base_index +j] =f3_32_35[0];
+				ref_32[base_index +j] =f5_32_35[0];
+			}
+
+			if(index_32_35[1]  < size0){
+				u33[base_index +j] =f3_32_35[1];
+				ref_33[base_index +j] =f5_32_35[1];
+			}
+
+			if(index_32_35[2]  < size0){
+				u34[base_index +j] =f3_32_35[2];
+				ref_34[base_index +j] =f5_32_35[2];
+			}
+
+			if(index_32_35[3]  < size0){
+				u35[base_index +j] =f3_32_35[3];
+				ref_35[base_index +j] =f5_32_35[3];
 			}
 
 			//------------COMPUTE UNIT 9  ----------------
-			int index9 = j * 64 + 9;
-			double arg_idx_9 = arg_idx0 + index9;
+			float f3_36_39[4];
+			float f5_36_39[4];
+			int index_36_39[4];
+			double x_36_39;
+			double y_36_39;
+			__attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < 3; k++){
+				index_36_39[k] = j * 64 + k+36;
+				double arg_idx_36_39 = arg_idx0 + index_36_39[k];
 
-			x_8_11  = dx * (double)(arg_idx_9 +arg0);
-			y_8_11 = dy * (double)(arg_idx[1] +arg1);
+				x_36_39  = dx * (double)(arg_idx_36_39 +arg0);
+				y_36_39 = dy * (double)(arg_idx[1] +arg1);
 
-			f3_8_11 = myfun(native_sin(M_PI*x_8_11),native_cos(2.0*M_PI*y_8_11))-1.0;
-			f5_8_11 = native_sin(M_PI*x_8_11)*native_cos(2.0*M_PI*y_8_11);
+				f3_36_39[k] = myfun(native_sin(M_PI*x_36_39),native_cos(2.0*M_PI*y_36_39))-1.0;
+				f5_36_39[k] = native_sin(M_PI*x_36_39)*native_cos(2.0*M_PI*y_36_39);
 
-			if(index9  < size0){
-				u9[base_index +j] =f3_8_11;
-				ref_9[base_index +j] =f5_8_11;
+			}
+			if(index_36_39[0]  < size0){
+				u36[base_index +j] =f3_36_39[0];
+				ref_36[base_index +j] =f5_36_39[0];
+			}
+
+			if(index_36_39[1]  < size0){
+				u37[base_index +j] =f3_36_39[1];
+				ref_37[base_index +j] =f5_36_39[1];
+			}
+
+			if(index_36_39[2]  < size0){
+				u38[base_index +j] =f3_36_39[2];
+				ref_38[base_index +j] =f5_36_39[2];
+			}
+
+			if(index_36_39[3]  < size0){
+				u39[base_index +j] =f3_36_39[3];
+				ref_39[base_index +j] =f5_36_39[3];
 			}
 
 			//------------COMPUTE UNIT 10  ----------------
-			int index10 = j * 64 + 10;
-			double arg_idx_10 = arg_idx0 + index10;
+			float f3_40_43[4];
+			float f5_40_43[4];
+			int index_40_43[4];
+			double x_40_43;
+			double y_40_43;
+			__attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < 3; k++){
+				index_40_43[k] = j * 64 + k+40;
+				double arg_idx_40_43 = arg_idx0 + index_40_43[k];
 
-			x_8_11  = dx * (double)(arg_idx_10 +arg0);
-			y_8_11 = dy * (double)(arg_idx[1] +arg1);
+				x_40_43  = dx * (double)(arg_idx_40_43 +arg0);
+				y_40_43 = dy * (double)(arg_idx[1] +arg1);
 
-			f3_8_11 = myfun(native_sin(M_PI*x_8_11),native_cos(2.0*M_PI*y_8_11))-1.0;
-			f5_8_11 = native_sin(M_PI*x_8_11)*native_cos(2.0*M_PI*y_8_11);
+				f3_40_43[k] = myfun(native_sin(M_PI*x_40_43),native_cos(2.0*M_PI*y_40_43))-1.0;
+				f5_40_43[k] = native_sin(M_PI*x_40_43)*native_cos(2.0*M_PI*y_40_43);
 
-			if(index10  < size0){
-				u10[base_index +j] =f3_8_11;
-				ref_10[base_index +j] =f5_8_11;
+			}
+			if(index_40_43[0]  < size0){
+				u40[base_index +j] =f3_40_43[0];
+				ref_40[base_index +j] =f5_40_43[0];
+			}
+
+			if(index_40_43[1]  < size0){
+				u41[base_index +j] =f3_40_43[1];
+				ref_41[base_index +j] =f5_40_43[1];
+			}
+
+			if(index_40_43[2]  < size0){
+				u42[base_index +j] =f3_40_43[2];
+				ref_42[base_index +j] =f5_40_43[2];
+			}
+
+			if(index_40_43[3]  < size0){
+				u43[base_index +j] =f3_40_43[3];
+				ref_43[base_index +j] =f5_40_43[3];
 			}
 
 			//------------COMPUTE UNIT 11  ----------------
-			int index11 = j * 64 + 11;
-			double arg_idx_11 = arg_idx0 + index11;
+			float f3_44_47[4];
+			float f5_44_47[4];
+			int index_44_47[4];
+			double x_44_47;
+			double y_44_47;
+			__attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < 3; k++){
+				index_44_47[k] = j * 64 + k+44;
+				double arg_idx_44_47 = arg_idx0 + index_44_47[k];
 
-			x_8_11  = dx * (double)(arg_idx_11 +arg0);
-			y_8_11 = dy * (double)(arg_idx[1] +arg1);
+				x_44_47  = dx * (double)(arg_idx_44_47 +arg0);
+				y_44_47 = dy * (double)(arg_idx[1] +arg1);
 
-			f3_8_11 = myfun(native_sin(M_PI*x_8_11),native_cos(2.0*M_PI*y_8_11))-1.0;
-			f5_8_11 = native_sin(M_PI*x_8_11)*native_cos(2.0*M_PI*y_8_11);
+				f3_44_47[k] = myfun(native_sin(M_PI*x_44_47),native_cos(2.0*M_PI*y_44_47))-1.0;
+				f5_44_47[k] = native_sin(M_PI*x_44_47)*native_cos(2.0*M_PI*y_44_47);
 
-			if(index11  < size0){
-				u11[base_index +j] =f3_8_11;
-				ref_11[base_index +j] =f5_8_11;
+			}
+			if(index_44_47[0]  < size0){
+				u44[base_index +j] =f3_44_47[0];
+				ref_44[base_index +j] =f5_44_47[0];
+			}
+
+			if(index_44_47[1]  < size0){
+				u45[base_index +j] =f3_44_47[1];
+				ref_45[base_index +j] =f5_44_47[1];
+			}
+
+			if(index_44_47[2]  < size0){
+				u46[base_index +j] =f3_44_47[2];
+				ref_46[base_index +j] =f5_44_47[2];
+			}
+
+			if(index_44_47[3]  < size0){
+				u47[base_index +j] =f3_44_47[3];
+				ref_47[base_index +j] =f5_44_47[3];
 			}
 
 			//------------COMPUTE UNIT 12  ----------------
-			float f3_12_15;
-			float f5_12_15;
-			double x_12_15;
-			double y_12_15;
-			int index12 = j * 64 + 12;
-			double arg_idx_12 = arg_idx0 + index12;
+			float f3_48_51[4];
+			float f5_48_51[4];
+			int index_48_51[4];
+			double x_48_51;
+			double y_48_51;
+			__attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < 3; k++){
+				index_48_51[k] = j * 64 + k+48;
+				double arg_idx_48_51 = arg_idx0 + index_48_51[k];
 
-			x_12_15  = dx * (double)(arg_idx_12 +arg0);
-			y_12_15 = dy * (double)(arg_idx[1] +arg1);
+				x_48_51  = dx * (double)(arg_idx_48_51 +arg0);
+				y_48_51 = dy * (double)(arg_idx[1] +arg1);
 
-			f3_12_15 = myfun(native_sin(M_PI*x_12_15),native_cos(2.0*M_PI*y_12_15))-1.0;
-			f5_12_15 = native_sin(M_PI*x_12_15)*native_cos(2.0*M_PI*y_12_15);
+				f3_48_51[k] = myfun(native_sin(M_PI*x_48_51),native_cos(2.0*M_PI*y_48_51))-1.0;
+				f5_48_51[k] = native_sin(M_PI*x_48_51)*native_cos(2.0*M_PI*y_48_51);
 
-			if(index12  < size0){
-				u12[base_index +j] =f3_12_15;
-				ref_12[base_index +j] =f5_12_15;
+			}
+			if(index_48_51[0]  < size0){
+				u48[base_index +j] =f3_48_51[0];
+				ref_48[base_index +j] =f5_48_51[0];
+			}
+
+			if(index_48_51[1]  < size0){
+				u49[base_index +j] =f3_48_51[1];
+				ref_49[base_index +j] =f5_48_51[1];
+			}
+
+			if(index_48_51[2]  < size0){
+				u50[base_index +j] =f3_48_51[2];
+				ref_50[base_index +j] =f5_48_51[2];
+			}
+
+			if(index_48_51[3]  < size0){
+				u51[base_index +j] =f3_48_51[3];
+				ref_51[base_index +j] =f5_48_51[3];
 			}
 
 			//------------COMPUTE UNIT 13  ----------------
-			int index13 = j * 64 + 13;
-			double arg_idx_13 = arg_idx0 + index13;
+			float f3_52_55[4];
+			float f5_52_55[4];
+			int index_52_55[4];
+			double x_52_55;
+			double y_52_55;
+			__attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < 3; k++){
+				index_52_55[k] = j * 64 + k+52;
+				double arg_idx_52_55 = arg_idx0 + index_52_55[k];
 
-			x_12_15  = dx * (double)(arg_idx_13 +arg0);
-			y_12_15 = dy * (double)(arg_idx[1] +arg1);
+				x_52_55  = dx * (double)(arg_idx_52_55 +arg0);
+				y_52_55 = dy * (double)(arg_idx[1] +arg1);
 
-			f3_12_15 = myfun(native_sin(M_PI*x_12_15),native_cos(2.0*M_PI*y_12_15))-1.0;
-			f5_12_15 = native_sin(M_PI*x_12_15)*native_cos(2.0*M_PI*y_12_15);
+				f3_52_55[k] = myfun(native_sin(M_PI*x_52_55),native_cos(2.0*M_PI*y_52_55))-1.0;
+				f5_52_55[k] = native_sin(M_PI*x_52_55)*native_cos(2.0*M_PI*y_52_55);
 
-			if(index13  < size0){
-				u13[base_index +j] =f3_12_15;
-				ref_13[base_index +j] =f5_12_15;
+			}
+			if(index_52_55[0]  < size0){
+				u52[base_index +j] =f3_52_55[0];
+				ref_52[base_index +j] =f5_52_55[0];
+			}
+
+			if(index_52_55[1]  < size0){
+				u53[base_index +j] =f3_52_55[1];
+				ref_53[base_index +j] =f5_52_55[1];
+			}
+
+			if(index_52_55[2]  < size0){
+				u54[base_index +j] =f3_52_55[2];
+				ref_54[base_index +j] =f5_52_55[2];
+			}
+
+			if(index_52_55[3]  < size0){
+				u55[base_index +j] =f3_52_55[3];
+				ref_55[base_index +j] =f5_52_55[3];
 			}
 
 			//------------COMPUTE UNIT 14  ----------------
-			int index14 = j * 64 + 14;
-			double arg_idx_14 = arg_idx0 + index14;
+			float f3_56_59[4];
+			float f5_56_59[4];
+			int index_56_59[4];
+			double x_56_59;
+			double y_56_59;
+			__attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < 3; k++){
+				index_56_59[k] = j * 64 + k+56;
+				double arg_idx_56_59 = arg_idx0 + index_56_59[k];
 
-			x_12_15  = dx * (double)(arg_idx_14 +arg0);
-			y_12_15 = dy * (double)(arg_idx[1] +arg1);
+				x_56_59  = dx * (double)(arg_idx_56_59 +arg0);
+				y_56_59 = dy * (double)(arg_idx[1] +arg1);
 
-			f3_12_15 = myfun(native_sin(M_PI*x_12_15),native_cos(2.0*M_PI*y_12_15))-1.0;
-			f5_12_15 = native_sin(M_PI*x_12_15)*native_cos(2.0*M_PI*y_12_15);
+				f3_56_59[k] = myfun(native_sin(M_PI*x_56_59),native_cos(2.0*M_PI*y_56_59))-1.0;
+				f5_56_59[k] = native_sin(M_PI*x_56_59)*native_cos(2.0*M_PI*y_56_59);
 
-			if(index14  < size0){
-				u14[base_index +j] =f3_12_15;
-				ref_14[base_index +j] =f5_12_15;
+			}
+			if(index_56_59[0]  < size0){
+				u56[base_index +j] =f3_56_59[0];
+				ref_56[base_index +j] =f5_56_59[0];
+			}
+
+			if(index_56_59[1]  < size0){
+				u57[base_index +j] =f3_56_59[1];
+				ref_57[base_index +j] =f5_56_59[1];
+			}
+
+			if(index_56_59[2]  < size0){
+				u58[base_index +j] =f3_56_59[2];
+				ref_58[base_index +j] =f5_56_59[2];
+			}
+
+			if(index_56_59[3]  < size0){
+				u59[base_index +j] =f3_56_59[3];
+				ref_59[base_index +j] =f5_56_59[3];
 			}
 
 			//------------COMPUTE UNIT 15  ----------------
-			int index15 = j * 64 + 15;
-			double arg_idx_15 = arg_idx0 + index15;
-
-			x_12_15  = dx * (double)(arg_idx_15 +arg0);
-			y_12_15 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_12_15 = myfun(native_sin(M_PI*x_12_15),native_cos(2.0*M_PI*y_12_15))-1.0;
-			f5_12_15 = native_sin(M_PI*x_12_15)*native_cos(2.0*M_PI*y_12_15);
-
-			if(index15  < size0){
-				u15[base_index +j] =f3_12_15;
-				ref_15[base_index +j] =f5_12_15;
-			}
-
-			//------------COMPUTE UNIT 16  ----------------
-			float f3_16_19;
-			float f5_16_19;
-			double x_16_19;
-			double y_16_19;
-			int index16 = j * 64 + 16;
-			double arg_idx_16 = arg_idx0 + index16;
-
-			x_16_19  = dx * (double)(arg_idx_16 +arg0);
-			y_16_19 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_16_19 = myfun(native_sin(M_PI*x_16_19),native_cos(2.0*M_PI*y_16_19))-1.0;
-			f5_16_19 = native_sin(M_PI*x_16_19)*native_cos(2.0*M_PI*y_16_19);
-
-			if(index16  < size0){
-				u16[base_index +j] =f3_16_19;
-				ref_16[base_index +j] =f5_16_19;
-			}
-
-			//------------COMPUTE UNIT 17  ----------------
-			int index17 = j * 64 + 17;
-			double arg_idx_17 = arg_idx0 + index17;
-
-			x_16_19  = dx * (double)(arg_idx_17 +arg0);
-			y_16_19 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_16_19 = myfun(native_sin(M_PI*x_16_19),native_cos(2.0*M_PI*y_16_19))-1.0;
-			f5_16_19 = native_sin(M_PI*x_16_19)*native_cos(2.0*M_PI*y_16_19);
-
-			if(index17  < size0){
-				u17[base_index +j] =f3_16_19;
-				ref_17[base_index +j] =f5_16_19;
-			}
-
-			//------------COMPUTE UNIT 18  ----------------
-			int index18 = j * 64 + 18;
-			double arg_idx_18 = arg_idx0 + index18;
-
-			x_16_19  = dx * (double)(arg_idx_18 +arg0);
-			y_16_19 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_16_19 = myfun(native_sin(M_PI*x_16_19),native_cos(2.0*M_PI*y_16_19))-1.0;
-			f5_16_19 = native_sin(M_PI*x_16_19)*native_cos(2.0*M_PI*y_16_19);
-
-			if(index18  < size0){
-				u18[base_index +j] =f3_16_19;
-				ref_18[base_index +j] =f5_16_19;
-			}
-
-			//------------COMPUTE UNIT 19  ----------------
-			int index19 = j * 64 + 19;
-			double arg_idx_19 = arg_idx0 + index19;
-
-			x_16_19  = dx * (double)(arg_idx_19 +arg0);
-			y_16_19 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_16_19 = myfun(native_sin(M_PI*x_16_19),native_cos(2.0*M_PI*y_16_19))-1.0;
-			f5_16_19 = native_sin(M_PI*x_16_19)*native_cos(2.0*M_PI*y_16_19);
-
-			if(index19  < size0){
-				u19[base_index +j] =f3_16_19;
-				ref_19[base_index +j] =f5_16_19;
-			}
-
-			//------------COMPUTE UNIT 20  ----------------
-			float f3_20_23;
-			float f5_20_23;
-			double x_20_23;
-			double y_20_23;
-			int index20 = j * 64 + 20;
-			double arg_idx_20 = arg_idx0 + index20;
-
-			x_20_23  = dx * (double)(arg_idx_20 +arg0);
-			y_20_23 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_20_23 = myfun(native_sin(M_PI*x_20_23),native_cos(2.0*M_PI*y_20_23))-1.0;
-			f5_20_23 = native_sin(M_PI*x_20_23)*native_cos(2.0*M_PI*y_20_23);
-
-			if(index20  < size0){
-				u20[base_index +j] =f3_20_23;
-				ref_20[base_index +j] =f5_20_23;
-			}
-
-			//------------COMPUTE UNIT 21  ----------------
-			int index21 = j * 64 + 21;
-			double arg_idx_21 = arg_idx0 + index21;
-
-			x_20_23  = dx * (double)(arg_idx_21 +arg0);
-			y_20_23 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_20_23 = myfun(native_sin(M_PI*x_20_23),native_cos(2.0*M_PI*y_20_23))-1.0;
-			f5_20_23 = native_sin(M_PI*x_20_23)*native_cos(2.0*M_PI*y_20_23);
-
-			if(index21  < size0){
-				u21[base_index +j] =f3_20_23;
-				ref_21[base_index +j] =f5_20_23;
-			}
-
-			//------------COMPUTE UNIT 22  ----------------
-			int index22 = j * 64 + 22;
-			double arg_idx_22 = arg_idx0 + index22;
-
-			x_20_23  = dx * (double)(arg_idx_22 +arg0);
-			y_20_23 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_20_23 = myfun(native_sin(M_PI*x_20_23),native_cos(2.0*M_PI*y_20_23))-1.0;
-			f5_20_23 = native_sin(M_PI*x_20_23)*native_cos(2.0*M_PI*y_20_23);
-
-			if(index22  < size0){
-				u22[base_index +j] =f3_20_23;
-				ref_22[base_index +j] =f5_20_23;
-			}
-
-			//------------COMPUTE UNIT 23  ----------------
-			int index23 = j * 64 + 23;
-			double arg_idx_23 = arg_idx0 + index23;
-
-			x_20_23  = dx * (double)(arg_idx_23 +arg0);
-			y_20_23 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_20_23 = myfun(native_sin(M_PI*x_20_23),native_cos(2.0*M_PI*y_20_23))-1.0;
-			f5_20_23 = native_sin(M_PI*x_20_23)*native_cos(2.0*M_PI*y_20_23);
-
-			if(index23  < size0){
-				u23[base_index +j] =f3_20_23;
-				ref_23[base_index +j] =f5_20_23;
-			}
-
-			//------------COMPUTE UNIT 24  ----------------
-			float f3_24_27;
-			float f5_24_27;
-			double x_24_27;
-			double y_24_27;
-			int index24 = j * 64 + 24;
-			double arg_idx_24 = arg_idx0 + index24;
-
-			x_24_27  = dx * (double)(arg_idx_24 +arg0);
-			y_24_27 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_24_27 = myfun(native_sin(M_PI*x_24_27),native_cos(2.0*M_PI*y_24_27))-1.0;
-			f5_24_27 = native_sin(M_PI*x_24_27)*native_cos(2.0*M_PI*y_24_27);
-
-			if(index24  < size0){
-				u24[base_index +j] =f3_24_27;
-				ref_24[base_index +j] =f5_24_27;
-			}
-
-			//------------COMPUTE UNIT 25  ----------------
-			int index25 = j * 64 + 25;
-			double arg_idx_25 = arg_idx0 + index25;
-
-			x_24_27  = dx * (double)(arg_idx_25 +arg0);
-			y_24_27 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_24_27 = myfun(native_sin(M_PI*x_24_27),native_cos(2.0*M_PI*y_24_27))-1.0;
-			f5_24_27 = native_sin(M_PI*x_24_27)*native_cos(2.0*M_PI*y_24_27);
-
-			if(index25  < size0){
-				u25[base_index +j] =f3_24_27;
-				ref_25[base_index +j] =f5_24_27;
-			}
-
-			//------------COMPUTE UNIT 26  ----------------
-			int index26 = j * 64 + 26;
-			double arg_idx_26 = arg_idx0 + index26;
-
-			x_24_27  = dx * (double)(arg_idx_26 +arg0);
-			y_24_27 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_24_27 = myfun(native_sin(M_PI*x_24_27),native_cos(2.0*M_PI*y_24_27))-1.0;
-			f5_24_27 = native_sin(M_PI*x_24_27)*native_cos(2.0*M_PI*y_24_27);
-
-			if(index26  < size0){
-				u26[base_index +j] =f3_24_27;
-				ref_26[base_index +j] =f5_24_27;
-			}
-
-			//------------COMPUTE UNIT 27  ----------------
-			int index27 = j * 64 + 27;
-			double arg_idx_27 = arg_idx0 + index27;
-
-			x_24_27  = dx * (double)(arg_idx_27 +arg0);
-			y_24_27 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_24_27 = myfun(native_sin(M_PI*x_24_27),native_cos(2.0*M_PI*y_24_27))-1.0;
-			f5_24_27 = native_sin(M_PI*x_24_27)*native_cos(2.0*M_PI*y_24_27);
-
-			if(index27  < size0){
-				u27[base_index +j] =f3_24_27;
-				ref_27[base_index +j] =f5_24_27;
-			}
-
-			//------------COMPUTE UNIT 28  ----------------
-			float f3_28_31;
-			float f5_28_31;
-			double x_28_31;
-			double y_28_31;
-			int index28 = j * 64 + 28;
-			double arg_idx_28 = arg_idx0 + index28;
-
-			x_28_31  = dx * (double)(arg_idx_28 +arg0);
-			y_28_31 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_28_31 = myfun(native_sin(M_PI*x_28_31),native_cos(2.0*M_PI*y_28_31))-1.0;
-			f5_28_31 = native_sin(M_PI*x_28_31)*native_cos(2.0*M_PI*y_28_31);
-
-			if(index28  < size0){
-				u28[base_index +j] =f3_28_31;
-				ref_28[base_index +j] =f5_28_31;
-			}
-
-			//------------COMPUTE UNIT 29  ----------------
-			int index29 = j * 64 + 29;
-			double arg_idx_29 = arg_idx0 + index29;
-
-			x_28_31  = dx * (double)(arg_idx_29 +arg0);
-			y_28_31 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_28_31 = myfun(native_sin(M_PI*x_28_31),native_cos(2.0*M_PI*y_28_31))-1.0;
-			f5_28_31 = native_sin(M_PI*x_28_31)*native_cos(2.0*M_PI*y_28_31);
-
-			if(index29  < size0){
-				u29[base_index +j] =f3_28_31;
-				ref_29[base_index +j] =f5_28_31;
-			}
-
-			//------------COMPUTE UNIT 30  ----------------
-			int index30 = j * 64 + 30;
-			double arg_idx_30 = arg_idx0 + index30;
-
-			x_28_31  = dx * (double)(arg_idx_30 +arg0);
-			y_28_31 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_28_31 = myfun(native_sin(M_PI*x_28_31),native_cos(2.0*M_PI*y_28_31))-1.0;
-			f5_28_31 = native_sin(M_PI*x_28_31)*native_cos(2.0*M_PI*y_28_31);
-
-			if(index30  < size0){
-				u30[base_index +j] =f3_28_31;
-				ref_30[base_index +j] =f5_28_31;
-			}
-
-			//------------COMPUTE UNIT 31  ----------------
-			int index31 = j * 64 + 31;
-			double arg_idx_31 = arg_idx0 + index31;
-
-			x_28_31  = dx * (double)(arg_idx_31 +arg0);
-			y_28_31 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_28_31 = myfun(native_sin(M_PI*x_28_31),native_cos(2.0*M_PI*y_28_31))-1.0;
-			f5_28_31 = native_sin(M_PI*x_28_31)*native_cos(2.0*M_PI*y_28_31);
-
-			if(index31  < size0){
-				u31[base_index +j] =f3_28_31;
-				ref_31[base_index +j] =f5_28_31;
-			}
-
-			//------------COMPUTE UNIT 32  ----------------
-			float f3_32_35;
-			float f5_32_35;
-			double x_32_35;
-			double y_32_35;
-			int index32 = j * 64 + 32;
-			double arg_idx_32 = arg_idx0 + index32;
-
-			x_32_35  = dx * (double)(arg_idx_32 +arg0);
-			y_32_35 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_32_35 = myfun(native_sin(M_PI*x_32_35),native_cos(2.0*M_PI*y_32_35))-1.0;
-			f5_32_35 = native_sin(M_PI*x_32_35)*native_cos(2.0*M_PI*y_32_35);
-
-			if(index32  < size0){
-				u32[base_index +j] =f3_32_35;
-				ref_32[base_index +j] =f5_32_35;
-			}
-
-			//------------COMPUTE UNIT 33  ----------------
-			int index33 = j * 64 + 33;
-			double arg_idx_33 = arg_idx0 + index33;
-
-			x_32_35  = dx * (double)(arg_idx_33 +arg0);
-			y_32_35 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_32_35 = myfun(native_sin(M_PI*x_32_35),native_cos(2.0*M_PI*y_32_35))-1.0;
-			f5_32_35 = native_sin(M_PI*x_32_35)*native_cos(2.0*M_PI*y_32_35);
-
-			if(index33  < size0){
-				u33[base_index +j] =f3_32_35;
-				ref_33[base_index +j] =f5_32_35;
-			}
-
-			//------------COMPUTE UNIT 34  ----------------
-			int index34 = j * 64 + 34;
-			double arg_idx_34 = arg_idx0 + index34;
-
-			x_32_35  = dx * (double)(arg_idx_34 +arg0);
-			y_32_35 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_32_35 = myfun(native_sin(M_PI*x_32_35),native_cos(2.0*M_PI*y_32_35))-1.0;
-			f5_32_35 = native_sin(M_PI*x_32_35)*native_cos(2.0*M_PI*y_32_35);
-
-			if(index34  < size0){
-				u34[base_index +j] =f3_32_35;
-				ref_34[base_index +j] =f5_32_35;
-			}
-
-			//------------COMPUTE UNIT 35  ----------------
-			int index35 = j * 64 + 35;
-			double arg_idx_35 = arg_idx0 + index35;
-
-			x_32_35  = dx * (double)(arg_idx_35 +arg0);
-			y_32_35 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_32_35 = myfun(native_sin(M_PI*x_32_35),native_cos(2.0*M_PI*y_32_35))-1.0;
-			f5_32_35 = native_sin(M_PI*x_32_35)*native_cos(2.0*M_PI*y_32_35);
-
-			if(index35  < size0){
-				u35[base_index +j] =f3_32_35;
-				ref_35[base_index +j] =f5_32_35;
-			}
-
-			//------------COMPUTE UNIT 36  ----------------
-			float f3_36_39;
-			float f5_36_39;
-			double x_36_39;
-			double y_36_39;
-			int index36 = j * 64 + 36;
-			double arg_idx_36 = arg_idx0 + index36;
-
-			x_36_39  = dx * (double)(arg_idx_36 +arg0);
-			y_36_39 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_36_39 = myfun(native_sin(M_PI*x_36_39),native_cos(2.0*M_PI*y_36_39))-1.0;
-			f5_36_39 = native_sin(M_PI*x_36_39)*native_cos(2.0*M_PI*y_36_39);
-
-			if(index36  < size0){
-				u36[base_index +j] =f3_36_39;
-				ref_36[base_index +j] =f5_36_39;
-			}
-
-			//------------COMPUTE UNIT 37  ----------------
-			int index37 = j * 64 + 37;
-			double arg_idx_37 = arg_idx0 + index37;
-
-			x_36_39  = dx * (double)(arg_idx_37 +arg0);
-			y_36_39 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_36_39 = myfun(native_sin(M_PI*x_36_39),native_cos(2.0*M_PI*y_36_39))-1.0;
-			f5_36_39 = native_sin(M_PI*x_36_39)*native_cos(2.0*M_PI*y_36_39);
-
-			if(index37  < size0){
-				u37[base_index +j] =f3_36_39;
-				ref_37[base_index +j] =f5_36_39;
-			}
-
-			//------------COMPUTE UNIT 38  ----------------
-			int index38 = j * 64 + 38;
-			double arg_idx_38 = arg_idx0 + index38;
-
-			x_36_39  = dx * (double)(arg_idx_38 +arg0);
-			y_36_39 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_36_39 = myfun(native_sin(M_PI*x_36_39),native_cos(2.0*M_PI*y_36_39))-1.0;
-			f5_36_39 = native_sin(M_PI*x_36_39)*native_cos(2.0*M_PI*y_36_39);
-
-			if(index38  < size0){
-				u38[base_index +j] =f3_36_39;
-				ref_38[base_index +j] =f5_36_39;
-			}
-
-			//------------COMPUTE UNIT 39  ----------------
-			int index39 = j * 64 + 39;
-			double arg_idx_39 = arg_idx0 + index39;
-
-			x_36_39  = dx * (double)(arg_idx_39 +arg0);
-			y_36_39 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_36_39 = myfun(native_sin(M_PI*x_36_39),native_cos(2.0*M_PI*y_36_39))-1.0;
-			f5_36_39 = native_sin(M_PI*x_36_39)*native_cos(2.0*M_PI*y_36_39);
-
-			if(index39  < size0){
-				u39[base_index +j] =f3_36_39;
-				ref_39[base_index +j] =f5_36_39;
-			}
-
-			//------------COMPUTE UNIT 40  ----------------
-			float f3_40_43;
-			float f5_40_43;
-			double x_40_43;
-			double y_40_43;
-			int index40 = j * 64 + 40;
-			double arg_idx_40 = arg_idx0 + index40;
-
-			x_40_43  = dx * (double)(arg_idx_40 +arg0);
-			y_40_43 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_40_43 = myfun(native_sin(M_PI*x_40_43),native_cos(2.0*M_PI*y_40_43))-1.0;
-			f5_40_43 = native_sin(M_PI*x_40_43)*native_cos(2.0*M_PI*y_40_43);
-
-			if(index40  < size0){
-				u40[base_index +j] =f3_40_43;
-				ref_40[base_index +j] =f5_40_43;
-			}
-
-			//------------COMPUTE UNIT 41  ----------------
-			int index41 = j * 64 + 41;
-			double arg_idx_41 = arg_idx0 + index41;
-
-			x_40_43  = dx * (double)(arg_idx_41 +arg0);
-			y_40_43 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_40_43 = myfun(native_sin(M_PI*x_40_43),native_cos(2.0*M_PI*y_40_43))-1.0;
-			f5_40_43 = native_sin(M_PI*x_40_43)*native_cos(2.0*M_PI*y_40_43);
-
-			if(index41  < size0){
-				u41[base_index +j] =f3_40_43;
-				ref_41[base_index +j] =f5_40_43;
-			}
-
-			//------------COMPUTE UNIT 42  ----------------
-			int index42 = j * 64 + 42;
-			double arg_idx_42 = arg_idx0 + index42;
-
-			x_40_43  = dx * (double)(arg_idx_42 +arg0);
-			y_40_43 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_40_43 = myfun(native_sin(M_PI*x_40_43),native_cos(2.0*M_PI*y_40_43))-1.0;
-			f5_40_43 = native_sin(M_PI*x_40_43)*native_cos(2.0*M_PI*y_40_43);
-
-			if(index42  < size0){
-				u42[base_index +j] =f3_40_43;
-				ref_42[base_index +j] =f5_40_43;
-			}
-
-			//------------COMPUTE UNIT 43  ----------------
-			int index43 = j * 64 + 43;
-			double arg_idx_43 = arg_idx0 + index43;
-
-			x_40_43  = dx * (double)(arg_idx_43 +arg0);
-			y_40_43 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_40_43 = myfun(native_sin(M_PI*x_40_43),native_cos(2.0*M_PI*y_40_43))-1.0;
-			f5_40_43 = native_sin(M_PI*x_40_43)*native_cos(2.0*M_PI*y_40_43);
-
-			if(index43  < size0){
-				u43[base_index +j] =f3_40_43;
-				ref_43[base_index +j] =f5_40_43;
-			}
-
-			//------------COMPUTE UNIT 44  ----------------
-			float f3_44_47;
-			float f5_44_47;
-			double x_44_47;
-			double y_44_47;
-			int index44 = j * 64 + 44;
-			double arg_idx_44 = arg_idx0 + index44;
-
-			x_44_47  = dx * (double)(arg_idx_44 +arg0);
-			y_44_47 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_44_47 = myfun(native_sin(M_PI*x_44_47),native_cos(2.0*M_PI*y_44_47))-1.0;
-			f5_44_47 = native_sin(M_PI*x_44_47)*native_cos(2.0*M_PI*y_44_47);
-
-			if(index44  < size0){
-				u44[base_index +j] =f3_44_47;
-				ref_44[base_index +j] =f5_44_47;
-			}
-
-			//------------COMPUTE UNIT 45  ----------------
-			int index45 = j * 64 + 45;
-			double arg_idx_45 = arg_idx0 + index45;
-
-			x_44_47  = dx * (double)(arg_idx_45 +arg0);
-			y_44_47 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_44_47 = myfun(native_sin(M_PI*x_44_47),native_cos(2.0*M_PI*y_44_47))-1.0;
-			f5_44_47 = native_sin(M_PI*x_44_47)*native_cos(2.0*M_PI*y_44_47);
-
-			if(index45  < size0){
-				u45[base_index +j] =f3_44_47;
-				ref_45[base_index +j] =f5_44_47;
-			}
-
-			//------------COMPUTE UNIT 46  ----------------
-			int index46 = j * 64 + 46;
-			double arg_idx_46 = arg_idx0 + index46;
-
-			x_44_47  = dx * (double)(arg_idx_46 +arg0);
-			y_44_47 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_44_47 = myfun(native_sin(M_PI*x_44_47),native_cos(2.0*M_PI*y_44_47))-1.0;
-			f5_44_47 = native_sin(M_PI*x_44_47)*native_cos(2.0*M_PI*y_44_47);
-
-			if(index46  < size0){
-				u46[base_index +j] =f3_44_47;
-				ref_46[base_index +j] =f5_44_47;
-			}
-
-			//------------COMPUTE UNIT 47  ----------------
-			int index47 = j * 64 + 47;
-			double arg_idx_47 = arg_idx0 + index47;
-
-			x_44_47  = dx * (double)(arg_idx_47 +arg0);
-			y_44_47 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_44_47 = myfun(native_sin(M_PI*x_44_47),native_cos(2.0*M_PI*y_44_47))-1.0;
-			f5_44_47 = native_sin(M_PI*x_44_47)*native_cos(2.0*M_PI*y_44_47);
-
-			if(index47  < size0){
-				u47[base_index +j] =f3_44_47;
-				ref_47[base_index +j] =f5_44_47;
-			}
-
-			//------------COMPUTE UNIT 48  ----------------
-			float f3_48_51;
-			float f5_48_51;
-			double x_48_51;
-			double y_48_51;
-			int index48 = j * 64 + 48;
-			double arg_idx_48 = arg_idx0 + index48;
-
-			x_48_51  = dx * (double)(arg_idx_48 +arg0);
-			y_48_51 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_48_51 = myfun(native_sin(M_PI*x_48_51),native_cos(2.0*M_PI*y_48_51))-1.0;
-			f5_48_51 = native_sin(M_PI*x_48_51)*native_cos(2.0*M_PI*y_48_51);
-
-			if(index48  < size0){
-				u48[base_index +j] =f3_48_51;
-				ref_48[base_index +j] =f5_48_51;
-			}
-
-			//------------COMPUTE UNIT 49  ----------------
-			int index49 = j * 64 + 49;
-			double arg_idx_49 = arg_idx0 + index49;
-
-			x_48_51  = dx * (double)(arg_idx_49 +arg0);
-			y_48_51 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_48_51 = myfun(native_sin(M_PI*x_48_51),native_cos(2.0*M_PI*y_48_51))-1.0;
-			f5_48_51 = native_sin(M_PI*x_48_51)*native_cos(2.0*M_PI*y_48_51);
-
-			if(index49  < size0){
-				u49[base_index +j] =f3_48_51;
-				ref_49[base_index +j] =f5_48_51;
-			}
-
-			//------------COMPUTE UNIT 50  ----------------
-			int index50 = j * 64 + 50;
-			double arg_idx_50 = arg_idx0 + index50;
-
-			x_48_51  = dx * (double)(arg_idx_50 +arg0);
-			y_48_51 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_48_51 = myfun(native_sin(M_PI*x_48_51),native_cos(2.0*M_PI*y_48_51))-1.0;
-			f5_48_51 = native_sin(M_PI*x_48_51)*native_cos(2.0*M_PI*y_48_51);
-
-			if(index50  < size0){
-				u50[base_index +j] =f3_48_51;
-				ref_50[base_index +j] =f5_48_51;
-			}
-
-			//------------COMPUTE UNIT 51  ----------------
-			int index51 = j * 64 + 51;
-			double arg_idx_51 = arg_idx0 + index51;
-
-			x_48_51  = dx * (double)(arg_idx_51 +arg0);
-			y_48_51 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_48_51 = myfun(native_sin(M_PI*x_48_51),native_cos(2.0*M_PI*y_48_51))-1.0;
-			f5_48_51 = native_sin(M_PI*x_48_51)*native_cos(2.0*M_PI*y_48_51);
-
-			if(index51  < size0){
-				u51[base_index +j] =f3_48_51;
-				ref_51[base_index +j] =f5_48_51;
-			}
-
-			//------------COMPUTE UNIT 52  ----------------
-			float f3_52_55;
-			float f5_52_55;
-			double x_52_55;
-			double y_52_55;
-			int index52 = j * 64 + 52;
-			double arg_idx_52 = arg_idx0 + index52;
-
-			x_52_55  = dx * (double)(arg_idx_52 +arg0);
-			y_52_55 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_52_55 = myfun(native_sin(M_PI*x_52_55),native_cos(2.0*M_PI*y_52_55))-1.0;
-			f5_52_55 = native_sin(M_PI*x_52_55)*native_cos(2.0*M_PI*y_52_55);
-
-			if(index52  < size0){
-				u52[base_index +j] =f3_52_55;
-				ref_52[base_index +j] =f5_52_55;
-			}
-
-			//------------COMPUTE UNIT 53  ----------------
-			int index53 = j * 64 + 53;
-			double arg_idx_53 = arg_idx0 + index53;
-
-			x_52_55  = dx * (double)(arg_idx_53 +arg0);
-			y_52_55 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_52_55 = myfun(native_sin(M_PI*x_52_55),native_cos(2.0*M_PI*y_52_55))-1.0;
-			f5_52_55 = native_sin(M_PI*x_52_55)*native_cos(2.0*M_PI*y_52_55);
-
-			if(index53  < size0){
-				u53[base_index +j] =f3_52_55;
-				ref_53[base_index +j] =f5_52_55;
-			}
-
-			//------------COMPUTE UNIT 54  ----------------
-			int index54 = j * 64 + 54;
-			double arg_idx_54 = arg_idx0 + index54;
-
-			x_52_55  = dx * (double)(arg_idx_54 +arg0);
-			y_52_55 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_52_55 = myfun(native_sin(M_PI*x_52_55),native_cos(2.0*M_PI*y_52_55))-1.0;
-			f5_52_55 = native_sin(M_PI*x_52_55)*native_cos(2.0*M_PI*y_52_55);
-
-			if(index54  < size0){
-				u54[base_index +j] =f3_52_55;
-				ref_54[base_index +j] =f5_52_55;
-			}
-
-			//------------COMPUTE UNIT 55  ----------------
-			int index55 = j * 64 + 55;
-			double arg_idx_55 = arg_idx0 + index55;
-
-			x_52_55  = dx * (double)(arg_idx_55 +arg0);
-			y_52_55 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_52_55 = myfun(native_sin(M_PI*x_52_55),native_cos(2.0*M_PI*y_52_55))-1.0;
-			f5_52_55 = native_sin(M_PI*x_52_55)*native_cos(2.0*M_PI*y_52_55);
-
-			if(index55  < size0){
-				u55[base_index +j] =f3_52_55;
-				ref_55[base_index +j] =f5_52_55;
-			}
-
-			//------------COMPUTE UNIT 56  ----------------
-			float f3_56_59;
-			float f5_56_59;
-			double x_56_59;
-			double y_56_59;
-			int index56 = j * 64 + 56;
-			double arg_idx_56 = arg_idx0 + index56;
-
-			x_56_59  = dx * (double)(arg_idx_56 +arg0);
-			y_56_59 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_56_59 = myfun(native_sin(M_PI*x_56_59),native_cos(2.0*M_PI*y_56_59))-1.0;
-			f5_56_59 = native_sin(M_PI*x_56_59)*native_cos(2.0*M_PI*y_56_59);
-
-			if(index56  < size0){
-				u56[base_index +j] =f3_56_59;
-				ref_56[base_index +j] =f5_56_59;
-			}
-
-			//------------COMPUTE UNIT 57  ----------------
-			int index57 = j * 64 + 57;
-			double arg_idx_57 = arg_idx0 + index57;
-
-			x_56_59  = dx * (double)(arg_idx_57 +arg0);
-			y_56_59 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_56_59 = myfun(native_sin(M_PI*x_56_59),native_cos(2.0*M_PI*y_56_59))-1.0;
-			f5_56_59 = native_sin(M_PI*x_56_59)*native_cos(2.0*M_PI*y_56_59);
-
-			if(index57  < size0){
-				u57[base_index +j] =f3_56_59;
-				ref_57[base_index +j] =f5_56_59;
-			}
-
-			//------------COMPUTE UNIT 58  ----------------
-			int index58 = j * 64 + 58;
-			double arg_idx_58 = arg_idx0 + index58;
-
-			x_56_59  = dx * (double)(arg_idx_58 +arg0);
-			y_56_59 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_56_59 = myfun(native_sin(M_PI*x_56_59),native_cos(2.0*M_PI*y_56_59))-1.0;
-			f5_56_59 = native_sin(M_PI*x_56_59)*native_cos(2.0*M_PI*y_56_59);
-
-			if(index58  < size0){
-				u58[base_index +j] =f3_56_59;
-				ref_58[base_index +j] =f5_56_59;
-			}
-
-			//------------COMPUTE UNIT 59  ----------------
-			int index59 = j * 64 + 59;
-			double arg_idx_59 = arg_idx0 + index59;
-
-			x_56_59  = dx * (double)(arg_idx_59 +arg0);
-			y_56_59 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_56_59 = myfun(native_sin(M_PI*x_56_59),native_cos(2.0*M_PI*y_56_59))-1.0;
-			f5_56_59 = native_sin(M_PI*x_56_59)*native_cos(2.0*M_PI*y_56_59);
-
-			if(index59  < size0){
-				u59[base_index +j] =f3_56_59;
-				ref_59[base_index +j] =f5_56_59;
-			}
-
-			//------------COMPUTE UNIT 60  ----------------
-			float f3_60_63;
-			float f5_60_63;
+			float f3_60_63[4];
+			float f5_60_63[4];
+			int index_60_63[4];
 			double x_60_63;
 			double y_60_63;
-			int index60 = j * 64 + 60;
-			double arg_idx_60 = arg_idx0 + index60;
+			__attribute__((xcl_pipeline_loop))
+			for(int k = 0; k < 3; k++){
+				index_60_63[k] = j * 64 + k+60;
+				double arg_idx_60_63 = arg_idx0 + index_60_63[k];
 
-			x_60_63  = dx * (double)(arg_idx_60 +arg0);
-			y_60_63 = dy * (double)(arg_idx[1] +arg1);
+				x_60_63  = dx * (double)(arg_idx_60_63 +arg0);
+				y_60_63 = dy * (double)(arg_idx[1] +arg1);
 
-			f3_60_63 = myfun(native_sin(M_PI*x_60_63),native_cos(2.0*M_PI*y_60_63))-1.0;
-			f5_60_63 = native_sin(M_PI*x_60_63)*native_cos(2.0*M_PI*y_60_63);
+				f3_60_63[k] = myfun(native_sin(M_PI*x_60_63),native_cos(2.0*M_PI*y_60_63))-1.0;
+				f5_60_63[k] = native_sin(M_PI*x_60_63)*native_cos(2.0*M_PI*y_60_63);
 
-			if(index60  < size0){
-				u60[base_index +j] =f3_60_63;
-				ref_60[base_index +j] =f5_60_63;
+			}
+			if(index_60_63[0]  < size0){
+				u60[base_index +j] =f3_60_63[0];
+				ref_60[base_index +j] =f5_60_63[0];
 			}
 
-			//------------COMPUTE UNIT 61  ----------------
-			int index61 = j * 64 + 61;
-			double arg_idx_61 = arg_idx0 + index61;
-
-			x_60_63  = dx * (double)(arg_idx_61 +arg0);
-			y_60_63 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_60_63 = myfun(native_sin(M_PI*x_60_63),native_cos(2.0*M_PI*y_60_63))-1.0;
-			f5_60_63 = native_sin(M_PI*x_60_63)*native_cos(2.0*M_PI*y_60_63);
-
-			if(index61  < size0){
-				u61[base_index +j] =f3_60_63;
-				ref_61[base_index +j] =f5_60_63;
+			if(index_60_63[1]  < size0){
+				u61[base_index +j] =f3_60_63[1];
+				ref_61[base_index +j] =f5_60_63[1];
 			}
 
-			//------------COMPUTE UNIT 62  ----------------
-			int index62 = j * 64 + 62;
-			double arg_idx_62 = arg_idx0 + index62;
-
-			x_60_63  = dx * (double)(arg_idx_62 +arg0);
-			y_60_63 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_60_63 = myfun(native_sin(M_PI*x_60_63),native_cos(2.0*M_PI*y_60_63))-1.0;
-			f5_60_63 = native_sin(M_PI*x_60_63)*native_cos(2.0*M_PI*y_60_63);
-
-			if(index62  < size0){
-				u62[base_index +j] =f3_60_63;
-				ref_62[base_index +j] =f5_60_63;
+			if(index_60_63[2]  < size0){
+				u62[base_index +j] =f3_60_63[2];
+				ref_62[base_index +j] =f5_60_63[2];
 			}
 
-			//------------COMPUTE UNIT 63  ----------------
-			int index63 = j * 64 + 63;
-			double arg_idx_63 = arg_idx0 + index63;
-
-			x_60_63  = dx * (double)(arg_idx_63 +arg0);
-			y_60_63 = dy * (double)(arg_idx[1] +arg1);
-
-			f3_60_63 = myfun(native_sin(M_PI*x_60_63),native_cos(2.0*M_PI*y_60_63))-1.0;
-			f5_60_63 = native_sin(M_PI*x_60_63)*native_cos(2.0*M_PI*y_60_63);
-
-			if(index63  < size0){
-				u63[base_index +j] =f3_60_63;
-				ref_63[base_index +j] =f5_60_63;
+			if(index_60_63[3]  < size0){
+				u63[base_index +j] =f3_60_63[3];
+				ref_63[base_index +j] =f5_60_63[3];
 			}
-
 		}
+
 	}
 
 }
@@ -3921,145 +3505,145 @@ __kernel void ops_poisson_kernel(
 	local float ref_63[SINGLE_RAM_SIZE];
 
 
-	ops_poisson_kernel_populate(
-			populate_arg0,
-			populate_arg1,
-			u0,
-			u1,
-			u2,
-			u3,
-			u4,
-			u5,
-			u6,
-			u7,
-			u8,
-			u9,
-			u10,
-			u11,
-			u12,
-			u13,
-			u14,
-			u15,
-			u16,
-			u17,
-			u18,
-			u19,
-			u20,
-			u21,
-			u22,
-			u23,
-			u24,
-			u25,
-			u26,
-			u27,
-			u28,
-			u29,
-			u30,
-			u31,
-			u32,
-			u33,
-			u34,
-			u35,
-			u36,
-			u37,
-			u38,
-			u39,
-			u40,
-			u41,
-			u42,
-			u43,
-			u44,
-			u45,
-			u46,
-			u47,
-			u48,
-			u49,
-			u50,
-			u51,
-			u52,
-			u53,
-			u54,
-			u55,
-			u56,
-			u57,
-			u58,
-			u59,
-			u60,
-			u61,
-			u62,
-			u63,
-			ref_0,
-			ref_1,
-			ref_2,
-			ref_3,
-			ref_4,
-			ref_5,
-			ref_6,
-			ref_7,
-			ref_8,
-			ref_9,
-			ref_10,
-			ref_11,
-			ref_12,
-			ref_13,
-			ref_14,
-			ref_15,
-			ref_16,
-			ref_17,
-			ref_18,
-			ref_19,
-			ref_20,
-			ref_21,
-			ref_22,
-			ref_23,
-			ref_24,
-			ref_25,
-			ref_26,
-			ref_27,
-			ref_28,
-			ref_29,
-			ref_30,
-			ref_31,
-			ref_32,
-			ref_33,
-			ref_34,
-			ref_35,
-			ref_36,
-			ref_37,
-			ref_38,
-			ref_39,
-			ref_40,
-			ref_41,
-			ref_42,
-			ref_43,
-			ref_44,
-			ref_45,
-			ref_46,
-			ref_47,
-			ref_48,
-			ref_49,
-			ref_50,
-			ref_51,
-			ref_52,
-			ref_53,
-			ref_54,
-			ref_55,
-			ref_56,
-			ref_57,
-			ref_58,
-			ref_59,
-			ref_60,
-			ref_61,
-			ref_62,
-			ref_63,
-			populate_dx,
-			populate_dy,
-			0,
-			0,
-			0,
-			populate_arg_idx0, populate_arg_idx1,
-			size0+2,
-			size1+2);
+	// ops_poisson_kernel_populate(
+	// 			populate_arg0,
+	// 			populate_arg1,
+	// 			u0,
+	// 			u1,
+	// 			u2,
+	// 			u3,
+	// 			u4,
+	// 			u5,
+	// 			u6,
+	// 			u7,
+	// 			u8,
+	// 			u9,
+	// 			u10,
+	// 			u11,
+	// 			u12,
+	// 			u13,
+	// 			u14,
+	// 			u15,
+	// 			u16,
+	// 			u17,
+	// 			u18,
+	// 			u19,
+	// 			u20,
+	// 			u21,
+	// 			u22,
+	// 			u23,
+	// 			u24,
+	// 			u25,
+	// 			u26,
+	// 			u27,
+	// 			u28,
+	// 			u29,
+	// 			u30,
+	// 			u31,
+	// 			u32,
+	// 			u33,
+	// 			u34,
+	// 			u35,
+	// 			u36,
+	// 			u37,
+	// 			u38,
+	// 			u39,
+	// 			u40,
+	// 			u41,
+	// 			u42,
+	// 			u43,
+	// 			u44,
+	// 			u45,
+	// 			u46,
+	// 			u47,
+	// 			u48,
+	// 			u49,
+	// 			u50,
+	// 			u51,
+	// 			u52,
+	// 			u53,
+	// 			u54,
+	// 			u55,
+	// 			u56,
+	// 			u57,
+	// 			u58,
+	// 			u59,
+	// 			u60,
+	// 			u61,
+	// 			u62,
+	// 			u63,
+	// 			ref_0,
+	// 			ref_1,
+	// 			ref_2,
+	// 			ref_3,
+	// 			ref_4,
+	// 			ref_5,
+	// 			ref_6,
+	// 			ref_7,
+	// 			ref_8,
+	// 			ref_9,
+	// 			ref_10,
+	// 			ref_11,
+	// 			ref_12,
+	// 			ref_13,
+	// 			ref_14,
+	// 			ref_15,
+	// 			ref_16,
+	// 			ref_17,
+	// 			ref_18,
+	// 			ref_19,
+	// 			ref_20,
+	// 			ref_21,
+	// 			ref_22,
+	// 			ref_23,
+	// 			ref_24,
+	// 			ref_25,
+	// 			ref_26,
+	// 			ref_27,
+	// 			ref_28,
+	// 			ref_29,
+	// 			ref_30,
+	// 			ref_31,
+	// 			ref_32,
+	// 			ref_33,
+	// 			ref_34,
+	// 			ref_35,
+	// 			ref_36,
+	// 			ref_37,
+	// 			ref_38,
+	// 			ref_39,
+	// 			ref_40,
+	// 			ref_41,
+	// 			ref_42,
+	// 			ref_43,
+	// 			ref_44,
+	// 			ref_45,
+	// 			ref_46,
+	// 			ref_47,
+	// 			ref_48,
+	// 			ref_49,
+	// 			ref_50,
+	// 			ref_51,
+	// 			ref_52,
+	// 			ref_53,
+	// 			ref_54,
+	// 			ref_55,
+	// 			ref_56,
+	// 			ref_57,
+	// 			ref_58,
+	// 			ref_59,
+	// 			ref_60,
+	// 			ref_61,
+	// 			ref_62,
+	// 			ref_63,
+	// 			populate_dx,
+	// 			populate_dy,
+	// 			0,
+	// 			0,
+	// 			0,
+	// 			populate_arg_idx0, populate_arg_idx1,
+	// 			size0+2,
+	// 			size1+2);;
 
 	//print_grid(U, size0+2,size1+2);
 
