@@ -23,26 +23,8 @@ float dx,dy;
 // ops_par_loop declarations
 //
 
-void ops_par_loop_poisson_kernel_populate(char const *, ops_block, int , int*,
-  ops_arg,
-  ops_arg,
-  ops_arg,
-  ops_arg,
-  ops_arg,
-  ops_arg );
 
-void ops_par_loop_poisson_kernel_update(char const *, ops_block, int , int*,
-  ops_arg,
-  ops_arg );
-
-void ops_par_loop_poisson_kernel_initial(char const *, ops_block, int , int*,
-  ops_arg );
-
-void ops_par_loop_poisson_kernel_stencil(char const *, ops_block, int , int*,
-  ops_arg,
-  ops_arg );
-
-void ops_par_loop_poisson_kernel_error(char const *, ops_block, int , int*,
+void ops_par_loop_ops_poisson_kernel_stencil(char const *, ops_block, int , int*,
   ops_arg,
   ops_arg,
   ops_arg,
@@ -204,7 +186,7 @@ int main(int argc,  char **argv)
   for (int j = 0; j < ngrid_y; j++) {
     for (int i = 0; i < ngrid_x; i++) {
       int iter_range[] = {0,sizes[2*(i+ngrid_x*j)],0,sizes[2*(i+ngrid_x*j)+1]};
-      ops_par_loop_poisson_kernel_error("poisson_kernel_error", blocks[i+ngrid_x*j], 2, iter_range,
+      ops_par_loop_ops_poisson_kernel_stencil("poisson_kernel_error", blocks[i+ngrid_x*j], 2, iter_range,
                    ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_READ),
                    ops_arg_dat(ref[i+ngrid_x*j], 1, S2D_00, "float", OPS_READ),
                    ops_arg_reduce(red_err, 1, "float", OPS_INC),

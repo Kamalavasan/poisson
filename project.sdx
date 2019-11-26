@@ -1,25 +1,10 @@
 <?xml version="1.0" encoding="ASCII"?>
 <openclProject:OpenCLProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:openclProject="http://www.xilinx.com/openclproject" name="Poisson" location="/home/faraz/workspace/Poisson" platform="/opt/xilinx/platforms/xilinx_vcu1525_xdma_201830_1/xilinx_vcu1525_xdma_201830_1.xpfm" platformUID="xilinx:vcu1525:xdma:201830.1" systemProject="Poisson_system" sysConfig="Linux" cpu="" cpuInstance="" os="linux">
-  <configuration name="Emulation-SW" id="com.xilinx.sdx.opencl.config.sw_emu.262267279" dirty="true">
+  <configuration name="Emulation-SW" id="com.xilinx.sdx.opencl.config.sw_emu.262267279">
     <configBuildOptions xsi:type="openclProject:OpenCLOptions" kernelDebug="true">
       <binaryContainers name="ops_poisson_kernels">
-        <kernels name="ops_poisson_kernel" sourceFile="src/OpenCL/poisson_kernels.cl">
-          <computeUnits name="ops_poisson_kernel_1" slr="">
-            <args name="populate_arg0" memory=""/>
-            <args name="populate_arg1" memory=""/>
-            <args name="populate_dx" memory=""/>
-            <args name="populate_dy" memory=""/>
-            <args name="populate_arg_idx0" memory=""/>
-            <args name="populate_arg_idx1" memory=""/>
-            <args name="arg2" master="true" memory=""/>
-            <args name="scratch2" master="true" memory=""/>
-            <args name="r_bytes2" memory=""/>
-            <args name="base0" memory=""/>
-            <args name="base1" memory=""/>
-            <args name="size0" memory=""/>
-            <args name="size1" memory=""/>
-            <args name="n_iters" memory=""/>
-          </computeUnits>
+        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernels.cl">
+          <args name="arg0" master="true"/>
           <args name="populate_arg0"/>
           <args name="populate_arg1"/>
           <args name="populate_dx"/>
@@ -39,23 +24,8 @@
     </configBuildOptions>
     <lastBuildOptions xsi:type="openclProject:OpenCLOptions" kernelDebug="true">
       <binaryContainers name="ops_poisson_kernels">
-        <kernels name="ops_poisson_kernel" sourceFile="src/OpenCL/poisson_kernels.cl">
-          <computeUnits name="ops_poisson_kernel_1" slr="">
-            <args name="populate_arg0" memory=""/>
-            <args name="populate_arg1" memory=""/>
-            <args name="populate_dx" memory=""/>
-            <args name="populate_dy" memory=""/>
-            <args name="populate_arg_idx0" memory=""/>
-            <args name="populate_arg_idx1" memory=""/>
-            <args name="arg2" master="true" memory=""/>
-            <args name="scratch2" master="true" memory=""/>
-            <args name="r_bytes2" memory=""/>
-            <args name="base0" memory=""/>
-            <args name="base1" memory=""/>
-            <args name="size0" memory=""/>
-            <args name="size1" memory=""/>
-            <args name="n_iters" memory=""/>
-          </computeUnits>
+        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernels.cl">
+          <args name="arg0" master="true"/>
           <args name="populate_arg0"/>
           <args name="populate_arg1"/>
           <args name="populate_dx"/>
@@ -77,8 +47,9 @@
   <configuration name="Emulation-HW" id="com.xilinx.sdx.opencl.config.hw_emu.2144567038" dirty="true">
     <configBuildOptions xsi:type="openclProject:OpenCLOptions" kernelDebug="true" target="hw_emu">
       <binaryContainers name="ops_poisson_kernels">
-        <kernels name="ops_poisson_kernel" sourceFile="src/OpenCL/poisson_kernels.cl">
-          <computeUnits name="ops_poisson_kernel_1" slr="">
+        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernels.cl">
+          <computeUnits name="ops_poisson_kernel_stencil_1" slr="">
+            <args name="arg0" master="true" memory=""/>
             <args name="populate_arg0" memory=""/>
             <args name="populate_arg1" memory=""/>
             <args name="populate_dx" memory=""/>
@@ -94,6 +65,7 @@
             <args name="size1" memory=""/>
             <args name="n_iters" memory=""/>
           </computeUnits>
+          <args name="arg0" master="true"/>
           <args name="populate_arg0"/>
           <args name="populate_arg1"/>
           <args name="populate_dx"/>
@@ -231,8 +203,9 @@
   <configuration name="System" id="com.xilinx.sdx.opencl.config.hw.1631457947" dirty="true">
     <configBuildOptions xsi:type="openclProject:OpenCLOptions" target="hw">
       <binaryContainers name="ops_poisson_kernels">
-        <kernels name="ops_poisson_kernel" sourceFile="src/OpenCL/poisson_kernels.cl">
-          <computeUnits name="ops_poisson_kernel_1" slr="">
+        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernels.cl">
+          <computeUnits name="ops_poisson_kernel_stencil_1" slr="">
+            <args name="arg0" master="true" memory=""/>
             <args name="populate_arg0" memory=""/>
             <args name="populate_arg1" memory=""/>
             <args name="populate_dx" memory=""/>
@@ -248,6 +221,7 @@
             <args name="size1" memory=""/>
             <args name="n_iters" memory=""/>
           </computeUnits>
+          <args name="arg0" master="true"/>
           <args name="populate_arg0"/>
           <args name="populate_arg1"/>
           <args name="populate_dx"/>
@@ -266,9 +240,10 @@
       </binaryContainers>
     </configBuildOptions>
     <lastBuildOptions xsi:type="openclProject:OpenCLOptions" target="hw">
-      <binaryContainers name="ops_poisson_kernels">
-        <kernels name="ops_poisson_kernel" sourceFile="src/OpenCL/poisson_kernels.cl">
-          <computeUnits name="ops_poisson_kernel_1" slr="">
+      <binaryContainers name="binary_container_1">
+        <kernels name="ops_poisson_stencil" sourceFile="src/OpenCL/poisson_kernels.cl">
+          <computeUnits name="ops_poisson_stencil_1" slr="">
+            <args name="arg0" master="true" memory=""/>
             <args name="populate_arg0" memory=""/>
             <args name="populate_arg1" memory=""/>
             <args name="populate_dx" memory=""/>
@@ -284,6 +259,7 @@
             <args name="size1" memory=""/>
             <args name="n_iters" memory=""/>
           </computeUnits>
+          <args name="arg0" master="true"/>
           <args name="populate_arg0"/>
           <args name="populate_arg1"/>
           <args name="populate_dx"/>

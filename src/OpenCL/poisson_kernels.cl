@@ -53,745 +53,9 @@
 #define SINGLE_RAM_SIZE 4096
 
 
-
-
-
-//__attribute__((xcl_dataflow))
-static void ops_poisson_kernel_stencil(
-		local float* u0,
-		local float* u1,
-		local float* u2,
-		local float* u3,
-		local float* u4,
-		local float* u5,
-		local float* u6,
-		local float* u7,
-		local float* u8,
-		local float* u9,
-		local float* u10,
-		local float* u11,
-		local float* u12,
-		local float* u13,
-		local float* u14,
-		local float* u15,
-		local float* u16,
-		local float* u17,
-		local float* u18,
-		local float* u19,
-		local float* u20,
-		local float* u21,
-		local float* u22,
-		local float* u23,
-		local float* u24,
-		local float* u25,
-		local float* u26,
-		local float* u27,
-		local float* u28,
-		local float* u29,
-		local float* u30,
-		local float* u31,
-		local float* u32,
-		local float* u33,
-		local float* u34,
-		local float* u35,
-		local float* u36,
-		local float* u37,
-		local float* u38,
-		local float* u39,
-		local float* u40,
-		local float* u41,
-		local float* u42,
-		local float* u43,
-		local float* u44,
-		local float* u45,
-		local float* u46,
-		local float* u47,
-		local float* u48,
-		local float* u49,
-		local float* u50,
-		local float* u51,
-		local float* u52,
-		local float* u53,
-		local float* u54,
-		local float* u55,
-		local float* u56,
-		local float* u57,
-		local float* u58,
-		local float* u59,
-		local float* u60,
-		local float* u61,
-		local float* u62,
-		local float* u63,
-		local float* u2_0,
-		local float* u2_1,
-		local float* u2_2,
-		local float* u2_3,
-		local float* u2_4,
-		local float* u2_5,
-		local float* u2_6,
-		local float* u2_7,
-		local float* u2_8,
-		local float* u2_9,
-		local float* u2_10,
-		local float* u2_11,
-		local float* u2_12,
-		local float* u2_13,
-		local float* u2_14,
-		local float* u2_15,
-		local float* u2_16,
-		local float* u2_17,
-		local float* u2_18,
-		local float* u2_19,
-		local float* u2_20,
-		local float* u2_21,
-		local float* u2_22,
-		local float* u2_23,
-		local float* u2_24,
-		local float* u2_25,
-		local float* u2_26,
-		local float* u2_27,
-		local float* u2_28,
-		local float* u2_29,
-		local float* u2_30,
-		local float* u2_31,
-		local float* u2_32,
-		local float* u2_33,
-		local float* u2_34,
-		local float* u2_35,
-		local float* u2_36,
-		local float* u2_37,
-		local float* u2_38,
-		local float* u2_39,
-		local float* u2_40,
-		local float* u2_41,
-		local float* u2_42,
-		local float* u2_43,
-		local float* u2_44,
-		local float* u2_45,
-		local float* u2_46,
-		local float* u2_47,
-		local float* u2_48,
-		local float* u2_49,
-		local float* u2_50,
-		local float* u2_51,
-		local float* u2_52,
-		local float* u2_53,
-		local float* u2_54,
-		local float* u2_55,
-		local float* u2_56,
-		local float* u2_57,
-		local float* u2_58,
-		local float* u2_59,
-		local float* u2_60,
-		local float* u2_61,
-		local float* u2_62,
-		local float* u2_63,
-		const int base0,
-		const int base1,
-		const int size0,
-		const int size1){
-
-
-	float first_element = 0;
-	int base_index1, base_index2, base_index3, base_index0;
-	int end_loc =  (size0 >> 6) + 1;
-	const int row_block = MAX_X_DIM/P_FACTOR;
-
-
-	for(int i = 0; i < size1; i++){
-
-		int base_index0 = (i) * row_block;
-		int base_index1 = (i+1) * row_block;
-		int base_index2 = (i+2) * row_block;
-
-		__attribute__((xcl_pipeline_loop))
-		for(int j = 0; j < end_loc ; j++){
-
-
-			int index0 = j * 64 + 0;
-			if( index0 > 0 && index0  <= size0){
-				float f1_0 = (u0[base_index0+j] + u0[base_index2+j]) * 0.125;
-				float f2_0 = (u63[base_index1+j-1] + u1[base_index1+j]) * 0.125;
-				float f3_0 = u0[base_index1+j] * 0.5;
-				float result_0 = f1_0 + f2_0 + f3_0;
-				u2_0[base_index1+j] = result_0;
-			}
-
-			int index1 = j * 64 + 1;
-			if(index1  <= size0){
-				float f1_1 = (u1[base_index0+j] + u1[base_index2+j]) * 0.125;
-				float f2_1 = (u0[base_index1+j] + u2[base_index1+j]) * 0.125;
-				float f3_1 = u1[base_index1+j] * 0.5;
-				float result_1 = f1_1 + f2_1 + f3_1;
-				u2_1[base_index1+j] = result_1;
-			}
-
-			int index2 = j * 64 + 2;
-			if(index2  <= size0){
-				float f1_2 = (u2[base_index0+j] + u2[base_index2+j]) * 0.125;
-				float f2_2 = (u1[base_index1+j] + u3[base_index1+j]) * 0.125;
-				float f3_2 = u2[base_index1+j] * 0.5;
-				float result_2 = f1_2 + f2_2 + f3_2;
-				u2_2[base_index1+j] = result_2;
-			}
-
-			int index3 = j * 64 + 3;
-			if(index3  <= size0){
-				float f1_3 = (u3[base_index0+j] + u3[base_index2+j]) * 0.125;
-				float f2_3 = (u2[base_index1+j] + u4[base_index1+j]) * 0.125;
-				float f3_3 = u3[base_index1+j] * 0.5;
-				float result_3 = f1_3 + f2_3 + f3_3;
-				u2_3[base_index1+j] = result_3;
-			}
-
-			int index4 = j * 64 + 4;
-			if(index4  <= size0){
-				float f1_4 = (u4[base_index0+j] + u4[base_index2+j]) * 0.125;
-				float f2_4 = (u3[base_index1+j] + u5[base_index1+j]) * 0.125;
-				float f3_4 = u4[base_index1+j] * 0.5;
-				float result_4 = f1_4 + f2_4 + f3_4;
-				u2_4[base_index1+j] = result_4;
-			}
-
-			int index5 = j * 64 + 5;
-			if(index5  <= size0){
-				float f1_5 = (u5[base_index0+j] + u5[base_index2+j]) * 0.125;
-				float f2_5 = (u4[base_index1+j] + u6[base_index1+j]) * 0.125;
-				float f3_5 = u5[base_index1+j] * 0.5;
-				float result_5 = f1_5 + f2_5 + f3_5;
-				u2_5[base_index1+j] = result_5;
-			}
-
-			int index6 = j * 64 + 6;
-			if(index6  <= size0){
-				float f1_6 = (u6[base_index0+j] + u6[base_index2+j]) * 0.125;
-				float f2_6 = (u5[base_index1+j] + u7[base_index1+j]) * 0.125;
-				float f3_6 = u6[base_index1+j] * 0.5;
-				float result_6 = f1_6 + f2_6 + f3_6;
-				u2_6[base_index1+j] = result_6;
-			}
-
-			int index7 = j * 64 + 7;
-			if(index7  <= size0){
-				float f1_7 = (u7[base_index0+j] + u7[base_index2+j]) * 0.125;
-				float f2_7 = (u6[base_index1+j] + u8[base_index1+j]) * 0.125;
-				float f3_7 = u7[base_index1+j] * 0.5;
-				float result_7 = f1_7 + f2_7 + f3_7;
-				u2_7[base_index1+j] = result_7;
-			}
-
-			int index8 = j * 64 + 8;
-			if(index8  <= size0){
-				float f1_8 = (u8[base_index0+j] + u8[base_index2+j]) * 0.125;
-				float f2_8 = (u7[base_index1+j] + u9[base_index1+j]) * 0.125;
-				float f3_8 = u8[base_index1+j] * 0.5;
-				float result_8 = f1_8 + f2_8 + f3_8;
-				u2_8[base_index1+j] = result_8;
-			}
-
-			int index9 = j * 64 + 9;
-			if(index9  <= size0){
-				float f1_9 = (u9[base_index0+j] + u9[base_index2+j]) * 0.125;
-				float f2_9 = (u8[base_index1+j] + u10[base_index1+j]) * 0.125;
-				float f3_9 = u9[base_index1+j] * 0.5;
-				float result_9 = f1_9 + f2_9 + f3_9;
-				u2_9[base_index1+j] = result_9;
-			}
-
-			int index10 = j * 64 + 10;
-			if(index10  <= size0){
-				float f1_10 = (u10[base_index0+j] + u10[base_index2+j]) * 0.125;
-				float f2_10 = (u9[base_index1+j] + u11[base_index1+j]) * 0.125;
-				float f3_10 = u10[base_index1+j] * 0.5;
-				float result_10 = f1_10 + f2_10 + f3_10;
-				u2_10[base_index1+j] = result_10;
-			}
-
-			int index11 = j * 64 + 11;
-			if(index11  <= size0){
-				float f1_11 = (u11[base_index0+j] + u11[base_index2+j]) * 0.125;
-				float f2_11 = (u10[base_index1+j] + u12[base_index1+j]) * 0.125;
-				float f3_11 = u11[base_index1+j] * 0.5;
-				float result_11 = f1_11 + f2_11 + f3_11;
-				u2_11[base_index1+j] = result_11;
-			}
-
-			int index12 = j * 64 + 12;
-			if(index12  <= size0){
-				float f1_12 = (u12[base_index0+j] + u12[base_index2+j]) * 0.125;
-				float f2_12 = (u11[base_index1+j] + u13[base_index1+j]) * 0.125;
-				float f3_12 = u12[base_index1+j] * 0.5;
-				float result_12 = f1_12 + f2_12 + f3_12;
-				u2_12[base_index1+j] = result_12;
-			}
-
-			int index13 = j * 64 + 13;
-			if(index13  <= size0){
-				float f1_13 = (u13[base_index0+j] + u13[base_index2+j]) * 0.125;
-				float f2_13 = (u12[base_index1+j] + u14[base_index1+j]) * 0.125;
-				float f3_13 = u13[base_index1+j] * 0.5;
-				float result_13 = f1_13 + f2_13 + f3_13;
-				u2_13[base_index1+j] = result_13;
-			}
-
-			int index14 = j * 64 + 14;
-			if(index14  <= size0){
-				float f1_14 = (u14[base_index0+j] + u14[base_index2+j]) * 0.125;
-				float f2_14 = (u13[base_index1+j] + u15[base_index1+j]) * 0.125;
-				float f3_14 = u14[base_index1+j] * 0.5;
-				float result_14 = f1_14 + f2_14 + f3_14;
-				u2_14[base_index1+j] = result_14;
-			}
-
-			int index15 = j * 64 + 15;
-			if(index15  <= size0){
-				float f1_15 = (u15[base_index0+j] + u15[base_index2+j]) * 0.125;
-				float f2_15 = (u14[base_index1+j] + u16[base_index1+j]) * 0.125;
-				float f3_15 = u15[base_index1+j] * 0.5;
-				float result_15 = f1_15 + f2_15 + f3_15;
-				u2_15[base_index1+j] = result_15;
-			}
-
-			int index16 = j * 64 + 16;
-			if(index16  <= size0){
-				float f1_16 = (u16[base_index0+j] + u16[base_index2+j]) * 0.125;
-				float f2_16 = (u15[base_index1+j] + u17[base_index1+j]) * 0.125;
-				float f3_16 = u16[base_index1+j] * 0.5;
-				float result_16 = f1_16 + f2_16 + f3_16;
-				u2_16[base_index1+j] = result_16;
-			}
-
-			int index17 = j * 64 + 17;
-			if(index17  <= size0){
-				float f1_17 = (u17[base_index0+j] + u17[base_index2+j]) * 0.125;
-				float f2_17 = (u16[base_index1+j] + u18[base_index1+j]) * 0.125;
-				float f3_17 = u17[base_index1+j] * 0.5;
-				float result_17 = f1_17 + f2_17 + f3_17;
-				u2_17[base_index1+j] = result_17;
-			}
-
-			int index18 = j * 64 + 18;
-			if(index18  <= size0){
-				float f1_18 = (u18[base_index0+j] + u18[base_index2+j]) * 0.125;
-				float f2_18 = (u17[base_index1+j] + u19[base_index1+j]) * 0.125;
-				float f3_18 = u18[base_index1+j] * 0.5;
-				float result_18 = f1_18 + f2_18 + f3_18;
-				u2_18[base_index1+j] = result_18;
-			}
-
-			int index19 = j * 64 + 19;
-			if(index19  <= size0){
-				float f1_19 = (u19[base_index0+j] + u19[base_index2+j]) * 0.125;
-				float f2_19 = (u18[base_index1+j] + u20[base_index1+j]) * 0.125;
-				float f3_19 = u19[base_index1+j] * 0.5;
-				float result_19 = f1_19 + f2_19 + f3_19;
-				u2_19[base_index1+j] = result_19;
-			}
-
-			int index20 = j * 64 + 20;
-			if(index20  <= size0){
-				float f1_20 = (u20[base_index0+j] + u20[base_index2+j]) * 0.125;
-				float f2_20 = (u19[base_index1+j] + u21[base_index1+j]) * 0.125;
-				float f3_20 = u20[base_index1+j] * 0.5;
-				float result_20 = f1_20 + f2_20 + f3_20;
-				u2_20[base_index1+j] = result_20;
-			}
-
-			int index21 = j * 64 + 21;
-			if(index21  <= size0){
-				float f1_21 = (u21[base_index0+j] + u21[base_index2+j]) * 0.125;
-				float f2_21 = (u20[base_index1+j] + u22[base_index1+j]) * 0.125;
-				float f3_21 = u21[base_index1+j] * 0.5;
-				float result_21 = f1_21 + f2_21 + f3_21;
-				u2_21[base_index1+j] = result_21;
-			}
-
-			int index22 = j * 64 + 22;
-			if(index22  <= size0){
-				float f1_22 = (u22[base_index0+j] + u22[base_index2+j]) * 0.125;
-				float f2_22 = (u21[base_index1+j] + u23[base_index1+j]) * 0.125;
-				float f3_22 = u22[base_index1+j] * 0.5;
-				float result_22 = f1_22 + f2_22 + f3_22;
-				u2_22[base_index1+j] = result_22;
-			}
-
-			int index23 = j * 64 + 23;
-			if(index23  <= size0){
-				float f1_23 = (u23[base_index0+j] + u23[base_index2+j]) * 0.125;
-				float f2_23 = (u22[base_index1+j] + u24[base_index1+j]) * 0.125;
-				float f3_23 = u23[base_index1+j] * 0.5;
-				float result_23 = f1_23 + f2_23 + f3_23;
-				u2_23[base_index1+j] = result_23;
-			}
-
-			int index24 = j * 64 + 24;
-			if(index24  <= size0){
-				float f1_24 = (u24[base_index0+j] + u24[base_index2+j]) * 0.125;
-				float f2_24 = (u23[base_index1+j] + u25[base_index1+j]) * 0.125;
-				float f3_24 = u24[base_index1+j] * 0.5;
-				float result_24 = f1_24 + f2_24 + f3_24;
-				u2_24[base_index1+j] = result_24;
-			}
-
-			int index25 = j * 64 + 25;
-			if(index25  <= size0){
-				float f1_25 = (u25[base_index0+j] + u25[base_index2+j]) * 0.125;
-				float f2_25 = (u24[base_index1+j] + u26[base_index1+j]) * 0.125;
-				float f3_25 = u25[base_index1+j] * 0.5;
-				float result_25 = f1_25 + f2_25 + f3_25;
-				u2_25[base_index1+j] = result_25;
-			}
-
-			int index26 = j * 64 + 26;
-			if(index26  <= size0){
-				float f1_26 = (u26[base_index0+j] + u26[base_index2+j]) * 0.125;
-				float f2_26 = (u25[base_index1+j] + u27[base_index1+j]) * 0.125;
-				float f3_26 = u26[base_index1+j] * 0.5;
-				float result_26 = f1_26 + f2_26 + f3_26;
-				u2_26[base_index1+j] = result_26;
-			}
-
-			int index27 = j * 64 + 27;
-			if(index27  <= size0){
-				float f1_27 = (u27[base_index0+j] + u27[base_index2+j]) * 0.125;
-				float f2_27 = (u26[base_index1+j] + u28[base_index1+j]) * 0.125;
-				float f3_27 = u27[base_index1+j] * 0.5;
-				float result_27 = f1_27 + f2_27 + f3_27;
-				u2_27[base_index1+j] = result_27;
-			}
-
-			int index28 = j * 64 + 28;
-			if(index28  <= size0){
-				float f1_28 = (u28[base_index0+j] + u28[base_index2+j]) * 0.125;
-				float f2_28 = (u27[base_index1+j] + u29[base_index1+j]) * 0.125;
-				float f3_28 = u28[base_index1+j] * 0.5;
-				float result_28 = f1_28 + f2_28 + f3_28;
-				u2_28[base_index1+j] = result_28;
-			}
-
-			int index29 = j * 64 + 29;
-			if(index29  <= size0){
-				float f1_29 = (u29[base_index0+j] + u29[base_index2+j]) * 0.125;
-				float f2_29 = (u28[base_index1+j] + u30[base_index1+j]) * 0.125;
-				float f3_29 = u29[base_index1+j] * 0.5;
-				float result_29 = f1_29 + f2_29 + f3_29;
-				u2_29[base_index1+j] = result_29;
-			}
-
-			int index30 = j * 64 + 30;
-			if(index30  <= size0){
-				float f1_30 = (u30[base_index0+j] + u30[base_index2+j]) * 0.125;
-				float f2_30 = (u29[base_index1+j] + u31[base_index1+j]) * 0.125;
-				float f3_30 = u30[base_index1+j] * 0.5;
-				float result_30 = f1_30 + f2_30 + f3_30;
-				u2_30[base_index1+j] = result_30;
-			}
-
-			int index31 = j * 64 + 31;
-			if(index31  <= size0){
-				float f1_31 = (u31[base_index0+j] + u31[base_index2+j]) * 0.125;
-				float f2_31 = (u30[base_index1+j] + u32[base_index1+j]) * 0.125;
-				float f3_31 = u31[base_index1+j] * 0.5;
-				float result_31 = f1_31 + f2_31 + f3_31;
-				u2_31[base_index1+j] = result_31;
-			}
-
-			int index32 = j * 64 + 32;
-			if(index32  <= size0){
-				float f1_32 = (u32[base_index0+j] + u32[base_index2+j]) * 0.125;
-				float f2_32 = (u31[base_index1+j] + u33[base_index1+j]) * 0.125;
-				float f3_32 = u32[base_index1+j] * 0.5;
-				float result_32 = f1_32 + f2_32 + f3_32;
-				u2_32[base_index1+j] = result_32;
-			}
-
-			int index33 = j * 64 + 33;
-			if(index33  <= size0){
-				float f1_33 = (u33[base_index0+j] + u33[base_index2+j]) * 0.125;
-				float f2_33 = (u32[base_index1+j] + u34[base_index1+j]) * 0.125;
-				float f3_33 = u33[base_index1+j] * 0.5;
-				float result_33 = f1_33 + f2_33 + f3_33;
-				u2_33[base_index1+j] = result_33;
-			}
-
-			int index34 = j * 64 + 34;
-			if(index34  <= size0){
-				float f1_34 = (u34[base_index0+j] + u34[base_index2+j]) * 0.125;
-				float f2_34 = (u33[base_index1+j] + u35[base_index1+j]) * 0.125;
-				float f3_34 = u34[base_index1+j] * 0.5;
-				float result_34 = f1_34 + f2_34 + f3_34;
-				u2_34[base_index1+j] = result_34;
-			}
-
-			int index35 = j * 64 + 35;
-			if(index35  <= size0){
-				float f1_35 = (u35[base_index0+j] + u35[base_index2+j]) * 0.125;
-				float f2_35 = (u34[base_index1+j] + u36[base_index1+j]) * 0.125;
-				float f3_35 = u35[base_index1+j] * 0.5;
-				float result_35 = f1_35 + f2_35 + f3_35;
-				u2_35[base_index1+j] = result_35;
-			}
-
-			int index36 = j * 64 + 36;
-			if(index36  <= size0){
-				float f1_36 = (u36[base_index0+j] + u36[base_index2+j]) * 0.125;
-				float f2_36 = (u35[base_index1+j] + u37[base_index1+j]) * 0.125;
-				float f3_36 = u36[base_index1+j] * 0.5;
-				float result_36 = f1_36 + f2_36 + f3_36;
-				u2_36[base_index1+j] = result_36;
-			}
-
-			int index37 = j * 64 + 37;
-			if(index37  <= size0){
-				float f1_37 = (u37[base_index0+j] + u37[base_index2+j]) * 0.125;
-				float f2_37 = (u36[base_index1+j] + u38[base_index1+j]) * 0.125;
-				float f3_37 = u37[base_index1+j] * 0.5;
-				float result_37 = f1_37 + f2_37 + f3_37;
-				u2_37[base_index1+j] = result_37;
-			}
-
-			int index38 = j * 64 + 38;
-			if(index38  <= size0){
-				float f1_38 = (u38[base_index0+j] + u38[base_index2+j]) * 0.125;
-				float f2_38 = (u37[base_index1+j] + u39[base_index1+j]) * 0.125;
-				float f3_38 = u38[base_index1+j] * 0.5;
-				float result_38 = f1_38 + f2_38 + f3_38;
-				u2_38[base_index1+j] = result_38;
-			}
-
-			int index39 = j * 64 + 39;
-			if(index39  <= size0){
-				float f1_39 = (u39[base_index0+j] + u39[base_index2+j]) * 0.125;
-				float f2_39 = (u38[base_index1+j] + u40[base_index1+j]) * 0.125;
-				float f3_39 = u39[base_index1+j] * 0.5;
-				float result_39 = f1_39 + f2_39 + f3_39;
-				u2_39[base_index1+j] = result_39;
-			}
-
-			int index40 = j * 64 + 40;
-			if(index40  <= size0){
-				float f1_40 = (u40[base_index0+j] + u40[base_index2+j]) * 0.125;
-				float f2_40 = (u39[base_index1+j] + u41[base_index1+j]) * 0.125;
-				float f3_40 = u40[base_index1+j] * 0.5;
-				float result_40 = f1_40 + f2_40 + f3_40;
-				u2_40[base_index1+j] = result_40;
-			}
-
-			int index41 = j * 64 + 41;
-			if(index41  <= size0){
-				float f1_41 = (u41[base_index0+j] + u41[base_index2+j]) * 0.125;
-				float f2_41 = (u40[base_index1+j] + u42[base_index1+j]) * 0.125;
-				float f3_41 = u41[base_index1+j] * 0.5;
-				float result_41 = f1_41 + f2_41 + f3_41;
-				u2_41[base_index1+j] = result_41;
-			}
-
-			int index42 = j * 64 + 42;
-			if(index42  <= size0){
-				float f1_42 = (u42[base_index0+j] + u42[base_index2+j]) * 0.125;
-				float f2_42 = (u41[base_index1+j] + u43[base_index1+j]) * 0.125;
-				float f3_42 = u42[base_index1+j] * 0.5;
-				float result_42 = f1_42 + f2_42 + f3_42;
-				u2_42[base_index1+j] = result_42;
-			}
-
-			int index43 = j * 64 + 43;
-			if(index43  <= size0){
-				float f1_43 = (u43[base_index0+j] + u43[base_index2+j]) * 0.125;
-				float f2_43 = (u42[base_index1+j] + u44[base_index1+j]) * 0.125;
-				float f3_43 = u43[base_index1+j] * 0.5;
-				float result_43 = f1_43 + f2_43 + f3_43;
-				u2_43[base_index1+j] = result_43;
-			}
-
-			int index44 = j * 64 + 44;
-			if(index44  <= size0){
-				float f1_44 = (u44[base_index0+j] + u44[base_index2+j]) * 0.125;
-				float f2_44 = (u43[base_index1+j] + u45[base_index1+j]) * 0.125;
-				float f3_44 = u44[base_index1+j] * 0.5;
-				float result_44 = f1_44 + f2_44 + f3_44;
-				u2_44[base_index1+j] = result_44;
-			}
-
-			int index45 = j * 64 + 45;
-			if(index45  <= size0){
-				float f1_45 = (u45[base_index0+j] + u45[base_index2+j]) * 0.125;
-				float f2_45 = (u44[base_index1+j] + u46[base_index1+j]) * 0.125;
-				float f3_45 = u45[base_index1+j] * 0.5;
-				float result_45 = f1_45 + f2_45 + f3_45;
-				u2_45[base_index1+j] = result_45;
-			}
-
-			int index46 = j * 64 + 46;
-			if(index46  <= size0){
-				float f1_46 = (u46[base_index0+j] + u46[base_index2+j]) * 0.125;
-				float f2_46 = (u45[base_index1+j] + u47[base_index1+j]) * 0.125;
-				float f3_46 = u46[base_index1+j] * 0.5;
-				float result_46 = f1_46 + f2_46 + f3_46;
-				u2_46[base_index1+j] = result_46;
-			}
-
-			int index47 = j * 64 + 47;
-			if(index47  <= size0){
-				float f1_47 = (u47[base_index0+j] + u47[base_index2+j]) * 0.125;
-				float f2_47 = (u46[base_index1+j] + u48[base_index1+j]) * 0.125;
-				float f3_47 = u47[base_index1+j] * 0.5;
-				float result_47 = f1_47 + f2_47 + f3_47;
-				u2_47[base_index1+j] = result_47;
-			}
-
-			int index48 = j * 64 + 48;
-			if(index48  <= size0){
-				float f1_48 = (u48[base_index0+j] + u48[base_index2+j]) * 0.125;
-				float f2_48 = (u47[base_index1+j] + u49[base_index1+j]) * 0.125;
-				float f3_48 = u48[base_index1+j] * 0.5;
-				float result_48 = f1_48 + f2_48 + f3_48;
-				u2_48[base_index1+j] = result_48;
-			}
-
-			int index49 = j * 64 + 49;
-			if(index49  <= size0){
-				float f1_49 = (u49[base_index0+j] + u49[base_index2+j]) * 0.125;
-				float f2_49 = (u48[base_index1+j] + u50[base_index1+j]) * 0.125;
-				float f3_49 = u49[base_index1+j] * 0.5;
-				float result_49 = f1_49 + f2_49 + f3_49;
-				u2_49[base_index1+j] = result_49;
-			}
-
-			int index50 = j * 64 + 50;
-			if(index50  <= size0){
-				float f1_50 = (u50[base_index0+j] + u50[base_index2+j]) * 0.125;
-				float f2_50 = (u49[base_index1+j] + u51[base_index1+j]) * 0.125;
-				float f3_50 = u50[base_index1+j] * 0.5;
-				float result_50 = f1_50 + f2_50 + f3_50;
-				u2_50[base_index1+j] = result_50;
-			}
-
-			int index51 = j * 64 + 51;
-			if(index51  <= size0){
-				float f1_51 = (u51[base_index0+j] + u51[base_index2+j]) * 0.125;
-				float f2_51 = (u50[base_index1+j] + u52[base_index1+j]) * 0.125;
-				float f3_51 = u51[base_index1+j] * 0.5;
-				float result_51 = f1_51 + f2_51 + f3_51;
-				u2_51[base_index1+j] = result_51;
-			}
-
-			int index52 = j * 64 + 52;
-			if(index52  <= size0){
-				float f1_52 = (u52[base_index0+j] + u52[base_index2+j]) * 0.125;
-				float f2_52 = (u51[base_index1+j] + u53[base_index1+j]) * 0.125;
-				float f3_52 = u52[base_index1+j] * 0.5;
-				float result_52 = f1_52 + f2_52 + f3_52;
-				u2_52[base_index1+j] = result_52;
-			}
-
-			int index53 = j * 64 + 53;
-			if(index53  <= size0){
-				float f1_53 = (u53[base_index0+j] + u53[base_index2+j]) * 0.125;
-				float f2_53 = (u52[base_index1+j] + u54[base_index1+j]) * 0.125;
-				float f3_53 = u53[base_index1+j] * 0.5;
-				float result_53 = f1_53 + f2_53 + f3_53;
-				u2_53[base_index1+j] = result_53;
-			}
-
-			int index54 = j * 64 + 54;
-			if(index54  <= size0){
-				float f1_54 = (u54[base_index0+j] + u54[base_index2+j]) * 0.125;
-				float f2_54 = (u53[base_index1+j] + u55[base_index1+j]) * 0.125;
-				float f3_54 = u54[base_index1+j] * 0.5;
-				float result_54 = f1_54 + f2_54 + f3_54;
-				u2_54[base_index1+j] = result_54;
-			}
-
-			int index55 = j * 64 + 55;
-			if(index55  <= size0){
-				float f1_55 = (u55[base_index0+j] + u55[base_index2+j]) * 0.125;
-				float f2_55 = (u54[base_index1+j] + u56[base_index1+j]) * 0.125;
-				float f3_55 = u55[base_index1+j] * 0.5;
-				float result_55 = f1_55 + f2_55 + f3_55;
-				u2_55[base_index1+j] = result_55;
-			}
-
-			int index56 = j * 64 + 56;
-			if(index56  <= size0){
-				float f1_56 = (u56[base_index0+j] + u56[base_index2+j]) * 0.125;
-				float f2_56 = (u55[base_index1+j] + u57[base_index1+j]) * 0.125;
-				float f3_56 = u56[base_index1+j] * 0.5;
-				float result_56 = f1_56 + f2_56 + f3_56;
-				u2_56[base_index1+j] = result_56;
-			}
-
-			int index57 = j * 64 + 57;
-			if(index57  <= size0){
-				float f1_57 = (u57[base_index0+j] + u57[base_index2+j]) * 0.125;
-				float f2_57 = (u56[base_index1+j] + u58[base_index1+j]) * 0.125;
-				float f3_57 = u57[base_index1+j] * 0.5;
-				float result_57 = f1_57 + f2_57 + f3_57;
-				u2_57[base_index1+j] = result_57;
-			}
-
-			int index58 = j * 64 + 58;
-			if(index58  <= size0){
-				float f1_58 = (u58[base_index0+j] + u58[base_index2+j]) * 0.125;
-				float f2_58 = (u57[base_index1+j] + u59[base_index1+j]) * 0.125;
-				float f3_58 = u58[base_index1+j] * 0.5;
-				float result_58 = f1_58 + f2_58 + f3_58;
-				u2_58[base_index1+j] = result_58;
-			}
-
-			int index59 = j * 64 + 59;
-			if(index59  <= size0){
-				float f1_59 = (u59[base_index0+j] + u59[base_index2+j]) * 0.125;
-				float f2_59 = (u58[base_index1+j] + u60[base_index1+j]) * 0.125;
-				float f3_59 = u59[base_index1+j] * 0.5;
-				float result_59 = f1_59 + f2_59 + f3_59;
-				u2_59[base_index1+j] = result_59;
-			}
-
-			int index60 = j * 64 + 60;
-			if(index60  <= size0){
-				float f1_60 = (u60[base_index0+j] + u60[base_index2+j]) * 0.125;
-				float f2_60 = (u59[base_index1+j] + u61[base_index1+j]) * 0.125;
-				float f3_60 = u60[base_index1+j] * 0.5;
-				float result_60 = f1_60 + f2_60 + f3_60;
-				u2_60[base_index1+j] = result_60;
-			}
-
-			int index61 = j * 64 + 61;
-			if(index61  <= size0){
-				float f1_61 = (u61[base_index0+j] + u61[base_index2+j]) * 0.125;
-				float f2_61 = (u60[base_index1+j] + u62[base_index1+j]) * 0.125;
-				float f3_61 = u61[base_index1+j] * 0.5;
-				float result_61 = f1_61 + f2_61 + f3_61;
-				u2_61[base_index1+j] = result_61;
-			}
-
-			int index62 = j * 64 + 62;
-			if(index62  <= size0){
-				float f1_62 = (u62[base_index0+j] + u62[base_index2+j]) * 0.125;
-				float f2_62 = (u61[base_index1+j] + u63[base_index1+j]) * 0.125;
-				float f3_62 = u62[base_index1+j] * 0.5;
-				float result_62 = f1_62 + f2_62 + f3_62;
-				u2_62[base_index1+j] = result_62;
-			}
-
-			int index63 = j * 64 + 0;
-			if(index63  <= size0){
-				float f1_63 = (u63[base_index0+j] + u63[base_index2+j]) * 0.125;
-				float f2_63 = (u0[base_index1+j+1] + u62[base_index1+j]) * 0.125;
-				float f3_63 = u63[base_index1+j] * 0.5;
-				float result_63 = f1_63 + f2_63 + f3_63;
-				u2_63[base_index1+j] = result_63;
-			}
-
-		}
-	}
-}
-
-
-
 __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
-__kernel void ops_poisson_kernel(
+__kernel void ops_poisson_kernel_stencil(
+		__global float16* arg0,
 		const int populate_arg0,
 		const int populate_arg1,
 		const float populate_dx,
@@ -808,75 +72,71 @@ __kernel void ops_poisson_kernel(
 		const int n_iters){
 
 
-//	struct bram_cluster U;
-//	struct bram_cluster U2;
-//	struct bram_cluster ref;
-
 	// RAM u
-	local float u0[SINGLE_RAM_SIZE];
-	local float u1[SINGLE_RAM_SIZE];
-	local float u2[SINGLE_RAM_SIZE];
-	local float u3[SINGLE_RAM_SIZE];
-	local float u4[SINGLE_RAM_SIZE];
-	local float u5[SINGLE_RAM_SIZE];
-	local float u6[SINGLE_RAM_SIZE];
-	local float u7[SINGLE_RAM_SIZE];
-	local float u8[SINGLE_RAM_SIZE];
-	local float u9[SINGLE_RAM_SIZE];
-	local float u10[SINGLE_RAM_SIZE];
-	local float u11[SINGLE_RAM_SIZE];
-	local float u12[SINGLE_RAM_SIZE];
-	local float u13[SINGLE_RAM_SIZE];
-	local float u14[SINGLE_RAM_SIZE];
-	local float u15[SINGLE_RAM_SIZE];
-	local float u16[SINGLE_RAM_SIZE];
-	local float u17[SINGLE_RAM_SIZE];
-	local float u18[SINGLE_RAM_SIZE];
-	local float u19[SINGLE_RAM_SIZE];
-	local float u20[SINGLE_RAM_SIZE];
-	local float u21[SINGLE_RAM_SIZE];
-	local float u22[SINGLE_RAM_SIZE];
-	local float u23[SINGLE_RAM_SIZE];
-	local float u24[SINGLE_RAM_SIZE];
-	local float u25[SINGLE_RAM_SIZE];
-	local float u26[SINGLE_RAM_SIZE];
-	local float u27[SINGLE_RAM_SIZE];
-	local float u28[SINGLE_RAM_SIZE];
-	local float u29[SINGLE_RAM_SIZE];
-	local float u30[SINGLE_RAM_SIZE];
-	local float u31[SINGLE_RAM_SIZE];
-	local float u32[SINGLE_RAM_SIZE];
-	local float u33[SINGLE_RAM_SIZE];
-	local float u34[SINGLE_RAM_SIZE];
-	local float u35[SINGLE_RAM_SIZE];
-	local float u36[SINGLE_RAM_SIZE];
-	local float u37[SINGLE_RAM_SIZE];
-	local float u38[SINGLE_RAM_SIZE];
-	local float u39[SINGLE_RAM_SIZE];
-	local float u40[SINGLE_RAM_SIZE];
-	local float u41[SINGLE_RAM_SIZE];
-	local float u42[SINGLE_RAM_SIZE];
-	local float u43[SINGLE_RAM_SIZE];
-	local float u44[SINGLE_RAM_SIZE];
-	local float u45[SINGLE_RAM_SIZE];
-	local float u46[SINGLE_RAM_SIZE];
-	local float u47[SINGLE_RAM_SIZE];
-	local float u48[SINGLE_RAM_SIZE];
-	local float u49[SINGLE_RAM_SIZE];
-	local float u50[SINGLE_RAM_SIZE];
-	local float u51[SINGLE_RAM_SIZE];
-	local float u52[SINGLE_RAM_SIZE];
-	local float u53[SINGLE_RAM_SIZE];
-	local float u54[SINGLE_RAM_SIZE];
-	local float u55[SINGLE_RAM_SIZE];
-	local float u56[SINGLE_RAM_SIZE];
-	local float u57[SINGLE_RAM_SIZE];
-	local float u58[SINGLE_RAM_SIZE];
-	local float u59[SINGLE_RAM_SIZE];
-	local float u60[SINGLE_RAM_SIZE];
-	local float u61[SINGLE_RAM_SIZE];
-	local float u62[SINGLE_RAM_SIZE];
-	local float u63[SINGLE_RAM_SIZE];
+	local float u1_0[SINGLE_RAM_SIZE];
+	local float u1_1[SINGLE_RAM_SIZE];
+	local float u1_2[SINGLE_RAM_SIZE];
+	local float u1_3[SINGLE_RAM_SIZE];
+	local float u1_4[SINGLE_RAM_SIZE];
+	local float u1_5[SINGLE_RAM_SIZE];
+	local float u1_6[SINGLE_RAM_SIZE];
+	local float u1_7[SINGLE_RAM_SIZE];
+	local float u1_8[SINGLE_RAM_SIZE];
+	local float u1_9[SINGLE_RAM_SIZE];
+	local float u1_10[SINGLE_RAM_SIZE];
+	local float u1_11[SINGLE_RAM_SIZE];
+	local float u1_12[SINGLE_RAM_SIZE];
+	local float u1_13[SINGLE_RAM_SIZE];
+	local float u1_14[SINGLE_RAM_SIZE];
+	local float u1_15[SINGLE_RAM_SIZE];
+	local float u1_16[SINGLE_RAM_SIZE];
+	local float u1_17[SINGLE_RAM_SIZE];
+	local float u1_18[SINGLE_RAM_SIZE];
+	local float u1_19[SINGLE_RAM_SIZE];
+	local float u1_20[SINGLE_RAM_SIZE];
+	local float u1_21[SINGLE_RAM_SIZE];
+	local float u1_22[SINGLE_RAM_SIZE];
+	local float u1_23[SINGLE_RAM_SIZE];
+	local float u1_24[SINGLE_RAM_SIZE];
+	local float u1_25[SINGLE_RAM_SIZE];
+	local float u1_26[SINGLE_RAM_SIZE];
+	local float u1_27[SINGLE_RAM_SIZE];
+	local float u1_28[SINGLE_RAM_SIZE];
+	local float u1_29[SINGLE_RAM_SIZE];
+	local float u1_30[SINGLE_RAM_SIZE];
+	local float u1_31[SINGLE_RAM_SIZE];
+	local float u1_32[SINGLE_RAM_SIZE];
+	local float u1_33[SINGLE_RAM_SIZE];
+	local float u1_34[SINGLE_RAM_SIZE];
+	local float u1_35[SINGLE_RAM_SIZE];
+	local float u1_36[SINGLE_RAM_SIZE];
+	local float u1_37[SINGLE_RAM_SIZE];
+	local float u1_38[SINGLE_RAM_SIZE];
+	local float u1_39[SINGLE_RAM_SIZE];
+	local float u1_40[SINGLE_RAM_SIZE];
+	local float u1_41[SINGLE_RAM_SIZE];
+	local float u1_42[SINGLE_RAM_SIZE];
+	local float u1_43[SINGLE_RAM_SIZE];
+	local float u1_44[SINGLE_RAM_SIZE];
+	local float u1_45[SINGLE_RAM_SIZE];
+	local float u1_46[SINGLE_RAM_SIZE];
+	local float u1_47[SINGLE_RAM_SIZE];
+	local float u1_48[SINGLE_RAM_SIZE];
+	local float u1_49[SINGLE_RAM_SIZE];
+	local float u1_50[SINGLE_RAM_SIZE];
+	local float u1_51[SINGLE_RAM_SIZE];
+	local float u1_52[SINGLE_RAM_SIZE];
+	local float u1_53[SINGLE_RAM_SIZE];
+	local float u1_54[SINGLE_RAM_SIZE];
+	local float u1_55[SINGLE_RAM_SIZE];
+	local float u1_56[SINGLE_RAM_SIZE];
+	local float u1_57[SINGLE_RAM_SIZE];
+	local float u1_58[SINGLE_RAM_SIZE];
+	local float u1_59[SINGLE_RAM_SIZE];
+	local float u1_60[SINGLE_RAM_SIZE];
+	local float u1_61[SINGLE_RAM_SIZE];
+	local float u1_62[SINGLE_RAM_SIZE];
+	local float u1_63[SINGLE_RAM_SIZE];
 
 
 	// Ram u2
@@ -946,276 +206,1096 @@ __kernel void ops_poisson_kernel(
 	local float u2_63[SINGLE_RAM_SIZE];
 
 
+	int base_index1, base_index2, base_index3, base_index0;
+	int end_loc =  (size0 >> 6) + 1;
+	const int row_block = MAX_X_DIM/P_FACTOR;
 
 
-	for (int iter = 0; iter < n_iters; iter++) {
-		ops_poisson_kernel_stencil(
-				u0,
-				u1,
-				u2,
-				u3,
-				u4,
-				u5,
-				u6,
-				u7,
-				u8,
-				u9,
-				u10,
-				u11,
-				u12,
-				u13,
-				u14,
-				u15,
-				u16,
-				u17,
-				u18,
-				u19,
-				u20,
-				u21,
-				u22,
-				u23,
-				u24,
-				u25,
-				u26,
-				u27,
-				u28,
-				u29,
-				u30,
-				u31,
-				u32,
-				u33,
-				u34,
-				u35,
-				u36,
-				u37,
-				u38,
-				u39,
-				u40,
-				u41,
-				u42,
-				u43,
-				u44,
-				u45,
-				u46,
-				u47,
-				u48,
-				u49,
-				u50,
-				u51,
-				u52,
-				u53,
-				u54,
-				u55,
-				u56,
-				u57,
-				u58,
-				u59,
-				u60,
-				u61,
-				u62,
-				u63,
-				u2_0,
-				u2_1,
-				u2_2,
-				u2_3,
-				u2_4,
-				u2_5,
-				u2_6,
-				u2_7,
-				u2_8,
-				u2_9,
-				u2_10,
-				u2_11,
-				u2_12,
-				u2_13,
-				u2_14,
-				u2_15,
-				u2_16,
-				u2_17,
-				u2_18,
-				u2_19,
-				u2_20,
-				u2_21,
-				u2_22,
-				u2_23,
-				u2_24,
-				u2_25,
-				u2_26,
-				u2_27,
-				u2_28,
-				u2_29,
-				u2_30,
-				u2_31,
-				u2_32,
-				u2_33,
-				u2_34,
-				u2_35,
-				u2_36,
-				u2_37,
-				u2_38,
-				u2_39,
-				u2_40,
-				u2_41,
-				u2_42,
-				u2_43,
-				u2_44,
-				u2_45,
-				u2_46,
-				u2_47,
-				u2_48,
-				u2_49,
-				u2_50,
-				u2_51,
-				u2_52,
-				u2_53,
-				u2_54,
-				u2_55,
-				u2_56,
-				u2_57,
-				u2_58,
-				u2_59,
-				u2_60,
-				u2_61,
-				u2_62,
-				u2_63,
-				MAX_X_DIM+1,
-				MAX_X_DIM+1,
-				size0,
-				size1);
 
-			ops_poisson_kernel_stencil(
-				u2_0,
-				u2_1,
-				u2_2,
-				u2_3,
-				u2_4,
-				u2_5,
-				u2_6,
-				u2_7,
-				u2_8,
-				u2_9,
-				u2_10,
-				u2_11,
-				u2_12,
-				u2_13,
-				u2_14,
-				u2_15,
-				u2_16,
-				u2_17,
-				u2_18,
-				u2_19,
-				u2_20,
-				u2_21,
-				u2_22,
-				u2_23,
-				u2_24,
-				u2_25,
-				u2_26,
-				u2_27,
-				u2_28,
-				u2_29,
-				u2_30,
-				u2_31,
-				u2_32,
-				u2_33,
-				u2_34,
-				u2_35,
-				u2_36,
-				u2_37,
-				u2_38,
-				u2_39,
-				u2_40,
-				u2_41,
-				u2_42,
-				u2_43,
-				u2_44,
-				u2_45,
-				u2_46,
-				u2_47,
-				u2_48,
-				u2_49,
-				u2_50,
-				u2_51,
-				u2_52,
-				u2_53,
-				u2_54,
-				u2_55,
-				u2_56,
-				u2_57,
-				u2_58,
-				u2_59,
-				u2_60,
-				u2_61,
-				u2_62,
-				u2_63,
-				u0,
-				u1,
-				u2,
-				u3,
-				u4,
-				u5,
-				u6,
-				u7,
-				u8,
-				u9,
-				u10,
-				u11,
-				u12,
-				u13,
-				u14,
-				u15,
-				u16,
-				u17,
-				u18,
-				u19,
-				u20,
-				u21,
-				u22,
-				u23,
-				u24,
-				u25,
-				u26,
-				u27,
-				u28,
-				u29,
-				u30,
-				u31,
-				u32,
-				u33,
-				u34,
-				u35,
-				u36,
-				u37,
-				u38,
-				u39,
-				u40,
-				u41,
-				u42,
-				u43,
-				u44,
-				u45,
-				u46,
-				u47,
-				u48,
-				u49,
-				u50,
-				u51,
-				u52,
-				u53,
-				u54,
-				u55,
-				u56,
-				u57,
-				u58,
-				u59,
-				u60,
-				u61,
-				u62,
-				u63,
-				MAX_X_DIM+1,
-				MAX_X_DIM+1,
-				size0,
-				size1);
+	//initial pointer assigning
+		local float * ptr1_0 =  u1_0;
+		local float * ptr1_1 =  u1_1;
+		local float * ptr1_2 =  u1_2;
+		local float * ptr1_3 =  u1_3;
+		local float * ptr1_4 =  u1_4;
+		local float * ptr1_5 =  u1_5;
+		local float * ptr1_6 =  u1_6;
+		local float * ptr1_7 =  u1_7;
+		local float * ptr1_8 =  u1_8;
+		local float * ptr1_9 =  u1_9;
+		local float * ptr1_10 = u1_10;
+		local float * ptr1_11 = u1_11;
+		local float * ptr1_12 = u1_12;
+		local float * ptr1_13 = u1_13;
+		local float * ptr1_14 = u1_14;
+		local float * ptr1_15 = u1_15;
+		local float * ptr1_16 = u1_16;
+		local float * ptr1_17 = u1_17;
+		local float * ptr1_18 = u1_18;
+		local float * ptr1_19 = u1_19;
+		local float * ptr1_20 = u1_20;
+		local float * ptr1_21 = u1_21;
+		local float * ptr1_22 = u1_22;
+		local float * ptr1_23 = u1_23;
+		local float * ptr1_24 = u1_24;
+		local float * ptr1_25 = u1_25;
+		local float * ptr1_26 = u1_26;
+		local float * ptr1_27 = u1_27;
+		local float * ptr1_28 = u1_28;
+		local float * ptr1_29 = u1_29;
+		local float * ptr1_30 = u1_30;
+		local float * ptr1_31 = u1_31;
+		local float * ptr1_32 = u1_32;
+		local float * ptr1_33 = u1_33;
+		local float * ptr1_34 = u1_34;
+		local float * ptr1_35 = u1_35;
+		local float * ptr1_36 = u1_36;
+		local float * ptr1_37 = u1_37;
+		local float * ptr1_38 = u1_38;
+		local float * ptr1_39 = u1_39;
+		local float * ptr1_40 = u1_40;
+		local float * ptr1_41 = u1_41;
+		local float * ptr1_42 = u1_42;
+		local float * ptr1_43 = u1_43;
+		local float * ptr1_44 = u1_44;
+		local float * ptr1_45 = u1_45;
+		local float * ptr1_46 = u1_46;
+		local float * ptr1_47 = u1_47;
+		local float * ptr1_48 = u1_48;
+		local float * ptr1_49 = u1_49;
+		local float * ptr1_50 = u1_50;
+		local float * ptr1_51 = u1_51;
+		local float * ptr1_52 = u1_52;
+		local float * ptr1_53 = u1_53;
+		local float * ptr1_54 = u1_54;
+		local float * ptr1_55 = u1_55;
+		local float * ptr1_56 = u1_56;
+		local float * ptr1_57 = u1_57;
+		local float * ptr1_58 = u1_58;
+		local float * ptr1_59 = u1_59;
+		local float * ptr1_60 = u1_60;
+		local float * ptr1_61 = u1_61;
+		local float * ptr1_62 = u1_62;
+		local float * ptr1_63 = u1_63;
+
+
+		local float * ptr2_0 =  u2_0;
+		local float * ptr2_1 =  u2_1;
+		local float * ptr2_2 =  u2_2;
+		local float * ptr2_3 =  u2_3;
+		local float * ptr2_4 =  u2_4;
+		local float * ptr2_5 =  u2_5;
+		local float * ptr2_6 =  u2_6;
+		local float * ptr2_7 =  u2_7;
+		local float * ptr2_8 =  u2_8;
+		local float * ptr2_9 =  u2_9;
+		local float * ptr2_10 = u2_10;
+		local float * ptr2_11 = u2_11;
+		local float * ptr2_12 = u2_12;
+		local float * ptr2_13 = u2_13;
+		local float * ptr2_14 = u2_14;
+		local float * ptr2_15 = u2_15;
+		local float * ptr2_16 = u2_16;
+		local float * ptr2_17 = u2_17;
+		local float * ptr2_18 = u2_18;
+		local float * ptr2_19 = u2_19;
+		local float * ptr2_20 = u2_20;
+		local float * ptr2_21 = u2_21;
+		local float * ptr2_22 = u2_22;
+		local float * ptr2_23 = u2_23;
+		local float * ptr2_24 = u2_24;
+		local float * ptr2_25 = u2_25;
+		local float * ptr2_26 = u2_26;
+		local float * ptr2_27 = u2_27;
+		local float * ptr2_28 = u2_28;
+		local float * ptr2_29 = u2_29;
+		local float * ptr2_30 = u2_30;
+		local float * ptr2_31 = u2_31;
+		local float * ptr2_32 = u2_32;
+		local float * ptr2_33 = u2_33;
+		local float * ptr2_34 = u2_34;
+		local float * ptr2_35 = u2_35;
+		local float * ptr2_36 = u2_36;
+		local float * ptr2_37 = u2_37;
+		local float * ptr2_38 = u2_38;
+		local float * ptr2_39 = u2_39;
+		local float * ptr2_40 = u2_40;
+		local float * ptr2_41 = u2_41;
+		local float * ptr2_42 = u2_42;
+		local float * ptr2_43 = u2_43;
+		local float * ptr2_44 = u2_44;
+		local float * ptr2_45 = u2_45;
+		local float * ptr2_46 = u2_46;
+		local float * ptr2_47 = u2_47;
+		local float * ptr2_48 = u2_48;
+		local float * ptr2_49 = u2_49;
+		local float * ptr2_50 = u2_50;
+		local float * ptr2_51 = u2_51;
+		local float * ptr2_52 = u2_52;
+		local float * ptr2_53 = u2_53;
+		local float * ptr2_54 = u2_54;
+		local float * ptr2_55 = u2_55;
+		local float * ptr2_56 = u2_56;
+		local float * ptr2_57 = u2_57;
+		local float * ptr2_58 = u2_58;
+		local float * ptr2_59 = u2_59;
+		local float * ptr2_60 = u2_60;
+		local float * ptr2_61 = u2_61;
+		local float * ptr2_62 = u2_62;
+		local float * ptr2_63 = u2_63;
+
+	// Reading the input
+	for(int i = 0; i < size1; i++){
+		int base_index_local = (i) * row_block;
+		int base_index_global = i * ((size0 >> 4) + 1);
+		int select = 0;
+		for(int j = 0; j < (size0 >> 4) + 1; j++){
+			float16 tmp = arg0[base_index_global + j];
+			switch(select) {
+				case 0: {
+							ptr1_0[base_index_local+j]  	= tmp.s0;
+							ptr1_1[base_index_local+j]  	= tmp.s1;
+							ptr1_2[base_index_local+j]  	= tmp.s2;
+							ptr1_3[base_index_local+j]  	= tmp.s3;
+							ptr1_4[base_index_local+j]  	= tmp.s4;
+							ptr1_5[base_index_local+j]  	= tmp.s5;
+							ptr1_6[base_index_local+j]  	= tmp.s6;
+							ptr1_7[base_index_local+j]  	= tmp.s7;
+							ptr1_8[base_index_local+j]  	= tmp.s8;
+							ptr1_9[base_index_local+j]  	= tmp.s9;
+							ptr1_10[base_index_local+j]  	= tmp.sa;
+							ptr1_11[base_index_local+j]  	= tmp.sb;
+							ptr1_12[base_index_local+j]  	= tmp.sc;
+							ptr1_13[base_index_local+j]  	= tmp.sd;
+							ptr1_14[base_index_local+j]  	= tmp.se;
+							ptr1_15[base_index_local+j]  	= tmp.sf;
+						}
+
+				case 1: {
+							ptr1_16[base_index_local+j]  	= tmp.s0;
+							ptr1_17[base_index_local+j]  	= tmp.s1;
+							ptr1_18[base_index_local+j]  	= tmp.s2;
+							ptr1_19[base_index_local+j]  	= tmp.s3;
+							ptr1_20[base_index_local+j]  	= tmp.s4;
+							ptr1_21[base_index_local+j]  	= tmp.s5;
+							ptr1_22[base_index_local+j]  	= tmp.s6;
+							ptr1_23[base_index_local+j]  	= tmp.s7;
+							ptr1_24[base_index_local+j]  	= tmp.s8;
+							ptr1_25[base_index_local+j]  	= tmp.s9;
+							ptr1_26[base_index_local+j]  	= tmp.sa;
+							ptr1_27[base_index_local+j]  	= tmp.sb;
+							ptr1_28[base_index_local+j]  	= tmp.sc;
+							ptr1_29[base_index_local+j]  	= tmp.sd;
+							ptr1_30[base_index_local+j]  	= tmp.se;
+							ptr1_31[base_index_local+j]  	= tmp.sf;
+						}
+
+				case 2: {
+							ptr1_32[base_index_local+j]  	= tmp.s0;
+							ptr1_33[base_index_local+j]  	= tmp.s1;
+							ptr1_34[base_index_local+j]  	= tmp.s2;
+							ptr1_35[base_index_local+j]  	= tmp.s3;
+							ptr1_36[base_index_local+j]  	= tmp.s4;
+							ptr1_37[base_index_local+j]  	= tmp.s5;
+							ptr1_38[base_index_local+j]  	= tmp.s6;
+							ptr1_39[base_index_local+j]  	= tmp.s7;
+							ptr1_40[base_index_local+j]  	= tmp.s8;
+							ptr1_41[base_index_local+j]  	= tmp.s9;
+							ptr1_42[base_index_local+j]  	= tmp.sa;
+							ptr1_43[base_index_local+j]  	= tmp.sb;
+							ptr1_44[base_index_local+j]  	= tmp.sc;
+							ptr1_45[base_index_local+j]  	= tmp.sd;
+							ptr1_46[base_index_local+j]  	= tmp.se;
+							ptr1_47[base_index_local+j]  	= tmp.sf;
+						}
+
+				case 3: {
+							ptr1_48[base_index_local+j]  	= tmp.s0;
+							ptr1_49[base_index_local+j]  	= tmp.s1;
+							ptr1_50[base_index_local+j]  	= tmp.s2;
+							ptr1_51[base_index_local+j]  	= tmp.s3;
+							ptr1_52[base_index_local+j]  	= tmp.s4;
+							ptr1_53[base_index_local+j]  	= tmp.s5;
+							ptr1_54[base_index_local+j]  	= tmp.s6;
+							ptr1_55[base_index_local+j]  	= tmp.s7;
+							ptr1_56[base_index_local+j]  	= tmp.s8;
+							ptr1_57[base_index_local+j]  	= tmp.s9;
+							ptr1_58[base_index_local+j]  	= tmp.sa;
+							ptr1_59[base_index_local+j]  	= tmp.sb;
+							ptr1_60[base_index_local+j]  	= tmp.sc;
+							ptr1_61[base_index_local+j]  	= tmp.sd;
+							ptr1_62[base_index_local+j]  	= tmp.se;
+							ptr1_63[base_index_local+j]  	= tmp.sf;
+						}
+			}
+			select = select + 1;
+			select = (select >= 4) ? 0 : select;
+		}
 	}
+
+
+
+	int ram_select = 0;
+	for(int count = 0; count < n_iters; count++){
+		for(int i = 0; i < size1; i++){
+
+			int base_index0 = (i) * row_block;
+			int base_index1 = (i+1) * row_block;
+			int base_index2 = (i+2) * row_block;
+
+			__attribute__((xcl_pipeline_loop))
+			for(int j = 0; j < end_loc ; j++){
+
+
+				int index0 = j * 64 + 0;
+				if( index0 > 0 && index0  <= size0){
+					float f1_0 = (ptr1_0[base_index0+j] + ptr1_0[base_index2+j]) * 0.125;
+					float f2_0 = (ptr1_63[base_index1+j-1] + ptr1_1[base_index1+j]) * 0.125;
+					float f3_0 = ptr1_0[base_index1+j] * 0.5;
+					float result_0 = f1_0 + f2_0 + f3_0;
+					ptr2_0[base_index1+j] = result_0;
+				}
+
+				int index1 = j * 64 + 1;
+				if(index1  <= size0){
+					float f1_1 = (ptr1_1[base_index0+j] + ptr1_1[base_index2+j]) * 0.125;
+					float f2_1 = (ptr1_0[base_index1+j] + ptr1_2[base_index1+j]) * 0.125;
+					float f3_1 = ptr1_1[base_index1+j] * 0.5;
+					float result_1 = f1_1 + f2_1 + f3_1;
+					ptr2_1[base_index1+j] = result_1;
+				}
+
+				int index2 = j * 64 + 2;
+				if(index2  <= size0){
+					float f1_2 = (ptr1_2[base_index0+j] + ptr1_2[base_index2+j]) * 0.125;
+					float f2_2 = (ptr1_1[base_index1+j] + ptr1_3[base_index1+j]) * 0.125;
+					float f3_2 = ptr1_2[base_index1+j] * 0.5;
+					float result_2 = f1_2 + f2_2 + f3_2;
+					ptr2_2[base_index1+j] = result_2;
+				}
+
+				int index3 = j * 64 + 3;
+				if(index3  <= size0){
+					float f1_3 = (ptr1_3[base_index0+j] + ptr1_3[base_index2+j]) * 0.125;
+					float f2_3 = (ptr1_2[base_index1+j] + ptr1_4[base_index1+j]) * 0.125;
+					float f3_3 = ptr1_3[base_index1+j] * 0.5;
+					float result_3 = f1_3 + f2_3 + f3_3;
+					ptr2_3[base_index1+j] = result_3;
+				}
+
+				int index4 = j * 64 + 4;
+				if(index4  <= size0){
+					float f1_4 = (ptr1_4[base_index0+j] + ptr1_4[base_index2+j]) * 0.125;
+					float f2_4 = (ptr1_3[base_index1+j] + ptr1_5[base_index1+j]) * 0.125;
+					float f3_4 = ptr1_4[base_index1+j] * 0.5;
+					float result_4 = f1_4 + f2_4 + f3_4;
+					ptr2_4[base_index1+j] = result_4;
+				}
+
+				int index5 = j * 64 + 5;
+				if(index5  <= size0){
+					float f1_5 = (ptr1_5[base_index0+j] + ptr1_5[base_index2+j]) * 0.125;
+					float f2_5 = (ptr1_4[base_index1+j] + ptr1_6[base_index1+j]) * 0.125;
+					float f3_5 = ptr1_5[base_index1+j] * 0.5;
+					float result_5 = f1_5 + f2_5 + f3_5;
+					ptr2_5[base_index1+j] = result_5;
+				}
+
+				int index6 = j * 64 + 6;
+				if(index6  <= size0){
+					float f1_6 = (ptr1_6[base_index0+j] + ptr1_6[base_index2+j]) * 0.125;
+					float f2_6 = (ptr1_5[base_index1+j] + ptr1_7[base_index1+j]) * 0.125;
+					float f3_6 = ptr1_6[base_index1+j] * 0.5;
+					float result_6 = f1_6 + f2_6 + f3_6;
+					ptr2_6[base_index1+j] = result_6;
+				}
+
+				int index7 = j * 64 + 7;
+				if(index7  <= size0){
+					float f1_7 = (ptr1_7[base_index0+j] + ptr1_7[base_index2+j]) * 0.125;
+					float f2_7 = (ptr1_6[base_index1+j] + ptr1_8[base_index1+j]) * 0.125;
+					float f3_7 = ptr1_7[base_index1+j] * 0.5;
+					float result_7 = f1_7 + f2_7 + f3_7;
+					ptr2_7[base_index1+j] = result_7;
+				}
+
+				int index8 = j * 64 + 8;
+				if(index8  <= size0){
+					float f1_8 = (ptr1_8[base_index0+j] + ptr1_8[base_index2+j]) * 0.125;
+					float f2_8 = (ptr1_7[base_index1+j] + ptr1_9[base_index1+j]) * 0.125;
+					float f3_8 = ptr1_8[base_index1+j] * 0.5;
+					float result_8 = f1_8 + f2_8 + f3_8;
+					ptr2_8[base_index1+j] = result_8;
+				}
+
+				int index9 = j * 64 + 9;
+				if(index9  <= size0){
+					float f1_9 = (ptr1_9[base_index0+j] + ptr1_9[base_index2+j]) * 0.125;
+					float f2_9 = (ptr1_8[base_index1+j] + ptr1_10[base_index1+j]) * 0.125;
+					float f3_9 = ptr1_9[base_index1+j] * 0.5;
+					float result_9 = f1_9 + f2_9 + f3_9;
+					ptr2_9[base_index1+j] = result_9;
+				}
+
+				int index10 = j * 64 + 10;
+				if(index10  <= size0){
+					float f1_10 = (ptr1_10[base_index0+j] + ptr1_10[base_index2+j]) * 0.125;
+					float f2_10 = (ptr1_9[base_index1+j] + ptr1_11[base_index1+j]) * 0.125;
+					float f3_10 = ptr1_10[base_index1+j] * 0.5;
+					float result_10 = f1_10 + f2_10 + f3_10;
+					ptr2_10[base_index1+j] = result_10;
+				}
+
+				int index11 = j * 64 + 11;
+				if(index11  <= size0){
+					float f1_11 = (ptr1_11[base_index0+j] + ptr1_11[base_index2+j]) * 0.125;
+					float f2_11 = (ptr1_10[base_index1+j] + ptr1_12[base_index1+j]) * 0.125;
+					float f3_11 = ptr1_11[base_index1+j] * 0.5;
+					float result_11 = f1_11 + f2_11 + f3_11;
+					ptr2_11[base_index1+j] = result_11;
+				}
+
+				int index12 = j * 64 + 12;
+				if(index12  <= size0){
+					float f1_12 = (ptr1_12[base_index0+j] + ptr1_12[base_index2+j]) * 0.125;
+					float f2_12 = (ptr1_11[base_index1+j] + ptr1_13[base_index1+j]) * 0.125;
+					float f3_12 = ptr1_12[base_index1+j] * 0.5;
+					float result_12 = f1_12 + f2_12 + f3_12;
+					ptr2_12[base_index1+j] = result_12;
+				}
+
+				int index13 = j * 64 + 13;
+				if(index13  <= size0){
+					float f1_13 = (ptr1_13[base_index0+j] + ptr1_13[base_index2+j]) * 0.125;
+					float f2_13 = (ptr1_12[base_index1+j] + ptr1_14[base_index1+j]) * 0.125;
+					float f3_13 = ptr1_13[base_index1+j] * 0.5;
+					float result_13 = f1_13 + f2_13 + f3_13;
+					ptr2_13[base_index1+j] = result_13;
+				}
+
+				int index14 = j * 64 + 14;
+				if(index14  <= size0){
+					float f1_14 = (ptr1_14[base_index0+j] + ptr1_14[base_index2+j]) * 0.125;
+					float f2_14 = (ptr1_13[base_index1+j] + ptr1_15[base_index1+j]) * 0.125;
+					float f3_14 = ptr1_14[base_index1+j] * 0.5;
+					float result_14 = f1_14 + f2_14 + f3_14;
+					ptr2_14[base_index1+j] = result_14;
+				}
+
+				int index15 = j * 64 + 15;
+				if(index15  <= size0){
+					float f1_15 = (ptr1_15[base_index0+j] + ptr1_15[base_index2+j]) * 0.125;
+					float f2_15 = (ptr1_14[base_index1+j] + ptr1_16[base_index1+j]) * 0.125;
+					float f3_15 = ptr1_15[base_index1+j] * 0.5;
+					float result_15 = f1_15 + f2_15 + f3_15;
+					ptr2_15[base_index1+j] = result_15;
+				}
+
+				int index16 = j * 64 + 16;
+				if(index16  <= size0){
+					float f1_16 = (ptr1_16[base_index0+j] + ptr1_16[base_index2+j]) * 0.125;
+					float f2_16 = (ptr1_15[base_index1+j] + ptr1_17[base_index1+j]) * 0.125;
+					float f3_16 = ptr1_16[base_index1+j] * 0.5;
+					float result_16 = f1_16 + f2_16 + f3_16;
+					ptr2_16[base_index1+j] = result_16;
+				}
+
+				int index17 = j * 64 + 17;
+				if(index17  <= size0){
+					float f1_17 = (ptr1_17[base_index0+j] + ptr1_17[base_index2+j]) * 0.125;
+					float f2_17 = (ptr1_16[base_index1+j] + ptr1_18[base_index1+j]) * 0.125;
+					float f3_17 = ptr1_17[base_index1+j] * 0.5;
+					float result_17 = f1_17 + f2_17 + f3_17;
+					ptr2_17[base_index1+j] = result_17;
+				}
+
+				int index18 = j * 64 + 18;
+				if(index18  <= size0){
+					float f1_18 = (ptr1_18[base_index0+j] + ptr1_18[base_index2+j]) * 0.125;
+					float f2_18 = (ptr1_17[base_index1+j] + ptr1_19[base_index1+j]) * 0.125;
+					float f3_18 = ptr1_18[base_index1+j] * 0.5;
+					float result_18 = f1_18 + f2_18 + f3_18;
+					ptr2_18[base_index1+j] = result_18;
+				}
+
+				int index19 = j * 64 + 19;
+				if(index19  <= size0){
+					float f1_19 = (ptr1_19[base_index0+j] + ptr1_19[base_index2+j]) * 0.125;
+					float f2_19 = (ptr1_18[base_index1+j] + ptr1_20[base_index1+j]) * 0.125;
+					float f3_19 = ptr1_19[base_index1+j] * 0.5;
+					float result_19 = f1_19 + f2_19 + f3_19;
+					ptr2_19[base_index1+j] = result_19;
+				}
+
+				int index20 = j * 64 + 20;
+				if(index20  <= size0){
+					float f1_20 = (ptr1_20[base_index0+j] + ptr1_20[base_index2+j]) * 0.125;
+					float f2_20 = (ptr1_19[base_index1+j] + ptr1_21[base_index1+j]) * 0.125;
+					float f3_20 = ptr1_20[base_index1+j] * 0.5;
+					float result_20 = f1_20 + f2_20 + f3_20;
+					ptr2_20[base_index1+j] = result_20;
+				}
+
+				int index21 = j * 64 + 21;
+				if(index21  <= size0){
+					float f1_21 = (ptr1_21[base_index0+j] + ptr1_21[base_index2+j]) * 0.125;
+					float f2_21 = (ptr1_20[base_index1+j] + ptr1_22[base_index1+j]) * 0.125;
+					float f3_21 = ptr1_21[base_index1+j] * 0.5;
+					float result_21 = f1_21 + f2_21 + f3_21;
+					ptr2_21[base_index1+j] = result_21;
+				}
+
+				int index22 = j * 64 + 22;
+				if(index22  <= size0){
+					float f1_22 = (ptr1_22[base_index0+j] + ptr1_22[base_index2+j]) * 0.125;
+					float f2_22 = (ptr1_21[base_index1+j] + ptr1_23[base_index1+j]) * 0.125;
+					float f3_22 = ptr1_22[base_index1+j] * 0.5;
+					float result_22 = f1_22 + f2_22 + f3_22;
+					ptr2_22[base_index1+j] = result_22;
+				}
+
+				int index23 = j * 64 + 23;
+				if(index23  <= size0){
+					float f1_23 = (ptr1_23[base_index0+j] + ptr1_23[base_index2+j]) * 0.125;
+					float f2_23 = (ptr1_22[base_index1+j] + ptr1_24[base_index1+j]) * 0.125;
+					float f3_23 = ptr1_23[base_index1+j] * 0.5;
+					float result_23 = f1_23 + f2_23 + f3_23;
+					ptr2_23[base_index1+j] = result_23;
+				}
+
+				int index24 = j * 64 + 24;
+				if(index24  <= size0){
+					float f1_24 = (ptr1_24[base_index0+j] + ptr1_24[base_index2+j]) * 0.125;
+					float f2_24 = (ptr1_23[base_index1+j] + ptr1_25[base_index1+j]) * 0.125;
+					float f3_24 = ptr1_24[base_index1+j] * 0.5;
+					float result_24 = f1_24 + f2_24 + f3_24;
+					ptr2_24[base_index1+j] = result_24;
+				}
+
+				int index25 = j * 64 + 25;
+				if(index25  <= size0){
+					float f1_25 = (ptr1_25[base_index0+j] + ptr1_25[base_index2+j]) * 0.125;
+					float f2_25 = (ptr1_24[base_index1+j] + ptr1_26[base_index1+j]) * 0.125;
+					float f3_25 = ptr1_25[base_index1+j] * 0.5;
+					float result_25 = f1_25 + f2_25 + f3_25;
+					ptr2_25[base_index1+j] = result_25;
+				}
+
+				int index26 = j * 64 + 26;
+				if(index26  <= size0){
+					float f1_26 = (ptr1_26[base_index0+j] + ptr1_26[base_index2+j]) * 0.125;
+					float f2_26 = (ptr1_25[base_index1+j] + ptr1_27[base_index1+j]) * 0.125;
+					float f3_26 = ptr1_26[base_index1+j] * 0.5;
+					float result_26 = f1_26 + f2_26 + f3_26;
+					ptr2_26[base_index1+j] = result_26;
+				}
+
+				int index27 = j * 64 + 27;
+				if(index27  <= size0){
+					float f1_27 = (ptr1_27[base_index0+j] + ptr1_27[base_index2+j]) * 0.125;
+					float f2_27 = (ptr1_26[base_index1+j] + ptr1_28[base_index1+j]) * 0.125;
+					float f3_27 = ptr1_27[base_index1+j] * 0.5;
+					float result_27 = f1_27 + f2_27 + f3_27;
+					ptr2_27[base_index1+j] = result_27;
+				}
+
+				int index28 = j * 64 + 28;
+				if(index28  <= size0){
+					float f1_28 = (ptr1_28[base_index0+j] + ptr1_28[base_index2+j]) * 0.125;
+					float f2_28 = (ptr1_27[base_index1+j] + ptr1_29[base_index1+j]) * 0.125;
+					float f3_28 = ptr1_28[base_index1+j] * 0.5;
+					float result_28 = f1_28 + f2_28 + f3_28;
+					ptr2_28[base_index1+j] = result_28;
+				}
+
+				int index29 = j * 64 + 29;
+				if(index29  <= size0){
+					float f1_29 = (ptr1_29[base_index0+j] + ptr1_29[base_index2+j]) * 0.125;
+					float f2_29 = (ptr1_28[base_index1+j] + ptr1_30[base_index1+j]) * 0.125;
+					float f3_29 = ptr1_29[base_index1+j] * 0.5;
+					float result_29 = f1_29 + f2_29 + f3_29;
+					ptr2_29[base_index1+j] = result_29;
+				}
+
+				int index30 = j * 64 + 30;
+				if(index30  <= size0){
+					float f1_30 = (ptr1_30[base_index0+j] + ptr1_30[base_index2+j]) * 0.125;
+					float f2_30 = (ptr1_29[base_index1+j] + ptr1_31[base_index1+j]) * 0.125;
+					float f3_30 = ptr1_30[base_index1+j] * 0.5;
+					float result_30 = f1_30 + f2_30 + f3_30;
+					ptr2_30[base_index1+j] = result_30;
+				}
+
+				int index31 = j * 64 + 31;
+				if(index31  <= size0){
+					float f1_31 = (ptr1_31[base_index0+j] + ptr1_31[base_index2+j]) * 0.125;
+					float f2_31 = (ptr1_30[base_index1+j] + ptr1_32[base_index1+j]) * 0.125;
+					float f3_31 = ptr1_31[base_index1+j] * 0.5;
+					float result_31 = f1_31 + f2_31 + f3_31;
+					ptr2_31[base_index1+j] = result_31;
+				}
+
+				int index32 = j * 64 + 32;
+				if(index32  <= size0){
+					float f1_32 = (ptr1_32[base_index0+j] + ptr1_32[base_index2+j]) * 0.125;
+					float f2_32 = (ptr1_31[base_index1+j] + ptr1_33[base_index1+j]) * 0.125;
+					float f3_32 = ptr1_32[base_index1+j] * 0.5;
+					float result_32 = f1_32 + f2_32 + f3_32;
+					ptr2_32[base_index1+j] = result_32;
+				}
+
+				int index33 = j * 64 + 33;
+				if(index33  <= size0){
+					float f1_33 = (ptr1_33[base_index0+j] + ptr1_33[base_index2+j]) * 0.125;
+					float f2_33 = (ptr1_32[base_index1+j] + ptr1_34[base_index1+j]) * 0.125;
+					float f3_33 = ptr1_33[base_index1+j] * 0.5;
+					float result_33 = f1_33 + f2_33 + f3_33;
+					ptr2_33[base_index1+j] = result_33;
+				}
+
+				int index34 = j * 64 + 34;
+				if(index34  <= size0){
+					float f1_34 = (ptr1_34[base_index0+j] + ptr1_34[base_index2+j]) * 0.125;
+					float f2_34 = (ptr1_33[base_index1+j] + ptr1_35[base_index1+j]) * 0.125;
+					float f3_34 = ptr1_34[base_index1+j] * 0.5;
+					float result_34 = f1_34 + f2_34 + f3_34;
+					ptr2_34[base_index1+j] = result_34;
+				}
+
+				int index35 = j * 64 + 35;
+				if(index35  <= size0){
+					float f1_35 = (ptr1_35[base_index0+j] + ptr1_35[base_index2+j]) * 0.125;
+					float f2_35 = (ptr1_34[base_index1+j] + ptr1_36[base_index1+j]) * 0.125;
+					float f3_35 = ptr1_35[base_index1+j] * 0.5;
+					float result_35 = f1_35 + f2_35 + f3_35;
+					ptr2_35[base_index1+j] = result_35;
+				}
+
+				int index36 = j * 64 + 36;
+				if(index36  <= size0){
+					float f1_36 = (ptr1_36[base_index0+j] + ptr1_36[base_index2+j]) * 0.125;
+					float f2_36 = (ptr1_35[base_index1+j] + ptr1_37[base_index1+j]) * 0.125;
+					float f3_36 = ptr1_36[base_index1+j] * 0.5;
+					float result_36 = f1_36 + f2_36 + f3_36;
+					ptr2_36[base_index1+j] = result_36;
+				}
+
+				int index37 = j * 64 + 37;
+				if(index37  <= size0){
+					float f1_37 = (ptr1_37[base_index0+j] + ptr1_37[base_index2+j]) * 0.125;
+					float f2_37 = (ptr1_36[base_index1+j] + ptr1_38[base_index1+j]) * 0.125;
+					float f3_37 = ptr1_37[base_index1+j] * 0.5;
+					float result_37 = f1_37 + f2_37 + f3_37;
+					ptr2_37[base_index1+j] = result_37;
+				}
+
+				int index38 = j * 64 + 38;
+				if(index38  <= size0){
+					float f1_38 = (ptr1_38[base_index0+j] + ptr1_38[base_index2+j]) * 0.125;
+					float f2_38 = (ptr1_37[base_index1+j] + ptr1_39[base_index1+j]) * 0.125;
+					float f3_38 = ptr1_38[base_index1+j] * 0.5;
+					float result_38 = f1_38 + f2_38 + f3_38;
+					ptr2_38[base_index1+j] = result_38;
+				}
+
+				int index39 = j * 64 + 39;
+				if(index39  <= size0){
+					float f1_39 = (ptr1_39[base_index0+j] + ptr1_39[base_index2+j]) * 0.125;
+					float f2_39 = (ptr1_38[base_index1+j] + ptr1_40[base_index1+j]) * 0.125;
+					float f3_39 = ptr1_39[base_index1+j] * 0.5;
+					float result_39 = f1_39 + f2_39 + f3_39;
+					ptr2_39[base_index1+j] = result_39;
+				}
+
+				int index40 = j * 64 + 40;
+				if(index40  <= size0){
+					float f1_40 = (ptr1_40[base_index0+j] + ptr1_40[base_index2+j]) * 0.125;
+					float f2_40 = (ptr1_39[base_index1+j] + ptr1_41[base_index1+j]) * 0.125;
+					float f3_40 = ptr1_40[base_index1+j] * 0.5;
+					float result_40 = f1_40 + f2_40 + f3_40;
+					ptr2_40[base_index1+j] = result_40;
+				}
+
+				int index41 = j * 64 + 41;
+				if(index41  <= size0){
+					float f1_41 = (ptr1_41[base_index0+j] + ptr1_41[base_index2+j]) * 0.125;
+					float f2_41 = (ptr1_40[base_index1+j] + ptr1_42[base_index1+j]) * 0.125;
+					float f3_41 = ptr1_41[base_index1+j] * 0.5;
+					float result_41 = f1_41 + f2_41 + f3_41;
+					ptr2_41[base_index1+j] = result_41;
+				}
+
+				int index42 = j * 64 + 42;
+				if(index42  <= size0){
+					float f1_42 = (ptr1_42[base_index0+j] + ptr1_42[base_index2+j]) * 0.125;
+					float f2_42 = (ptr1_41[base_index1+j] + ptr1_43[base_index1+j]) * 0.125;
+					float f3_42 = ptr1_42[base_index1+j] * 0.5;
+					float result_42 = f1_42 + f2_42 + f3_42;
+					ptr2_42[base_index1+j] = result_42;
+				}
+
+				int index43 = j * 64 + 43;
+				if(index43  <= size0){
+					float f1_43 = (ptr1_43[base_index0+j] + ptr1_43[base_index2+j]) * 0.125;
+					float f2_43 = (ptr1_42[base_index1+j] + ptr1_44[base_index1+j]) * 0.125;
+					float f3_43 = ptr1_43[base_index1+j] * 0.5;
+					float result_43 = f1_43 + f2_43 + f3_43;
+					ptr2_43[base_index1+j] = result_43;
+				}
+
+				int index44 = j * 64 + 44;
+				if(index44  <= size0){
+					float f1_44 = (ptr1_44[base_index0+j] + ptr1_44[base_index2+j]) * 0.125;
+					float f2_44 = (ptr1_43[base_index1+j] + ptr1_45[base_index1+j]) * 0.125;
+					float f3_44 = ptr1_44[base_index1+j] * 0.5;
+					float result_44 = f1_44 + f2_44 + f3_44;
+					ptr2_44[base_index1+j] = result_44;
+				}
+
+				int index45 = j * 64 + 45;
+				if(index45  <= size0){
+					float f1_45 = (ptr1_45[base_index0+j] + ptr1_45[base_index2+j]) * 0.125;
+					float f2_45 = (ptr1_44[base_index1+j] + ptr1_46[base_index1+j]) * 0.125;
+					float f3_45 = ptr1_45[base_index1+j] * 0.5;
+					float result_45 = f1_45 + f2_45 + f3_45;
+					ptr2_45[base_index1+j] = result_45;
+				}
+
+				int index46 = j * 64 + 46;
+				if(index46  <= size0){
+					float f1_46 = (ptr1_46[base_index0+j] + ptr1_46[base_index2+j]) * 0.125;
+					float f2_46 = (ptr1_45[base_index1+j] + ptr1_47[base_index1+j]) * 0.125;
+					float f3_46 = ptr1_46[base_index1+j] * 0.5;
+					float result_46 = f1_46 + f2_46 + f3_46;
+					ptr2_46[base_index1+j] = result_46;
+				}
+
+				int index47 = j * 64 + 47;
+				if(index47  <= size0){
+					float f1_47 = (ptr1_47[base_index0+j] + ptr1_47[base_index2+j]) * 0.125;
+					float f2_47 = (ptr1_46[base_index1+j] + ptr1_48[base_index1+j]) * 0.125;
+					float f3_47 = ptr1_47[base_index1+j] * 0.5;
+					float result_47 = f1_47 + f2_47 + f3_47;
+					ptr2_47[base_index1+j] = result_47;
+				}
+
+				int index48 = j * 64 + 48;
+				if(index48  <= size0){
+					float f1_48 = (ptr1_48[base_index0+j] + ptr1_48[base_index2+j]) * 0.125;
+					float f2_48 = (ptr1_47[base_index1+j] + ptr1_49[base_index1+j]) * 0.125;
+					float f3_48 = ptr1_48[base_index1+j] * 0.5;
+					float result_48 = f1_48 + f2_48 + f3_48;
+					ptr2_48[base_index1+j] = result_48;
+				}
+
+				int index49 = j * 64 + 49;
+				if(index49  <= size0){
+					float f1_49 = (ptr1_49[base_index0+j] + ptr1_49[base_index2+j]) * 0.125;
+					float f2_49 = (ptr1_48[base_index1+j] + ptr1_50[base_index1+j]) * 0.125;
+					float f3_49 = ptr1_49[base_index1+j] * 0.5;
+					float result_49 = f1_49 + f2_49 + f3_49;
+					ptr2_49[base_index1+j] = result_49;
+				}
+
+				int index50 = j * 64 + 50;
+				if(index50  <= size0){
+					float f1_50 = (ptr1_50[base_index0+j] + ptr1_50[base_index2+j]) * 0.125;
+					float f2_50 = (ptr1_49[base_index1+j] + ptr1_51[base_index1+j]) * 0.125;
+					float f3_50 = ptr1_50[base_index1+j] * 0.5;
+					float result_50 = f1_50 + f2_50 + f3_50;
+					ptr2_50[base_index1+j] = result_50;
+				}
+
+				int index51 = j * 64 + 51;
+				if(index51  <= size0){
+					float f1_51 = (ptr1_51[base_index0+j] + ptr1_51[base_index2+j]) * 0.125;
+					float f2_51 = (ptr1_50[base_index1+j] + ptr1_52[base_index1+j]) * 0.125;
+					float f3_51 = ptr1_51[base_index1+j] * 0.5;
+					float result_51 = f1_51 + f2_51 + f3_51;
+					ptr2_51[base_index1+j] = result_51;
+				}
+
+				int index52 = j * 64 + 52;
+				if(index52  <= size0){
+					float f1_52 = (ptr1_52[base_index0+j] + ptr1_52[base_index2+j]) * 0.125;
+					float f2_52 = (ptr1_51[base_index1+j] + ptr1_53[base_index1+j]) * 0.125;
+					float f3_52 = ptr1_52[base_index1+j] * 0.5;
+					float result_52 = f1_52 + f2_52 + f3_52;
+					ptr2_52[base_index1+j] = result_52;
+				}
+
+				int index53 = j * 64 + 53;
+				if(index53  <= size0){
+					float f1_53 = (ptr1_53[base_index0+j] + ptr1_53[base_index2+j]) * 0.125;
+					float f2_53 = (ptr1_52[base_index1+j] + ptr1_54[base_index1+j]) * 0.125;
+					float f3_53 = ptr1_53[base_index1+j] * 0.5;
+					float result_53 = f1_53 + f2_53 + f3_53;
+					ptr2_53[base_index1+j] = result_53;
+				}
+
+				int index54 = j * 64 + 54;
+				if(index54  <= size0){
+					float f1_54 = (ptr1_54[base_index0+j] + ptr1_54[base_index2+j]) * 0.125;
+					float f2_54 = (ptr1_53[base_index1+j] + ptr1_55[base_index1+j]) * 0.125;
+					float f3_54 = ptr1_54[base_index1+j] * 0.5;
+					float result_54 = f1_54 + f2_54 + f3_54;
+					ptr2_54[base_index1+j] = result_54;
+				}
+
+				int index55 = j * 64 + 55;
+				if(index55  <= size0){
+					float f1_55 = (ptr1_55[base_index0+j] + ptr1_55[base_index2+j]) * 0.125;
+					float f2_55 = (ptr1_54[base_index1+j] + ptr1_56[base_index1+j]) * 0.125;
+					float f3_55 = ptr1_55[base_index1+j] * 0.5;
+					float result_55 = f1_55 + f2_55 + f3_55;
+					ptr2_55[base_index1+j] = result_55;
+				}
+
+				int index56 = j * 64 + 56;
+				if(index56  <= size0){
+					float f1_56 = (ptr1_56[base_index0+j] + ptr1_56[base_index2+j]) * 0.125;
+					float f2_56 = (ptr1_55[base_index1+j] + ptr1_57[base_index1+j]) * 0.125;
+					float f3_56 = ptr1_56[base_index1+j] * 0.5;
+					float result_56 = f1_56 + f2_56 + f3_56;
+					ptr2_56[base_index1+j] = result_56;
+				}
+
+				int index57 = j * 64 + 57;
+				if(index57  <= size0){
+					float f1_57 = (ptr1_57[base_index0+j] + ptr1_57[base_index2+j]) * 0.125;
+					float f2_57 = (ptr1_56[base_index1+j] + ptr1_58[base_index1+j]) * 0.125;
+					float f3_57 = ptr1_57[base_index1+j] * 0.5;
+					float result_57 = f1_57 + f2_57 + f3_57;
+					ptr2_57[base_index1+j] = result_57;
+				}
+
+				int index58 = j * 64 + 58;
+				if(index58  <= size0){
+					float f1_58 = (ptr1_58[base_index0+j] + ptr1_58[base_index2+j]) * 0.125;
+					float f2_58 = (ptr1_57[base_index1+j] + ptr1_59[base_index1+j]) * 0.125;
+					float f3_58 = ptr1_58[base_index1+j] * 0.5;
+					float result_58 = f1_58 + f2_58 + f3_58;
+					ptr2_58[base_index1+j] = result_58;
+				}
+
+				int index59 = j * 64 + 59;
+				if(index59  <= size0){
+					float f1_59 = (ptr1_59[base_index0+j] + ptr1_59[base_index2+j]) * 0.125;
+					float f2_59 = (ptr1_58[base_index1+j] + ptr1_60[base_index1+j]) * 0.125;
+					float f3_59 = ptr1_59[base_index1+j] * 0.5;
+					float result_59 = f1_59 + f2_59 + f3_59;
+					ptr2_59[base_index1+j] = result_59;
+				}
+
+				int index60 = j * 64 + 60;
+				if(index60  <= size0){
+					float f1_60 = (ptr1_60[base_index0+j] + ptr1_60[base_index2+j]) * 0.125;
+					float f2_60 = (ptr1_59[base_index1+j] + ptr1_61[base_index1+j]) * 0.125;
+					float f3_60 = ptr1_60[base_index1+j] * 0.5;
+					float result_60 = f1_60 + f2_60 + f3_60;
+					ptr2_60[base_index1+j] = result_60;
+				}
+
+				int index61 = j * 64 + 61;
+				if(index61  <= size0){
+					float f1_61 = (ptr1_61[base_index0+j] + ptr1_61[base_index2+j]) * 0.125;
+					float f2_61 = (ptr1_60[base_index1+j] + ptr1_62[base_index1+j]) * 0.125;
+					float f3_61 = ptr1_61[base_index1+j] * 0.5;
+					float result_61 = f1_61 + f2_61 + f3_61;
+					ptr2_61[base_index1+j] = result_61;
+				}
+
+				int index62 = j * 64 + 62;
+				if(index62  <= size0){
+					float f1_62 = (ptr1_62[base_index0+j] + ptr1_62[base_index2+j]) * 0.125;
+					float f2_62 = (ptr1_61[base_index1+j] + ptr1_63[base_index1+j]) * 0.125;
+					float f3_62 = ptr1_62[base_index1+j] * 0.5;
+					float result_62 = f1_62 + f2_62 + f3_62;
+					ptr2_62[base_index1+j] = result_62;
+				}
+
+				int index63 = j * 64 + 63;
+				if(index63  <= size0){
+					float f1_63 = (ptr1_63[base_index0+j] + ptr1_63[base_index2+j]) * 0.125;
+					float f2_63 = (ptr1_0[base_index1+j+1] + ptr1_62[base_index1+j]) * 0.125;
+					float f3_63 = ptr1_63[base_index1+j] * 0.5;
+					float result_63 = f1_63 + f2_63 + f3_63;
+					ptr2_63[base_index1+j] = result_63;
+				}
+			}
+		}
+
+		switch(ram_select){
+			case 0: {
+					ptr1_0 =  u1_0;
+					ptr1_1 =  u1_1;
+					ptr1_2 =  u1_2;
+					ptr1_3 =  u1_3;
+					ptr1_4 =  u1_4;
+					ptr1_5 =  u1_5;
+					ptr1_6 =  u1_6;
+					ptr1_7 =  u1_7;
+					ptr1_8 =  u1_8;
+					ptr1_9 =  u1_9;
+					ptr1_10 = u1_10;
+					ptr1_11 = u1_11;
+					ptr1_12 = u1_12;
+					ptr1_13 = u1_13;
+					ptr1_14 = u1_14;
+					ptr1_15 = u1_15;
+					ptr1_16 = u1_16;
+					ptr1_17 = u1_17;
+					ptr1_18 = u1_18;
+					ptr1_19 = u1_19;
+					ptr1_20 = u1_20;
+					ptr1_21 = u1_21;
+					ptr1_22 = u1_22;
+					ptr1_23 = u1_23;
+					ptr1_24 = u1_24;
+					ptr1_25 = u1_25;
+					ptr1_26 = u1_26;
+					ptr1_27 = u1_27;
+					ptr1_28 = u1_28;
+					ptr1_29 = u1_29;
+					ptr1_30 = u1_30;
+					ptr1_31 = u1_31;
+					ptr1_32 = u1_32;
+					ptr1_33 = u1_33;
+					ptr1_34 = u1_34;
+					ptr1_35 = u1_35;
+					ptr1_36 = u1_36;
+					ptr1_37 = u1_37;
+					ptr1_38 = u1_38;
+					ptr1_39 = u1_39;
+					ptr1_40 = u1_40;
+					ptr1_41 = u1_41;
+					ptr1_42 = u1_42;
+					ptr1_43 = u1_43;
+					ptr1_44 = u1_44;
+					ptr1_45 = u1_45;
+					ptr1_46 = u1_46;
+					ptr1_47 = u1_47;
+					ptr1_48 = u1_48;
+					ptr1_49 = u1_49;
+					ptr1_50 = u1_50;
+					ptr1_51 = u1_51;
+					ptr1_52 = u1_52;
+					ptr1_53 = u1_53;
+					ptr1_54 = u1_54;
+					ptr1_55 = u1_55;
+					ptr1_56 = u1_56;
+					ptr1_57 = u1_57;
+					ptr1_58 = u1_58;
+					ptr1_59 = u1_59;
+					ptr1_60 = u1_60;
+					ptr1_61 = u1_61;
+					ptr1_62 = u1_62;
+					ptr1_63 = u1_63;
+
+					ptr2_0 =  u2_0;
+					ptr2_1 =  u2_1;
+					ptr2_2 =  u2_2;
+					ptr2_3 =  u2_3;
+					ptr2_4 =  u2_4;
+					ptr2_5 =  u2_5;
+					ptr2_6 =  u2_6;
+					ptr2_7 =  u2_7;
+					ptr2_8 =  u2_8;
+					ptr2_9 =  u2_9;
+					ptr2_10 = u2_10;
+					ptr2_11 = u2_11;
+					ptr2_12 = u2_12;
+					ptr2_13 = u2_13;
+					ptr2_14 = u2_14;
+					ptr2_15 = u2_15;
+					ptr2_16 = u2_16;
+					ptr2_17 = u2_17;
+					ptr2_18 = u2_18;
+					ptr2_19 = u2_19;
+					ptr2_20 = u2_20;
+					ptr2_21 = u2_21;
+					ptr2_22 = u2_22;
+					ptr2_23 = u2_23;
+					ptr2_24 = u2_24;
+					ptr2_25 = u2_25;
+					ptr2_26 = u2_26;
+					ptr2_27 = u2_27;
+					ptr2_28 = u2_28;
+					ptr2_29 = u2_29;
+					ptr2_30 = u2_30;
+					ptr2_31 = u2_31;
+					ptr2_32 = u2_32;
+					ptr2_33 = u2_33;
+					ptr2_34 = u2_34;
+					ptr2_35 = u2_35;
+					ptr2_36 = u2_36;
+					ptr2_37 = u2_37;
+					ptr2_38 = u2_38;
+					ptr2_39 = u2_39;
+					ptr2_40 = u2_40;
+					ptr2_41 = u2_41;
+					ptr2_42 = u2_42;
+					ptr2_43 = u2_43;
+					ptr2_44 = u2_44;
+					ptr2_45 = u2_45;
+					ptr2_46 = u2_46;
+					ptr2_47 = u2_47;
+					ptr2_48 = u2_48;
+					ptr2_49 = u2_49;
+					ptr2_50 = u2_50;
+					ptr2_51 = u2_51;
+					ptr2_52 = u2_52;
+					ptr2_53 = u2_53;
+					ptr2_54 = u2_54;
+					ptr2_55 = u2_55;
+					ptr2_56 = u2_56;
+					ptr2_57 = u2_57;
+					ptr2_58 = u2_58;
+					ptr2_59 = u2_59;
+					ptr2_60 = u2_60;
+					ptr2_61 = u2_61;
+					ptr2_62 = u2_62;
+					ptr2_63 = u2_63;
+
+				}
+
+			case 1:
+				{
+					ptr1_0 =  u2_0;
+					ptr1_1 =  u2_1;
+					ptr1_2 =  u2_2;
+					ptr1_3 =  u2_3;
+					ptr1_4 =  u2_4;
+					ptr1_5 =  u2_5;
+					ptr1_6 =  u2_6;
+					ptr1_7 =  u2_7;
+					ptr1_8 =  u2_8;
+					ptr1_9 =  u2_9;
+					ptr1_10 = u2_10;
+					ptr1_11 = u2_11;
+					ptr1_12 = u2_12;
+					ptr1_13 = u2_13;
+					ptr1_14 = u2_14;
+					ptr1_15 = u2_15;
+					ptr1_16 = u2_16;
+					ptr1_17 = u2_17;
+					ptr1_18 = u2_18;
+					ptr1_19 = u2_19;
+					ptr1_20 = u2_20;
+					ptr1_21 = u2_21;
+					ptr1_22 = u2_22;
+					ptr1_23 = u2_23;
+					ptr1_24 = u2_24;
+					ptr1_25 = u2_25;
+					ptr1_26 = u2_26;
+					ptr1_27 = u2_27;
+					ptr1_28 = u2_28;
+					ptr1_29 = u2_29;
+					ptr1_30 = u2_30;
+					ptr1_31 = u2_31;
+					ptr1_32 = u2_32;
+					ptr1_33 = u2_33;
+					ptr1_34 = u2_34;
+					ptr1_35 = u2_35;
+					ptr1_36 = u2_36;
+					ptr1_37 = u2_37;
+					ptr1_38 = u2_38;
+					ptr1_39 = u2_39;
+					ptr1_40 = u2_40;
+					ptr1_41 = u2_41;
+					ptr1_42 = u2_42;
+					ptr1_43 = u2_43;
+					ptr1_44 = u2_44;
+					ptr1_45 = u2_45;
+					ptr1_46 = u2_46;
+					ptr1_47 = u2_47;
+					ptr1_48 = u2_48;
+					ptr1_49 = u2_49;
+					ptr1_50 = u2_50;
+					ptr1_51 = u2_51;
+					ptr1_52 = u2_52;
+					ptr1_53 = u2_53;
+					ptr1_54 = u2_54;
+					ptr1_55 = u2_55;
+					ptr1_56 = u2_56;
+					ptr1_57 = u2_57;
+					ptr1_58 = u2_58;
+					ptr1_59 = u2_59;
+					ptr1_60 = u2_60;
+					ptr1_61 = u2_61;
+					ptr1_62 = u2_62;
+					ptr1_63 = u2_63;
+
+					ptr2_0 =  u1_0;
+					ptr2_1 =  u1_1;
+					ptr2_2 =  u1_2;
+					ptr2_3 =  u1_3;
+					ptr2_4 =  u1_4;
+					ptr2_5 =  u1_5;
+					ptr2_6 =  u1_6;
+					ptr2_7 =  u1_7;
+					ptr2_8 =  u1_8;
+					ptr2_9 =  u1_9;
+					ptr2_10 = u1_10;
+					ptr2_11 = u1_11;
+					ptr2_12 = u1_12;
+					ptr2_13 = u1_13;
+					ptr2_14 = u1_14;
+					ptr2_15 = u1_15;
+					ptr2_16 = u1_16;
+					ptr2_17 = u1_17;
+					ptr2_18 = u1_18;
+					ptr2_19 = u1_19;
+					ptr2_20 = u1_20;
+					ptr2_21 = u1_21;
+					ptr2_22 = u1_22;
+					ptr2_23 = u1_23;
+					ptr2_24 = u1_24;
+					ptr2_25 = u1_25;
+					ptr2_26 = u1_26;
+					ptr2_27 = u1_27;
+					ptr2_28 = u1_28;
+					ptr2_29 = u1_29;
+					ptr2_30 = u1_30;
+					ptr2_31 = u1_31;
+					ptr2_32 = u1_32;
+					ptr2_33 = u1_33;
+					ptr2_34 = u1_34;
+					ptr2_35 = u1_35;
+					ptr2_36 = u1_36;
+					ptr2_37 = u1_37;
+					ptr2_38 = u1_38;
+					ptr2_39 = u1_39;
+					ptr2_40 = u1_40;
+					ptr2_41 = u1_41;
+					ptr2_42 = u1_42;
+					ptr2_43 = u1_43;
+					ptr2_44 = u1_44;
+					ptr2_45 = u1_45;
+					ptr2_46 = u1_46;
+					ptr2_47 = u1_47;
+					ptr2_48 = u1_48;
+					ptr2_49 = u1_49;
+					ptr2_50 = u1_50;
+					ptr2_51 = u1_51;
+					ptr2_52 = u1_52;
+					ptr2_53 = u1_53;
+					ptr2_54 = u1_54;
+					ptr2_55 = u1_55;
+					ptr2_56 = u1_56;
+					ptr2_57 = u1_57;
+					ptr2_58 = u1_58;
+					ptr2_59 = u1_59;
+					ptr2_60 = u1_60;
+					ptr2_61 = u1_61;
+					ptr2_62 = u1_62;
+					ptr2_63 = u1_63;
+				}
+			}
+		ram_select = ram_select + 1;
+		ram_select = (ram_select >= 2) ? 0 : ram_select;
+
+	}
+
 }
 
