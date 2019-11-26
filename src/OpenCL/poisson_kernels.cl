@@ -350,82 +350,83 @@ __kernel void ops_poisson_kernel_stencil(
 		int base_index_global = i * ((size0 >> 4) + 1);
 		int select = 0;
 		for(int j = 0; j < (size0 >> 4) + 1; j++){
+			int j_local = (j >> 2);
 			float16 tmp = arg0[base_index_global + j];
 			switch(select) {
 				case 0: {
-							ptr1_0[base_index_local+j]  	= tmp.s0;
-							ptr1_1[base_index_local+j]  	= tmp.s1;
-							ptr1_2[base_index_local+j]  	= tmp.s2;
-							ptr1_3[base_index_local+j]  	= tmp.s3;
-							ptr1_4[base_index_local+j]  	= tmp.s4;
-							ptr1_5[base_index_local+j]  	= tmp.s5;
-							ptr1_6[base_index_local+j]  	= tmp.s6;
-							ptr1_7[base_index_local+j]  	= tmp.s7;
-							ptr1_8[base_index_local+j]  	= tmp.s8;
-							ptr1_9[base_index_local+j]  	= tmp.s9;
-							ptr1_10[base_index_local+j]  	= tmp.sa;
-							ptr1_11[base_index_local+j]  	= tmp.sb;
-							ptr1_12[base_index_local+j]  	= tmp.sc;
-							ptr1_13[base_index_local+j]  	= tmp.sd;
-							ptr1_14[base_index_local+j]  	= tmp.se;
-							ptr1_15[base_index_local+j]  	= tmp.sf;
+							ptr1_0[base_index_local+j_local]  	= tmp.s0;
+							ptr1_1[base_index_local+j_local]  	= tmp.s1;
+							ptr1_2[base_index_local+j_local]  	= tmp.s2;
+							ptr1_3[base_index_local+j_local]  	= tmp.s3;
+							ptr1_4[base_index_local+j_local]  	= tmp.s4;
+							ptr1_5[base_index_local+j_local]  	= tmp.s5;
+							ptr1_6[base_index_local+j_local]  	= tmp.s6;
+							ptr1_7[base_index_local+j_local]  	= tmp.s7;
+							ptr1_8[base_index_local+j_local]  	= tmp.s8;
+							ptr1_9[base_index_local+j_local]  	= tmp.s9;
+							ptr1_10[base_index_local+j_local]  	= tmp.sa;
+							ptr1_11[base_index_local+j_local]  	= tmp.sb;
+							ptr1_12[base_index_local+j_local]  	= tmp.sc;
+							ptr1_13[base_index_local+j_local]  	= tmp.sd;
+							ptr1_14[base_index_local+j_local]  	= tmp.se;
+							ptr1_15[base_index_local+j_local]  	= tmp.sf;
 						}
 
 				case 1: {
-							ptr1_16[base_index_local+j]  	= tmp.s0;
-							ptr1_17[base_index_local+j]  	= tmp.s1;
-							ptr1_18[base_index_local+j]  	= tmp.s2;
-							ptr1_19[base_index_local+j]  	= tmp.s3;
-							ptr1_20[base_index_local+j]  	= tmp.s4;
-							ptr1_21[base_index_local+j]  	= tmp.s5;
-							ptr1_22[base_index_local+j]  	= tmp.s6;
-							ptr1_23[base_index_local+j]  	= tmp.s7;
-							ptr1_24[base_index_local+j]  	= tmp.s8;
-							ptr1_25[base_index_local+j]  	= tmp.s9;
-							ptr1_26[base_index_local+j]  	= tmp.sa;
-							ptr1_27[base_index_local+j]  	= tmp.sb;
-							ptr1_28[base_index_local+j]  	= tmp.sc;
-							ptr1_29[base_index_local+j]  	= tmp.sd;
-							ptr1_30[base_index_local+j]  	= tmp.se;
-							ptr1_31[base_index_local+j]  	= tmp.sf;
+							ptr1_16[base_index_local+j_local]  	= tmp.s0;
+							ptr1_17[base_index_local+j_local]  	= tmp.s1;
+							ptr1_18[base_index_local+j_local]  	= tmp.s2;
+							ptr1_19[base_index_local+j_local]  	= tmp.s3;
+							ptr1_20[base_index_local+j_local]  	= tmp.s4;
+							ptr1_21[base_index_local+j_local]  	= tmp.s5;
+							ptr1_22[base_index_local+j_local]  	= tmp.s6;
+							ptr1_23[base_index_local+j_local]  	= tmp.s7;
+							ptr1_24[base_index_local+j_local]  	= tmp.s8;
+							ptr1_25[base_index_local+j_local]  	= tmp.s9;
+							ptr1_26[base_index_local+j_local]  	= tmp.sa;
+							ptr1_27[base_index_local+j_local]  	= tmp.sb;
+							ptr1_28[base_index_local+j_local]  	= tmp.sc;
+							ptr1_29[base_index_local+j_local]  	= tmp.sd;
+							ptr1_30[base_index_local+j_local]  	= tmp.se;
+							ptr1_31[base_index_local+j_local]  	= tmp.sf;
 						}
 
 				case 2: {
-							ptr1_32[base_index_local+j]  	= tmp.s0;
-							ptr1_33[base_index_local+j]  	= tmp.s1;
-							ptr1_34[base_index_local+j]  	= tmp.s2;
-							ptr1_35[base_index_local+j]  	= tmp.s3;
-							ptr1_36[base_index_local+j]  	= tmp.s4;
-							ptr1_37[base_index_local+j]  	= tmp.s5;
-							ptr1_38[base_index_local+j]  	= tmp.s6;
-							ptr1_39[base_index_local+j]  	= tmp.s7;
-							ptr1_40[base_index_local+j]  	= tmp.s8;
-							ptr1_41[base_index_local+j]  	= tmp.s9;
-							ptr1_42[base_index_local+j]  	= tmp.sa;
-							ptr1_43[base_index_local+j]  	= tmp.sb;
-							ptr1_44[base_index_local+j]  	= tmp.sc;
-							ptr1_45[base_index_local+j]  	= tmp.sd;
-							ptr1_46[base_index_local+j]  	= tmp.se;
-							ptr1_47[base_index_local+j]  	= tmp.sf;
+							ptr1_32[base_index_local+j_local]  	= tmp.s0;
+							ptr1_33[base_index_local+j_local]  	= tmp.s1;
+							ptr1_34[base_index_local+j_local]  	= tmp.s2;
+							ptr1_35[base_index_local+j_local]  	= tmp.s3;
+							ptr1_36[base_index_local+j_local]  	= tmp.s4;
+							ptr1_37[base_index_local+j_local]  	= tmp.s5;
+							ptr1_38[base_index_local+j_local]  	= tmp.s6;
+							ptr1_39[base_index_local+j_local]  	= tmp.s7;
+							ptr1_40[base_index_local+j_local]  	= tmp.s8;
+							ptr1_41[base_index_local+j_local]  	= tmp.s9;
+							ptr1_42[base_index_local+j_local]  	= tmp.sa;
+							ptr1_43[base_index_local+j_local]  	= tmp.sb;
+							ptr1_44[base_index_local+j_local]  	= tmp.sc;
+							ptr1_45[base_index_local+j_local]  	= tmp.sd;
+							ptr1_46[base_index_local+j_local]  	= tmp.se;
+							ptr1_47[base_index_local+j_local]  	= tmp.sf;
 						}
 
 				case 3: {
-							ptr1_48[base_index_local+j]  	= tmp.s0;
-							ptr1_49[base_index_local+j]  	= tmp.s1;
-							ptr1_50[base_index_local+j]  	= tmp.s2;
-							ptr1_51[base_index_local+j]  	= tmp.s3;
-							ptr1_52[base_index_local+j]  	= tmp.s4;
-							ptr1_53[base_index_local+j]  	= tmp.s5;
-							ptr1_54[base_index_local+j]  	= tmp.s6;
-							ptr1_55[base_index_local+j]  	= tmp.s7;
-							ptr1_56[base_index_local+j]  	= tmp.s8;
-							ptr1_57[base_index_local+j]  	= tmp.s9;
-							ptr1_58[base_index_local+j]  	= tmp.sa;
-							ptr1_59[base_index_local+j]  	= tmp.sb;
-							ptr1_60[base_index_local+j]  	= tmp.sc;
-							ptr1_61[base_index_local+j]  	= tmp.sd;
-							ptr1_62[base_index_local+j]  	= tmp.se;
-							ptr1_63[base_index_local+j]  	= tmp.sf;
+							ptr1_48[base_index_local+j_local]  	= tmp.s0;
+							ptr1_49[base_index_local+j_local]  	= tmp.s1;
+							ptr1_50[base_index_local+j_local]  	= tmp.s2;
+							ptr1_51[base_index_local+j_local]  	= tmp.s3;
+							ptr1_52[base_index_local+j_local]  	= tmp.s4;
+							ptr1_53[base_index_local+j_local]  	= tmp.s5;
+							ptr1_54[base_index_local+j_local]  	= tmp.s6;
+							ptr1_55[base_index_local+j_local]  	= tmp.s7;
+							ptr1_56[base_index_local+j_local]  	= tmp.s8;
+							ptr1_57[base_index_local+j_local]  	= tmp.s9;
+							ptr1_58[base_index_local+j_local]  	= tmp.sa;
+							ptr1_59[base_index_local+j_local]  	= tmp.sb;
+							ptr1_60[base_index_local+j_local]  	= tmp.sc;
+							ptr1_61[base_index_local+j_local]  	= tmp.sd;
+							ptr1_62[base_index_local+j_local]  	= tmp.se;
+							ptr1_63[base_index_local+j_local]  	= tmp.sf;
 						}
 			}
 			select = select + 1;
@@ -1295,6 +1296,96 @@ __kernel void ops_poisson_kernel_stencil(
 		ram_select = ram_select + 1;
 		ram_select = (ram_select >= 2) ? 0 : ram_select;
 
+	}
+
+	for(int i = 0; i < size1; i++){
+		int base_index_local = (i) * row_block;
+		int base_index_global = i * ((size0 >> 4) + 1);
+		int select = 0;
+		for(int j = 0; j < (size0 >> 4) + 1; j++){
+			float16 tmp;
+			int j_local = (j >> 2);
+			switch(select) {
+				case 0: {
+							tmp.s0 = ptr1_0[base_index_local+j_local];
+							tmp.s1 = ptr1_1[base_index_local+j_local];
+							tmp.s2 = ptr1_2[base_index_local+j_local];
+							tmp.s3 = ptr1_3[base_index_local+j_local];
+							tmp.s4 = ptr1_4[base_index_local+j_local];
+							tmp.s5 = ptr1_5[base_index_local+j_local];
+							tmp.s6 = ptr1_6[base_index_local+j_local];
+							tmp.s7 = ptr1_7[base_index_local+j_local];
+							tmp.s8 = ptr1_8[base_index_local+j_local];
+							tmp.s9 = ptr1_9[base_index_local+j_local];
+							tmp.sa = ptr1_10[base_index_local+j_local];
+							tmp.sb = ptr1_11[base_index_local+j_local];
+							tmp.sc = ptr1_12[base_index_local+j_local];
+							tmp.sd = ptr1_13[base_index_local+j_local];
+							tmp.se = ptr1_14[base_index_local+j_local];
+							tmp.sf = ptr1_15[base_index_local+j_local];
+						}
+
+				case 1: {
+							tmp.s0 = ptr1_16[base_index_local+j_local];
+							tmp.s1 = ptr1_17[base_index_local+j_local];
+							tmp.s2 = ptr1_18[base_index_local+j_local];
+							tmp.s3 = ptr1_19[base_index_local+j_local];
+							tmp.s4 = ptr1_20[base_index_local+j_local];
+							tmp.s5 = ptr1_21[base_index_local+j_local];
+							tmp.s6 = ptr1_22[base_index_local+j_local];
+							tmp.s7 = ptr1_23[base_index_local+j_local];
+							tmp.s8 = ptr1_24[base_index_local+j_local];
+							tmp.s9 = ptr1_25[base_index_local+j_local];
+							tmp.sa = ptr1_26[base_index_local+j_local];
+							tmp.sb = ptr1_27[base_index_local+j_local];
+							tmp.sc = ptr1_28[base_index_local+j_local];
+							tmp.sd = ptr1_29[base_index_local+j_local];
+							tmp.se = ptr1_30[base_index_local+j_local];
+							tmp.sf = ptr1_31[base_index_local+j_local];
+						}
+
+				case 2: {
+							tmp.s0 = ptr1_32[base_index_local+j_local];
+							tmp.s1 = ptr1_33[base_index_local+j_local];
+							tmp.s2 = ptr1_34[base_index_local+j_local];
+							tmp.s3 = ptr1_35[base_index_local+j_local];
+							tmp.s4 = ptr1_36[base_index_local+j_local];
+							tmp.s5 = ptr1_37[base_index_local+j_local];
+							tmp.s6 = ptr1_38[base_index_local+j_local];
+							tmp.s7 = ptr1_39[base_index_local+j_local];
+							tmp.s8 = ptr1_40[base_index_local+j_local];
+							tmp.s9 = ptr1_41[base_index_local+j_local];
+							tmp.sa = ptr1_42[base_index_local+j_local];
+							tmp.sb = ptr1_43[base_index_local+j_local];
+							tmp.sc = ptr1_44[base_index_local+j_local];
+							tmp.sd = ptr1_45[base_index_local+j_local];
+							tmp.se = ptr1_46[base_index_local+j_local];
+							tmp.sf = ptr1_47[base_index_local+j_local];
+						}
+
+				case 3: {
+							tmp.s0 = ptr1_48[base_index_local+j_local];
+							tmp.s1 = ptr1_49[base_index_local+j_local];
+							tmp.s2 = ptr1_50[base_index_local+j_local];
+							tmp.s3 = ptr1_51[base_index_local+j_local];
+							tmp.s4 = ptr1_52[base_index_local+j_local];
+							tmp.s5 = ptr1_53[base_index_local+j_local];
+							tmp.s6 = ptr1_54[base_index_local+j_local];
+							tmp.s7 = ptr1_55[base_index_local+j_local];
+							tmp.s8 = ptr1_56[base_index_local+j_local];
+							tmp.s9 = ptr1_57[base_index_local+j_local];
+							tmp.sa = ptr1_58[base_index_local+j_local];
+							tmp.sb = ptr1_59[base_index_local+j_local];
+							tmp.sc = ptr1_60[base_index_local+j_local];
+							tmp.sd = ptr1_61[base_index_local+j_local];
+							tmp.se = ptr1_62[base_index_local+j_local];
+							tmp.sf = ptr1_63[base_index_local+j_local];
+						}
+			}
+			select = select + 1;
+			select = (select >= 4) ? 0 : select;
+			arg0[base_index_global + j] = tmp;
+		}
 	}
 
 }
