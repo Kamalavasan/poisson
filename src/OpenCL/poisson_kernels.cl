@@ -349,6 +349,7 @@ __kernel void ops_poisson_kernel_stencil(
 		int base_index_local = (i) * row_block;
 		int base_index_global = i * ((size0 >> 4) + 1);
 		int select = 0;
+		read_a_row: __attribute__((xcl_pipeline_loop))
 		for(int j = 0; j < (size0 >> 4) + 1; j++){
 			int j_local = (j >> 2);
 			float16 tmp = arg0[base_index_global + j];
@@ -434,10 +435,10 @@ __kernel void ops_poisson_kernel_stencil(
 		}
 	}
 
-
-
 	int ram_select = 0;
+	__attribute__((xcl_pipeline_loop))
 	for(int count = 0; count < n_iters; count++){
+		__attribute__((xcl_pipeline_loop))
 		for(int i = 0; i < size1; i++){
 
 			int base_index0 = (i) * row_block;
@@ -453,7 +454,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_0 = (ptr1_0[base_index0+j] + ptr1_0[base_index2+j]) * 0.125;
 					float f2_0 = (ptr1_63[base_index1+j-1] + ptr1_1[base_index1+j]) * 0.125;
 					float f3_0 = ptr1_0[base_index1+j] * 0.5;
-					float result_0 = f1_0 + f2_0 + f3_0;
+					float result_0 = 0; //1_0 + f2_0 + f3_0;
 					ptr2_0[base_index1+j] = result_0;
 				}
 
@@ -462,7 +463,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_1 = (ptr1_1[base_index0+j] + ptr1_1[base_index2+j]) * 0.125;
 					float f2_1 = (ptr1_0[base_index1+j] + ptr1_2[base_index1+j]) * 0.125;
 					float f3_1 = ptr1_1[base_index1+j] * 0.5;
-					float result_1 = f1_1 + f2_1 + f3_1;
+					float result_1 = 0; //1_1 + f2_1 + f3_1;
 					ptr2_1[base_index1+j] = result_1;
 				}
 
@@ -471,7 +472,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_2 = (ptr1_2[base_index0+j] + ptr1_2[base_index2+j]) * 0.125;
 					float f2_2 = (ptr1_1[base_index1+j] + ptr1_3[base_index1+j]) * 0.125;
 					float f3_2 = ptr1_2[base_index1+j] * 0.5;
-					float result_2 = f1_2 + f2_2 + f3_2;
+					float result_2 = 0; //1_2 + f2_2 + f3_2;
 					ptr2_2[base_index1+j] = result_2;
 				}
 
@@ -480,7 +481,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_3 = (ptr1_3[base_index0+j] + ptr1_3[base_index2+j]) * 0.125;
 					float f2_3 = (ptr1_2[base_index1+j] + ptr1_4[base_index1+j]) * 0.125;
 					float f3_3 = ptr1_3[base_index1+j] * 0.5;
-					float result_3 = f1_3 + f2_3 + f3_3;
+					float result_3 = 0; //1_3 + f2_3 + f3_3;
 					ptr2_3[base_index1+j] = result_3;
 				}
 
@@ -489,7 +490,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_4 = (ptr1_4[base_index0+j] + ptr1_4[base_index2+j]) * 0.125;
 					float f2_4 = (ptr1_3[base_index1+j] + ptr1_5[base_index1+j]) * 0.125;
 					float f3_4 = ptr1_4[base_index1+j] * 0.5;
-					float result_4 = f1_4 + f2_4 + f3_4;
+					float result_4 = 0; //1_4 + f2_4 + f3_4;
 					ptr2_4[base_index1+j] = result_4;
 				}
 
@@ -498,7 +499,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_5 = (ptr1_5[base_index0+j] + ptr1_5[base_index2+j]) * 0.125;
 					float f2_5 = (ptr1_4[base_index1+j] + ptr1_6[base_index1+j]) * 0.125;
 					float f3_5 = ptr1_5[base_index1+j] * 0.5;
-					float result_5 = f1_5 + f2_5 + f3_5;
+					float result_5 = 0; //1_5 + f2_5 + f3_5;
 					ptr2_5[base_index1+j] = result_5;
 				}
 
@@ -507,7 +508,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_6 = (ptr1_6[base_index0+j] + ptr1_6[base_index2+j]) * 0.125;
 					float f2_6 = (ptr1_5[base_index1+j] + ptr1_7[base_index1+j]) * 0.125;
 					float f3_6 = ptr1_6[base_index1+j] * 0.5;
-					float result_6 = f1_6 + f2_6 + f3_6;
+					float result_6 = 0; //1_6 + f2_6 + f3_6;
 					ptr2_6[base_index1+j] = result_6;
 				}
 
@@ -516,7 +517,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_7 = (ptr1_7[base_index0+j] + ptr1_7[base_index2+j]) * 0.125;
 					float f2_7 = (ptr1_6[base_index1+j] + ptr1_8[base_index1+j]) * 0.125;
 					float f3_7 = ptr1_7[base_index1+j] * 0.5;
-					float result_7 = f1_7 + f2_7 + f3_7;
+					float result_7 = 0; //1_7 + f2_7 + f3_7;
 					ptr2_7[base_index1+j] = result_7;
 				}
 
@@ -525,7 +526,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_8 = (ptr1_8[base_index0+j] + ptr1_8[base_index2+j]) * 0.125;
 					float f2_8 = (ptr1_7[base_index1+j] + ptr1_9[base_index1+j]) * 0.125;
 					float f3_8 = ptr1_8[base_index1+j] * 0.5;
-					float result_8 = f1_8 + f2_8 + f3_8;
+					float result_8 = 0; //1_8 + f2_8 + f3_8;
 					ptr2_8[base_index1+j] = result_8;
 				}
 
@@ -534,7 +535,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_9 = (ptr1_9[base_index0+j] + ptr1_9[base_index2+j]) * 0.125;
 					float f2_9 = (ptr1_8[base_index1+j] + ptr1_10[base_index1+j]) * 0.125;
 					float f3_9 = ptr1_9[base_index1+j] * 0.5;
-					float result_9 = f1_9 + f2_9 + f3_9;
+					float result_9 = 0; //1_9 + f2_9 + f3_9;
 					ptr2_9[base_index1+j] = result_9;
 				}
 
@@ -543,7 +544,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_10 = (ptr1_10[base_index0+j] + ptr1_10[base_index2+j]) * 0.125;
 					float f2_10 = (ptr1_9[base_index1+j] + ptr1_11[base_index1+j]) * 0.125;
 					float f3_10 = ptr1_10[base_index1+j] * 0.5;
-					float result_10 = f1_10 + f2_10 + f3_10;
+					float result_10 = 0; //1_10 + f2_10 + f3_10;
 					ptr2_10[base_index1+j] = result_10;
 				}
 
@@ -552,7 +553,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_11 = (ptr1_11[base_index0+j] + ptr1_11[base_index2+j]) * 0.125;
 					float f2_11 = (ptr1_10[base_index1+j] + ptr1_12[base_index1+j]) * 0.125;
 					float f3_11 = ptr1_11[base_index1+j] * 0.5;
-					float result_11 = f1_11 + f2_11 + f3_11;
+					float result_11 = 0; //1_11 + f2_11 + f3_11;
 					ptr2_11[base_index1+j] = result_11;
 				}
 
@@ -561,7 +562,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_12 = (ptr1_12[base_index0+j] + ptr1_12[base_index2+j]) * 0.125;
 					float f2_12 = (ptr1_11[base_index1+j] + ptr1_13[base_index1+j]) * 0.125;
 					float f3_12 = ptr1_12[base_index1+j] * 0.5;
-					float result_12 = f1_12 + f2_12 + f3_12;
+					float result_12 = 0; //1_12 + f2_12 + f3_12;
 					ptr2_12[base_index1+j] = result_12;
 				}
 
@@ -570,7 +571,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_13 = (ptr1_13[base_index0+j] + ptr1_13[base_index2+j]) * 0.125;
 					float f2_13 = (ptr1_12[base_index1+j] + ptr1_14[base_index1+j]) * 0.125;
 					float f3_13 = ptr1_13[base_index1+j] * 0.5;
-					float result_13 = f1_13 + f2_13 + f3_13;
+					float result_13 = 0; //1_13 + f2_13 + f3_13;
 					ptr2_13[base_index1+j] = result_13;
 				}
 
@@ -579,7 +580,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_14 = (ptr1_14[base_index0+j] + ptr1_14[base_index2+j]) * 0.125;
 					float f2_14 = (ptr1_13[base_index1+j] + ptr1_15[base_index1+j]) * 0.125;
 					float f3_14 = ptr1_14[base_index1+j] * 0.5;
-					float result_14 = f1_14 + f2_14 + f3_14;
+					float result_14 = 0; //1_14 + f2_14 + f3_14;
 					ptr2_14[base_index1+j] = result_14;
 				}
 
@@ -588,7 +589,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_15 = (ptr1_15[base_index0+j] + ptr1_15[base_index2+j]) * 0.125;
 					float f2_15 = (ptr1_14[base_index1+j] + ptr1_16[base_index1+j]) * 0.125;
 					float f3_15 = ptr1_15[base_index1+j] * 0.5;
-					float result_15 = f1_15 + f2_15 + f3_15;
+					float result_15 = 0; //1_15 + f2_15 + f3_15;
 					ptr2_15[base_index1+j] = result_15;
 				}
 
@@ -597,7 +598,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_16 = (ptr1_16[base_index0+j] + ptr1_16[base_index2+j]) * 0.125;
 					float f2_16 = (ptr1_15[base_index1+j] + ptr1_17[base_index1+j]) * 0.125;
 					float f3_16 = ptr1_16[base_index1+j] * 0.5;
-					float result_16 = f1_16 + f2_16 + f3_16;
+					float result_16 = 0; //1_16 + f2_16 + f3_16;
 					ptr2_16[base_index1+j] = result_16;
 				}
 
@@ -606,7 +607,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_17 = (ptr1_17[base_index0+j] + ptr1_17[base_index2+j]) * 0.125;
 					float f2_17 = (ptr1_16[base_index1+j] + ptr1_18[base_index1+j]) * 0.125;
 					float f3_17 = ptr1_17[base_index1+j] * 0.5;
-					float result_17 = f1_17 + f2_17 + f3_17;
+					float result_17 = 0; //1_17 + f2_17 + f3_17;
 					ptr2_17[base_index1+j] = result_17;
 				}
 
@@ -615,7 +616,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_18 = (ptr1_18[base_index0+j] + ptr1_18[base_index2+j]) * 0.125;
 					float f2_18 = (ptr1_17[base_index1+j] + ptr1_19[base_index1+j]) * 0.125;
 					float f3_18 = ptr1_18[base_index1+j] * 0.5;
-					float result_18 = f1_18 + f2_18 + f3_18;
+					float result_18 = 0; //1_18 + f2_18 + f3_18;
 					ptr2_18[base_index1+j] = result_18;
 				}
 
@@ -624,7 +625,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_19 = (ptr1_19[base_index0+j] + ptr1_19[base_index2+j]) * 0.125;
 					float f2_19 = (ptr1_18[base_index1+j] + ptr1_20[base_index1+j]) * 0.125;
 					float f3_19 = ptr1_19[base_index1+j] * 0.5;
-					float result_19 = f1_19 + f2_19 + f3_19;
+					float result_19 = 0; //1_19 + f2_19 + f3_19;
 					ptr2_19[base_index1+j] = result_19;
 				}
 
@@ -633,7 +634,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_20 = (ptr1_20[base_index0+j] + ptr1_20[base_index2+j]) * 0.125;
 					float f2_20 = (ptr1_19[base_index1+j] + ptr1_21[base_index1+j]) * 0.125;
 					float f3_20 = ptr1_20[base_index1+j] * 0.5;
-					float result_20 = f1_20 + f2_20 + f3_20;
+					float result_20 = 0; //1_20 + f2_20 + f3_20;
 					ptr2_20[base_index1+j] = result_20;
 				}
 
@@ -642,7 +643,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_21 = (ptr1_21[base_index0+j] + ptr1_21[base_index2+j]) * 0.125;
 					float f2_21 = (ptr1_20[base_index1+j] + ptr1_22[base_index1+j]) * 0.125;
 					float f3_21 = ptr1_21[base_index1+j] * 0.5;
-					float result_21 = f1_21 + f2_21 + f3_21;
+					float result_21 = 0; //1_21 + f2_21 + f3_21;
 					ptr2_21[base_index1+j] = result_21;
 				}
 
@@ -651,7 +652,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_22 = (ptr1_22[base_index0+j] + ptr1_22[base_index2+j]) * 0.125;
 					float f2_22 = (ptr1_21[base_index1+j] + ptr1_23[base_index1+j]) * 0.125;
 					float f3_22 = ptr1_22[base_index1+j] * 0.5;
-					float result_22 = f1_22 + f2_22 + f3_22;
+					float result_22 = 0; //1_22 + f2_22 + f3_22;
 					ptr2_22[base_index1+j] = result_22;
 				}
 
@@ -660,7 +661,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_23 = (ptr1_23[base_index0+j] + ptr1_23[base_index2+j]) * 0.125;
 					float f2_23 = (ptr1_22[base_index1+j] + ptr1_24[base_index1+j]) * 0.125;
 					float f3_23 = ptr1_23[base_index1+j] * 0.5;
-					float result_23 = f1_23 + f2_23 + f3_23;
+					float result_23 = 0; //1_23 + f2_23 + f3_23;
 					ptr2_23[base_index1+j] = result_23;
 				}
 
@@ -669,7 +670,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_24 = (ptr1_24[base_index0+j] + ptr1_24[base_index2+j]) * 0.125;
 					float f2_24 = (ptr1_23[base_index1+j] + ptr1_25[base_index1+j]) * 0.125;
 					float f3_24 = ptr1_24[base_index1+j] * 0.5;
-					float result_24 = f1_24 + f2_24 + f3_24;
+					float result_24 = 0; //1_24 + f2_24 + f3_24;
 					ptr2_24[base_index1+j] = result_24;
 				}
 
@@ -678,7 +679,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_25 = (ptr1_25[base_index0+j] + ptr1_25[base_index2+j]) * 0.125;
 					float f2_25 = (ptr1_24[base_index1+j] + ptr1_26[base_index1+j]) * 0.125;
 					float f3_25 = ptr1_25[base_index1+j] * 0.5;
-					float result_25 = f1_25 + f2_25 + f3_25;
+					float result_25 = 0; //1_25 + f2_25 + f3_25;
 					ptr2_25[base_index1+j] = result_25;
 				}
 
@@ -687,7 +688,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_26 = (ptr1_26[base_index0+j] + ptr1_26[base_index2+j]) * 0.125;
 					float f2_26 = (ptr1_25[base_index1+j] + ptr1_27[base_index1+j]) * 0.125;
 					float f3_26 = ptr1_26[base_index1+j] * 0.5;
-					float result_26 = f1_26 + f2_26 + f3_26;
+					float result_26 = 0; //1_26 + f2_26 + f3_26;
 					ptr2_26[base_index1+j] = result_26;
 				}
 
@@ -696,7 +697,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_27 = (ptr1_27[base_index0+j] + ptr1_27[base_index2+j]) * 0.125;
 					float f2_27 = (ptr1_26[base_index1+j] + ptr1_28[base_index1+j]) * 0.125;
 					float f3_27 = ptr1_27[base_index1+j] * 0.5;
-					float result_27 = f1_27 + f2_27 + f3_27;
+					float result_27 = 0; //1_27 + f2_27 + f3_27;
 					ptr2_27[base_index1+j] = result_27;
 				}
 
@@ -705,7 +706,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_28 = (ptr1_28[base_index0+j] + ptr1_28[base_index2+j]) * 0.125;
 					float f2_28 = (ptr1_27[base_index1+j] + ptr1_29[base_index1+j]) * 0.125;
 					float f3_28 = ptr1_28[base_index1+j] * 0.5;
-					float result_28 = f1_28 + f2_28 + f3_28;
+					float result_28 = 0; //1_28 + f2_28 + f3_28;
 					ptr2_28[base_index1+j] = result_28;
 				}
 
@@ -714,7 +715,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_29 = (ptr1_29[base_index0+j] + ptr1_29[base_index2+j]) * 0.125;
 					float f2_29 = (ptr1_28[base_index1+j] + ptr1_30[base_index1+j]) * 0.125;
 					float f3_29 = ptr1_29[base_index1+j] * 0.5;
-					float result_29 = f1_29 + f2_29 + f3_29;
+					float result_29 = 0; //1_29 + f2_29 + f3_29;
 					ptr2_29[base_index1+j] = result_29;
 				}
 
@@ -723,7 +724,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_30 = (ptr1_30[base_index0+j] + ptr1_30[base_index2+j]) * 0.125;
 					float f2_30 = (ptr1_29[base_index1+j] + ptr1_31[base_index1+j]) * 0.125;
 					float f3_30 = ptr1_30[base_index1+j] * 0.5;
-					float result_30 = f1_30 + f2_30 + f3_30;
+					float result_30 = 0; //1_30 + f2_30 + f3_30;
 					ptr2_30[base_index1+j] = result_30;
 				}
 
@@ -732,7 +733,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_31 = (ptr1_31[base_index0+j] + ptr1_31[base_index2+j]) * 0.125;
 					float f2_31 = (ptr1_30[base_index1+j] + ptr1_32[base_index1+j]) * 0.125;
 					float f3_31 = ptr1_31[base_index1+j] * 0.5;
-					float result_31 = f1_31 + f2_31 + f3_31;
+					float result_31 = 0; //1_31 + f2_31 + f3_31;
 					ptr2_31[base_index1+j] = result_31;
 				}
 
@@ -741,7 +742,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_32 = (ptr1_32[base_index0+j] + ptr1_32[base_index2+j]) * 0.125;
 					float f2_32 = (ptr1_31[base_index1+j] + ptr1_33[base_index1+j]) * 0.125;
 					float f3_32 = ptr1_32[base_index1+j] * 0.5;
-					float result_32 = f1_32 + f2_32 + f3_32;
+					float result_32 = 0; //1_32 + f2_32 + f3_32;
 					ptr2_32[base_index1+j] = result_32;
 				}
 
@@ -750,7 +751,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_33 = (ptr1_33[base_index0+j] + ptr1_33[base_index2+j]) * 0.125;
 					float f2_33 = (ptr1_32[base_index1+j] + ptr1_34[base_index1+j]) * 0.125;
 					float f3_33 = ptr1_33[base_index1+j] * 0.5;
-					float result_33 = f1_33 + f2_33 + f3_33;
+					float result_33 = 0; //1_33 + f2_33 + f3_33;
 					ptr2_33[base_index1+j] = result_33;
 				}
 
@@ -759,7 +760,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_34 = (ptr1_34[base_index0+j] + ptr1_34[base_index2+j]) * 0.125;
 					float f2_34 = (ptr1_33[base_index1+j] + ptr1_35[base_index1+j]) * 0.125;
 					float f3_34 = ptr1_34[base_index1+j] * 0.5;
-					float result_34 = f1_34 + f2_34 + f3_34;
+					float result_34 = 0; //1_34 + f2_34 + f3_34;
 					ptr2_34[base_index1+j] = result_34;
 				}
 
@@ -768,7 +769,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_35 = (ptr1_35[base_index0+j] + ptr1_35[base_index2+j]) * 0.125;
 					float f2_35 = (ptr1_34[base_index1+j] + ptr1_36[base_index1+j]) * 0.125;
 					float f3_35 = ptr1_35[base_index1+j] * 0.5;
-					float result_35 = f1_35 + f2_35 + f3_35;
+					float result_35 = 0; //1_35 + f2_35 + f3_35;
 					ptr2_35[base_index1+j] = result_35;
 				}
 
@@ -777,7 +778,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_36 = (ptr1_36[base_index0+j] + ptr1_36[base_index2+j]) * 0.125;
 					float f2_36 = (ptr1_35[base_index1+j] + ptr1_37[base_index1+j]) * 0.125;
 					float f3_36 = ptr1_36[base_index1+j] * 0.5;
-					float result_36 = f1_36 + f2_36 + f3_36;
+					float result_36 = 0; //1_36 + f2_36 + f3_36;
 					ptr2_36[base_index1+j] = result_36;
 				}
 
@@ -786,7 +787,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_37 = (ptr1_37[base_index0+j] + ptr1_37[base_index2+j]) * 0.125;
 					float f2_37 = (ptr1_36[base_index1+j] + ptr1_38[base_index1+j]) * 0.125;
 					float f3_37 = ptr1_37[base_index1+j] * 0.5;
-					float result_37 = f1_37 + f2_37 + f3_37;
+					float result_37 = 0; //1_37 + f2_37 + f3_37;
 					ptr2_37[base_index1+j] = result_37;
 				}
 
@@ -795,7 +796,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_38 = (ptr1_38[base_index0+j] + ptr1_38[base_index2+j]) * 0.125;
 					float f2_38 = (ptr1_37[base_index1+j] + ptr1_39[base_index1+j]) * 0.125;
 					float f3_38 = ptr1_38[base_index1+j] * 0.5;
-					float result_38 = f1_38 + f2_38 + f3_38;
+					float result_38 = 0; //1_38 + f2_38 + f3_38;
 					ptr2_38[base_index1+j] = result_38;
 				}
 
@@ -804,7 +805,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_39 = (ptr1_39[base_index0+j] + ptr1_39[base_index2+j]) * 0.125;
 					float f2_39 = (ptr1_38[base_index1+j] + ptr1_40[base_index1+j]) * 0.125;
 					float f3_39 = ptr1_39[base_index1+j] * 0.5;
-					float result_39 = f1_39 + f2_39 + f3_39;
+					float result_39 = 0; //1_39 + f2_39 + f3_39;
 					ptr2_39[base_index1+j] = result_39;
 				}
 
@@ -813,7 +814,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_40 = (ptr1_40[base_index0+j] + ptr1_40[base_index2+j]) * 0.125;
 					float f2_40 = (ptr1_39[base_index1+j] + ptr1_41[base_index1+j]) * 0.125;
 					float f3_40 = ptr1_40[base_index1+j] * 0.5;
-					float result_40 = f1_40 + f2_40 + f3_40;
+					float result_40 = 0; //1_40 + f2_40 + f3_40;
 					ptr2_40[base_index1+j] = result_40;
 				}
 
@@ -822,7 +823,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_41 = (ptr1_41[base_index0+j] + ptr1_41[base_index2+j]) * 0.125;
 					float f2_41 = (ptr1_40[base_index1+j] + ptr1_42[base_index1+j]) * 0.125;
 					float f3_41 = ptr1_41[base_index1+j] * 0.5;
-					float result_41 = f1_41 + f2_41 + f3_41;
+					float result_41 = 0; //1_41 + f2_41 + f3_41;
 					ptr2_41[base_index1+j] = result_41;
 				}
 
@@ -831,7 +832,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_42 = (ptr1_42[base_index0+j] + ptr1_42[base_index2+j]) * 0.125;
 					float f2_42 = (ptr1_41[base_index1+j] + ptr1_43[base_index1+j]) * 0.125;
 					float f3_42 = ptr1_42[base_index1+j] * 0.5;
-					float result_42 = f1_42 + f2_42 + f3_42;
+					float result_42 = 0; //1_42 + f2_42 + f3_42;
 					ptr2_42[base_index1+j] = result_42;
 				}
 
@@ -840,7 +841,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_43 = (ptr1_43[base_index0+j] + ptr1_43[base_index2+j]) * 0.125;
 					float f2_43 = (ptr1_42[base_index1+j] + ptr1_44[base_index1+j]) * 0.125;
 					float f3_43 = ptr1_43[base_index1+j] * 0.5;
-					float result_43 = f1_43 + f2_43 + f3_43;
+					float result_43 = 0; //1_43 + f2_43 + f3_43;
 					ptr2_43[base_index1+j] = result_43;
 				}
 
@@ -849,7 +850,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_44 = (ptr1_44[base_index0+j] + ptr1_44[base_index2+j]) * 0.125;
 					float f2_44 = (ptr1_43[base_index1+j] + ptr1_45[base_index1+j]) * 0.125;
 					float f3_44 = ptr1_44[base_index1+j] * 0.5;
-					float result_44 = f1_44 + f2_44 + f3_44;
+					float result_44 = 0; //1_44 + f2_44 + f3_44;
 					ptr2_44[base_index1+j] = result_44;
 				}
 
@@ -858,7 +859,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_45 = (ptr1_45[base_index0+j] + ptr1_45[base_index2+j]) * 0.125;
 					float f2_45 = (ptr1_44[base_index1+j] + ptr1_46[base_index1+j]) * 0.125;
 					float f3_45 = ptr1_45[base_index1+j] * 0.5;
-					float result_45 = f1_45 + f2_45 + f3_45;
+					float result_45 = 0; //1_45 + f2_45 + f3_45;
 					ptr2_45[base_index1+j] = result_45;
 				}
 
@@ -867,7 +868,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_46 = (ptr1_46[base_index0+j] + ptr1_46[base_index2+j]) * 0.125;
 					float f2_46 = (ptr1_45[base_index1+j] + ptr1_47[base_index1+j]) * 0.125;
 					float f3_46 = ptr1_46[base_index1+j] * 0.5;
-					float result_46 = f1_46 + f2_46 + f3_46;
+					float result_46 = 0; //1_46 + f2_46 + f3_46;
 					ptr2_46[base_index1+j] = result_46;
 				}
 
@@ -876,7 +877,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_47 = (ptr1_47[base_index0+j] + ptr1_47[base_index2+j]) * 0.125;
 					float f2_47 = (ptr1_46[base_index1+j] + ptr1_48[base_index1+j]) * 0.125;
 					float f3_47 = ptr1_47[base_index1+j] * 0.5;
-					float result_47 = f1_47 + f2_47 + f3_47;
+					float result_47 = 0; //1_47 + f2_47 + f3_47;
 					ptr2_47[base_index1+j] = result_47;
 				}
 
@@ -885,7 +886,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_48 = (ptr1_48[base_index0+j] + ptr1_48[base_index2+j]) * 0.125;
 					float f2_48 = (ptr1_47[base_index1+j] + ptr1_49[base_index1+j]) * 0.125;
 					float f3_48 = ptr1_48[base_index1+j] * 0.5;
-					float result_48 = f1_48 + f2_48 + f3_48;
+					float result_48 = 0; //1_48 + f2_48 + f3_48;
 					ptr2_48[base_index1+j] = result_48;
 				}
 
@@ -894,7 +895,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_49 = (ptr1_49[base_index0+j] + ptr1_49[base_index2+j]) * 0.125;
 					float f2_49 = (ptr1_48[base_index1+j] + ptr1_50[base_index1+j]) * 0.125;
 					float f3_49 = ptr1_49[base_index1+j] * 0.5;
-					float result_49 = f1_49 + f2_49 + f3_49;
+					float result_49 = 0; //1_49 + f2_49 + f3_49;
 					ptr2_49[base_index1+j] = result_49;
 				}
 
@@ -903,7 +904,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_50 = (ptr1_50[base_index0+j] + ptr1_50[base_index2+j]) * 0.125;
 					float f2_50 = (ptr1_49[base_index1+j] + ptr1_51[base_index1+j]) * 0.125;
 					float f3_50 = ptr1_50[base_index1+j] * 0.5;
-					float result_50 = f1_50 + f2_50 + f3_50;
+					float result_50 = 0; //1_50 + f2_50 + f3_50;
 					ptr2_50[base_index1+j] = result_50;
 				}
 
@@ -912,7 +913,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_51 = (ptr1_51[base_index0+j] + ptr1_51[base_index2+j]) * 0.125;
 					float f2_51 = (ptr1_50[base_index1+j] + ptr1_52[base_index1+j]) * 0.125;
 					float f3_51 = ptr1_51[base_index1+j] * 0.5;
-					float result_51 = f1_51 + f2_51 + f3_51;
+					float result_51 = 0; //1_51 + f2_51 + f3_51;
 					ptr2_51[base_index1+j] = result_51;
 				}
 
@@ -921,7 +922,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_52 = (ptr1_52[base_index0+j] + ptr1_52[base_index2+j]) * 0.125;
 					float f2_52 = (ptr1_51[base_index1+j] + ptr1_53[base_index1+j]) * 0.125;
 					float f3_52 = ptr1_52[base_index1+j] * 0.5;
-					float result_52 = f1_52 + f2_52 + f3_52;
+					float result_52 = 0; //1_52 + f2_52 + f3_52;
 					ptr2_52[base_index1+j] = result_52;
 				}
 
@@ -930,7 +931,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_53 = (ptr1_53[base_index0+j] + ptr1_53[base_index2+j]) * 0.125;
 					float f2_53 = (ptr1_52[base_index1+j] + ptr1_54[base_index1+j]) * 0.125;
 					float f3_53 = ptr1_53[base_index1+j] * 0.5;
-					float result_53 = f1_53 + f2_53 + f3_53;
+					float result_53 = 0; //1_53 + f2_53 + f3_53;
 					ptr2_53[base_index1+j] = result_53;
 				}
 
@@ -939,7 +940,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_54 = (ptr1_54[base_index0+j] + ptr1_54[base_index2+j]) * 0.125;
 					float f2_54 = (ptr1_53[base_index1+j] + ptr1_55[base_index1+j]) * 0.125;
 					float f3_54 = ptr1_54[base_index1+j] * 0.5;
-					float result_54 = f1_54 + f2_54 + f3_54;
+					float result_54 = 0; //1_54 + f2_54 + f3_54;
 					ptr2_54[base_index1+j] = result_54;
 				}
 
@@ -948,7 +949,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_55 = (ptr1_55[base_index0+j] + ptr1_55[base_index2+j]) * 0.125;
 					float f2_55 = (ptr1_54[base_index1+j] + ptr1_56[base_index1+j]) * 0.125;
 					float f3_55 = ptr1_55[base_index1+j] * 0.5;
-					float result_55 = f1_55 + f2_55 + f3_55;
+					float result_55 = 0; //1_55 + f2_55 + f3_55;
 					ptr2_55[base_index1+j] = result_55;
 				}
 
@@ -957,7 +958,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_56 = (ptr1_56[base_index0+j] + ptr1_56[base_index2+j]) * 0.125;
 					float f2_56 = (ptr1_55[base_index1+j] + ptr1_57[base_index1+j]) * 0.125;
 					float f3_56 = ptr1_56[base_index1+j] * 0.5;
-					float result_56 = f1_56 + f2_56 + f3_56;
+					float result_56 = 0; //1_56 + f2_56 + f3_56;
 					ptr2_56[base_index1+j] = result_56;
 				}
 
@@ -966,7 +967,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_57 = (ptr1_57[base_index0+j] + ptr1_57[base_index2+j]) * 0.125;
 					float f2_57 = (ptr1_56[base_index1+j] + ptr1_58[base_index1+j]) * 0.125;
 					float f3_57 = ptr1_57[base_index1+j] * 0.5;
-					float result_57 = f1_57 + f2_57 + f3_57;
+					float result_57 = 0; //1_57 + f2_57 + f3_57;
 					ptr2_57[base_index1+j] = result_57;
 				}
 
@@ -975,7 +976,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_58 = (ptr1_58[base_index0+j] + ptr1_58[base_index2+j]) * 0.125;
 					float f2_58 = (ptr1_57[base_index1+j] + ptr1_59[base_index1+j]) * 0.125;
 					float f3_58 = ptr1_58[base_index1+j] * 0.5;
-					float result_58 = f1_58 + f2_58 + f3_58;
+					float result_58 = 0; //1_58 + f2_58 + f3_58;
 					ptr2_58[base_index1+j] = result_58;
 				}
 
@@ -984,7 +985,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_59 = (ptr1_59[base_index0+j] + ptr1_59[base_index2+j]) * 0.125;
 					float f2_59 = (ptr1_58[base_index1+j] + ptr1_60[base_index1+j]) * 0.125;
 					float f3_59 = ptr1_59[base_index1+j] * 0.5;
-					float result_59 = f1_59 + f2_59 + f3_59;
+					float result_59 = 0; //1_59 + f2_59 + f3_59;
 					ptr2_59[base_index1+j] = result_59;
 				}
 
@@ -993,7 +994,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_60 = (ptr1_60[base_index0+j] + ptr1_60[base_index2+j]) * 0.125;
 					float f2_60 = (ptr1_59[base_index1+j] + ptr1_61[base_index1+j]) * 0.125;
 					float f3_60 = ptr1_60[base_index1+j] * 0.5;
-					float result_60 = f1_60 + f2_60 + f3_60;
+					float result_60 = 0; //1_60 + f2_60 + f3_60;
 					ptr2_60[base_index1+j] = result_60;
 				}
 
@@ -1002,7 +1003,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_61 = (ptr1_61[base_index0+j] + ptr1_61[base_index2+j]) * 0.125;
 					float f2_61 = (ptr1_60[base_index1+j] + ptr1_62[base_index1+j]) * 0.125;
 					float f3_61 = ptr1_61[base_index1+j] * 0.5;
-					float result_61 = f1_61 + f2_61 + f3_61;
+					float result_61 = 0; //1_61 + f2_61 + f3_61;
 					ptr2_61[base_index1+j] = result_61;
 				}
 
@@ -1011,7 +1012,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_62 = (ptr1_62[base_index0+j] + ptr1_62[base_index2+j]) * 0.125;
 					float f2_62 = (ptr1_61[base_index1+j] + ptr1_63[base_index1+j]) * 0.125;
 					float f3_62 = ptr1_62[base_index1+j] * 0.5;
-					float result_62 = f1_62 + f2_62 + f3_62;
+					float result_62 = 0; //1_62 + f2_62 + f3_62;
 					ptr2_62[base_index1+j] = result_62;
 				}
 
@@ -1020,7 +1021,7 @@ __kernel void ops_poisson_kernel_stencil(
 					float f1_63 = (ptr1_63[base_index0+j] + ptr1_63[base_index2+j]) * 0.125;
 					float f2_63 = (ptr1_0[base_index1+j+1] + ptr1_62[base_index1+j]) * 0.125;
 					float f3_63 = ptr1_63[base_index1+j] * 0.5;
-					float result_63 = f1_63 + f2_63 + f3_63;
+					float result_63 = 0; //1_63 + f2_63 + f3_63;
 					ptr2_63[base_index1+j] = result_63;
 				}
 			}
@@ -1302,6 +1303,7 @@ __kernel void ops_poisson_kernel_stencil(
 		int base_index_local = (i) * row_block;
 		int base_index_global = i * ((size0 >> 4) + 1);
 		int select = 0;
+		write_a_row: __attribute__((xcl_pipeline_loop))
 		for(int j = 0; j < (size0 >> 4) + 1; j++){
 			float16 tmp;
 			int j_local = (j >> 2);
