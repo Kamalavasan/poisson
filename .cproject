@@ -1,0 +1,848 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+    	
+    <storageModule moduleId="org.eclipse.cdt.core.settings">
+        		
+        <cconfiguration id="com.xilinx.sdx.opencl.config.sw_emu.262267279">
+            			
+            <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.xilinx.sdx.opencl.config.sw_emu.262267279" moduleId="org.eclipse.cdt.core.settings" name="Emulation-SW">
+                				
+                <externalSettings/>
+                				
+                <extensions>
+                    					
+                    <extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="com.xilinx.sdx.opencl.managedbuild.XoccErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    				
+                </extensions>
+                			
+            </storageModule>
+            			
+            <storageModule moduleId="cdtBuildSystem" version="4.0.0">
+                				
+                <configuration artifactName="${ProjName}" buildArtefactType="com.xilinx.sdx.opencl.buildArtefactType.hostExe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=com.xilinx.sdx.opencl.buildArtefactType.hostExe" description="" id="com.xilinx.sdx.opencl.config.sw_emu.262267279" name="Emulation-SW" parent="com.xilinx.sdx.opencl.config.sw_emu">
+                    					
+                    <folderInfo id="com.xilinx.sdx.opencl.config.sw_emu.262267279." name="/" resourcePath="">
+                        						
+                        <toolChain id="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.1632293092" name="Xilinx SDx OpenCL Toolchain (x86_64)" superClass="com.xilinx.sdx.opencl.toolchain.sw_emu.debug">
+                            							
+                            <option id="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.option.kernel_debug.2023888588" name="Enable debugging by default for kernel code" superClass="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.option.kernel_debug"/>
+                            							
+                            <targetPlatform id="com.xilinx.sdx.opencl.config.sw_emu.262267279..1723403367" name=""/>
+                            							
+                            <builder buildPath="${workspace_loc:/Poisson}/Emulation-SW" enableAutoBuild="true" id="com.xilinx.sdx.opencl.make_builder.758549588" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Xilinx SDx OpenCL Builder" superClass="com.xilinx.sdx.opencl.make_builder"/>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.449668712" name="SDx XOCC Kernel Compiler" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler">
+                                								
+                                <option id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.include_paths.1962659588" name="Include paths (-I)" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler.include_paths" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/ops/c/include}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+                                    								
+                                </option>
+                                								
+                                <inputType id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.input.cl.1978829571" name="OpenCL files" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler.input.cl"/>
+                                							
+                            </tool>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.toolchain.xocc_linker.373253673" name="SDx XOCC Kernel Linker" superClass="com.xilinx.sdx.opencl.toolchain.xocc_linker"/>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.emconfigutil.1505794358" name="emconfigutil" superClass="com.xilinx.sdx.opencl.emconfigutil"/>
+                            							
+                            <tool command="$(XILINX_SDX)/bin/xcpp" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" id="com.xilinx.sdx.opencl.toolchain.gcc_compiler.sw_emu.debug.787109961" name="SDx GCC Host Compiler (x86_64)" superClass="com.xilinx.sdx.opencl.toolchain.gcc_compiler.sw_emu.debug">
+                                								
+                                <option id="com.xilinx.sdx.opencl.cpp.compiler.include.paths.517915676" name="Include paths (-I)" superClass="com.xilinx.sdx.opencl.cpp.compiler.include.paths" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_VIVADO_HLS}/include/"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_XRT}/include/"/>
+                                    								
+                                </option>
+                                								
+                                <option id="gnu.cpp.compiler.option.include.files.1581560962" name="Include files (-include)" superClass="gnu.cpp.compiler.option.include.files"/>
+                                								
+                                <option id="gnu.cpp.compiler.option.dialect.std.1210459603" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
+                                								
+                                <option id="gnu.cpp.compiler.option.dialect.flags.154512015" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" value="" valueType="string"/>
+                                								
+                                <option id="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.gcc_compiler.option.debug.1861773187" superClass="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.gcc_compiler.option.debug" value="gnu.cpp.compiler.debugging.level.default" valueType="enumerated"/>
+                                								
+                                <option id="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.gcc_compiler.option.optimization.1737746777" superClass="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.gcc_compiler.option.optimization" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+                                								
+                                <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1804878398" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+                                							
+                            </tool>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.toolchain.gcc_linker.hw.421247474" name="SDx GCC Host Linker (x86_64)" superClass="com.xilinx.sdx.opencl.toolchain.gcc_linker.hw">
+                                								
+                                <option id="com.xilinx.sdx.opencl.cpp.linker.option.paths.831451198" name="Library search path (-L)" superClass="com.xilinx.sdx.opencl.cpp.linker.option.paths" valueType="libPaths">
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_XRT}/lib/"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="/home/vasan/OPS/ops/c/lib"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/fpo_v7_0"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/lib/csim"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/dds_v6_0"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/fir_v7_0"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/fft_v9_1"/>
+                                    								
+                                </option>
+                                								
+                                <option id="com.xilinx.sdx.opencl.cpp.linker.option.libs.x86.1197758879_64" name="Libraries (-l)" superClass="com.xilinx.sdx.opencl.cpp.linker.option.libs.x86_64" valueType="libFiles">
+                                    									
+                                    <listOptionValue builtIn="false" value="xilinxopencl"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="ops_opencl"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="pthread"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="rt"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="stdc++"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="mpfr"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="gmp"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="hlsmc++-GCC46"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_floating_point_v7_0_bitacc_cmodel"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_xfft_v9_1_bitacc_cmodel"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_fir_compiler_v7_2_bitacc_cmodel"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_dds_compiler_v6_0_bitacc_cmodel"/>
+                                    								
+                                </option>
+                                								
+                                <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1937527430" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
+                                    									
+                                    <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+                                    									
+                                    <additionalInput kind="additionalinput" paths="$(LIBS)"/>
+                                    								
+                                </inputType>
+                                							
+                            </tool>
+                            						
+                        </toolChain>
+                        					
+                    </folderInfo>
+                    					
+                    <fileInfo id="com.xilinx.sdx.opencl.config.sw_emu.262267279.477588016" name="ops_opencl_decl.c" rcbsApplicability="disable" resourcePath="ops/c/src/ops_opencl_decl.c" toolsToInvoke=""/>
+                    					
+                    <sourceEntries>
+                        						
+                        <entry excluding="src/OpenCL/error_kernel.h|src/OpenCL/initial_kernel.h|src/OpenCL/populate_kernel.h|src/OpenCL/stencil_kernel.h|src/OpenCL/update_kernel.h|src/cpu/poisson_kernel_update_cpu_kernel.cpp|src/cpu/poisson_kernel_stencil_cpu_kernel.cpp|src/cpu/poisson_kernel_populate_cpu_kernel.cpp|src/cpu/poisson_kernel_initialguess_cpu_kernel.cpp|src/cpu/poisson_kernel_error_cpu_kernel.cpp|src/original_updated.cpp|src/original_kernels.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                        					
+                    </sourceEntries>
+                    				
+                </configuration>
+                			
+            </storageModule>
+            			
+            <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+            			
+            <storageModule moduleId="ilg.gnuarmeclipse.managedbuild.packs"/>
+            		
+        </cconfiguration>
+        		
+        <cconfiguration id="com.xilinx.sdx.opencl.config.hw_emu.2144567038">
+            			
+            <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.xilinx.sdx.opencl.config.hw_emu.2144567038" moduleId="org.eclipse.cdt.core.settings" name="Emulation-HW">
+                				
+                <externalSettings/>
+                				
+                <extensions>
+                    					
+                    <extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="com.xilinx.sdx.opencl.managedbuild.XoccErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    				
+                </extensions>
+                			
+            </storageModule>
+            			
+            <storageModule moduleId="cdtBuildSystem" version="4.0.0">
+                				
+                <configuration artifactName="${ProjName}" buildArtefactType="com.xilinx.sdx.opencl.buildArtefactType.hostExe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=com.xilinx.sdx.opencl.buildArtefactType.hostExe" description="" id="com.xilinx.sdx.opencl.config.hw_emu.2144567038" name="Emulation-HW" parent="com.xilinx.sdx.opencl.config.hw_emu">
+                    					
+                    <folderInfo id="com.xilinx.sdx.opencl.config.hw_emu.2144567038." name="/" resourcePath="">
+                        						
+                        <toolChain id="com.xilinx.sdx.opencl.toolchain.hw_emu.debug.1394437166" name="Xilinx SDx OpenCL Toolchain (x86_64)" superClass="com.xilinx.sdx.opencl.toolchain.hw_emu.debug">
+                            							
+                            <option id="com.xilinx.sdx.opencl.toolchain.hw_emu.debug.option.kernel_debug.1045827078" name="Enable debugging by default for kernel code" superClass="com.xilinx.sdx.opencl.toolchain.hw_emu.debug.option.kernel_debug"/>
+                            							
+                            <targetPlatform id="com.xilinx.sdx.opencl.config.hw_emu.2144567038..1139496916" name=""/>
+                            							
+                            <builder buildPath="${workspace_loc:/Poisson}/Emulation-HW" enableAutoBuild="true" id="com.xilinx.sdx.opencl.make_builder.1270750509" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Xilinx SDx OpenCL Builder" superClass="com.xilinx.sdx.opencl.make_builder"/>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.1329443764" name="SDx XOCC Kernel Compiler" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler">
+                                								
+                                <option id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.include_paths.1543627395" name="Include paths (-I)" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler.include_paths" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/ops/c/include}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="/home/faraz/Developer/OPS/ops/c/src/core"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="/home/faraz/Developer/OPS/ops/c/src/opencl"/>
+                                    								
+                                </option>
+                                								
+                                <option id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.other_flags.1454311805" name="Other flags" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler.other_flags" valueType="stringList">
+                                    									
+                                    <listOptionValue builtIn="false" value="--sp ops_poisson_kernel_populate_1:m_axi_gmem-DDR[1]"/>
+                                    								
+                                </option>
+                                								
+                                <inputType id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.input.cl.543688746" name="OpenCL files" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler.input.cl"/>
+                                							
+                            </tool>
+                            							
+                            <tool command="$(XILINX_SDX)/bin/xocc" id="com.xilinx.sdx.opencl.toolchain.xocc_linker.891830845" name="SDx XOCC Kernel Linker" superClass="com.xilinx.sdx.opencl.toolchain.xocc_linker">
+                                								
+                                <option id="com.xilinx.sdx.opencl.toolchain.xocc_linker.other_flags.932735289" name="Other flags" superClass="com.xilinx.sdx.opencl.toolchain.xocc_linker.other_flags"/>
+                                							
+                            </tool>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.emconfigutil.1246064907" name="emconfigutil" superClass="com.xilinx.sdx.opencl.emconfigutil"/>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.toolchain.gcc_compiler.hw_emu.debug.705541997" name="SDx GCC Host Compiler (x86_64)" superClass="com.xilinx.sdx.opencl.toolchain.gcc_compiler.hw_emu.debug">
+                                								
+                                <option id="com.xilinx.sdx.opencl.cpp.compiler.include.paths.1771859296" name="Include paths (-I)" superClass="com.xilinx.sdx.opencl.cpp.compiler.include.paths" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_VIVADO_HLS}/include/"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_XRT}/include/"/>
+                                    								
+                                </option>
+                                								
+                                <option id="gnu.cpp.compiler.option.dialect.std.1456942156" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
+                                								
+                                <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1104190612" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+                                							
+                            </tool>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.toolchain.gcc_linker.hw.1257615629" name="SDx GCC Host Linker (x86_64)" superClass="com.xilinx.sdx.opencl.toolchain.gcc_linker.hw">
+                                								
+                                <option id="com.xilinx.sdx.opencl.cpp.linker.option.paths.1815262660" name="Library search path (-L)" superClass="com.xilinx.sdx.opencl.cpp.linker.option.paths" valueType="libPaths">
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_XRT}/lib/"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/ops/c/obj}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/fpo_v7_0"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/lib/csim"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/dds_v6_0"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/fir_v7_0"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/fft_v9_1"/>
+                                    								
+                                </option>
+                                								
+                                <option id="com.xilinx.sdx.opencl.cpp.linker.option.libs.x86.1144612399_64" name="Libraries (-l)" superClass="com.xilinx.sdx.opencl.cpp.linker.option.libs.x86_64" valueType="libFiles">
+                                    									
+                                    <listOptionValue builtIn="false" value="xilinxopencl"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="ops_opencl_xilinx"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="pthread"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="rt"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="stdc++"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="mpfr"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="gmp"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="hlsmc++-GCC46"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_floating_point_v7_0_bitacc_cmodel"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_xfft_v9_1_bitacc_cmodel"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_fir_compiler_v7_2_bitacc_cmodel"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_dds_compiler_v6_0_bitacc_cmodel"/>
+                                    								
+                                </option>
+                                								
+                                <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1860033788" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
+                                    									
+                                    <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+                                    									
+                                    <additionalInput kind="additionalinput" paths="$(LIBS)"/>
+                                    								
+                                </inputType>
+                                							
+                            </tool>
+                            						
+                        </toolChain>
+                        					
+                    </folderInfo>
+                    					
+                    <sourceEntries>
+                        						
+                        <entry excluding="src/cpu/poisson_kernel_update_cpu_kernel.cpp|src/cpu/poisson_kernel_stencil_cpu_kernel.cpp|src/cpu/poisson_kernel_populate_cpu_kernel.cpp|src/cpu/poisson_kernel_initialguess_cpu_kernel.cpp|src/cpu/poisson_kernel_error_cpu_kernel.cpp|src/original_updated.cpp|src/original_kernels.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                        					
+                    </sourceEntries>
+                    				
+                </configuration>
+                			
+            </storageModule>
+            			
+            <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+            		
+        </cconfiguration>
+        		
+        <cconfiguration id="com.xilinx.sdx.opencl.config.hw.1631457947">
+            			
+            <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.xilinx.sdx.opencl.config.hw.1631457947" moduleId="org.eclipse.cdt.core.settings" name="System">
+                				
+                <externalSettings/>
+                				
+                <extensions>
+                    					
+                    <extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="com.xilinx.sdx.opencl.managedbuild.XoccErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    				
+                </extensions>
+                			
+            </storageModule>
+            			
+            <storageModule moduleId="cdtBuildSystem" version="4.0.0">
+                				
+                <configuration artifactExtension="exe" artifactName="${ProjName}" buildArtefactType="com.xilinx.sdx.opencl.buildArtefactType.hostExe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=com.xilinx.sdx.opencl.buildArtefactType.hostExe" cleanCommand="rm -rf" description="" id="com.xilinx.sdx.opencl.config.hw.1631457947" name="System" parent="com.xilinx.sdx.opencl.config.hw">
+                    					
+                    <folderInfo id="com.xilinx.sdx.opencl.config.hw.1631457947." name="/" resourcePath="">
+                        						
+                        <toolChain id="com.xilinx.sdx.opencl.toolchain.hw.1817928313" name="Xilinx SDx OpenCL Toolchain (x86_64)" superClass="com.xilinx.sdx.opencl.toolchain.hw">
+                            							
+                            <option id="com.xilinx.sdx.opencl.toolchain.hw.option.kernel_debug.826308185" name="Enable debugging by default for kernel code" superClass="com.xilinx.sdx.opencl.toolchain.hw.option.kernel_debug" value="true" valueType="boolean"/>
+                            							
+                            <targetPlatform id="com.xilinx.sdx.opencl.config.hw.1631457947..1166867191" name=""/>
+                            							
+                            <builder buildPath="${workspace_loc:/Poisson}/System" enableAutoBuild="true" id="com.xilinx.sdx.opencl.make_builder.1753062556" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Xilinx SDx OpenCL Builder" superClass="com.xilinx.sdx.opencl.make_builder"/>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.341703254" name="SDx XOCC Kernel Compiler" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler">
+                                								
+                                <option id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.include_paths.466821941" name="Include paths (-I)" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler.include_paths" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/ops/c/include}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="/home/faraz/Developer/OPS/ops/c/src/core"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="/home/faraz/Developer/OPS/ops/c/src/opencl"/>
+                                    								
+                                </option>
+                                								
+                                <option id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.other_flags.1088511114" name="Other flags" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler.other_flags" valueType="stringList">
+                                    									
+                                    <listOptionValue builtIn="false" value=""/>
+                                    								
+                                </option>
+                                								
+                                <inputType id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.input.cl.678132488" name="OpenCL files" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler.input.cl"/>
+                                							
+                            </tool>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.toolchain.xocc_linker.207574477" name="SDx XOCC Kernel Linker" superClass="com.xilinx.sdx.opencl.toolchain.xocc_linker">
+                                								
+                                <option id="com.xilinx.sdx.opencl.toolchain.xocc_linker.other_flags.485536361" name="Other flags" superClass="com.xilinx.sdx.opencl.toolchain.xocc_linker.other_flags" valueType="stringList">
+                                    									
+                                    <listOptionValue builtIn="false" value="--profile_kernel data:all:all:all"/>
+                                    								
+                                </option>
+                                							
+                            </tool>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.emconfigutil.681930199" name="emconfigutil" superClass="com.xilinx.sdx.opencl.emconfigutil"/>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.toolchain.gcc_compiler.hw.1491316527" name="SDx GCC Host Compiler (x86_64)" superClass="com.xilinx.sdx.opencl.toolchain.gcc_compiler.hw">
+                                								
+                                <option id="com.xilinx.sdx.opencl.cpp.compiler.include.paths.316612142" name="Include paths (-I)" superClass="com.xilinx.sdx.opencl.cpp.compiler.include.paths" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_VIVADO_HLS}/include/"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_XRT}/include/"/>
+                                    								
+                                </option>
+                                								
+                                <option id="com.xilinx.sdx.opencl.toolchain.hw.gcc_compiler.option.debug.1875740515" name="Debug Level" superClass="com.xilinx.sdx.opencl.toolchain.hw.gcc_compiler.option.debug" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
+                                								
+                                <option id="gnu.cpp.compiler.option.optimization.level.1367294639" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.more" valueType="enumerated"/>
+                                								
+                                <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1346721592" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+                                							
+                            </tool>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.toolchain.gcc_linker.hw.1186195146" name="SDx GCC Host Linker (x86_64)" superClass="com.xilinx.sdx.opencl.toolchain.gcc_linker.hw">
+                                								
+                                <option id="com.xilinx.sdx.opencl.cpp.linker.option.paths.2019832868" name="Library search path (-L)" superClass="com.xilinx.sdx.opencl.cpp.linker.option.paths" valueType="libPaths">
+                                    									
+                                    <listOptionValue builtIn="false" value="/home/vasan/OPS/ops/c/lib"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_XRT}/lib/"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/fpo_v7_0"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/lib/csim"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/dds_v6_0"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/fir_v7_0"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/fft_v9_1"/>
+                                    								
+                                </option>
+                                								
+                                <option id="com.xilinx.sdx.opencl.cpp.linker.option.libs.x86.797794249_64" name="Libraries (-l)" superClass="com.xilinx.sdx.opencl.cpp.linker.option.libs.x86_64" valueType="libFiles">
+                                    									
+                                    <listOptionValue builtIn="false" value="ops_opencl"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="xilinxopencl"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="pthread"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="rt"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="stdc++"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="mpfr"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="gmp"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="hlsmc++-GCC46"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_floating_point_v7_0_bitacc_cmodel"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_xfft_v9_1_bitacc_cmodel"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_fir_compiler_v7_2_bitacc_cmodel"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_dds_compiler_v6_0_bitacc_cmodel"/>
+                                    								
+                                </option>
+                                								
+                                <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1057496186" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
+                                    									
+                                    <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+                                    									
+                                    <additionalInput kind="additionalinput" paths="$(LIBS)"/>
+                                    								
+                                </inputType>
+                                							
+                            </tool>
+                            						
+                        </toolChain>
+                        					
+                    </folderInfo>
+                    					
+                    <sourceEntries>
+                        						
+                        <entry excluding="src/cpu/poisson_kernel_update_cpu_kernel.cpp|src/cpu/poisson_kernel_stencil_cpu_kernel.cpp|src/cpu/poisson_kernel_populate_cpu_kernel.cpp|src/cpu/poisson_kernel_initialguess_cpu_kernel.cpp|src/cpu/poisson_kernel_error_cpu_kernel.cpp|src/original_updated.cpp|src/original_kernels.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                        					
+                    </sourceEntries>
+                    				
+                </configuration>
+                			
+            </storageModule>
+            			
+            <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+            			
+            <storageModule moduleId="ilg.gnuarmeclipse.managedbuild.packs"/>
+            		
+        </cconfiguration>
+        		
+        <cconfiguration id="com.xilinx.sdx.opencl.config.sw_emu.262267279.1195230961">
+            			
+            <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.xilinx.sdx.opencl.config.sw_emu.262267279.1195230961" moduleId="org.eclipse.cdt.core.settings" name="profiling_sw">
+                				
+                <externalSettings/>
+                				
+                <extensions>
+                    					
+                    <extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="com.xilinx.sdx.opencl.managedbuild.XoccErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    				
+                </extensions>
+                			
+            </storageModule>
+            			
+            <storageModule moduleId="cdtBuildSystem" version="4.0.0">
+                				
+                <configuration artifactName="${ProjName}" buildArtefactType="com.xilinx.sdx.opencl.buildArtefactType.hostExe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=com.xilinx.sdx.opencl.buildArtefactType.hostExe" description="" id="com.xilinx.sdx.opencl.config.sw_emu.262267279.1195230961" name="profiling_sw" parent="com.xilinx.sdx.opencl.config.sw_emu">
+                    					
+                    <folderInfo id="com.xilinx.sdx.opencl.config.sw_emu.262267279.1195230961." name="/" resourcePath="">
+                        						
+                        <toolChain id="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.1513858865" name="Xilinx SDx OpenCL Toolchain (x86_64)" superClass="com.xilinx.sdx.opencl.toolchain.sw_emu.debug">
+                            							
+                            <option id="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.option.kernel_debug.1668127646" name="Enable debugging by default for kernel code" superClass="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.option.kernel_debug"/>
+                            							
+                            <targetPlatform id="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.1513858865.865595427" name=""/>
+                            							
+                            <builder buildPath="${workspace_loc:/Poisson}/Emulation-SW" enableAutoBuild="true" id="com.xilinx.sdx.opencl.make_builder.1845575619" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Xilinx SDx OpenCL Builder" superClass="com.xilinx.sdx.opencl.make_builder"/>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.1476025767" name="SDx XOCC Kernel Compiler" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler">
+                                								
+                                <option id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.include_paths.1852743446" name="Include paths (-I)" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler.include_paths" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/ops/c/include}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+                                    								
+                                </option>
+                                								
+                                <inputType id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.input.cl.1377607365" name="OpenCL files" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler.input.cl"/>
+                                							
+                            </tool>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.toolchain.xocc_linker.1533870379" name="SDx XOCC Kernel Linker" superClass="com.xilinx.sdx.opencl.toolchain.xocc_linker"/>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.emconfigutil.1770005670" name="emconfigutil" superClass="com.xilinx.sdx.opencl.emconfigutil"/>
+                            							
+                            <tool command="$(XILINX_SDX)/bin/xcpp" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" id="com.xilinx.sdx.opencl.toolchain.gcc_compiler.sw_emu.debug.2087223332" name="SDx GCC Host Compiler (x86_64)" superClass="com.xilinx.sdx.opencl.toolchain.gcc_compiler.sw_emu.debug">
+                                								
+                                <option id="com.xilinx.sdx.opencl.cpp.compiler.include.paths.59210779" name="Include paths (-I)" superClass="com.xilinx.sdx.opencl.cpp.compiler.include.paths" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_VIVADO_HLS}/include/"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_XRT}/include/"/>
+                                    								
+                                </option>
+                                								
+                                <option id="gnu.cpp.compiler.option.include.files.1932384455" name="Include files (-include)" superClass="gnu.cpp.compiler.option.include.files"/>
+                                								
+                                <option id="gnu.cpp.compiler.option.dialect.std.1537595267" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
+                                								
+                                <option id="gnu.cpp.compiler.option.dialect.flags.1501588528" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" value="" valueType="string"/>
+                                								
+                                <option id="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.gcc_compiler.option.debug.939974486" name="Debug Level" superClass="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.gcc_compiler.option.debug" value="gnu.cpp.compiler.debugging.level.default" valueType="enumerated"/>
+                                								
+                                <option id="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.gcc_compiler.option.optimization.1444687119" name="Optimization Level" superClass="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.gcc_compiler.option.optimization" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+                                								
+                                <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1100153974" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+                                							
+                            </tool>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.toolchain.gcc_linker.hw.199626959" name="SDx GCC Host Linker (x86_64)" superClass="com.xilinx.sdx.opencl.toolchain.gcc_linker.hw">
+                                								
+                                <option id="com.xilinx.sdx.opencl.cpp.linker.option.paths.1629916132" name="Library search path (-L)" superClass="com.xilinx.sdx.opencl.cpp.linker.option.paths" valueType="libPaths">
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_XRT}/lib/"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="/home/vasan/OPS/ops/c/lib"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/fpo_v7_0"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/lib/csim"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/dds_v6_0"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/fir_v7_0"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/fft_v9_1"/>
+                                    								
+                                </option>
+                                								
+                                <option id="com.xilinx.sdx.opencl.cpp.linker.option.libs.x86_64.1400896335" name="Libraries (-l)" superClass="com.xilinx.sdx.opencl.cpp.linker.option.libs.x86_64" valueType="libFiles">
+                                    									
+                                    <listOptionValue builtIn="false" value="xilinxopencl"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="ops_opencl"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="pthread"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="rt"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="stdc++"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="mpfr"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="gmp"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="hlsmc++-GCC46"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_floating_point_v7_0_bitacc_cmodel"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_xfft_v9_1_bitacc_cmodel"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_fir_compiler_v7_2_bitacc_cmodel"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_dds_compiler_v6_0_bitacc_cmodel"/>
+                                    								
+                                </option>
+                                								
+                                <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.771341272" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
+                                    									
+                                    <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+                                    									
+                                    <additionalInput kind="additionalinput" paths="$(LIBS)"/>
+                                    								
+                                </inputType>
+                                							
+                            </tool>
+                            						
+                        </toolChain>
+                        					
+                    </folderInfo>
+                    					
+                    <fileInfo id="com.xilinx.sdx.opencl.config.sw_emu.262267279.1195230961.ops/c/src/ops_opencl_decl.c" name="ops_opencl_decl.c" rcbsApplicability="disable" resourcePath="ops/c/src/ops_opencl_decl.c" toolsToInvoke=""/>
+                    					
+                    <sourceEntries>
+                        						
+                        <entry excluding="src/OpenCL/error_kernel.h|src/OpenCL/initial_kernel.h|src/OpenCL/populate_kernel.h|src/OpenCL/stencil_kernel.h|src/OpenCL/update_kernel.h|src/cpu/poisson_kernel_update_cpu_kernel.cpp|src/cpu/poisson_kernel_stencil_cpu_kernel.cpp|src/cpu/poisson_kernel_populate_cpu_kernel.cpp|src/cpu/poisson_kernel_initialguess_cpu_kernel.cpp|src/cpu/poisson_kernel_error_cpu_kernel.cpp|src/original_updated.cpp|src/original_kernels.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                        					
+                    </sourceEntries>
+                    				
+                </configuration>
+                			
+            </storageModule>
+            			
+            <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+            			
+            <storageModule moduleId="ilg.gnuarmeclipse.managedbuild.packs"/>
+            		
+        </cconfiguration>
+        		
+        <cconfiguration id="com.xilinx.sdx.opencl.config.sw_emu.262267279.1930479504">
+            			
+            <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.xilinx.sdx.opencl.config.sw_emu.262267279.1930479504" moduleId="org.eclipse.cdt.core.settings" name="profiling_hw">
+                				
+                <externalSettings/>
+                				
+                <extensions>
+                    					
+                    <extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="com.xilinx.sdx.opencl.managedbuild.XoccErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    					
+                    <extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+                    				
+                </extensions>
+                			
+            </storageModule>
+            			
+            <storageModule moduleId="cdtBuildSystem" version="4.0.0">
+                				
+                <configuration artifactName="${ProjName}" buildArtefactType="com.xilinx.sdx.opencl.buildArtefactType.hostExe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=com.xilinx.sdx.opencl.buildArtefactType.hostExe" description="" id="com.xilinx.sdx.opencl.config.sw_emu.262267279.1930479504" name="profiling_hw" parent="com.xilinx.sdx.opencl.config.sw_emu">
+                    					
+                    <folderInfo id="com.xilinx.sdx.opencl.config.sw_emu.262267279.1930479504." name="/" resourcePath="">
+                        						
+                        <toolChain id="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.912088415" name="Xilinx SDx OpenCL Toolchain (x86_64)" superClass="com.xilinx.sdx.opencl.toolchain.sw_emu.debug">
+                            							
+                            <option id="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.option.kernel_debug.1002062806" name="Enable debugging by default for kernel code" superClass="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.option.kernel_debug"/>
+                            							
+                            <targetPlatform id="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.912088415.6821101" name=""/>
+                            							
+                            <builder buildPath="${workspace_loc:/Poisson}/Emulation-SW" enableAutoBuild="true" id="com.xilinx.sdx.opencl.make_builder.620062424" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Xilinx SDx OpenCL Builder" superClass="com.xilinx.sdx.opencl.make_builder"/>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.1327459931" name="SDx XOCC Kernel Compiler" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler">
+                                								
+                                <option id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.include_paths.572714458" name="Include paths (-I)" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler.include_paths" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/ops/c/include}&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+                                    								
+                                </option>
+                                								
+                                <inputType id="com.xilinx.sdx.opencl.toolchain.xocc_compiler.input.cl.1668697912" name="OpenCL files" superClass="com.xilinx.sdx.opencl.toolchain.xocc_compiler.input.cl"/>
+                                							
+                            </tool>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.toolchain.xocc_linker.40399131" name="SDx XOCC Kernel Linker" superClass="com.xilinx.sdx.opencl.toolchain.xocc_linker"/>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.emconfigutil.2091522460" name="emconfigutil" superClass="com.xilinx.sdx.opencl.emconfigutil"/>
+                            							
+                            <tool command="$(XILINX_SDX)/bin/xcpp" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" id="com.xilinx.sdx.opencl.toolchain.gcc_compiler.sw_emu.debug.2075149377" name="SDx GCC Host Compiler (x86_64)" superClass="com.xilinx.sdx.opencl.toolchain.gcc_compiler.sw_emu.debug">
+                                								
+                                <option id="com.xilinx.sdx.opencl.cpp.compiler.include.paths.1539784803" name="Include paths (-I)" superClass="com.xilinx.sdx.opencl.cpp.compiler.include.paths" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_VIVADO_HLS}/include/"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_XRT}/include/"/>
+                                    								
+                                </option>
+                                								
+                                <option id="gnu.cpp.compiler.option.include.files.2116611773" name="Include files (-include)" superClass="gnu.cpp.compiler.option.include.files"/>
+                                								
+                                <option id="gnu.cpp.compiler.option.dialect.std.834363555" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
+                                								
+                                <option id="gnu.cpp.compiler.option.dialect.flags.540782943" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" value="" valueType="string"/>
+                                								
+                                <option id="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.gcc_compiler.option.debug.237339767" name="Debug Level" superClass="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.gcc_compiler.option.debug" value="gnu.cpp.compiler.debugging.level.default" valueType="enumerated"/>
+                                								
+                                <option id="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.gcc_compiler.option.optimization.1105041303" name="Optimization Level" superClass="com.xilinx.sdx.opencl.toolchain.sw_emu.debug.gcc_compiler.option.optimization" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+                                								
+                                <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1669375438" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+                                							
+                            </tool>
+                            							
+                            <tool id="com.xilinx.sdx.opencl.toolchain.gcc_linker.hw.1646821163" name="SDx GCC Host Linker (x86_64)" superClass="com.xilinx.sdx.opencl.toolchain.gcc_linker.hw">
+                                								
+                                <option id="com.xilinx.sdx.opencl.cpp.linker.option.paths.352226119" name="Library search path (-L)" superClass="com.xilinx.sdx.opencl.cpp.linker.option.paths" valueType="libPaths">
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_XRT}/lib/"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="/home/vasan/OPS/ops/c/lib"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/fpo_v7_0"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/lib/csim"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/dds_v6_0"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/fir_v7_0"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="$(XILINX_VIVADO)/lnx64/tools/fft_v9_1"/>
+                                    								
+                                </option>
+                                								
+                                <option id="com.xilinx.sdx.opencl.cpp.linker.option.libs.x86_64.1542482699" name="Libraries (-l)" superClass="com.xilinx.sdx.opencl.cpp.linker.option.libs.x86_64" valueType="libFiles">
+                                    									
+                                    <listOptionValue builtIn="false" value="xilinxopencl"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="ops_opencl"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="pthread"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="rt"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="stdc++"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="mpfr"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="gmp"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="hlsmc++-GCC46"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_floating_point_v7_0_bitacc_cmodel"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_xfft_v9_1_bitacc_cmodel"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_fir_compiler_v7_2_bitacc_cmodel"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="Ip_dds_compiler_v6_0_bitacc_cmodel"/>
+                                    								
+                                </option>
+                                								
+                                <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.804798412" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
+                                    									
+                                    <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+                                    									
+                                    <additionalInput kind="additionalinput" paths="$(LIBS)"/>
+                                    								
+                                </inputType>
+                                							
+                            </tool>
+                            						
+                        </toolChain>
+                        					
+                    </folderInfo>
+                    					
+                    <fileInfo id="com.xilinx.sdx.opencl.config.sw_emu.262267279.1930479504.ops/c/src/ops_opencl_decl.c" name="ops_opencl_decl.c" rcbsApplicability="disable" resourcePath="ops/c/src/ops_opencl_decl.c" toolsToInvoke=""/>
+                    					
+                    <sourceEntries>
+                        						
+                        <entry excluding="src/OpenCL/error_kernel.h|src/OpenCL/initial_kernel.h|src/OpenCL/populate_kernel.h|src/OpenCL/stencil_kernel.h|src/OpenCL/update_kernel.h|src/cpu/poisson_kernel_update_cpu_kernel.cpp|src/cpu/poisson_kernel_stencil_cpu_kernel.cpp|src/cpu/poisson_kernel_populate_cpu_kernel.cpp|src/cpu/poisson_kernel_initialguess_cpu_kernel.cpp|src/cpu/poisson_kernel_error_cpu_kernel.cpp|src/original_updated.cpp|src/original_kernels.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                        					
+                    </sourceEntries>
+                    				
+                </configuration>
+                			
+            </storageModule>
+            			
+            <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+            			
+            <storageModule moduleId="ilg.gnuarmeclipse.managedbuild.packs"/>
+            		
+        </cconfiguration>
+        	
+    </storageModule>
+    	
+    <storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+    	
+    <storageModule moduleId="cdtBuildSystem" version="4.0.0">
+        		
+        <project id="Poisson.com.xilinx.sdx.opencl.project.94849424" name="Xilinx SDx OpenCL Project" projectType="com.xilinx.sdx.opencl.project"/>
+        	
+    </storageModule>
+    	
+    <storageModule moduleId="scannerConfiguration">
+        		
+        <autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+        	
+    </storageModule>
+    	
+    <storageModule moduleId="refreshScope" versionNumber="2">
+        		
+        <configuration configurationName="Emulation-HW">
+            			
+            <resource resourceType="PROJECT" workspacePath="/Poisson"/>
+            		
+        </configuration>
+        		
+        <configuration configurationName="Emulation-SW">
+            			
+            <resource resourceType="PROJECT" workspacePath="/Poisson"/>
+            		
+        </configuration>
+        		
+        <configuration configurationName="System">
+            			
+            <resource resourceType="PROJECT" workspacePath="/Poisson"/>
+            		
+        </configuration>
+        	
+    </storageModule>
+    	
+    <storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+    
+</cproject>
