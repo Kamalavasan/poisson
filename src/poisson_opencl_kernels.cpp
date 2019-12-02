@@ -37,8 +37,8 @@ void ops_release_program(){
 
 	clReleaseProgram(OPS_opencl_core.program);
 
-	free(OPS_opencl_core.platform_id);
-	free(OPS_opencl_core.devices);
+//	free(OPS_opencl_core.platform_id);
+//	free(OPS_opencl_core.devices);
 	free(OPS_opencl_core.kernel);
 	free(OPS_opencl_core.constant);
 }

@@ -54,7 +54,7 @@
 // FiX ME
 #define MAX_SIZE1 20000
 
-static void read_a_row(float16* row, float* row_c,  __global float16* arg0, int loop_limit, int base_index){
+static void read_a_row(local float16* row, local float* row_c,  __global float16* arg0, int loop_limit, int base_index){
 		v1_row_read: __attribute__((xcl_pipeline_loop))
 		for(int k = 0; k < loop_limit+1; k++){
 			float16 tmp = arg0[base_index + k];
@@ -63,7 +63,7 @@ static void read_a_row(float16* row, float* row_c,  __global float16* arg0, int 
 	}
 }
 
-static void process_stencil_burst(float16*  ptr1, float16* ptr2, float16* ptr3, float16* mem_row_wr, float* first_element, int loop_limit){
+static void process_stencil_burst(local float16*  ptr1, local float16* ptr2, local float16* ptr3, local float*ptr2_c, local float16* mem_row_wr, local float* first_element, int loop_limit, int size0,  int i, int j){
 	__attribute__((xcl_pipeline_loop))
 	for(int p = 0; p < loop_limit; p++){
 		float16 row1 = ptr1[p];
@@ -100,7 +100,7 @@ static void process_stencil_burst(float16*  ptr1, float16* ptr2, float16* ptr3, 
 	}
 }
 
-static void read_a_row_and_write_a_row(float16* ptr3, float* ptr3_c, float16* mem_row_wr, __global float16* arg1, int loop_limit, int base_index3, int base_index0){
+static void read_a_row_and_write_a_row(local float16* ptr3, local float* ptr3_c, local float16* mem_row_wr, __global float16* arg0,  __global float16* arg1, int loop_limit, int base_index3, int base_index0){
 	v2_row3_read: __attribute__((xcl_pipeline_loop))
 	for(int k = 0; k < loop_limit + 1; k++){
 		float16 tmp = arg0[base_index3 + k];
@@ -214,7 +214,7 @@ __kernel void ops_poisson_kernel_stencil(
 		__attribute__((xcl_pipeline_loop))
 		for(int j = 0; j < size1; j++){
 
-			process_stencil_burst(ptr1, ptr2, ptr3, mem_row_wr, first_element, loop_limit);
+			process_stencil_burst(ptr1, ptr2, ptr3, ptr2_c, mem_row_wr, first_element, loop_limit, size0, i, j);
 			// __attribute__((xcl_pipeline_loop))
 			// for(int p = 0; p < loop_limit; p++){
 			// 	float16 row1 = ptr1[p];
@@ -266,7 +266,7 @@ __kernel void ops_poisson_kernel_stencil(
 
 
 			base_index3  = base_index3 + (xdim0_poisson_kernel_stencil >> SHIFT_BITS);
-			read_a_row_and_write_a_row(ptr3, ptr3_c, mem_row_wr, arg1, loop_limit, base_index3, base_index0);
+			read_a_row_and_write_a_row(ptr3, ptr3_c, mem_row_wr, arg0, arg1, loop_limit, base_index3, base_index0);
 			// v2_row3_read: __attribute__((xcl_pipeline_loop))
 			// for(int k = 0; k < loop_limit + 1; k++){
 			// 	float16 tmp = arg0[base_index3 + k];
