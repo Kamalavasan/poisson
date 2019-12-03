@@ -76,7 +76,6 @@ __kernel void ops_poisson_kernel_stencil(
 
 	// RAM u
 	local float u1[MAX_X_DIM*MAX_X_DIM] __attribute__((xcl_array_partition(cyclic, MAX_X_DIM, 1)));
-	local float u2[MAX_X_DIM*MAX_X_DIM] __attribute__((xcl_array_partition(cyclic, MAX_X_DIM, 1)));
 
 
 	// Reading the input
@@ -90,50 +89,98 @@ __kernel void ops_poisson_kernel_stencil(
     __attribute__((xcl_loop_tripcount(1, 10000, 9999)))
 	for(int count = 0; count < n_iters; count++){
 
-		if(ram_select == 0){
-			__attribute__((xcl_loop_tripcount(1, MAX_X_DIM)))
-			__attribute__((xcl_pipeline_loop(1)))
-			for(int i = 0; i < size1; i++){
-				__attribute__((xcl_pipeline_loop()))
-				__attribute__((xcl_loop_tripcount(1, MAX_X_DIM)))
-				for(int j = 0; j < MAX_X_DIM; j++){
-					float a1 = u1[(i-1)*MAX_X_DIM + j];
-					float b1 = u1[(i+1)*MAX_X_DIM + j];
-					float c1 = u1[i*MAX_X_DIM + j-1];
-					float d1 = u1[i*MAX_X_DIM + j+1];
-					float f1 = u1[i*MAX_X_DIM ];
-					float result1 = (a1+b1)*0.125 + (c1+d1)*0.125 + f1*0.5;
-					if(j < size0) u2[i*MAX_X_DIM + j] = result1;
+		float row0_rd[MAX_X_DIM] __attribute__((xcl_array_partition(complete, 1)));
+		float row1_rd[MAX_X_DIM] __attribute__((xcl_array_partition(complete, 1)));
+		float row2_rd[MAX_X_DIM] __attribute__((xcl_array_partition(complete, 1)));
 
-				}
+		float row0_wr[MAX_X_DIM] __attribute__((xcl_array_partition(complete, 1)));
+		float row1_wr[MAX_X_DIM] __attribute__((xcl_array_partition(complete, 1)));
+
+		__attribute__((xcl_pipeline_workitems)){
+			__attribute__((opencl_unroll_hint(MAX_X_DIM)))
+			for(int j = 0; j < MAX_X_DIM; j++){
+				row0_wr[j] = row0_rd[j]= u1[0*MAX_X_DIM +j];
+
 			}
-		} else {
+
+			__attribute__((opencl_unroll_hint(MAX_X_DIM)))
+			for(int j = 0; j < MAX_X_DIM; j++){
+				row1_rd[j]= u1[1*MAX_X_DIM +j];
+			}
+
+			__attribute__((opencl_unroll_hint(MAX_X_DIM)))
+			for(int j = 0; j < MAX_X_DIM; j++){
+				row2_rd[j]= u1[2*MAX_X_DIM +j];
+			}
+		}
+
+		unsigned char rd_select = 0;
+		unsigned char wr_select = 0;
+
+		__attribute__((xcl_loop_tripcount(1, MAX_X_DIM)))
+		__attribute__((xcl_pipeline_loop(1)))
+		for(int i = 0; i < size1; i++){
+
+			__attribute__((xcl_pipeline_loop()))
+			__attribute__((opencl_unroll_hint(MAX_X_DIM-2)))
 			__attribute__((xcl_loop_tripcount(1, MAX_X_DIM)))
-			__attribute__((xcl_pipeline_loop(1)))
-			for(int i = 0; i < size1; i++){
-				__attribute__((xcl_pipeline_loop()))
-				__attribute__((xcl_loop_tripcount(1, MAX_X_DIM)))
-				for(int j = 0; j < MAX_X_DIM; j++){
-					float a2 = u2[(i-1)*MAX_X_DIM + j];
-					float b2 = u2[(i+1)*MAX_X_DIM + j];
-					float c2 = u2[i*MAX_X_DIM + j-1];
-					float d2 = u2[i*MAX_X_DIM + j+1];
-					float f2 = u2[i*MAX_X_DIM ];
-					float result2 = (a2+b2)*0.125 + (c2+d2)*0.125 + f2*0.5;
-					if(j < size0) u1[i*MAX_X_DIM + j] = result2;
+			for(int j = 1; j < MAX_X_DIM-1; j++){
+				float a1 = row0_rd[j];
+				float b1 = row2_rd[j];
+				float c1 = row1_rd[j-1];
+				float d1 = row1_rd[j+1];
+				float f1 = row1_rd[j];
+
+				float a2 = row1_rd[j];
+				float b2 = row0_rd[j];
+				float c2 = row2_rd[j-1];
+				float d2 = row2_rd[j+1];
+				float f2 = row2_rd[j];
+
+				float a3 = row2_rd[j];
+				float b3 = row1_rd[j];
+				float c3 = row0_rd[j-1];
+				float d3 = row0_rd[j+1];
+				float f3 = row0_rd[j];
+
+				float result1 = (a1+b1)*0.125 + (c1+d1)*0.125 + f1*0.5;
+				float result2 = (a2+b2)*0.125 + (c2+d2)*0.125 + f2*0.5;
+				float result3 = (a3+b3)*0.125 + (c3+d3)*0.125 + f3*0.5;
+
+				float result;
+
+				switch(rd_select){
+					case 0: {result = result1; break;}
+					case 1: {result = result2; break;}
+					case 2: {result = result3; break;}
+					default: {result = result1; break;}
+				}
+
+				if(j < size0) u1[i*MAX_X_DIM + j] = result;
+
+			}
+			rd_select = rd_select + 1;
+			if(rd_select >= 3) rd_select = 0;
+
+			__attribute__((opencl_unroll_hint(MAX_X_DIM)))
+			for(int j = 0; j < MAX_X_DIM; j++){
+				switch(rd_select){
+					case 0: {row0_rd[j]= u1[(i+1)*MAX_X_DIM +j]; break;}
+					case 1: {row1_rd[j]= u1[(i+1)*MAX_X_DIM +j]; break;}
+					case 2: {row2_rd[j]= u1[(i+1)*MAX_X_DIM +j]; break;}
+					default: {row0_rd[j]= u1[(i+1)*MAX_X_DIM +j]; break;}
 				}
 			}
 		}
-		ram_select = (ram_select >= 1 ) ? 0 : 1;
-	}
 
+	}
 
 	// Reading the input
     __attribute__((xcl_pipeline_loop(1)))
     __attribute__((xcl_loop_tripcount(1*1, MAX_X_DIM*MAX_X_DIM)))
     writeA: for (int itr = 0, i = 0, j = 0; itr < size0 * size0; itr++, j++) {
         if (j == size0) { j = 0; i++; }
-        arg0[itr] = ram_select == 1 ? u1[i*MAX_X_DIM + j] : u2[i*MAX_X_DIM + j] ;
+        arg0[itr] = u1[i*MAX_X_DIM + j];
     }
 
 }
