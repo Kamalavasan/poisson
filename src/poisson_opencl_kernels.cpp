@@ -373,7 +373,7 @@ void buildOpenCLKernels_poisson_kernel_stencil(int xdim0, int xdim1) {
 
 
 // host stub function
-void ops_par_loop_poisson_kernel_stencil(char const *name, ops_block block, int dim, int* range,
+void ops_par_loop_poisson_kernel_stencil(char const *name, ops_block block, int dim, int* range, const int iters,
 		ops_arg arg0, ops_arg arg1) {
 
 	//Timing
@@ -482,7 +482,7 @@ void ops_par_loop_poisson_kernel_stencil(char const *name, ops_block block, int 
 		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[3], 5, sizeof(cl_int), (void*) &y_size ));
 		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[3], 6, sizeof(cl_int), (void*) &xdim0 ));
 		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[3], 7, sizeof(cl_int), (void*) &xdim1 ));
-
+		clSafeCall( clSetKernelArg(OPS_opencl_core.kernel[3], 8, sizeof(cl_int), (void*) &iters ));
 		//call/enque opencl kernel wrapper function
 		clSafeCall( clEnqueueNDRangeKernel(OPS_opencl_core.command_queue, OPS_opencl_core.kernel[3], 3, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL) );
 	}
