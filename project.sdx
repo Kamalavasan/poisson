@@ -3,77 +3,21 @@
   <configuration name="Emulation-SW" id="com.xilinx.sdx.opencl.config.sw_emu.262267279">
     <configBuildOptions xsi:type="openclProject:OpenCLOptions" kernelDebug="true" reportType="Estimate">
       <binaryContainers name="ops_poisson_kernels" xoccOptions="--profile_kernel data:all:all:all">
-        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernels.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
-          <computeUnits name="ops_poisson_kernel_stencil_1" slr="">
-            <args name="arg0" master="true" memory=""/>
-            <args name="populate_arg0" memory=""/>
-            <args name="populate_arg1" memory=""/>
-            <args name="populate_dx" memory=""/>
-            <args name="populate_dy" memory=""/>
-            <args name="populate_arg_idx0" memory=""/>
-            <args name="populate_arg_idx1" memory=""/>
-            <args name="arg2" master="true" memory=""/>
-            <args name="scratch2" master="true" memory=""/>
-            <args name="r_bytes2" memory=""/>
-            <args name="base0" memory=""/>
-            <args name="base1" memory=""/>
-            <args name="size0" memory=""/>
-            <args name="size1" memory=""/>
-            <args name="n_iters" memory=""/>
-          </computeUnits>
-          <args name="arg0" master="true"/>
-          <args name="populate_arg0"/>
-          <args name="populate_arg1"/>
-          <args name="populate_dx"/>
-          <args name="populate_dy"/>
-          <args name="populate_arg_idx0"/>
-          <args name="populate_arg_idx1"/>
-          <args name="arg2" master="true"/>
-          <args name="scratch2" master="true"/>
-          <args name="r_bytes2"/>
-          <args name="base0"/>
-          <args name="base1"/>
-          <args name="size0"/>
-          <args name="size1"/>
-          <args name="n_iters"/>
+        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernels.cl">
+          <args name="in1" master="true"/>
+          <args name="in2" master="true"/>
+          <args name="out_r" master="true"/>
+          <args name="dim"/>
         </kernels>
       </binaryContainers>
     </configBuildOptions>
     <lastBuildOptions xsi:type="openclProject:OpenCLOptions" kernelDebug="true" reportType="Estimate">
       <binaryContainers name="ops_poisson_kernels" xoccOptions="--profile_kernel data:all:all:all">
-        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernels.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
-          <computeUnits name="ops_poisson_kernel_stencil_1" slr="">
-            <args name="arg0" master="true" memory=""/>
-            <args name="populate_arg0" memory=""/>
-            <args name="populate_arg1" memory=""/>
-            <args name="populate_dx" memory=""/>
-            <args name="populate_dy" memory=""/>
-            <args name="populate_arg_idx0" memory=""/>
-            <args name="populate_arg_idx1" memory=""/>
-            <args name="arg2" master="true" memory=""/>
-            <args name="scratch2" master="true" memory=""/>
-            <args name="r_bytes2" memory=""/>
-            <args name="base0" memory=""/>
-            <args name="base1" memory=""/>
-            <args name="size0" memory=""/>
-            <args name="size1" memory=""/>
-            <args name="n_iters" memory=""/>
-          </computeUnits>
-          <args name="arg0" master="true"/>
-          <args name="populate_arg0"/>
-          <args name="populate_arg1"/>
-          <args name="populate_dx"/>
-          <args name="populate_dy"/>
-          <args name="populate_arg_idx0"/>
-          <args name="populate_arg_idx1"/>
-          <args name="arg2" master="true"/>
-          <args name="scratch2" master="true"/>
-          <args name="r_bytes2"/>
-          <args name="base0"/>
-          <args name="base1"/>
-          <args name="size0"/>
-          <args name="size1"/>
-          <args name="n_iters"/>
+        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernels.cl">
+          <args name="in1" master="true"/>
+          <args name="in2" master="true"/>
+          <args name="out_r" master="true"/>
+          <args name="dim"/>
         </kernels>
       </binaryContainers>
     </lastBuildOptions>
@@ -81,39 +25,17 @@
   <configuration name="Emulation-HW" id="com.xilinx.sdx.opencl.config.hw_emu.2144567038" dirty="true">
     <configBuildOptions xsi:type="openclProject:OpenCLOptions" kernelDebug="true" target="hw_emu">
       <binaryContainers name="ops_poisson_kernels" xoccOptions="--profile_kernel data:all:all:all">
-        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernels.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
+        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernels.cl">
           <computeUnits name="ops_poisson_kernel_stencil_1" slr="">
-            <args name="arg0" master="true" memory=""/>
-            <args name="populate_arg0" memory=""/>
-            <args name="populate_arg1" memory=""/>
-            <args name="populate_dx" memory=""/>
-            <args name="populate_dy" memory=""/>
-            <args name="populate_arg_idx0" memory=""/>
-            <args name="populate_arg_idx1" memory=""/>
-            <args name="arg2" master="true" memory=""/>
-            <args name="scratch2" master="true" memory=""/>
-            <args name="r_bytes2" memory=""/>
-            <args name="base0" memory=""/>
-            <args name="base1" memory=""/>
-            <args name="size0" memory=""/>
-            <args name="size1" memory=""/>
-            <args name="n_iters" memory=""/>
+            <args name="in1" master="true" memory=""/>
+            <args name="in2" master="true" memory=""/>
+            <args name="out_r" master="true" memory=""/>
+            <args name="dim" memory=""/>
           </computeUnits>
-          <args name="arg0" master="true"/>
-          <args name="populate_arg0"/>
-          <args name="populate_arg1"/>
-          <args name="populate_dx"/>
-          <args name="populate_dy"/>
-          <args name="populate_arg_idx0"/>
-          <args name="populate_arg_idx1"/>
-          <args name="arg2" master="true"/>
-          <args name="scratch2" master="true"/>
-          <args name="r_bytes2"/>
-          <args name="base0"/>
-          <args name="base1"/>
-          <args name="size0"/>
-          <args name="size1"/>
-          <args name="n_iters"/>
+          <args name="in1" master="true"/>
+          <args name="in2" master="true"/>
+          <args name="out_r" master="true"/>
+          <args name="dim"/>
         </kernels>
       </binaryContainers>
     </configBuildOptions>
@@ -156,42 +78,20 @@
       </binaryContainers>
     </lastBuildOptions>
   </configuration>
-  <configuration name="System" id="com.xilinx.sdx.opencl.config.hw.1631457947">
+  <configuration name="System" id="com.xilinx.sdx.opencl.config.hw.1631457947" dirty="true">
     <configBuildOptions xsi:type="openclProject:OpenCLOptions" target="hw">
       <binaryContainers name="ops_poisson_kernels" xoccOptions="--profile_kernel data:all:all:all">
-        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernels.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
+        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernels.cl">
           <computeUnits name="ops_poisson_kernel_stencil_1" slr="">
-            <args name="arg0" master="true" memory=""/>
-            <args name="populate_arg0" memory=""/>
-            <args name="populate_arg1" memory=""/>
-            <args name="populate_dx" memory=""/>
-            <args name="populate_dy" memory=""/>
-            <args name="populate_arg_idx0" memory=""/>
-            <args name="populate_arg_idx1" memory=""/>
-            <args name="arg2" master="true" memory=""/>
-            <args name="scratch2" master="true" memory=""/>
-            <args name="r_bytes2" memory=""/>
-            <args name="base0" memory=""/>
-            <args name="base1" memory=""/>
-            <args name="size0" memory=""/>
-            <args name="size1" memory=""/>
-            <args name="n_iters" memory=""/>
+            <args name="in1" master="true" memory=""/>
+            <args name="in2" master="true" memory=""/>
+            <args name="out_r" master="true" memory=""/>
+            <args name="dim" memory=""/>
           </computeUnits>
-          <args name="arg0" master="true"/>
-          <args name="populate_arg0"/>
-          <args name="populate_arg1"/>
-          <args name="populate_dx"/>
-          <args name="populate_dy"/>
-          <args name="populate_arg_idx0"/>
-          <args name="populate_arg_idx1"/>
-          <args name="arg2" master="true"/>
-          <args name="scratch2" master="true"/>
-          <args name="r_bytes2"/>
-          <args name="base0"/>
-          <args name="base1"/>
-          <args name="size0"/>
-          <args name="size1"/>
-          <args name="n_iters"/>
+          <args name="in1" master="true"/>
+          <args name="in2" master="true"/>
+          <args name="out_r" master="true"/>
+          <args name="dim"/>
         </kernels>
       </binaryContainers>
     </configBuildOptions>
@@ -311,5 +211,45 @@
         </kernels>
       </binaryContainers>
     </lastBuildOptions>
+  </configuration>
+  <configuration name="profiling_hw" id="com.xilinx.sdx.opencl.config.sw_emu.262267279.1930479504" dirty="true">
+    <configBuildOptions xsi:type="openclProject:OpenCLOptions" kernelDebug="true" reportType="Estimate">
+      <binaryContainers name="ops_poisson_kernels" xoccOptions="--profile_kernel data:all:all:all">
+        <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernels.cl" maxMemoryPorts="true" memoryPortDataWidth="64">
+          <computeUnits name="ops_poisson_kernel_stencil_1" slr="">
+            <args name="arg0" master="true" memory=""/>
+            <args name="populate_arg0" memory=""/>
+            <args name="populate_arg1" memory=""/>
+            <args name="populate_dx" memory=""/>
+            <args name="populate_dy" memory=""/>
+            <args name="populate_arg_idx0" memory=""/>
+            <args name="populate_arg_idx1" memory=""/>
+            <args name="arg2" master="true" memory=""/>
+            <args name="scratch2" master="true" memory=""/>
+            <args name="r_bytes2" memory=""/>
+            <args name="base0" memory=""/>
+            <args name="base1" memory=""/>
+            <args name="size0" memory=""/>
+            <args name="size1" memory=""/>
+            <args name="n_iters" memory=""/>
+          </computeUnits>
+          <args name="arg0" master="true"/>
+          <args name="populate_arg0"/>
+          <args name="populate_arg1"/>
+          <args name="populate_dx"/>
+          <args name="populate_dy"/>
+          <args name="populate_arg_idx0"/>
+          <args name="populate_arg_idx1"/>
+          <args name="arg2" master="true"/>
+          <args name="scratch2" master="true"/>
+          <args name="r_bytes2"/>
+          <args name="base0"/>
+          <args name="base1"/>
+          <args name="size0"/>
+          <args name="size1"/>
+          <args name="n_iters"/>
+        </kernels>
+      </binaryContainers>
+    </configBuildOptions>
   </configuration>
 </openclProject:OpenCLProject>
