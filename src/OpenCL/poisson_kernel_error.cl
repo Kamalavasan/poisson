@@ -57,6 +57,7 @@
 
 #define PORT_WIDTH 16
 #define SHIFT_BITS 4
+#define FADD_LAT 16
 
 __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 
@@ -75,55 +76,65 @@ __kernel void ops_poisson_kernel_error(
 
 
 	float g_sum = 0;
-	for(int i  = 0; i < size1; i++){
-			int base_index0, base_index1, end_index;
-			v1_index: __attribute__((xcl_pipeline_loop)){
-				base_index0 = (base0  + i* xdim0_poisson_kernel_error - 1) >> SHIFT_BITS;
-				base_index1 = (base1  + i* xdim0_poisson_kernel_error - 1) >> SHIFT_BITS;
-				end_index = (xdim0_poisson_kernel_error >> SHIFT_BITS) + 1;
-			}
+	float sum_p[FADD_LAT];
 
-			v1_rd: __attribute__((xcl_pipeline_loop))
-			for(int j = 0; j < end_index ; j++){
-				float16 tmp0 = arg0[base_index0+ j];
-				float16 tmp1 = arg1[base_index1+ j];
-				float16 diff = tmp0 -tmp1;
+	__attribute__((opencl_unroll_hint(FADD_LAT)))
+	loop_init: for(int i=0;i<FADD_LAT;i++) {
+		sum_p[i] = 0;
+	}
 
-				float arr_diff[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1))) = {diff.s0, diff.s1, diff.s2, diff.s3, diff.s4, diff.s5, diff.s6, diff.s7,
-						diff.s8, diff.s9, diff.sa, diff.sb, diff.sc, diff.sd, diff.se, diff.sf};
+	int end_index = (xdim0_poisson_kernel_error >> SHIFT_BITS) + 1;
 
-				float arr_focus[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
+	v1_rd: __attribute__((xcl_pipeline_loop))
+	for(int itr = 0, i = 0, j = 0; itr < end_index * size1 ; itr++, j++){
+		if(j == end_index) {j = 0; i++;}
+		int base_index0, base_index1;
+		base_index0 = (base0  + i* xdim0_poisson_kernel_error - 1) >> SHIFT_BITS;
+		base_index1 = (base1  + i* xdim0_poisson_kernel_error - 1) >> SHIFT_BITS;
 
-				__attribute__((xcl_pipeline_loop))
-				__attribute__((opencl_unroll_hint(PORT_WIDTH)))
-				for(int k = 0; k < PORT_WIDTH; k++){
-					int index = (j << SHIFT_BITS) + k;
-					arr_focus[k] = (index > size0 || index == 0) ? 0 : arr_diff[k]* arr_diff[k];
-				}
 
-				float sum1[PORT_WIDTH/2] __attribute__((xcl_array_partition(complete, 1)));
-				__attribute__((xcl_pipeline_loop))
-				__attribute__((opencl_unroll_hint(PORT_WIDTH/2)))
-				for(int k = 0; k < PORT_WIDTH/2; k++){
-					sum1[k] = arr_focus[2*k] + arr_focus[2*k + 1];
-				}
+		float16 tmp0 = arg0[base_index0+ j];
+		float16 tmp1 = arg1[base_index1+ j];
+		float16 diff = tmp0 -tmp1;
 
-				float sum2[PORT_WIDTH/4] __attribute__((xcl_array_partition(complete, 1)));
-				__attribute__((xcl_pipeline_loop))
-				__attribute__((opencl_unroll_hint(PORT_WIDTH/2)))
-				for(int k = 0; k < PORT_WIDTH/4; k++){
-					sum2[k] = sum1[2*k] + sum1[2*k + 1];
-				}
+		float arr_diff[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1))) = {diff.s0, diff.s1, diff.s2, diff.s3, diff.s4, diff.s5, diff.s6, diff.s7,
+				diff.s8, diff.s9, diff.sa, diff.sb, diff.sc, diff.sd, diff.se, diff.sf};
 
-				float sum3 = sum2[0] + sum2[1];
-				float sum4 = sum2[2] + sum2[3];
-				float sum = sum3 + sum4;
-				g_sum = g_sum + sum;
-			}
+		float arr_focus[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
 
+		__attribute__((xcl_pipeline_loop))
+		__attribute__((opencl_unroll_hint(PORT_WIDTH)))
+		for(int k = 0; k < PORT_WIDTH; k++){
+			int index = (j << SHIFT_BITS) + k;
+			arr_focus[k] = (index > size0 || index == 0) ? 0 : arr_diff[k]* arr_diff[k];
 		}
 
-//	arg2[r_bytes2] = g_sum;
+		float sum1[PORT_WIDTH/2] __attribute__((xcl_array_partition(complete, 1)));
+		__attribute__((xcl_pipeline_loop))
+		__attribute__((opencl_unroll_hint(PORT_WIDTH/2)))
+		for(int k = 0; k < PORT_WIDTH/2; k++){
+			sum1[k] = arr_focus[2*k] + arr_focus[2*k + 1];
+		}
+
+		float sum2[PORT_WIDTH/4] __attribute__((xcl_array_partition(complete, 1)));
+		__attribute__((xcl_pipeline_loop))
+		__attribute__((opencl_unroll_hint(PORT_WIDTH/2)))
+		for(int k = 0; k < PORT_WIDTH/4; k++){
+			sum2[k] = sum1[2*k] + sum1[2*k + 1];
+		}
+
+		float sum3 = sum2[0] + sum2[1];
+		float sum4 = sum2[2] + sum2[3];
+		float sum = sum3 + sum4;
+		sum_p[itr & 0xf] = sum_p[itr & 0xf] + sum;
+	}
+
+	__attribute__((opencl_unroll_hint(FADD_LAT)))
+	loop_sum_f: for (int k=0; k<FADD_LAT; k++)
+	{
+		g_sum += sum_p[k];
+	}
+
 	arg2[r_bytes2 >> SHIFT_BITS] = (float16){g_sum, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,   0, 0, 0, 0};
 
 }
