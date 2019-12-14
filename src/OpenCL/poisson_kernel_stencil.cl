@@ -54,6 +54,20 @@
 // FiX ME
 #define MAX_SIZE1 20000
 
+__constant int c_min_x = 40;
+__constant int c_max_x = 8000;
+__constant int c_avg_x = 8000;
+
+__constant int c_min_size = c_min_x* c_min_x/16;
+__constant int c_max_size = (c_max_x*c_max_x)/16;
+__constant int c_avg_size = (c_avg_x*c_avg_x)/16;
+
+__constant int c_min_beat = (c_min_x >> BEAT_SHIFT_BITS) + 1;
+__constant int c_max_beat = (c_max_x >> BEAT_SHIFT_BITS) + 1;
+__constant int c_avg_beat = (c_avg_x >> BEAT_SHIFT_BITS) + 1;
+
+
+
 __attribute__((xcl_dataflow))
 __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 __kernel void ops_poisson_kernel_stencil(
@@ -88,8 +102,8 @@ __kernel void ops_poisson_kernel_stencil(
 	int base_index1, base_index2, base_index3, base_index0, end_index;
 	double f1, f2, f3;
 
-
-	for(int i  = 0; i < beat_no; i++) {
+	__attribute__((xcl_loop_tripcount(c_min_beat, c_max_beat, c_avg_beat)))
+	beat_loop: for(int i  = 0; i < beat_no; i++) {
 		int loop_limit;
 		__attribute__((xcl_pipeline_workitems)){
 			base_index1 = (base0  - xdim0_poisson_kernel_stencil + (i << BEAT_SHIFT_BITS) - 1) >> SHIFT_BITS;
@@ -102,17 +116,19 @@ __kernel void ops_poisson_kernel_stencil(
 		}
 
 
-
+		__attribute__((xcl_loop_tripcount(1, BURST_LEN, BURST_LEN)))
 		v1_row1_read: __attribute__((xcl_pipeline_loop))
 		for(int k = 0; k < loop_limit+1; k++){
 			mem_rd1[k] = arg0[base_index1 + k];
 		}
 
+		__attribute__((xcl_loop_tripcount(1, BURST_LEN, BURST_LEN)))
 		v1_row2_read: __attribute__((xcl_pipeline_loop))
 		for(int k = 0; k < loop_limit + 1; k++){
 			mem_rd2[k] = arg0[base_index2 + k];
 		}
 
+		__attribute__((xcl_loop_tripcount(1, BURST_LEN, BURST_LEN)))
 		v1_row3_read: __attribute__((xcl_pipeline_loop))
 		for(int k = 0; k < loop_limit + 1; k++){
 			mem_rd3[k] = arg0[base_index3 + k];
@@ -123,6 +139,7 @@ __kernel void ops_poisson_kernel_stencil(
 		local float16* ptr3;
 
 		// initialising first element
+		__attribute__((xcl_loop_tripcount(c_min_x, c_max_x, c_avg_x)))
 		for (int k = 0; k < size1; k++){
 			first_element[k] = 0;
 		}
@@ -134,11 +151,12 @@ __kernel void ops_poisson_kernel_stencil(
 		ptr2 = mem_rd2;
 		ptr3 = mem_rd3;
 
-
-		for(int j = 0; j < size1; j++){
+		__attribute__((xcl_loop_tripcount(c_min_x, c_max_x, c_avg_x)))
+		row_loop: for(int j = 0; j < size1; j++){
 
 			__attribute__((xcl_pipeline_loop))
-			for(int p = 0; p < loop_limit; p++){
+			__attribute__((xcl_loop_tripcount(1, BURST_LEN, BURST_LEN)))
+			burst_loop: for(int p = 0; p < loop_limit; p++){
 				float16 row1 = ptr1[p];
 				float16 row2 = ptr2[p];
 				float16 row3 = ptr3[p];
@@ -149,7 +167,7 @@ __kernel void ops_poisson_kernel_stencil(
 												row1.s8, row1.s9, row1.sa, row1.sb, row1.sc, row1.sd, row1.se, row1.sf};
 
 				float row_arr2[PORT_WIDTH + 2] __attribute__((xcl_array_partition(complete, 1))) = {first_element[j], row2.s0, row2.s1, row2.s2, row2.s3, row2.s4, row2.s5, row2.s6, row2.s7,
-												row2.s8, row2.s9, row2.sa, row2.sb, row2.sc, row2.sd, row2.se, row2.sf, row2_n.s0};
+												row2.s8, row2.s9, row2.sa, row2.sb, row2.sc, row2.sd, row2.se, row2.sf, 0 /*row2_n.s0*/};
 
 				float row_arr3[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1))) = {row3.s0, row3.s1, row3.s2, row3.s3, row3.s4, row3.s5, row3.s6, row3.s7,
 								row3.s8, row3.s9, row3.sa, row3.sb, row3.sc, row3.sd, row3.se, row3.sf};
@@ -157,6 +175,7 @@ __kernel void ops_poisson_kernel_stencil(
 				float mem_wr[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
 
 				process: __attribute__((xcl_pipeline_loop))
+				__attribute__((xcl_loop_tripcount(PORT_WIDTH, PORT_WIDTH, PORT_WIDTH)))
 				__attribute__((opencl_unroll_hint(PORT_WIDTH)))
 				for(int q = 0; q < PORT_WIDTH; q++){
 					int index = (i << BEAT_SHIFT_BITS) + (p << SHIFT_BITS) + q;
@@ -187,6 +206,7 @@ __kernel void ops_poisson_kernel_stencil(
 			}
 
 			base_index3  = base_index3 + (xdim0_poisson_kernel_stencil >> SHIFT_BITS);
+			__attribute__((xcl_loop_tripcount(1, BURST_LEN, BURST_LEN)))
 			v2_row3_read: __attribute__((xcl_pipeline_loop))
 			for(int k = 0; k < loop_limit + 1; k++){
 				ptr3[k] = arg0[base_index3 + k];

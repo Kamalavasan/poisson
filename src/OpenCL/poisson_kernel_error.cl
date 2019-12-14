@@ -56,17 +56,17 @@
 
 
 #define PORT_WIDTH 16
-#define SHIFT_BITS 12
+#define SHIFT_BITS 11
 #define SHIFT_BITS_WIDTH 4
 #define FADD_LAT 16
 
-#define BURST_ELE 4096
+#define BURST_ELE 2048
 #define BURST_LEN (BURST_ELE/16)
 
 
 __constant int c_min_size = 40*40/16;
-__constant int c_max_size = (8000*(8000/BURST_ELE +1));
-__constant int c_avg_size = (8000*(8000/BURST_ELE +1));
+__constant int c_max_size = (8000*((8000 >> SHIFT_BITS) +1));
+__constant int c_avg_size = (8000*((8000 >> SHIFT_BITS)+1));
 
 
 static void read_row(__global const float16* restrict arg, float16* tmpR, int base_index){
