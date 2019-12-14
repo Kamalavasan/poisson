@@ -56,45 +56,31 @@
 
 
 #define PORT_WIDTH 16
-#define SHIFT_BITS 4
+#define SHIFT_BITS 12
+#define SHIFT_BITS_WIDTH 4
 #define FADD_LAT 16
 
-__kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
-
-__kernel void ops_poisson_kernel_error(
-		__global const float16* restrict arg0,
-		__global const float16* restrict arg1,
-		__global float16* restrict arg2,
-		__local float* scratch2,
-		int r_bytes2,
-		const int base0,
-		const int base1,
-		const int size0,
-		const int size1,
-		const int xdim0_poisson_kernel_error,
-		const int xdim1_poisson_kernel_error){
+#define BURST_ELE 4096
+#define BURST_LEN (BURST_ELE/16)
 
 
-	float g_sum = 0;
-	float sum_p[FADD_LAT];
+__constant int c_min_size = 40*40/16;
+__constant int c_max_size = (8000*(8000/BURST_ELE +1));
+__constant int c_avg_size = (8000*(8000/BURST_ELE +1));
 
-	__attribute__((opencl_unroll_hint(FADD_LAT)))
-	loop_init: for(int i=0;i<FADD_LAT;i++) {
-		sum_p[i] = 0;
+
+static void read_row(__global const float16* restrict arg, float16* tmpR, int base_index){
+	tmp0_rd: __attribute__((xcl_pipeline_loop(1)))
+	for(int l = 0; l < BURST_LEN; l++){
+		tmpR[l] = arg[base_index + l];
 	}
+}
 
-	int end_index = (xdim0_poisson_kernel_error >> SHIFT_BITS) + 1;
-
-	v1_rd: __attribute__((xcl_pipeline_loop))
-	for(int itr = 0, i = 0, j = 0; itr < end_index * size1 ; itr++, j++){
-		if(j == end_index) {j = 0; i++;}
-		int base_index0, base_index1;
-		base_index0 = (base0  + i* xdim0_poisson_kernel_error - 1) >> SHIFT_BITS;
-		base_index1 = (base1  + i* xdim0_poisson_kernel_error - 1) >> SHIFT_BITS;
-
-
-		float16 tmp0 = arg0[base_index0+ j];
-		float16 tmp1 = arg1[base_index1+ j];
+static void process_burst(float16* tmp0_R, float16* tmp1_R, int j, int size0, float* sum_p ){
+	Burst_prcess: __attribute__((xcl_pipeline_loop(1)))
+	for(int l = 0; l < BURST_LEN; l++){
+		float16 tmp0 = tmp0_R[l];
+		float16 tmp1 = tmp1_R[l];
 		float16 diff = tmp0 -tmp1;
 
 		float arr_diff[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1))) = {diff.s0, diff.s1, diff.s2, diff.s3, diff.s4, diff.s5, diff.s6, diff.s7,
@@ -105,7 +91,7 @@ __kernel void ops_poisson_kernel_error(
 		__attribute__((xcl_pipeline_loop))
 		__attribute__((opencl_unroll_hint(PORT_WIDTH)))
 		for(int k = 0; k < PORT_WIDTH; k++){
-			int index = (j << SHIFT_BITS) + k;
+			int index = (j << SHIFT_BITS) + (l << SHIFT_BITS_WIDTH)+ k;
 			arr_focus[k] = (index > size0 || index == 0) ? 0 : arr_diff[k]* arr_diff[k];
 		}
 
@@ -126,7 +112,69 @@ __kernel void ops_poisson_kernel_error(
 		float sum3 = sum2[0] + sum2[1];
 		float sum4 = sum2[2] + sum2[3];
 		float sum = sum3 + sum4;
-		sum_p[itr & 0xf] = sum_p[itr & 0xf] + sum;
+		sum_p[l & 0xf] = sum_p[l & 0xf] + sum;
+	}
+}
+
+__attribute__((xcl_dataflow))
+void read_process_row(__global const float16* restrict arg0, __global const float16* restrict arg1,
+		int base_index0, int base_index1,
+		int j, int size0, float* sum_p, int itr){
+
+	float16 tmp0_R[BURST_LEN];
+	float16 tmp1_R[BURST_LEN];
+
+	read_row(arg0, tmp0_R, base_index0);
+	read_row(arg1, tmp1_R, base_index1);
+	process_burst(tmp0_R, tmp1_R, j, size0, sum_p);
+}
+
+
+
+
+
+__kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
+
+__kernel void ops_poisson_kernel_error(
+		__global const float16* restrict arg0,
+		__global const float16* restrict arg1,
+		__global float16* restrict arg2,
+		__local float* scratch2,
+		int r_bytes2,
+		const int base0,
+		const int base1,
+		const int size0,
+		const int size1,
+		const int xdim0_poisson_kernel_error,
+		const int xdim1_poisson_kernel_error){
+
+
+	float g_sum = 0;
+	float sum_p[FADD_LAT];
+
+	float16 tmp0_R[BURST_LEN];
+	float16 tmp1_R[BURST_LEN];
+
+	__attribute__((opencl_unroll_hint(FADD_LAT)))
+	loop_init: for(int i=0;i<FADD_LAT;i++) {
+		sum_p[i] = 0;
+	}
+
+	int end_index = (xdim0_poisson_kernel_error >> SHIFT_BITS) + 1;
+
+	__attribute__((xcl_loop_tripcount(c_min_size, c_max_size, c_avg_size)))
+	__attribute__((xcl_dataflow))
+	main_loop: for(int itr = 0/*, i = 0, j = 0*/; itr < end_index * size1 ; itr++/*, j = j + 1*/){
+		//if(j >= end_index) {j = 0; i++;}
+		int i = itr/end_index;
+		int j = itr % end_index;
+		int base_index0, base_index1;
+		base_index0 = (base0  + i* xdim0_poisson_kernel_error + (j << SHIFT_BITS) - 1) >> SHIFT_BITS_WIDTH;
+		base_index1 = (base1  + i* xdim0_poisson_kernel_error + (j << SHIFT_BITS) - 1) >> SHIFT_BITS_WIDTH;
+
+
+		read_process_row(arg0, arg1, base_index0, base_index1, j, size0, sum_p, itr);
+
 	}
 
 	__attribute__((opencl_unroll_hint(FADD_LAT)))
