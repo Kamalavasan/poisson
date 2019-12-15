@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ASCII"?>
 <openclProject:OpenCLProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:openclProject="http://www.xilinx.com/openclproject" name="Poisson" location="/home/faraz/workspace/Poisson" platform="/opt/xilinx/platforms/xilinx_vcu1525_xdma_201830_1/xilinx_vcu1525_xdma_201830_1.xpfm" platformUID="xilinx:vcu1525:xdma:201830.1" systemProject="Poisson_system" sysConfig="Linux" cpu="" cpuInstance="" os="linux">
-  <configuration name="Emulation-SW" id="com.xilinx.sdx.opencl.config.sw_emu.262267279" dirty="true">
+  <configuration name="Emulation-SW" id="com.xilinx.sdx.opencl.config.sw_emu.262267279">
     <configBuildOptions xsi:type="openclProject:OpenCLOptions" kernelDebug="true">
       <binaryContainers name="ops_poisson_kernels">
         <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cl" maxMemoryPorts="true" memoryPortDataWidth="512" xoccOptions="">
@@ -43,7 +43,7 @@
           <args name="xdim0_poisson_kernel_update"/>
           <args name="xdim1_poisson_kernel_update"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true" memoryPortDataWidth="512" xoccOptions="--xp param:compiler.xclDataflowFifoDepth=128">
+        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true" memoryPortDataWidth="512" xoccOptions="--xp param:compiler.xclDataflowFifoDepth=520">
           <computeUnits name="ops_poisson_kernel_error_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="arg1" master="true" memory=""/>
@@ -165,7 +165,7 @@
           <args name="xdim0_poisson_kernel_update"/>
           <args name="xdim1_poisson_kernel_update"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" memoryPortDataWidth="512" xoccOptions="">
+        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true" memoryPortDataWidth="512" xoccOptions="--xp param:compiler.xclDataflowFifoDepth=520">
           <computeUnits name="ops_poisson_kernel_error_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="arg1" master="true" memory=""/>
@@ -289,7 +289,7 @@
           <args name="xdim0_poisson_kernel_update"/>
           <args name="xdim1_poisson_kernel_update"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true" memoryPortDataWidth="512" xoccOptions="--xp param:compiler.xclDataflowFifoDepth=128">
+        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true" memoryPortDataWidth="512" xoccOptions="--xp param:compiler.xclDataflowFifoDepth=520">
           <computeUnits name="ops_poisson_kernel_error_1" slr="">
             <args name="arg0" master="true" memory=""/>
             <args name="arg1" master="true" memory=""/>
@@ -486,7 +486,7 @@
       </binaryContainers>
     </lastBuildOptions>
   </configuration>
-  <configuration name="System" id="com.xilinx.sdx.opencl.config.hw.1631457947">
+  <configuration name="System" id="com.xilinx.sdx.opencl.config.hw.1631457947" dirty="true">
     <configBuildOptions xsi:type="openclProject:OpenCLOptions" target="hw">
       <binaryContainers name="ops_poisson_kernels">
         <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cl" maxMemoryPorts="true" memoryPortDataWidth="512" xoccOptions="">
@@ -529,12 +529,12 @@
           <args name="xdim0_poisson_kernel_update"/>
           <args name="xdim1_poisson_kernel_update"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true" memoryPortDataWidth="512" xoccOptions="--xp param:compiler.xclDataflowFifoDepth=128">
-          <computeUnits name="ops_poisson_kernel_error_1" profileExecution="true" profileStalls="true" slr="">
-            <args name="arg0" master="true" memory="" profileCounters="true"/>
-            <args name="arg1" master="true" memory="" profileCounters="true"/>
-            <args name="arg2" master="true" memory="" profileCounters="true"/>
-            <args name="scratch2" master="true" memory="" profileCounters="true"/>
+        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true" memoryPortDataWidth="512" xoccOptions="--xp param:compiler.xclDataflowFifoDepth=520">
+          <computeUnits name="ops_poisson_kernel_error_1" slr="">
+            <args name="arg0" master="true" memory=""/>
+            <args name="arg1" master="true" memory=""/>
+            <args name="arg2" master="true" memory=""/>
+            <args name="scratch2" master="true" memory=""/>
             <args name="r_bytes2" memory=""/>
             <args name="base0" memory=""/>
             <args name="base1" memory=""/>
@@ -651,12 +651,12 @@
           <args name="xdim0_poisson_kernel_update"/>
           <args name="xdim1_poisson_kernel_update"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true" memoryPortDataWidth="512" xoccOptions="--xp param:compiler.xclDataflowFifoDepth=128">
-          <computeUnits name="ops_poisson_kernel_error_1" profileExecution="true" profileStalls="true" slr="">
-            <args name="arg0" master="true" memory="" profileCounters="true"/>
-            <args name="arg1" master="true" memory="" profileCounters="true"/>
-            <args name="arg2" master="true" memory="" profileCounters="true"/>
-            <args name="scratch2" master="true" memory="" profileCounters="true"/>
+        <kernels name="ops_poisson_kernel_error" sourceFile="src/OpenCL/poisson_kernel_error.cl" maxMemoryPorts="true" memoryPortDataWidth="512" xoccOptions="--xp param:compiler.xclDataflowFifoDepth=520">
+          <computeUnits name="ops_poisson_kernel_error_1" slr="">
+            <args name="arg0" master="true" memory=""/>
+            <args name="arg1" master="true" memory=""/>
+            <args name="arg2" master="true" memory=""/>
+            <args name="scratch2" master="true" memory=""/>
             <args name="r_bytes2" memory=""/>
             <args name="base0" memory=""/>
             <args name="base1" memory=""/>

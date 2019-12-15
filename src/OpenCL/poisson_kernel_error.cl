@@ -69,10 +69,15 @@ __constant int c_max_size = (8000*((8000 >> SHIFT_BITS) +1));
 __constant int c_avg_size = (8000*((8000 >> SHIFT_BITS)+1));
 
 
-static void read_row(__global const float16* restrict arg, float16* tmpR, int base_index){
+static void read_row(__global const float16* restrict arg0, float16* tmpR0, int base_index0, __global const float16* restrict arg1, float16* tmpR1, int base_index1){
 	tmp0_rd: __attribute__((xcl_pipeline_loop(1)))
 	for(int l = 0; l < BURST_LEN; l++){
-		tmpR[l] = arg[base_index + l];
+		tmpR0[l] = arg0[base_index0 + l];
+	}
+
+	tmp1_rd: __attribute__((xcl_pipeline_loop(1)))
+	for(int l = 0; l < BURST_LEN; l++){
+		tmpR1[l] = arg1[base_index1 + l];
 	}
 }
 
@@ -124,8 +129,8 @@ void read_process_row(__global const float16* restrict arg0, __global const floa
 	float16 tmp0_R[BURST_LEN];
 	float16 tmp1_R[BURST_LEN];
 
-	read_row(arg0, tmp0_R, base_index0);
-	read_row(arg1, tmp1_R, base_index1);
+	read_row(arg0, tmp0_R, base_index0, arg1, tmp1_R, base_index1);
+	//read_row(arg1, tmp1_R, base_index1);
 	process_burst(tmp0_R, tmp1_R, j, size0, sum_p);
 }
 
