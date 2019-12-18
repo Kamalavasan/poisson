@@ -102,11 +102,10 @@ __kernel void ops_poisson_kernel_stencil(
 		float16 tmp1, tmp2, tmp3;
 
 
-		row_loop: __attribute__((xcl_pipeline_loop(1)))
+//		row_loop: __attribute__((xcl_pipeline_loop(1)))
 		__attribute__((xcl_loop_tripcount(c_min_x/PORT_WIDTH, c_max_x/PORT_WIDTH, c_avg_x/PORT_WIDTH)))
 		for(int j = 0; j < (xdim0_poisson_kernel_stencil >> SHIFT_BITS) + 1; j++){
-			tmp2 = row1[j];
-			tmp3 = row2[j];
+
 
 			tmp1_b2 = tmp1_b1;
 			tmp2_b2 = tmp2_b1;
@@ -116,7 +115,11 @@ __kernel void ops_poisson_kernel_stencil(
 			tmp2_b1 = tmp2;
 			tmp3_b1 = tmp3;
 
-			tmp1 = row1[j] = arg0[base_index + j];
+			tmp1 =  arg0[base_index + j];
+			tmp2 = row1[j];
+			tmp3 = row2[j];
+
+			row1[j] = tmp1;
 			row2[j] = tmp2;
 			row3[j] = tmp3;
 
@@ -145,7 +148,7 @@ __kernel void ops_poisson_kernel_stencil(
 			row_wr[j] = (float16) {mem_wr[0], mem_wr[1], mem_wr[2], mem_wr[3], mem_wr[4], mem_wr[5], mem_wr[6], mem_wr[7],
 												mem_wr[8], mem_wr[9], mem_wr[10], mem_wr[11], mem_wr[12], mem_wr[13], mem_wr[14], mem_wr[15]};
 
-			if(i >= 1 && j >= 1) arg1[base_index_wr+ j -1] = row_wr[j];
+			if(i >= 1 && j >= 1) arg1[base_index_wr + j - 1] = row_wr[j];
 		}
 	}
 }
