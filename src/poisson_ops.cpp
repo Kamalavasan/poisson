@@ -244,7 +244,7 @@ int main(int argc,  char **argv)
         ops_par_loop_poisson_kernel_stencil("poisson_kernel_stencil", blocks[i+ngrid_x*j], 2, iter_range,
                      ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00_P10_M10_0P1_0M1, "float", OPS_READ),
                      ops_arg_dat(u2[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
-//              ops_print_dat_to_txtfile((u[i+ngrid_x*j]), "/home/vasan/faraz/poisson_1/u.txt");
+              ops_print_dat_to_txtfile((u[i+ngrid_x*j]), "/home/vasan/faraz/poisson_1/u.txt");
 
       }
     }
