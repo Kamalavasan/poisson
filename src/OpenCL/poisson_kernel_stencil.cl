@@ -135,10 +135,12 @@ static void process_a_row(float16* rd_buffer, float16* wr_buffer, float16* row1,
 
 static void write_row(__global  float16* restrict arg1, float16* wr_buffer, const int xdim1_poisson_kernel_stencil, const int base1, int i){
 	int base_index = (base1 + ((i-1) * xdim1_poisson_kernel_stencil) -1) >> SHIFT_BITS;
-	write_row: __attribute__((xcl_pipeline_loop(1)))
-	__attribute__((xcl_loop_tripcount(c_min_x/PORT_WIDTH, c_max_x/PORT_WIDTH, c_avg_x/PORT_WIDTH)))
-	for(int k =0; k < (xdim1_poisson_kernel_stencil >> SHIFT_BITS) + 1; k++){
-		arg1[base_index + k] = wr_buffer[k];
+	if(i >= 1){
+		write_row: __attribute__((xcl_pipeline_loop(1)))
+		__attribute__((xcl_loop_tripcount(c_min_x/PORT_WIDTH, c_max_x/PORT_WIDTH, c_avg_x/PORT_WIDTH)))
+		for(int k =0; k < (xdim1_poisson_kernel_stencil >> SHIFT_BITS) + 1; k++){
+			arg1[base_index + k] = wr_buffer[k];
+		}
 	}
 }
 
@@ -156,9 +158,8 @@ void process(__global const float16* restrict arg0, __global float16* restrict a
 
 	read_row(arg0, rd_buffer, xdim0_poisson_kernel_stencil, base0, i);
 	process_a_row(rd_buffer, wr_buffer, row1, row2, row3, size0, xdim0_poisson_kernel_stencil);
-	if(i >= 1){
-		write_row(arg1, wr_buffer, xdim1_poisson_kernel_stencil, base1, i);
-	}
+	write_row(arg1, wr_buffer, xdim1_poisson_kernel_stencil, base1, i);
+
 
 }
 
