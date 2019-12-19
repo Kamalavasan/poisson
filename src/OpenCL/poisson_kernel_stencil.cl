@@ -48,8 +48,8 @@
 //user function
 #define PORT_WIDTH 16
 #define SHIFT_BITS 4
-#define BEAT_SHIFT_BITS 11
-#define BURST_LEN 128
+#define BEAT_SHIFT_BITS 10
+#define BURST_LEN 64
 
 // FiX ME
 #define MAX_SIZE_X 20000
@@ -68,21 +68,21 @@ __constant int c_min_beat = (c_min_x >> BEAT_SHIFT_BITS) + 1;
 __constant int c_max_beat = (c_max_x >> BEAT_SHIFT_BITS) + 1;
 __constant int c_avg_beat = (c_avg_x >> BEAT_SHIFT_BITS) + 1;
 
-static void read_row(__global const float16* restrict arg0, float16* rd_buffer, const int xdim0_poisson_kernel_stencil, const int base0, int i){
+static void read_row(__global const float16* restrict arg0, float16* rd_buffer, const int xdim0_poisson_kernel_stencil, const int base0, int i, int beat){
 
-	int base_index = (base0 + (i * xdim0_poisson_kernel_stencil) -1) >> SHIFT_BITS;
+	int base_index = (base0 + ((i-1) * xdim0_poisson_kernel_stencil) + (beat << BEAT_SHIFT_BITS) -1) >> SHIFT_BITS;
 	read_row: __attribute__((xcl_pipeline_loop(1)))
-	__attribute__((xcl_loop_tripcount(c_min_x/PORT_WIDTH, c_max_x/PORT_WIDTH, c_avg_x/PORT_WIDTH)))
-	for(int k =0; k < (xdim0_poisson_kernel_stencil >> SHIFT_BITS) + 1; k++){
-		rd_buffer[k] = arg0[base_index + k];
+	__attribute__((xcl_loop_tripcount(BURST_LEN+2, BURST_LEN+2, BURST_LEN+2)))
+	for(int k =0; k < BURST_LEN+2; k++){
+		rd_buffer[k] = arg0[base_index -1 + k];
 	}
 }
 
-static void process_a_row(float16* rd_buffer, float16* wr_buffer, float16* row1, float16* row2, float16* row3, const int size0, const int xdim0_poisson_kernel_stencil){
+static void process_a_row(float16* rd_buffer, float16* wr_buffer, float16* row1, float16* row2, float16* row3, const int size0, const int xdim0_poisson_kernel_stencil, int beat){
 
-	read_row: __attribute__((xcl_pipeline_loop(1)))
-	__attribute__((xcl_loop_tripcount(c_min_x/PORT_WIDTH, c_max_x/PORT_WIDTH, c_avg_x/PORT_WIDTH)))
-	for(int j =0; j < (xdim0_poisson_kernel_stencil >> SHIFT_BITS) + 1; j++){
+	process_row: __attribute__((xcl_pipeline_loop(1)))
+	__attribute__((xcl_loop_tripcount(BURST_LEN+2, BURST_LEN+2, BURST_LEN+2)))
+	for(int j =0; j < BURST_LEN+2; j++){
 		float16 tmp1_b1, tmp2_b1, tmp3_b1;
 		float16 tmp1_b2, tmp2_b2, tmp3_b2;
 		float16 tmp1, tmp2, tmp3;
@@ -115,11 +115,8 @@ static void process_a_row(float16* rd_buffer, float16* wr_buffer, float16* row1,
 
 		float mem_wr[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
 
-		process: __attribute__((xcl_pipeline_loop(1)))
-		__attribute__((xcl_loop_tripcount(PORT_WIDTH, PORT_WIDTH, PORT_WIDTH)))
-		__attribute__((opencl_unroll_hint(PORT_WIDTH)))
-		for(int q = 0; q < PORT_WIDTH; q++){
-			int index = (j << SHIFT_BITS) + q - 16;
+		process: for(int q = 0; q < PORT_WIDTH; q++){
+			int index = (beat << BEAT_SHIFT_BITS) + (j << SHIFT_BITS) + q - 32;
 			float f1 = ( row_arr2[q]  + row_arr2[q+2] ) * 0.125f;
 			float f2 = ( row_arr1[q]  + row_arr3[q] ) * 0.125f;
 			float f3 = row_arr2[q+1] * 0.5f;
@@ -129,16 +126,16 @@ static void process_a_row(float16* rd_buffer, float16* wr_buffer, float16* row1,
 		float16 update_j = (float16) {mem_wr[0], mem_wr[1], mem_wr[2], mem_wr[3], mem_wr[4], mem_wr[5], mem_wr[6], mem_wr[7],
 											mem_wr[8], mem_wr[9], mem_wr[10], mem_wr[11], mem_wr[12], mem_wr[13], mem_wr[14], mem_wr[15]};
 
-		if(j >= 1) wr_buffer[j-1] = update_j;
+		if(j >= 2) wr_buffer[j-2] = update_j;
 	}
 }
 
-static void write_row(__global  float16* restrict arg1, float16* wr_buffer, const int xdim1_poisson_kernel_stencil, const int base1, int i){
-	int base_index = (base1 + ((i-1) * xdim1_poisson_kernel_stencil) -1) >> SHIFT_BITS;
-	if(i >= 1){
+static void write_row(__global  float16* restrict arg1, float16* wr_buffer, const int xdim1_poisson_kernel_stencil, const int base1, int i, int beat){
+	int base_index = (base1 + ((i-2) * xdim1_poisson_kernel_stencil) + (beat << BEAT_SHIFT_BITS) -1) >> SHIFT_BITS;
+	if(i >= 2){
 		write_row: __attribute__((xcl_pipeline_loop(1)))
-		__attribute__((xcl_loop_tripcount(c_min_x/PORT_WIDTH, c_max_x/PORT_WIDTH, c_avg_x/PORT_WIDTH)))
-		for(int k =0; k < (xdim1_poisson_kernel_stencil >> SHIFT_BITS) + 1; k++){
+		__attribute__((xcl_loop_tripcount(BURST_LEN, BURST_LEN, BURST_LEN)))
+		for(int k =0; k < BURST_LEN; k++){
 			arg1[base_index + k] = wr_buffer[k];
 		}
 	}
@@ -146,24 +143,21 @@ static void write_row(__global  float16* restrict arg1, float16* wr_buffer, cons
 
 
 __attribute__((xcl_dataflow))
-void process(__global const float16* restrict arg0, __global float16* restrict arg1, const int xdim0_poisson_kernel_stencil, const int base0, const int xdim1_poisson_kernel_stencil, const int base1, const int size0, int i){
+void process(__global const float16* restrict arg0, __global float16* restrict arg1, const int xdim0_poisson_kernel_stencil, const int base0, const int xdim1_poisson_kernel_stencil, const int base1, const int size0, int i, int beat){
 
-	float16 row1[MAX_DEPTH_16];
-	float16 row2[MAX_DEPTH_16];
-	float16 row3[MAX_DEPTH_16];
+	float16 row1[BURST_LEN + 2];
+	float16 row2[BURST_LEN + 2];
+	float16 row3[BURST_LEN + 2];
 
+	float16 wr_buffer[BURST_LEN];
+	float16 rd_buffer[BURST_LEN + 2];
 
-	float16 wr_buffer[MAX_DEPTH_16];
-	float16 rd_buffer[MAX_DEPTH_16];
-
-	read_row(arg0, rd_buffer, xdim0_poisson_kernel_stencil, base0, i);
-	process_a_row(rd_buffer, wr_buffer, row1, row2, row3, size0, xdim0_poisson_kernel_stencil);
-	write_row(arg1, wr_buffer, xdim1_poisson_kernel_stencil, base1, i);
-
-
+	read_row(arg0, rd_buffer, xdim0_poisson_kernel_stencil, base0, i, beat);
+	process_a_row(rd_buffer, wr_buffer, row1, row2, row3, size0, xdim0_poisson_kernel_stencil, beat);
+	write_row(arg1, wr_buffer, xdim1_poisson_kernel_stencil, base1, i, beat);
 }
 
-__attribute__((xcl_dataflow))
+
 __kernel __attribute__ ((reqd_work_group_size(1, 1, 1)))
 __kernel void ops_poisson_kernel_stencil(
 		__global const float16* restrict arg0,
@@ -176,74 +170,14 @@ __kernel void ops_poisson_kernel_stencil(
 		const int xdim1_poisson_kernel_stencil){
 
 
-
-	float16 row1[MAX_DEPTH_16];
-	float16 row2[MAX_DEPTH_16];
-	float16 row3[MAX_DEPTH_16];
-
-
-	float16 row_wr[MAX_DEPTH_16];
+	int end_row  = size1+2;
+	int beats = (xdim0_poisson_kernel_stencil >> BEAT_SHIFT_BITS) + 1;
 
 	__attribute__((xcl_dataflow))
-	__attribute__((xcl_loop_tripcount(c_min_x, c_max_x, c_avg_x)))
-	for(int i = -1; i < size1+1; i++){
-
-		process(arg0, arg1, xdim0_poisson_kernel_stencil, base0, xdim0_poisson_kernel_stencil, base0, size0, i);
-
-// 		int base_index = (base0 + (i * xdim0_poisson_kernel_stencil) -1) >> SHIFT_BITS;
-// 		int base_index_wr = (base1 + ((i-1) * xdim1_poisson_kernel_stencil) -1) >> SHIFT_BITS;
-// 		float16 tmp1_b1, tmp2_b1, tmp3_b1;
-// 		float16 tmp1_b2, tmp2_b2, tmp3_b2;
-// 		float16 tmp1, tmp2, tmp3;
-
-
-// //		c
-// 		__attribute__((xcl_loop_tripcount(c_min_x/PORT_WIDTH, c_max_x/PORT_WIDTH, c_avg_x/PORT_WIDTH)))
-// 		for(int j = 0; j < (xdim0_poisson_kernel_stencil >> SHIFT_BITS) + 1; j++){
-
-
-// 			tmp1_b2 = tmp1_b1;
-// 			tmp2_b2 = tmp2_b1;
-// 			tmp3_b2 = tmp3_b1;
-
-// 			tmp1_b1 = tmp1;
-// 			tmp2_b1 = tmp2;
-// 			tmp3_b1 = tmp3;
-
-// 			tmp1 =  arg0[base_index + j];
-// 			tmp2 = row1[j];
-// 			tmp3 = row2[j];
-
-// 			row1[j] = tmp1;
-// 			row2[j] = tmp2;
-// 			row3[j] = tmp3;
-
-// 			float row_arr3[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1))) = {tmp1_b1.s0, tmp1_b1.s1, tmp1_b1.s2, tmp1_b1.s3, tmp1_b1.s4, tmp1_b1.s5, tmp1_b1.s6, tmp1_b1.s7,
-			// 								tmp1_b1.s8, tmp1_b1.s9, tmp1_b1.sa, tmp1_b1.sb, tmp1_b1.sc, tmp1_b1.sd, tmp1_b1.se, tmp1_b1.sf};
-
-			// float row_arr2[PORT_WIDTH + 2] __attribute__((xcl_array_partition(complete, 1))) = {tmp2_b2.sf, tmp2_b1.s0, tmp2_b1.s1, tmp2_b1.s2, tmp2_b1.s3, tmp2_b1.s4, tmp2_b1.s5, tmp2_b1.s6, tmp2_b1.s7,
-			// 								tmp2_b1.s8, tmp2_b1.s9, tmp2_b1.sa, tmp2_b1.sb, tmp2_b1.sc, tmp2_b1.sd, tmp2_b1.se, tmp2_b1.sf, tmp2.s0};
-
-			// float row_arr1[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1))) = {tmp3_b1.s0, tmp3_b1.s1, tmp3_b1.s2, tmp3_b1.s3, tmp3_b1.s4, tmp3_b1.s5, tmp3_b1.s6, tmp3_b1.s7,
-			// 				tmp3_b1.s8, tmp3_b1.s9, tmp3_b1.sa, tmp3_b1.sb, tmp3_b1.sc, tmp3_b1.sd, tmp3_b1.se, tmp3_b1.sf};
-
-			// float mem_wr[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
-
-			// process: __attribute__((xcl_pipeline_loop(1)))
-			// __attribute__((xcl_loop_tripcount(PORT_WIDTH, PORT_WIDTH, PORT_WIDTH)))
-			// __attribute__((opencl_unroll_hint(PORT_WIDTH)))
-			// for(int q = 0; q < PORT_WIDTH; q++){
-			// 	int index = (j << SHIFT_BITS) + q - 16;
-			// 	float f1 = ( row_arr2[q]  + row_arr2[q+2] ) * 0.125f;
-			// 	float f2 = ( row_arr1[q]  + row_arr3[q] ) * 0.125f;
-			// 	float f3 = row_arr2[q+1] * 0.5f;
-			// 	float result  = f1 + f2 + f3;
-			// 	mem_wr[q] = (index <= 0 || index > size0) ? row_arr2[q+1] : result;
-			// }
-			// row_wr[j] = (float16) {mem_wr[0], mem_wr[1], mem_wr[2], mem_wr[3], mem_wr[4], mem_wr[5], mem_wr[6], mem_wr[7],
-			// 									mem_wr[8], mem_wr[9], mem_wr[10], mem_wr[11], mem_wr[12], mem_wr[13], mem_wr[14], mem_wr[15]};
-
-			// if(i >= 1 && j >= 1) arg1[base_index_wr + j - 1] = row_wr[j];
-		// }
+	__attribute__((xcl_loop_tripcount(c_min_x * c_min_beat, c_max_x * c_max_beat, c_avg_x * c_max_beat)))
+	loop_beats: for(int itr = 0, i = 0 ,beat = 0; itr < beats * end_row; itr++){
+		int beat = itr / end_row;
+		int i = itr % end_row;
+		process(arg0, arg1, xdim0_poisson_kernel_stencil, base0, xdim0_poisson_kernel_stencil, base0, size0, i, beat);
 	}
 }
