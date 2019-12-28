@@ -78,7 +78,7 @@ static void read_row(__global const float16* restrict arg0, float16* rd_buffer, 
 	}
 }
 
-static void process_a_row(float16* rd_buffer, float16* wr_buffer, float16* row1, float16* row2, float16* row3, const int size0, const int xdim0_poisson_kernel_stencil, int beat){
+static void process_a_row(float16* rd_buffer, float16* wr_buffer, float16* row1, float16* row2, float16* row3, const int size0, const int xdim0_poisson_kernel_stencil, int beat, int i){
 
 	process_row: __attribute__((xcl_pipeline_loop(1)))
 	__attribute__((xcl_loop_tripcount(BURST_LEN+2, BURST_LEN+2, BURST_LEN+2)))
@@ -126,7 +126,7 @@ static void process_a_row(float16* rd_buffer, float16* wr_buffer, float16* row1,
 		float16 update_j = (float16) {mem_wr[0], mem_wr[1], mem_wr[2], mem_wr[3], mem_wr[4], mem_wr[5], mem_wr[6], mem_wr[7],
 											mem_wr[8], mem_wr[9], mem_wr[10], mem_wr[11], mem_wr[12], mem_wr[13], mem_wr[14], mem_wr[15]};
 
-		if(j >= 2) wr_buffer[j-2] = update_j;
+		if(j >= 2 && i >= 2) wr_buffer[j-2] = update_j;
 	}
 }
 
@@ -153,7 +153,7 @@ void process(__global const float16* restrict arg0, __global float16* restrict a
 	float16 rd_buffer[BURST_LEN + 2];
 
 	read_row(arg0, rd_buffer, xdim0_poisson_kernel_stencil, base0, i, beat);
-	process_a_row(rd_buffer, wr_buffer, row1, row2, row3, size0, xdim0_poisson_kernel_stencil, beat);
+	process_a_row(rd_buffer, wr_buffer, row1, row2, row3, size0, xdim0_poisson_kernel_stencil, beat, i);
 	write_row(arg1, wr_buffer, xdim1_poisson_kernel_stencil, base1, i, beat);
 }
 

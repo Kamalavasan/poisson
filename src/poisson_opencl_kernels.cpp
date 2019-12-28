@@ -32,13 +32,16 @@ void ops_release_program(){
 	clReleaseContext(OPS_opencl_core.context);
 	clReleaseDevice(OPS_opencl_core.device_id);
 	//clReleaseKernel(*OPS_opencl_core.kernel);
-	for (int i=0; i<5; i++) clReleaseKernel(OPS_opencl_core.kernel[i]);
+	for (int i=0; i<5; i++) {
+		if(i != 0 && i != 2)
+			clReleaseKernel(OPS_opencl_core.kernel[i]);
+	}
 
 
 	clReleaseProgram(OPS_opencl_core.program);
 
-	free(OPS_opencl_core.platform_id);
-	free(OPS_opencl_core.devices);
+//	free(OPS_opencl_core.platform_id);
+//	free(OPS_opencl_core.devices);
 	free(OPS_opencl_core.kernel);
 	free(OPS_opencl_core.constant);
 }
@@ -866,7 +869,42 @@ void ops_par_loop_poisson_kernel_populate(char const *name, ops_block block, int
 		}
 		else {
 			start[n] = range[2*n] - start[n];
-		}
+		}for (int j = 0; j < ngrid_y; j++) {
+			//    for (int i = 0; i < ngrid_x; i++) {
+			//      int iter_range[] = {-1,sizes[2*(i+ngrid_x*j)]+1,-1,sizes[2*(i+ngrid_x*j)+1]+1};
+			//
+			//
+			//
+			//      ops_par_loop_poisson_kernel_populate("poisson_kernel_populate", blocks[i+ngrid_x*j], 2, iter_range,
+			//                   ops_arg_gbl(&disps[2*(i+ngrid_x*j)], 1, "int", OPS_READ),
+			//                   ops_arg_gbl(&disps[2*(i+ngrid_x*j)+1], 1, "int", OPS_READ),
+			//                   ops_arg_idx(),
+			//                   ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE),
+			//                   ops_arg_dat(f[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE),
+			//                   ops_arg_dat(ref[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
+			//
+			//
+			////      ops_print_dat_to_txtfile((f[i+ngrid_x*j]), "/home/vasan/faraz/poisson_1/f.txt");
+			////      ops_print_dat_to_txtfile((ref[i+ngrid_x*j]), "/home/vasan/faraz/poisson_1/ref.txt");
+			//
+			//		 ops_par_loop_poisson_kernel_update("poisson_kernel_update", blocks[i+ngrid_x*j], 2, iter_range,
+			//                ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_READ),
+			//                ops_arg_dat(u2[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
+			//
+			//    }
+			//  }
+			//
+			//  for (int j = 0; j < ngrid_y; j++) {
+			//    for (int i = 0; i < ngrid_x; i++) {
+			//      int iter_range[] = {0,sizes[2*(i+ngrid_x*j)],0,sizes[2*(i+ngrid_x*j)+1]};
+			//
+			//
+			//
+			//      ops_par_loop_poisson_kernel_initial("poisson_kernel_initialguess", blocks[i+ngrid_x*j], 2, iter_range,
+			//                   ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
+			//
+			//    }
+			//  }
 		if (sb->id_m[n]==MPI_PROC_NULL && range[2*n] < 0) start[n] = range[2*n];
 		if (end[n] >= range[2*n+1]) {
 			end[n] = range[2*n+1] - sb->decomp_disp[n];
