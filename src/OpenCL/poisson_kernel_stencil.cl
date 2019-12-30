@@ -45,15 +45,18 @@
 #define INFINITY_ull INFINITY;
 #define ZERO_bool 0;
 
+
+// FiX ME
+#define MAX_SIZE_X 2048
+#define MAX_DEPTH_16 (MAX_SIZE_X/16)
+
 //user function
 #define PORT_WIDTH 16
 #define SHIFT_BITS 4
-#define BEAT_SHIFT_BITS 10
-#define BURST_LEN 64
+//#define BEAT_SHIFT_BITS 10
+#define BURST_LEN MAX_DEPTH_16
 
-// FiX ME
-#define MAX_SIZE_X 20000
-#define MAX_DEPTH_16 (MAX_SIZE_X/16)
+
 
 
 __constant int c_min_x = 40;
@@ -64,25 +67,30 @@ __constant int c_min_size = c_min_x* c_min_x/16;
 __constant int c_max_size = (c_max_x*c_max_x)/16;
 __constant int c_avg_size = (c_avg_x*c_avg_x)/16;
 
-__constant int c_min_beat = (c_min_x >> BEAT_SHIFT_BITS) + 1;
-__constant int c_max_beat = (c_max_x >> BEAT_SHIFT_BITS) + 1;
-__constant int c_avg_beat = (c_avg_x >> BEAT_SHIFT_BITS) + 1;
 
-static void read_row(__global const float16* restrict arg0, float16* rd_buffer, const int xdim0_poisson_kernel_stencil, const int base0, int i, int beat){
+static void read_row(__global const float16* restrict arg0, float16* rd_buffer, const int xdim0_poisson_kernel_stencil, const int base0, int i){
 
-	int base_index = (base0 + ((i-1) * xdim0_poisson_kernel_stencil) + (beat << BEAT_SHIFT_BITS) -1) >> SHIFT_BITS;
+	int base_index = (base0 + ((i-1) * xdim0_poisson_kernel_stencil) -1) >> SHIFT_BITS;
+	int end_index = (xdim0_poisson_kernel_stencil >> SHIFT_BITS) + 2;
 	read_row: __attribute__((xcl_pipeline_loop(1)))
-	__attribute__((xcl_loop_tripcount(BURST_LEN+2, BURST_LEN+2, BURST_LEN+2)))
-	for(int k =0; k < BURST_LEN+2; k++){
+	//__attribute__((xcl_loop_tripcount(BURST_LEN+2, BURST_LEN+2, BURST_LEN+2)))
+	for(int k =0; k < end_index; k++){
 		rd_buffer[k] = arg0[base_index -1 + k];
 	}
+
+//	__attribute__((xcl_pipeline_loop(1)))
+//	for(int k = end_index; k < BURST_LEN+2 ; k++){
+//		rd_buffer[k] = (float16) {0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
+//	}
 }
 
-static void process_a_row(float16* rd_buffer, float16* wr_buffer, float16* row1, float16* row2, float16* row3, const int size0, const int xdim0_poisson_kernel_stencil, int beat, int i){
+static void process_a_row(float16* rd_buffer, float16* wr_buffer, float16* row1, float16* row2, float16* row3, const int size0, const int xdim0_poisson_kernel_stencil, int i){
+
+	int end_index = (xdim0_poisson_kernel_stencil >> SHIFT_BITS) + 2;
 
 	process_row: __attribute__((xcl_pipeline_loop(1)))
-	__attribute__((xcl_loop_tripcount(BURST_LEN+2, BURST_LEN+2, BURST_LEN+2)))
-	for(int j =0; j < BURST_LEN+2; j++){
+	//__attribute__((xcl_loop_tripcount(BURST_LEN+2, BURST_LEN+2, BURST_LEN+2)))
+	for(int j =0; j < end_index; j++){
 		float16 tmp1_b1, tmp2_b1, tmp3_b1;
 		float16 tmp1_b2, tmp2_b2, tmp3_b2;
 		float16 tmp1, tmp2, tmp3;
@@ -116,7 +124,7 @@ static void process_a_row(float16* rd_buffer, float16* wr_buffer, float16* row1,
 		float mem_wr[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1)));
 
 		process: for(int q = 0; q < PORT_WIDTH; q++){
-			int index = (beat << BEAT_SHIFT_BITS) + (j << SHIFT_BITS) + q - 32;
+			int index = (j << SHIFT_BITS) + q - 32;
 			float f1 = ( row_arr2[q]  + row_arr2[q+2] ) * 0.125f;
 			float f2 = ( row_arr1[q]  + row_arr3[q] ) * 0.125f;
 			float f3 = row_arr2[q+1] * 0.5f;
@@ -126,24 +134,36 @@ static void process_a_row(float16* rd_buffer, float16* wr_buffer, float16* row1,
 		float16 update_j = (float16) {mem_wr[0], mem_wr[1], mem_wr[2], mem_wr[3], mem_wr[4], mem_wr[5], mem_wr[6], mem_wr[7],
 											mem_wr[8], mem_wr[9], mem_wr[10], mem_wr[11], mem_wr[12], mem_wr[13], mem_wr[14], mem_wr[15]};
 
-		if(j >= 2 && i >= 2) wr_buffer[j-2] = update_j;
+		if(i >= 2 && j >= 2) wr_buffer[j-2] = update_j;
+
 	}
+
+//	__attribute__((xcl_pipeline_loop(1)))
+//	for(int j = end_index; j < BURST_LEN+2 ; j++){
+//		wr_buffer[j-2] = (float16) {0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};;
+//	}
 }
 
-static void write_row(__global  float16* restrict arg1, float16* wr_buffer, const int xdim1_poisson_kernel_stencil, const int base1, int i, int beat){
-	int base_index = (base1 + ((i-2) * xdim1_poisson_kernel_stencil) + (beat << BEAT_SHIFT_BITS) -1) >> SHIFT_BITS;
+static void write_row(__global  float16* restrict arg1, float16* wr_buffer, const int xdim1_poisson_kernel_stencil, const int base1, int i){
+	int base_index = (base1 + ((i-2) * xdim1_poisson_kernel_stencil) -1) >> SHIFT_BITS;
+	int end_index = (xdim1_poisson_kernel_stencil >> SHIFT_BITS);
 	if(i >= 2){
 		write_row: __attribute__((xcl_pipeline_loop(1)))
-		__attribute__((xcl_loop_tripcount(BURST_LEN, BURST_LEN, BURST_LEN)))
-		for(int k =0; k < BURST_LEN; k++){
+		//__attribute__((xcl_loop_tripcount(BURST_LEN, BURST_LEN, BURST_LEN)))
+		for(int k =0; k < end_index; k++){
 			arg1[base_index + k] = wr_buffer[k];
 		}
+
+//		__attribute__((xcl_pipeline_loop(1)))
+//		for(int k = end_index; k < BURST_LEN ; k++){
+//			float16 tmp  = wr_buffer[k];
+//		}
 	}
 }
 
 
 __attribute__((xcl_dataflow))
-void process(__global const float16* restrict arg0, __global float16* restrict arg1, const int xdim0_poisson_kernel_stencil, const int base0, const int xdim1_poisson_kernel_stencil, const int base1, const int size0, int i, int beat){
+void process(__global const float16* restrict arg0, __global float16* restrict arg1, const int xdim0_poisson_kernel_stencil, const int base0, const int xdim1_poisson_kernel_stencil, const int base1, const int size0, int i){
 
 	float16 row1[BURST_LEN + 2];
 	float16 row2[BURST_LEN + 2];
@@ -152,9 +172,9 @@ void process(__global const float16* restrict arg0, __global float16* restrict a
 	float16 wr_buffer[BURST_LEN];
 	float16 rd_buffer[BURST_LEN + 2];
 
-	read_row(arg0, rd_buffer, xdim0_poisson_kernel_stencil, base0, i, beat);
-	process_a_row(rd_buffer, wr_buffer, row1, row2, row3, size0, xdim0_poisson_kernel_stencil, beat, i);
-	write_row(arg1, wr_buffer, xdim1_poisson_kernel_stencil, base1, i, beat);
+	read_row(arg0, rd_buffer, xdim0_poisson_kernel_stencil, base0, i);
+	process_a_row(rd_buffer, wr_buffer, row1, row2, row3, size0, xdim0_poisson_kernel_stencil, i);
+	write_row(arg1, wr_buffer, xdim1_poisson_kernel_stencil, base1, i);
 }
 
 
@@ -171,13 +191,10 @@ __kernel void ops_poisson_kernel_stencil(
 
 
 	int end_row  = size1+2;
-	int beats = (xdim0_poisson_kernel_stencil >> BEAT_SHIFT_BITS) + 1;
 
 	__attribute__((xcl_dataflow))
-	__attribute__((xcl_loop_tripcount(c_min_x * c_min_beat, c_max_x * c_max_beat, c_avg_x * c_max_beat)))
-	loop_beats: for(int itr = 0, i = 0 ,beat = 0; itr < beats * end_row; itr++){
-		int beat = itr / end_row;
-		int i = itr % end_row;
-		process(arg0, arg1, xdim0_poisson_kernel_stencil, base0, xdim0_poisson_kernel_stencil, base0, size0, i, beat);
+	__attribute__((xcl_loop_tripcount(c_min_x, c_max_x, c_avg_x)))
+	loop_beats: for(int i = 0 ; i < end_row; i++){
+		process(arg0, arg1, xdim0_poisson_kernel_stencil, base0, xdim0_poisson_kernel_stencil, base0, size0, i);
 	}
 }
