@@ -77,11 +77,6 @@ static void read_row(__global const float16* restrict arg0, float16* rd_buffer, 
 	for(int k =0; k < end_index; k++){
 		rd_buffer[k] = arg0[base_index -1 + k];
 	}
-
-//	__attribute__((xcl_pipeline_loop(1)))
-//	for(int k = end_index; k < BURST_LEN+2 ; k++){
-//		rd_buffer[k] = (float16) {0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
-//	}
 }
 
 static void process_a_row(float16* rd_buffer, float16* wr_buffer, float16* row1, float16* row2, float16* row3, const int size0, const int xdim0_poisson_kernel_stencil, int i){
@@ -129,35 +124,27 @@ static void process_a_row(float16* rd_buffer, float16* wr_buffer, float16* row1,
 			float f2 = ( row_arr1[q]  + row_arr3[q] ) * 0.125f;
 			float f3 = row_arr2[q+1] * 0.5f;
 			float result  = f1 + f2 + f3;
-			mem_wr[q] = (index <= 0 || index > size0) ? row_arr2[q+1] : result;
+			mem_wr[q] = (index <= 0 || index > size0 || i == 1 || i == size0 + 2) ? row_arr2[q+1] : result;
 		}
+
 		float16 update_j = (float16) {mem_wr[0], mem_wr[1], mem_wr[2], mem_wr[3], mem_wr[4], mem_wr[5], mem_wr[6], mem_wr[7],
 											mem_wr[8], mem_wr[9], mem_wr[10], mem_wr[11], mem_wr[12], mem_wr[13], mem_wr[14], mem_wr[15]};
-
-		if(i >= 2 && j >= 2) wr_buffer[j-2] = update_j;
-
+		if(i >= 1 && j >= 2) {
+			wr_buffer[j-2] = update_j;
+		}
 	}
 
-//	__attribute__((xcl_pipeline_loop(1)))
-//	for(int j = end_index; j < BURST_LEN+2 ; j++){
-//		wr_buffer[j-2] = (float16) {0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};;
-//	}
 }
 
 static void write_row(__global  float16* restrict arg1, float16* wr_buffer, const int xdim1_poisson_kernel_stencil, const int base1, int i){
 	int base_index = (base1 + ((i-2) * xdim1_poisson_kernel_stencil) -1) >> SHIFT_BITS;
 	int end_index = (xdim1_poisson_kernel_stencil >> SHIFT_BITS);
-	if(i >= 2){
+	if(i >= 1){
 		write_row: __attribute__((xcl_pipeline_loop(1)))
 		//__attribute__((xcl_loop_tripcount(BURST_LEN, BURST_LEN, BURST_LEN)))
 		for(int k =0; k < end_index; k++){
 			arg1[base_index + k] = wr_buffer[k];
 		}
-
-//		__attribute__((xcl_pipeline_loop(1)))
-//		for(int k = end_index; k < BURST_LEN ; k++){
-//			float16 tmp  = wr_buffer[k];
-//		}
 	}
 }
 
@@ -190,7 +177,7 @@ __kernel void ops_poisson_kernel_stencil(
 		const int xdim1_poisson_kernel_stencil){
 
 
-	int end_row  = size1+2;
+	int end_row  = size1+3;
 
 	__attribute__((xcl_dataflow))
 	__attribute__((xcl_loop_tripcount(c_min_x, c_max_x, c_avg_x)))
