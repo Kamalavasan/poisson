@@ -83,17 +83,13 @@ static void read_row(__global const float16* restrict arg0, float16* rd_buffer, 
 	}
 }
 
-static void process_a_row(const float16* rd_buffer, float16* wr_buffer,  const int size0, int size1,  const int xdim0_poisson_kernel_stencil, int i, int pipeline_stage){
+static void process_a_row(const float16* rd_buffer, float16* wr_buffer,  float16* row1, float16* row2, float16* row3, const int size0, int size1,  const int xdim0_poisson_kernel_stencil, int i, int pipeline_stage){
 
 	int end_index = (xdim0_poisson_kernel_stencil >> SHIFT_BITS) + 2;
 	float16 tmp1_b1, tmp2_b1, tmp3_b1;
 	float16 tmp1_b2, tmp2_b2, tmp3_b2;
 	float16 tmp1, tmp2, tmp3;
 	int end_row = size1+3;
-
-	float16 row1[BURST_LEN + 2];
-	float16 row2[BURST_LEN + 2];
-	float16 row3[BURST_LEN + 2];
 
 	process_row: __attribute__((xcl_pipeline_loop(1)))
 	//__attribute__((xcl_loop_tripcount(BURST_LEN+2, BURST_LEN+2, BURST_LEN+2)))
@@ -163,23 +159,21 @@ static void write_row(__global  float16* restrict arg1, const float16* wr_buffer
 
 
 __attribute__((xcl_dataflow))
-void process(__global const float16* restrict arg0, __global float16* restrict arg1, const int xdim0_poisson_kernel_stencil, const int base0, const int xdim1_poisson_kernel_stencil, const int base1, const int size0, int size1, int i){
+void process(__global const float16* restrict arg0, __global float16* restrict arg1,
+		float16* row1_p1, float16* row2_p1, float16* row3_p1,
+		float16* row1_p2, float16* row2_p2, float16* row3_p2,
+		const int xdim0_poisson_kernel_stencil, const int base0, const int xdim1_poisson_kernel_stencil, const int base1, const int size0, int size1, int i){
+
 
 	float16 rd_buffer_p1[BURST_LEN + 2];
-
 	float16 rd_buffer_p2[BURST_LEN + 2];
-
-	// final write
 	float16 wr_buffer_p2[BURST_LEN + 2];
 
 	read_row(arg0, rd_buffer_p1, xdim0_poisson_kernel_stencil, base0, i, size1);
+	process_a_row(rd_buffer_p1, rd_buffer_p2, row1_p1, row2_p1, row3_p1, size0, size1, xdim0_poisson_kernel_stencil, i, 0);
+	process_a_row(rd_buffer_p2, wr_buffer_p2,  row1_p2, row2_p2, row3_p2, size0, size1, xdim0_poisson_kernel_stencil, i, 1);
 
-
-	process_a_row(rd_buffer_p1, rd_buffer_p2, size0, size1, xdim0_poisson_kernel_stencil, i, 0);
-
-	//process_a_row(rd_buffer_p2, wr_buffer_p2, size0, size1, xdim0_poisson_kernel_stencil, i, 1);
-
-	write_row(arg1, rd_buffer_p2, xdim1_poisson_kernel_stencil, base1, i, 0);
+	write_row(arg1, wr_buffer_p2, xdim1_poisson_kernel_stencil, base1, i, 1);
 }
 
 
@@ -198,9 +192,19 @@ __kernel void ops_poisson_kernel_stencil(
 
 	int end_row  = size1+4;
 
+
+	float16 row1_p1[BURST_LEN + 2];
+	float16 row2_p1[BURST_LEN + 2];
+	float16 row3_p1[BURST_LEN + 2];
+
+	float16 row1_p2[BURST_LEN + 2];
+	float16 row2_p2[BURST_LEN + 2];
+	float16 row3_p2[BURST_LEN + 2];
+
+
 	__attribute__((xcl_dataflow))
 	__attribute__((xcl_loop_tripcount(c_min_x, c_max_x, c_avg_x)))
 	loop_beats: for(int i = 0 ; i < end_row; i++){
-		process(arg0, arg1, xdim0_poisson_kernel_stencil, base0, xdim0_poisson_kernel_stencil, base0, size0, size1,  i);
+		process(arg0, arg1, row1_p1, row2_p1, row3_p1,  row1_p2, row2_p2, row3_p2, xdim0_poisson_kernel_stencil, base0, xdim0_poisson_kernel_stencil, base0, size0, size1,  i);
 	}
 }
