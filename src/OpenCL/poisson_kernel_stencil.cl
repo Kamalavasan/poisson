@@ -135,11 +135,13 @@ static void process_a_row(const float16* rd_buffer, float16* wr_buffer,  float16
 
 		float16 update_j = (float16) {mem_wr[0], mem_wr[1], mem_wr[2], mem_wr[3], mem_wr[4], mem_wr[5], mem_wr[6], mem_wr[7],
 											mem_wr[8], mem_wr[9], mem_wr[10], mem_wr[11], mem_wr[12], mem_wr[13], mem_wr[14], mem_wr[15]};
-		if((i >= 1 + pipeline_stage) && j >= 1) {
+		if((i >= 1 + pipeline_stage) && j >= 1 && ( i <= end_row + pipeline_stage)) {
 			wr_buffer[j-1] = update_j;
 		}
 	}
-	wr_buffer[end_index-1] = tmp2;
+	if((i >= 1 + pipeline_stage) && ( i <= end_row + pipeline_stage)){
+		wr_buffer[end_index-1] = tmp2;
+	}
 }
 
 
@@ -148,13 +150,13 @@ static void write_row(__global  float16* restrict arg1, const float16* wr_buffer
 	int base_index = (base1 + ((i-2 -pipeline_stage) * xdim1_poisson_kernel_stencil) -1) >> SHIFT_BITS;
 	int end_index = (xdim1_poisson_kernel_stencil >> SHIFT_BITS) + 1;
 	if(i >= (1 + pipeline_stage)){
+		float16 tmp1 = wr_buffer[0];
 		write_row: __attribute__((xcl_pipeline_loop(1)))
 		//__attribute__((xcl_loop_tripcount(BURST_LEN, BURST_LEN, BURST_LEN)))
 		for(int k =0; k < end_index; k++){
 			arg1[base_index   + k] =  wr_buffer[k+1];
 		}
 	}
-	float16 tmp = wr_buffer[end_index];
 }
 
 
@@ -171,9 +173,9 @@ void process(__global const float16* restrict arg0, __global float16* restrict a
 
 	read_row(arg0, rd_buffer_p1, xdim0_poisson_kernel_stencil, base0, i, size1);
 	process_a_row(rd_buffer_p1, rd_buffer_p2, row1_p1, row2_p1, row3_p1, size0, size1, xdim0_poisson_kernel_stencil, i, 0);
-	process_a_row(rd_buffer_p2, wr_buffer_p2,  row1_p2, row2_p2, row3_p2, size0, size1, xdim0_poisson_kernel_stencil, i, 1);
+	//process_a_row(rd_buffer_p2, wr_buffer_p2,  row1_p2, row2_p2, row3_p2, size0, size1, xdim0_poisson_kernel_stencil, i, 1);
 
-	write_row(arg1, wr_buffer_p2, xdim1_poisson_kernel_stencil, base1, i, 1);
+	write_row(arg1, rd_buffer_p2, xdim1_poisson_kernel_stencil, base1, i, 0);
 }
 
 
