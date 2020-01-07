@@ -103,15 +103,22 @@ static void process_a_row(const float16* rd_buffer, float16* wr_buffer,  float16
 		tmp2_b1 = tmp2;
 		tmp3_b1 = tmp3;
 
+		if(i >= pipeline_stage+2 && (i < pipeline_stage + end_row+2)){
+			tmp3 = row2[j];
+			row3[j] = tmp3;
+		}
+
+		if(i >= pipeline_stage+1 && (i < pipeline_stage + end_row+1)){
+			tmp2 = row1[j];
+			row2[j] = tmp2;
+		}
+
 		if(i >= pipeline_stage && (i < pipeline_stage + end_row)){
 			tmp1 = rd_buffer[j];
+			row1[j] = tmp1;
 		}
-		tmp2 = row1[j];
-		tmp3 = row2[j];
 
-		row1[j] = tmp1;
-		row2[j] = tmp2;
-		row3[j] = tmp3;
+
 
 		float row_arr3[PORT_WIDTH] __attribute__((xcl_array_partition(complete, 1))) = {tmp1_b1.s0, tmp1_b1.s1, tmp1_b1.s2, tmp1_b1.s3, tmp1_b1.s4, tmp1_b1.s5, tmp1_b1.s6, tmp1_b1.s7,
 										tmp1_b1.s8, tmp1_b1.s9, tmp1_b1.sa, tmp1_b1.sb, tmp1_b1.sc, tmp1_b1.sd, tmp1_b1.se, tmp1_b1.sf};
