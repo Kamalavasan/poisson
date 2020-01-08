@@ -19,19 +19,19 @@ typedef union  {
 } data_conv;
 
 
-static void read_row(const uint512_dt*  arg0, uint512_dt* rd_buffer, const int xdim0_poisson_kernel_stencil, const int base0, int i, int size1){
+static void read_row(const uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, const int xdim0_poisson_kernel_stencil, const int base0, int i, int size1){
 
 	int base_index = (base0 + ((i-1) * xdim0_poisson_kernel_stencil) -1) >> SHIFT_BITS;
 	int end_index = (xdim0_poisson_kernel_stencil >> SHIFT_BITS) + 2;
 	int end_row = size1+3;
 	if(i < end_row){
 		for(int k =0; k < end_index; k++){
-			rd_buffer[k] = arg0[base_index -1 + k];
+			rd_buffer << arg0[base_index -1 + k];
 		}
 	}
 }
 
-static void process_a_row(const uint512_dt* rd_buffer, uint512_dt* wr_buffer,  uint512_dt* row1, uint512_dt* row2, uint512_dt* row3, const int size0, int size1,  const int xdim0_poisson_kernel_stencil, int i, int pipeline_stage){
+static void process_a_row( hls::stream<uint512_dt> &rd_buffer, hls::stream<uint512_dt> &wr_buffer,  uint512_dt* row1, uint512_dt* row2, uint512_dt* row3, const int size0, int size1,  const int xdim0_poisson_kernel_stencil, int i, int pipeline_stage){
 
 	int end_index = (xdim0_poisson_kernel_stencil >> SHIFT_BITS) + 2;
 	uint512_dt tmp1_b1, tmp2_b1, tmp3_b1;
@@ -67,7 +67,7 @@ static void process_a_row(const uint512_dt* rd_buffer, uint512_dt* wr_buffer,  u
 		}
 
 		if(i >= pipeline_stage && (i < pipeline_stage + end_row)){
-			tmp1 = rd_buffer[j];
+			tmp1 = rd_buffer.read();
 			row1[j] = tmp1;
 		}
 
@@ -106,21 +106,21 @@ static void process_a_row(const uint512_dt* rd_buffer, uint512_dt* wr_buffer,  u
 		}
 
 		if((i >= 1 + pipeline_stage) && j >= 1 && ( i <= end_row + pipeline_stage)) {
-			wr_buffer[j-1] = update_j;
+			wr_buffer << update_j;
 		}
 	}
 	if((i >= 1 + pipeline_stage) && ( i <= end_row + pipeline_stage)){
-		wr_buffer[end_index-1] = tmp2;
+		wr_buffer[end_index-1] << tmp2;
 	}
 }
 
-static void write_row( uint512_dt*  arg1, const uint512_dt* wr_buffer, const int xdim1_poisson_kernel_stencil, const int base1, int i, int pipeline_stage){
+static void write_row( uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, const int xdim1_poisson_kernel_stencil, const int base1, int i, int pipeline_stage){
 	int base_index = (base1 + ((i-2 -pipeline_stage) * xdim1_poisson_kernel_stencil) -1) >> SHIFT_BITS;
 	int end_index = (xdim1_poisson_kernel_stencil >> SHIFT_BITS) + 1;
 	if(i >= (1 + pipeline_stage)){
-		uint512_dt tmp1 = wr_buffer[0];
+		uint512_dt tmp1 = wr_buffer.read();
 		for(int k =0; k < end_index; k++){
-			arg1[base_index   + k] =  wr_buffer[k+1];
+			arg1[base_index   + k] =  wr_buffer.read();
 		}
 	}
 }
@@ -135,6 +135,9 @@ void process (const uint512_dt*  arg0, uint512_dt*  arg1,
 	uint512_dt rd_buffer_p1[BURST_LEN + 2];
 	uint512_dt rd_buffer_p2[BURST_LEN + 2];
 	uint512_dt wr_buffer_p2[BURST_LEN + 2];
+
+	static hls::stream<uint512_dt> rd_buffer_p1("row1_p1");
+    static hls::stream<uint512_dt> rd_buffer_p2("row2_p1");
 
 	read_row(arg0, rd_buffer_p1, xdim0_poisson_kernel_stencil, base0, i, size1);
 	process_a_row(rd_buffer_p1, rd_buffer_p2, row1_p1, row2_p1, row3_p1, size0, size1, xdim0_poisson_kernel_stencil, i, 0);
@@ -171,6 +174,14 @@ void ops_poisson_kernel_stencil(
 
 	int end_row  = size1+4;
 
+
+    // static hls::stream<uint512_dt> row1_p1("row1_p1");
+    // static hls::stream<uint512_dt> row2_p1("row2_p1");
+    // static hls::stream<uint512_dt> row3_p1("row3_p1");
+
+    // static hls::stream<uint512_dt> row1_p2("row1_p2");
+    // static hls::stream<uint512_dt> row2_p2("row2_p2");
+    // static hls::stream<uint512_dt> row3_p2("row3_p2");
 
 	uint512_dt row1_p1[BURST_LEN + 2];
 	uint512_dt row2_p1[BURST_LEN + 2];
