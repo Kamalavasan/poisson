@@ -1,4 +1,5 @@
 #include <ap_int.h>
+#include <hls_stream.h>
 
 typedef ap_uint<512> uint512_dt;
 
@@ -110,7 +111,7 @@ static void process_a_row( hls::stream<uint512_dt> &rd_buffer, hls::stream<uint5
 		}
 	}
 	if((i >= 1 + pipeline_stage) && ( i <= end_row + pipeline_stage)){
-		wr_buffer[end_index-1] << tmp2;
+		wr_buffer << tmp2;
 	}
 }
 
@@ -132,13 +133,14 @@ void process (const uint512_dt*  arg0, uint512_dt*  arg1,
 		const int xdim0_poisson_kernel_stencil, const int base0, const int xdim1_poisson_kernel_stencil, const int base1, const int size0, int size1, int i){
 
 
-	uint512_dt rd_buffer_p1[BURST_LEN + 2];
-	uint512_dt rd_buffer_p2[BURST_LEN + 2];
-	uint512_dt wr_buffer_p2[BURST_LEN + 2];
+//	uint512_dt rd_buffer_p1[BURST_LEN + 2];
+//	uint512_dt rd_buffer_p2[BURST_LEN + 2];
+//	uint512_dt wr_buffer_p2[BURST_LEN + 2];
 
-	static hls::stream<uint512_dt> rd_buffer_p1("row1_p1");
-    static hls::stream<uint512_dt> rd_buffer_p2("row2_p1");
+	static hls::stream<uint512_dt> rd_buffer_p1("rd_buffer_p1");
+    static hls::stream<uint512_dt> rd_buffer_p2("rd_buffer_p2");
 
+	#pragma HLS dataflow
 	read_row(arg0, rd_buffer_p1, xdim0_poisson_kernel_stencil, base0, i, size1);
 	process_a_row(rd_buffer_p1, rd_buffer_p2, row1_p1, row2_p1, row3_p1, size0, size1, xdim0_poisson_kernel_stencil, i, 0);
 
@@ -192,7 +194,7 @@ void ops_poisson_kernel_stencil(
 	uint512_dt row3_p2[BURST_LEN + 2];
 
 
-
+	#pragma HLS dataflow
 	loop_beats: for(int i = 0 ; i < end_row; i++){
 		process(arg0, arg1, row1_p1, row2_p1, row3_p1,  row1_p2, row2_p2, row3_p2, xdim0_poisson_kernel_stencil, base0, xdim0_poisson_kernel_stencil, base0, size0, size1,  i);
 	}
