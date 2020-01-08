@@ -1,32 +1,14 @@
-#include <ap_int.h>
-#include <hls_stream.h>
-
-typedef ap_uint<512> uint512_dt;
-
-#define MAX_SIZE_X 2048
-#define MAX_DEPTH_16 (MAX_SIZE_X/16)
-
-//user function
-#define PORT_WIDTH 16
-#define SHIFT_BITS 4
-#define DATATYPE_SIZE 32
-//#define BEAT_SHIFT_BITS 10
-#define BURST_LEN MAX_DEPTH_16
-
-
-typedef union  {
-   int i;
-   float f;
-} data_conv;
+#include "/home/vasan/poisson_n/poisson/Emulation-HW/ops_poisson_kernels/ops_poisson_kernel_stencil/ops_poisson_kernel_stencil/stencil.h"
 
 
 static void read_row(const uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, const int xdim0_poisson_kernel_stencil, const int base0, int i, int size1){
 
 	int base_index = (base0 + ((i-1) * xdim0_poisson_kernel_stencil) -1) >> SHIFT_BITS;
 	int end_index = (xdim0_poisson_kernel_stencil >> SHIFT_BITS) + 2;
-	int end_row = size1+3;
+	short end_row = size1+3;
 	if(i < end_row){
-		for(int k =0; k < end_index; k++){
+		#pragma HLS PIPELINE II=1
+		for(unsigned short k =0; k < end_index; k++){
 			rd_buffer << arg0[base_index -1 + k];
 		}
 	}
@@ -46,7 +28,7 @@ static void process_a_row( hls::stream<uint512_dt> &rd_buffer, hls::stream<uint5
 	float row_arr1[PORT_WIDTH];
 	float mem_wr[PORT_WIDTH];
 
-
+	#pragma HLS PIPELINE II=1
 	for(int j =0; j < end_index; j++){
 
 		tmp1_b2 = tmp1_b1;
@@ -120,6 +102,7 @@ static void write_row( uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, co
 	int end_index = (xdim1_poisson_kernel_stencil >> SHIFT_BITS) + 1;
 	if(i >= (1 + pipeline_stage)){
 		uint512_dt tmp1 = wr_buffer.read();
+		#pragma HLS PIPELINE II=1
 		for(int k =0; k < end_index; k++){
 			arg1[base_index   + k] =  wr_buffer.read();
 		}
