@@ -122,7 +122,9 @@ static void process_burst(float16* tmp0_R, float16* tmp1_R, int j, int size0, fl
 }
 
 __attribute__((xcl_dataflow))
-void read_process_row(__global const float16* restrict arg0, __global const float16* restrict arg1,
+static void read_process_row(
+		__global const float16* restrict arg0,
+		__global const float16* restrict arg1,
 		int base_index0, int base_index1,
 		int j, int size0, float* sum_p, int itr){
 
