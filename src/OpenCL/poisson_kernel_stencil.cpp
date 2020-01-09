@@ -152,7 +152,8 @@ void process (const uint512_dt*  arg0, uint512_dt*  arg1,
 	#pragma HLS dataflow
 	read_row(arg0, rd_buffer_p1, xdim0_poisson_kernel_stencil, base0, i, size1);
 	process_a_row(rd_buffer_p1, rd_buffer_p2, row1_p1, row2_p1, row3_p1, size0, size1, xdim0_poisson_kernel_stencil, i, 0);
-	write_row(arg1, rd_buffer_p2, xdim1_poisson_kernel_stencil, base1, i, 0);
+	process_a_row(rd_buffer_p2, wr_buffer, row1_p2, row2_p2, row3_p2, size0, size1, xdim0_poisson_kernel_stencil, i, 1);
+	write_row(arg1, wr_buffer, xdim1_poisson_kernel_stencil, base1, i, 1);
 }
 
 
