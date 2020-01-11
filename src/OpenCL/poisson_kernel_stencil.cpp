@@ -14,6 +14,19 @@ typedef ap_uint<512> uint512_dt;
 #define BURST_LEN MAX_DEPTH_16
 
 
+
+const int max_size_y = 2000;
+const int min_size_y = 20;
+const int avg_size_y = 2000;
+
+const int max_block_x = 2000/16 + 1;
+const int min_block_x = 20/16 + 1;
+const int avg_block_x = 2000/16 + 1;
+
+const int port_width  = PORT_WIDTH;
+const int max_depth_16 = MAX_DEPTH_16*2;
+
+
 typedef union  {
    int i;
    float f;
@@ -27,6 +40,7 @@ static void read_row(const uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer
 	if(i < end_row){
 		read_row_loop: for(int k =0; k < end_index; k++){
 			#pragma HLS PIPELINE II=1
+			#pragma HLS loop_tripcount min=min_block_x max=max_block_x avg=avg_block_x
 			rd_buffer << arg0[base_index -1 + k];
 		}
 	}
@@ -55,6 +69,7 @@ static void process_a_row( hls::stream<uint512_dt> &rd_buffer, hls::stream<uint5
 
 
 	main_process_loop: for(int j =0; j < end_index; j++){
+		#pragma HLS loop_tripcount min=min_block_x max=max_block_x avg=avg_block_x
 		#pragma HLS PIPELINE II=1
 
 		tmp1_b2 = tmp1_b1;
@@ -81,6 +96,7 @@ static void process_a_row( hls::stream<uint512_dt> &rd_buffer, hls::stream<uint5
 		}
 
 		vec2arr: for(int k = 0; k < PORT_WIDTH; k++){
+			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			data_conv tmp1, tmp2, tmp3;
 			tmp1.i = tmp1_b1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
 			tmp2.i = tmp2_b1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
@@ -99,6 +115,7 @@ static void process_a_row( hls::stream<uint512_dt> &rd_buffer, hls::stream<uint5
 
 
 		process: for(int q = 0; q < PORT_WIDTH; q++){
+			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			int index = (j << SHIFT_BITS) + q - 32;
 			float f1 = ( (row_arr2[q])  + (row_arr2[q+2]) ) * 0.125f;
 			float f2 = ( row_arr1[q]  + row_arr3[q] ) * 0.125f;
@@ -109,6 +126,7 @@ static void process_a_row( hls::stream<uint512_dt> &rd_buffer, hls::stream<uint5
 
 
 		array2vec: for(int k = 0; k < PORT_WIDTH; k++){
+			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			data_conv tmp;
 			tmp.f = mem_wr[k];
 			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
@@ -129,6 +147,7 @@ static void write_row( uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, co
 	if(i >= (1 + pipeline_stage)){
 		uint512_dt tmp1 = wr_buffer.read();
 		write_row_loop: for(int k =0; k < end_index; k++){
+			#pragma HLS loop_tripcount min=min_block_x max=max_block_x avg=avg_block_x
 			#pragma HLS PIPELINE II=1
 			arg1[base_index   + k] =  wr_buffer.read();
 		}
@@ -139,21 +158,29 @@ static void write_row( uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, co
 void process (const uint512_dt*  arg0, uint512_dt*  arg1,
 		uint512_dt* row1_p1, uint512_dt* row2_p1, uint512_dt* row3_p1,
 		uint512_dt* row1_p2, uint512_dt* row2_p2, uint512_dt* row3_p2,
+		uint512_dt* row1_p3, uint512_dt* row2_p3, uint512_dt* row3_p3,
+		uint512_dt* row1_p4, uint512_dt* row2_p4, uint512_dt* row3_p4,
 		const int xdim0_poisson_kernel_stencil, const int base0, const int xdim1_poisson_kernel_stencil, const int base1, const int size0, int size1, int i){
 
 	static hls::stream<uint512_dt> rd_buffer_p1("rd_buffer_p1");
     static hls::stream<uint512_dt> rd_buffer_p2("rd_buffer_p2");
+    static hls::stream<uint512_dt> rd_buffer_p3("rd_buffer_p3");
+    static hls::stream<uint512_dt> rd_buffer_p4("rd_buffer_p4");
     static hls::stream<uint512_dt> wr_buffer("wr_buffer");
 
-	#pragma HLS STREAM variable = rd_buffer_p1 depth = 1024
-	#pragma HLS STREAM variable = rd_buffer_p2 depth = 1024
-	#pragma HLS STREAM variable = wr_buffer depth = 1024
+	#pragma HLS STREAM variable = rd_buffer_p1 depth = max_depth_16
+	#pragma HLS STREAM variable = rd_buffer_p2 depth = max_depth_16
+	#pragma HLS STREAM variable = rd_buffer_p3 depth = max_depth_16
+	#pragma HLS STREAM variable = rd_buffer_p4 depth = max_depth_16
+	#pragma HLS STREAM variable = wr_buffer depth = max_depth_16
 
 	#pragma HLS dataflow
 	read_row(arg0, rd_buffer_p1, xdim0_poisson_kernel_stencil, base0, i, size1);
 	process_a_row(rd_buffer_p1, rd_buffer_p2, row1_p1, row2_p1, row3_p1, size0, size1, xdim0_poisson_kernel_stencil, i, 0);
-	process_a_row(rd_buffer_p2, wr_buffer, row1_p2, row2_p2, row3_p2, size0, size1, xdim0_poisson_kernel_stencil, i, 1);
-	write_row(arg1, wr_buffer, xdim1_poisson_kernel_stencil, base1, i, 1);
+	process_a_row(rd_buffer_p2, rd_buffer_p3, row1_p2, row2_p2, row3_p2, size0, size1, xdim0_poisson_kernel_stencil, i, 1);
+	process_a_row(rd_buffer_p3, rd_buffer_p4, row1_p3, row2_p3, row3_p3, size0, size1, xdim0_poisson_kernel_stencil, i, 2);
+	process_a_row(rd_buffer_p4, wr_buffer, row1_p4, row2_p4, row3_p4, size0, size1, xdim0_poisson_kernel_stencil, i, 3);
+	write_row(arg1, wr_buffer, xdim1_poisson_kernel_stencil, base1, i, 3);
 }
 
 
@@ -183,7 +210,7 @@ void ops_poisson_kernel_stencil(
 
 
 
-	int end_row  = size1+4;
+	int end_row  = size1+6;
 
 
 //     static hls::stream<uint512_dt> row1_p1("row1_p1");
@@ -203,19 +230,36 @@ void ops_poisson_kernel_stencil(
 	uint512_dt row2_p2[BURST_LEN + 2];
 	uint512_dt row3_p2[BURST_LEN + 2];
 
+	uint512_dt row1_p3[BURST_LEN + 2];
+	uint512_dt row2_p3[BURST_LEN + 2];
+	uint512_dt row3_p3[BURST_LEN + 2];
+
+	uint512_dt row1_p4[BURST_LEN + 2];
+	uint512_dt row2_p4[BURST_LEN + 2];
+	uint512_dt row3_p4[BURST_LEN + 2];
+
 
 	#pragma HLS STREAM variable=row1_p1 off
 	#pragma HLS STREAM variable=row2_p1 off
 	#pragma HLS STREAM variable=row3_p1 off
+
 	#pragma HLS STREAM variable=row1_p2 off
 	#pragma HLS STREAM variable=row2_p2 off
 	#pragma HLS STREAM variable=row3_p2 off
 
+	#pragma HLS STREAM variable=row1_p3 off
+	#pragma HLS STREAM variable=row2_p3 off
+	#pragma HLS STREAM variable=row3_p3 off
+
+	#pragma HLS STREAM variable=row1_p4 off
+	#pragma HLS STREAM variable=row2_p4 off
+	#pragma HLS STREAM variable=row3_p4 off
+
 
 	loop_beats: for(int i = 0 ; i < end_row; i++){
-
+		#pragma HLS loop_tripcount min=min_size_y max=max_size_y avg=avg_size_y
 		#pragma HLS dataflow
-		process(arg0, arg1, row1_p1, row2_p1, row3_p1,  row1_p2, row2_p2, row3_p2, xdim0_poisson_kernel_stencil, base0, xdim0_poisson_kernel_stencil, base0, size0, size1,  i);
+		process(arg0, arg1, row1_p1, row2_p1, row3_p1,  row1_p2, row2_p2, row3_p2, row1_p3, row2_p3, row3_p3,  row1_p4, row2_p4, row3_p4, xdim0_poisson_kernel_stencil, base0, xdim0_poisson_kernel_stencil, base0, size0, size1,  i);
 	}
 }
 }
