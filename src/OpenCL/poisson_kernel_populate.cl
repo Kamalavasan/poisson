@@ -87,11 +87,11 @@ __kernel void ops_poisson_kernel_populate(
 				arg_idx[1] = arg_idx1+ i;
 				end_index = (xdim3_poisson_kernel_populate >> SHIFT_BITS);
 			}
-			__attribute__((xcl_pipeline_loop))
+			//__attribute__((xcl_pipeline_loop))
 			for(int j = 0; j < end_index; j++){
 
 				v3_rd: __attribute__((xcl_pipeline_loop))
-				__attribute__((opencl_unroll_hint(PORT_WIDTH)))
+				__attribute__((opencl_unroll_hint(PORT_WIDTH/4)))
 				for(int k = 0; k < PORT_WIDTH; k++){
 					int index_x = (j<<SHIFT_BITS) + k;
 
@@ -150,10 +150,10 @@ __kernel void ops_poisson_kernel_populate(
 				end_index = (xdim3_poisson_kernel_populate >> SHIFT_BITS);
 
 			}
-			__attribute__((xcl_pipeline_loop))
+			//__attribute__((xcl_pipeline_loop))
 			for(int j = 0; j < end_index; j++){
 				v5_rd: __attribute__((xcl_pipeline_loop))
-				__attribute__((opencl_unroll_hint(PORT_WIDTH)))
+				__attribute__((opencl_unroll_hint(PORT_WIDTH/4)))
 				for(int k = 0; k < PORT_WIDTH; k++){
 					int index_x = (j<<SHIFT_BITS) + k;
 

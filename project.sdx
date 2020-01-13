@@ -492,7 +492,7 @@
       </binaryContainers>
     </lastBuildOptions>
   </configuration>
-  <configuration name="System" id="com.xilinx.sdx.opencl.config.hw.1631457947">
+  <configuration name="System" id="com.xilinx.sdx.opencl.config.hw.1631457947" dirty="true">
     <configBuildOptions xsi:type="openclProject:OpenCLOptions" target="hw">
       <binaryContainers name="ops_poisson_kernels">
         <kernels name="ops_poisson_kernel_update" sourceFile="src/OpenCL/poisson_kernel_update.cl" maxMemoryPorts="true" memoryPortDataWidth="512" xoccOptions="">
@@ -677,7 +677,7 @@
           <args name="size1"/>
           <args name="xdim0_poisson_kernel_initial"/>
         </kernels>
-        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" maxMemoryPorts="true" memoryPortDataWidth="512">
+        <kernels name="ops_poisson_kernel_populate" sourceFile="src/OpenCL/poisson_kernel_populate.cl" memoryPortDataWidth="512">
           <computeUnits name="ops_poisson_kernel_populate_1" slr="">
             <args name="arg0" memory=""/>
             <args name="arg1" memory=""/>
