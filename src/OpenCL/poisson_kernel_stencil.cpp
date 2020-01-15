@@ -70,7 +70,7 @@ static void process_a_row( hls::stream<uint512_dt> &rd_buffer, hls::stream<uint5
 
 	main_process_loop: for(int j =0; j < end_index; j++){
 		#pragma HLS loop_tripcount min=min_block_x max=max_block_x avg=avg_block_x
-		#pragma HLS PIPELINE II=1
+		#pragma HLS PIPELINE II=2
 
 		tmp1_b2 = tmp1_b1;
 		tmp2_b2 = tmp2_b1;
