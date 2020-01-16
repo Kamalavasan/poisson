@@ -4,6 +4,7 @@
 
 //user function
 
+
 // host stub function
 #ifndef OPS_LAZY
 void ops_par_loop_poisson_kernel_populate(char const *name, ops_block block, int dim, int* range,
@@ -78,13 +79,13 @@ void ops_par_loop_poisson_kernel_populate_execute(ops_kernel_descriptor *desc) {
 
 
   int base3 = args[3].dat->base_offset;
-  double * __restrict__ u_p = (double *)(args[3].data + base3);
+  float * __restrict__ u_p = (float *)(args[3].data + base3);
 
   int base4 = args[4].dat->base_offset;
-  double * __restrict__ f_p = (double *)(args[4].data + base4);
+  float * __restrict__ f_p = (float *)(args[4].data + base4);
 
   int base5 = args[5].dat->base_offset;
-  double * __restrict__ ref_p = (double *)(args[5].data + base5);
+  float * __restrict__ ref_p = (float *)(args[5].data + base5);
 
 
 
@@ -115,13 +116,15 @@ void ops_par_loop_poisson_kernel_populate_execute(ops_kernel_descriptor *desc) {
     #endif
     for ( int n_x=start[0]; n_x<end[0]; n_x++ ){
       int idx[] = {arg_idx[0]+n_x, arg_idx[1]+n_y};
-      ACC<double> u(xdim3_poisson_kernel_populate, u_p + n_x*1 + n_y * xdim3_poisson_kernel_populate*1);
-      ACC<double> f(xdim4_poisson_kernel_populate, f_p + n_x*1 + n_y * xdim4_poisson_kernel_populate*1);
-      ACC<double> ref(xdim5_poisson_kernel_populate, ref_p + n_x*1 + n_y * xdim5_poisson_kernel_populate*1);
-      
-  double x = dx * (double)(idx[0]+dispx[0]);
-  double y = dy * (double)(idx[1]+dispy[0]);
+      ACC<float> u(xdim3_poisson_kernel_populate, u_p + n_x*1 + n_y * xdim3_poisson_kernel_populate*1);
+      ACC<float> f(xdim4_poisson_kernel_populate, f_p + n_x*1 + n_y * xdim4_poisson_kernel_populate*1);
+      ACC<float> ref(xdim5_poisson_kernel_populate, ref_p + n_x*1 + n_y * xdim5_poisson_kernel_populate*1);
 
+//      dx = 0.01f;
+//      dy = 0.01f;
+
+  float x = dx * (float)(idx[0]+dispx[0]);
+  float y = dy * (float)(idx[1]+dispy[0]);
   u(0,0) = myfun(sin(M_PI*x),cos(2.0*M_PI*y))-1.0;
   f(0,0) = -5.0*M_PI*M_PI*sin(M_PI*x)*cos(2.0*M_PI*y);
   ref(0,0) = sin(M_PI*x)*cos(2.0*M_PI*y);

@@ -58,7 +58,7 @@ void ops_par_loop_poisson_kernel_initialguess_execute(ops_kernel_descriptor *des
 
   //set up initial pointers and exchange halos if necessary
   int base0 = args[0].dat->base_offset;
-  double * __restrict__ u_p = (double *)(args[0].data + base0);
+  float * __restrict__ u_p = (float *)(args[0].data + base0);
 
 
 
@@ -88,7 +88,7 @@ void ops_par_loop_poisson_kernel_initialguess_execute(ops_kernel_descriptor *des
     #pragma simd
     #endif
     for ( int n_x=start[0]; n_x<end[0]; n_x++ ){
-      ACC<double> u(xdim0_poisson_kernel_initialguess, u_p + n_x*1 + n_y * xdim0_poisson_kernel_initialguess*1);
+      ACC<float> u(xdim0_poisson_kernel_initialguess, u_p + n_x*1 + n_y * xdim0_poisson_kernel_initialguess*1);
       
   u(0,0) = 0.0;
 

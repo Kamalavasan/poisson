@@ -32,10 +32,11 @@ void ops_release_program(){
 	clReleaseContext(OPS_opencl_core.context);
 	clReleaseDevice(OPS_opencl_core.device_id);
 	//clReleaseKernel(*OPS_opencl_core.kernel);
-	for (int i=0; i<5; i++) {
-		if(i != 0 && i != 2)
-			clReleaseKernel(OPS_opencl_core.kernel[i]);
-	}
+//	for (int i=0; i<5; i++) {
+//
+//			clReleaseKernel(OPS_opencl_core.kernel[i]);
+//	}
+	clReleaseKernel(OPS_opencl_core.kernel[3]);
 
 
 	clReleaseProgram(OPS_opencl_core.program);
@@ -179,7 +180,7 @@ void buildOpenCLKernels_poisson_kernel_error(int xdim0, int xdim1) {
 
 
 // host stub function
-void ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int dim, int* range,
+void n_ops_par_loop_poisson_kernel_error(char const *name, ops_block block, int dim, int* range,
 		ops_arg arg0, ops_arg arg1, ops_arg arg2) {
 
 	//Timing
@@ -533,7 +534,7 @@ void buildOpenCLKernels_poisson_kernel_initial(int xdim0) {
 
 
 // host stub function
-void ops_par_loop_poisson_kernel_initial(char const *name, ops_block block, int dim, int* range,
+void n_ops_par_loop_poisson_kernel_initial(char const *name, ops_block block, int dim, int* range,
 		ops_arg arg0) {
 
 	//Timing
@@ -677,7 +678,7 @@ void buildOpenCLKernels_poisson_kernel_update(int xdim0, int xdim1) {
 
 
 // host stub function
-void ops_par_loop_poisson_kernel_update(char const *name, ops_block block, int dim, int* range,
+void n_ops_par_loop_poisson_kernel_update(char const *name, ops_block block, int dim, int* range,
 		ops_arg arg0, ops_arg arg1) {
 
 	//Timing
@@ -836,7 +837,7 @@ void buildOpenCLKernels_poisson_kernel_populate(int xdim3, int xdim4, int xdim5)
 
 
 // host stub function
-void ops_par_loop_poisson_kernel_populate(char const *name, ops_block block, int dim, int* range,
+void n_ops_par_loop_poisson_kernel_populate(char const *name, ops_block block, int dim, int* range,
 		ops_arg arg0, ops_arg arg1, ops_arg arg2, ops_arg arg3,
 		ops_arg arg4, ops_arg arg5) {
 

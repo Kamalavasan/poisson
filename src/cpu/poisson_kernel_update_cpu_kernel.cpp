@@ -60,10 +60,10 @@ void ops_par_loop_poisson_kernel_update_execute(ops_kernel_descriptor *desc) {
 
   //set up initial pointers and exchange halos if necessary
   int base0 = args[0].dat->base_offset;
-  double * __restrict__ u2_p = (double *)(args[0].data + base0);
+  float * __restrict__ u2_p = (float *)(args[0].data + base0);
 
   int base1 = args[1].dat->base_offset;
-  double * __restrict__ u_p = (double *)(args[1].data + base1);
+  float * __restrict__ u_p = (float *)(args[1].data + base1);
 
 
 
@@ -93,8 +93,8 @@ void ops_par_loop_poisson_kernel_update_execute(ops_kernel_descriptor *desc) {
     #pragma simd
     #endif
     for ( int n_x=start[0]; n_x<end[0]; n_x++ ){
-      const ACC<double> u2(xdim0_poisson_kernel_update, u2_p + n_x*1 + n_y * xdim0_poisson_kernel_update*1);
-      ACC<double> u(xdim1_poisson_kernel_update, u_p + n_x*1 + n_y * xdim1_poisson_kernel_update*1);
+      const ACC<float> u2(xdim0_poisson_kernel_update, u2_p + n_x*1 + n_y * xdim0_poisson_kernel_update*1);
+      ACC<float> u(xdim1_poisson_kernel_update, u_p + n_x*1 + n_y * xdim1_poisson_kernel_update*1);
       
   u(0,0) = u2(0,0);
 

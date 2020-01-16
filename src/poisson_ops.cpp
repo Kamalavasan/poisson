@@ -208,7 +208,7 @@ int main(int argc,  char **argv)
                    ops_arg_dat(f[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE),
                    ops_arg_dat(ref[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
 
-
+       ops_print_dat_to_txtfile((u2[i+ngrid_x*j]), "u.txt");
 //      ops_print_dat_to_txtfile((f[i+ngrid_x*j]), "/home/vasan/faraz/poisson_1/f.txt");
 //      ops_print_dat_to_txtfile((ref[i+ngrid_x*j]), "/home/vasan/faraz/poisson_1/ref.txt");
 
@@ -224,7 +224,7 @@ int main(int argc,  char **argv)
       int iter_range[] = {0,sizes[2*(i+ngrid_x*j)],0,sizes[2*(i+ngrid_x*j)+1]};
 
 
-
+//
       ops_par_loop_poisson_kernel_initial("poisson_kernel_initialguess", blocks[i+ngrid_x*j], 2, iter_range,
                    ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
 
@@ -297,7 +297,7 @@ int main(int argc,  char **argv)
   ops_timers(&ct1, &et1);
   ops_timing_output(stdout);
   ops_printf("\nTotal Wall time %lf\n",et1-et0);
-  float err_diff=fabs((100.0*(err/3.556480884552))-100.0);
+  float err_diff=fabs((100.0*(err/37.7403193644329))-100.0);
   ops_printf("Total error: %3.15g\n",err);
   ops_printf("Total error is within %3.15E %% of the expected error\n",err_diff);
 

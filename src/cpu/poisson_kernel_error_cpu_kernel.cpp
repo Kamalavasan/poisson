@@ -61,15 +61,15 @@ void ops_par_loop_poisson_kernel_error_execute(ops_kernel_descriptor *desc) {
 
   //set up initial pointers and exchange halos if necessary
   int base0 = args[0].dat->base_offset;
-  double * __restrict__ u_p = (double *)(args[0].data + base0);
+  float * __restrict__ u_p = (float *)(args[0].data + base0);
 
   int base1 = args[1].dat->base_offset;
-  double * __restrict__ ref_p = (double *)(args[1].data + base1);
+  float * __restrict__ ref_p = (float *)(args[1].data + base1);
 
   #ifdef OPS_MPI
-  double * __restrict__ p_a2 = (double *)(((ops_reduction)args[2].data)->data + ((ops_reduction)args[2].data)->size * block->index);
+  float * __restrict__ p_a2 = (float *)(((ops_reduction)args[2].data)->data + ((ops_reduction)args[2].data)->size * block->index);
   #else //OPS_MPI
-  double * __restrict__ p_a2 = (double *)((ops_reduction)args[2].data)->data;
+  float * __restrict__ p_a2 = (float *)((ops_reduction)args[2].data)->data;
   #endif //OPS_MPI
 
 
@@ -87,7 +87,7 @@ void ops_par_loop_poisson_kernel_error_execute(ops_kernel_descriptor *desc) {
     OPS_kernels[4].mpi_time += __t1-__t2;
   }
 
-  double p_a2_0 = p_a2[0];
+  float p_a2_0 = p_a2[0];
   #pragma omp parallel for reduction(+:p_a2_0)
   for ( int n_y=start[1]; n_y<end[1]; n_y++ ){
     #ifdef __INTEL_COMPILER
@@ -102,10 +102,10 @@ void ops_par_loop_poisson_kernel_error_execute(ops_kernel_descriptor *desc) {
     #pragma simd
     #endif
     for ( int n_x=start[0]; n_x<end[0]; n_x++ ){
-      const ACC<double> u(xdim0_poisson_kernel_error, u_p + n_x*1 + n_y * xdim0_poisson_kernel_error*1);
-      const ACC<double> ref(xdim1_poisson_kernel_error, ref_p + n_x*1 + n_y * xdim1_poisson_kernel_error*1);
-      double err[1];
-      err[0] = ZERO_double;
+      const ACC<float> u(xdim0_poisson_kernel_error, u_p + n_x*1 + n_y * xdim0_poisson_kernel_error*1);
+      const ACC<float> ref(xdim1_poisson_kernel_error, ref_p + n_x*1 + n_y * xdim1_poisson_kernel_error*1);
+      float err[1];
+      err[0] = ZERO_float;
       
   *err = *err + (u(0,0)-ref(0,0))*(u(0,0)-ref(0,0));
 

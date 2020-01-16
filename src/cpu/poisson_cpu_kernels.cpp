@@ -11,14 +11,14 @@
 #include "../OpenCL/user_types.h"
 
 // global constants
-extern double dx;
-extern double dy;
+extern float dx;
+extern float dy;
 
 //void ops_init_backend() {}
 
 //user kernel files
-//#include "poisson_kernel_populate_cpu_kernel.cpp"
-//#include "poisson_kernel_update_cpu_kernel.cpp"
-//#include "poisson_kernel_initialguess_cpu_kernel.cpp"
+#include "poisson_kernel_populate_cpu_kernel.cpp"
+#include "poisson_kernel_update_cpu_kernel.cpp"
+#include "poisson_kernel_initialguess_cpu_kernel.cpp"
 //#include "poisson_kernel_stencil_cpu_kernel.cpp"
-//#include "poisson_kernel_error_cpu_kernel.cpp"
+#include "poisson_kernel_error_cpu_kernel.cpp"
