@@ -208,7 +208,7 @@ int main(int argc,  char **argv)
                    ops_arg_dat(f[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE),
                    ops_arg_dat(ref[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
 
-       ops_print_dat_to_txtfile((u2[i+ngrid_x*j]), "u.txt");
+
 //      ops_print_dat_to_txtfile((f[i+ngrid_x*j]), "/home/vasan/faraz/poisson_1/f.txt");
 //      ops_print_dat_to_txtfile((ref[i+ngrid_x*j]), "/home/vasan/faraz/poisson_1/ref.txt");
 
@@ -247,7 +247,7 @@ int main(int argc,  char **argv)
                      ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00_P10_M10_0P1_0M1, "float", OPS_READ),
                      ops_arg_dat(u2[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
 
-       // ops_print_dat_to_txtfile((u2[i+ngrid_x*j]), "u.txt");
+//        ops_print_dat_to_txtfile((u2[i+ngrid_x*j]), "u.txt");
 
 
       }
