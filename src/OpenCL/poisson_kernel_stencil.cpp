@@ -164,6 +164,7 @@ void process (const uint512_dt*  arg0, uint512_dt*  arg1,
 		uint512_dt* row1_p6, uint512_dt* row2_p6, uint512_dt* row3_p6,
 		uint512_dt* row1_p7, uint512_dt* row2_p7, uint512_dt* row3_p7,
 		uint512_dt* row1_p8, uint512_dt* row2_p8, uint512_dt* row3_p8,
+
 		uint512_dt* row1_p9, uint512_dt* row2_p9, uint512_dt* row3_p9,
 		uint512_dt* row1_p10, uint512_dt* row2_p10, uint512_dt* row3_p10,
 		uint512_dt* row1_p11, uint512_dt* row2_p11, uint512_dt* row3_p11,
@@ -181,6 +182,7 @@ void process (const uint512_dt*  arg0, uint512_dt*  arg1,
 		uint512_dt* row1_p22, uint512_dt* row2_p22, uint512_dt* row3_p22,
 		uint512_dt* row1_p23, uint512_dt* row2_p23, uint512_dt* row3_p23,
 		uint512_dt* row1_p24, uint512_dt* row2_p24, uint512_dt* row3_p24,
+
 		uint512_dt* row1_p25, uint512_dt* row2_p25, uint512_dt* row3_p25,
 		uint512_dt* row1_p26, uint512_dt* row2_p26, uint512_dt* row3_p26,
 		uint512_dt* row1_p27, uint512_dt* row2_p27, uint512_dt* row3_p27,
@@ -189,6 +191,15 @@ void process (const uint512_dt*  arg0, uint512_dt*  arg1,
 		uint512_dt* row1_p30, uint512_dt* row2_p30, uint512_dt* row3_p30,
 		uint512_dt* row1_p31, uint512_dt* row2_p31, uint512_dt* row3_p31,
 		uint512_dt* row1_p32, uint512_dt* row2_p32, uint512_dt* row3_p32,
+
+		uint512_dt* row1_p33, uint512_dt* row2_p33, uint512_dt* row3_p33,
+		uint512_dt* row1_p34, uint512_dt* row2_p34, uint512_dt* row3_p34,
+		uint512_dt* row1_p35, uint512_dt* row2_p35, uint512_dt* row3_p35,
+		uint512_dt* row1_p36, uint512_dt* row2_p36, uint512_dt* row3_p36,
+		uint512_dt* row1_p37, uint512_dt* row2_p37, uint512_dt* row3_p37,
+		uint512_dt* row1_p38, uint512_dt* row2_p38, uint512_dt* row3_p38,
+		uint512_dt* row1_p39, uint512_dt* row2_p39, uint512_dt* row3_p39,
+		uint512_dt* row1_p40, uint512_dt* row2_p40, uint512_dt* row3_p40,
 
 		const int xdim0_poisson_kernel_stencil, const int base0, const int xdim1_poisson_kernel_stencil, const int base1, const int size0, int size1, int i){
 
@@ -200,6 +211,7 @@ void process (const uint512_dt*  arg0, uint512_dt*  arg1,
     static hls::stream<uint512_dt> rd_buffer_p6("rd_buffer_p6");
     static hls::stream<uint512_dt> rd_buffer_p7("rd_buffer_p7");
     static hls::stream<uint512_dt> rd_buffer_p8("rd_buffer_p8");
+
     static hls::stream<uint512_dt> rd_buffer_p9("rd_buffer_p9");
 	static hls::stream<uint512_dt> rd_buffer_p10("rd_buffer_p10");
 	static hls::stream<uint512_dt> rd_buffer_p11("rd_buffer_p11");
@@ -217,6 +229,7 @@ void process (const uint512_dt*  arg0, uint512_dt*  arg1,
 	static hls::stream<uint512_dt> rd_buffer_p22("rd_buffer_p22");
 	static hls::stream<uint512_dt> rd_buffer_p23("rd_buffer_p23");
 	static hls::stream<uint512_dt> rd_buffer_p24("rd_buffer_p24");
+
 	static hls::stream<uint512_dt> rd_buffer_p25("rd_buffer_p25");
 	static hls::stream<uint512_dt> rd_buffer_p26("rd_buffer_p26");
 	static hls::stream<uint512_dt> rd_buffer_p27("rd_buffer_p27");
@@ -225,6 +238,15 @@ void process (const uint512_dt*  arg0, uint512_dt*  arg1,
 	static hls::stream<uint512_dt> rd_buffer_p30("rd_buffer_p30");
 	static hls::stream<uint512_dt> rd_buffer_p31("rd_buffer_p31");
 	static hls::stream<uint512_dt> rd_buffer_p32("rd_buffer_p32");
+
+	static hls::stream<uint512_dt> rd_buffer_p33("rd_buffer_p33");
+    static hls::stream<uint512_dt> rd_buffer_p34("rd_buffer_p34");
+    static hls::stream<uint512_dt> rd_buffer_p35("rd_buffer_p35");
+    static hls::stream<uint512_dt> rd_buffer_p36("rd_buffer_p36");
+	static hls::stream<uint512_dt> rd_buffer_p37("rd_buffer_p37");
+    static hls::stream<uint512_dt> rd_buffer_p38("rd_buffer_p38");
+    static hls::stream<uint512_dt> rd_buffer_p39("rd_buffer_p39");
+    static hls::stream<uint512_dt> rd_buffer_p40("rd_buffer_p40");
 
     static hls::stream<uint512_dt> wr_buffer("wr_buffer");
 
@@ -236,6 +258,7 @@ void process (const uint512_dt*  arg0, uint512_dt*  arg1,
 	#pragma HLS STREAM variable = rd_buffer_p6 depth = max_depth_16
 	#pragma HLS STREAM variable = rd_buffer_p7 depth = max_depth_16
 	#pragma HLS STREAM variable = rd_buffer_p8 depth = max_depth_16
+
 	#pragma HLS STREAM variable = rd_buffer_p9 depth = max_depth_16
 	#pragma HLS STREAM variable = rd_buffer_p10 depth = max_depth_16
 	#pragma HLS STREAM variable = rd_buffer_p11 depth = max_depth_16
@@ -253,6 +276,7 @@ void process (const uint512_dt*  arg0, uint512_dt*  arg1,
 	#pragma HLS STREAM variable = rd_buffer_p22 depth = max_depth_16
 	#pragma HLS STREAM variable = rd_buffer_p23 depth = max_depth_16
 	#pragma HLS STREAM variable = rd_buffer_p24 depth = max_depth_16
+
 	#pragma HLS STREAM variable = rd_buffer_p25 depth = max_depth_16
 	#pragma HLS STREAM variable = rd_buffer_p26 depth = max_depth_16
 	#pragma HLS STREAM variable = rd_buffer_p27 depth = max_depth_16
@@ -261,6 +285,16 @@ void process (const uint512_dt*  arg0, uint512_dt*  arg1,
 	#pragma HLS STREAM variable = rd_buffer_p30 depth = max_depth_16
 	#pragma HLS STREAM variable = rd_buffer_p31 depth = max_depth_16
 	#pragma HLS STREAM variable = rd_buffer_p32 depth = max_depth_16
+
+
+	#pragma HLS STREAM variable = rd_buffer_p33 depth = max_depth_16
+	#pragma HLS STREAM variable = rd_buffer_p34 depth = max_depth_16
+	#pragma HLS STREAM variable = rd_buffer_p35 depth = max_depth_16
+	#pragma HLS STREAM variable = rd_buffer_p36 depth = max_depth_16
+	#pragma HLS STREAM variable = rd_buffer_p37 depth = max_depth_16
+	#pragma HLS STREAM variable = rd_buffer_p38 depth = max_depth_16
+	#pragma HLS STREAM variable = rd_buffer_p39 depth = max_depth_16
+	#pragma HLS STREAM variable = rd_buffer_p40 depth = max_depth_16
 
 	#pragma HLS STREAM variable = wr_buffer depth = max_depth_16
 
@@ -300,9 +334,18 @@ void process (const uint512_dt*  arg0, uint512_dt*  arg1,
 	process_a_row(rd_buffer_p29, rd_buffer_p30, row1_p29, row2_p29, row3_p29, size0, size1, xdim0_poisson_kernel_stencil, i, 28);
 	process_a_row(rd_buffer_p30, rd_buffer_p31, row1_p30, row2_p30, row3_p30, size0, size1, xdim0_poisson_kernel_stencil, i, 29);
 	process_a_row(rd_buffer_p31, rd_buffer_p32, row1_p31, row2_p31, row3_p31, size0, size1, xdim0_poisson_kernel_stencil, i, 30);
-	process_a_row(rd_buffer_p32, wr_buffer, row1_p32, row2_p32, row3_p32, size0, size1, xdim0_poisson_kernel_stencil, i, 31);
+	process_a_row(rd_buffer_p32, rd_buffer_p33, row1_p32, row2_p32, row3_p32, size0, size1, xdim0_poisson_kernel_stencil, i, 31);
 
-	write_row(arg1, wr_buffer, xdim1_poisson_kernel_stencil, base1, i, 31);
+	process_a_row(rd_buffer_p33, rd_buffer_p34, row1_p33, row2_p33, row3_p33, size0, size1, xdim0_poisson_kernel_stencil, i, 32);
+	process_a_row(rd_buffer_p34, rd_buffer_p35, row1_p34, row2_p34, row3_p34, size0, size1, xdim0_poisson_kernel_stencil, i, 33);
+	process_a_row(rd_buffer_p35, rd_buffer_p36, row1_p35, row2_p35, row3_p35, size0, size1, xdim0_poisson_kernel_stencil, i, 34);
+	process_a_row(rd_buffer_p36, rd_buffer_p37, row1_p36, row2_p36, row3_p36, size0, size1, xdim0_poisson_kernel_stencil, i, 35);
+	process_a_row(rd_buffer_p37, rd_buffer_p38, row1_p37, row2_p37, row3_p37, size0, size1, xdim0_poisson_kernel_stencil, i, 36);
+	process_a_row(rd_buffer_p38, rd_buffer_p39, row1_p38, row2_p38, row3_p38, size0, size1, xdim0_poisson_kernel_stencil, i, 37);
+	process_a_row(rd_buffer_p39, rd_buffer_p40, row1_p39, row2_p39, row3_p39, size0, size1, xdim0_poisson_kernel_stencil, i, 38);
+	process_a_row(rd_buffer_p40, wr_buffer,     row1_p40, row2_p40, row3_p40, size0, size1, xdim0_poisson_kernel_stencil, i, 39);
+
+	write_row(arg1, wr_buffer, xdim1_poisson_kernel_stencil, base1, i, 35);
 }
 
 
@@ -332,7 +375,7 @@ void ops_poisson_kernel_stencil(
 
 
 
-	int end_row  = size1+34;
+	int end_row  = size1+ 42;
 
 
 //     static hls::stream<uint512_dt> row1_p1("row1_p1");
@@ -475,6 +518,39 @@ void ops_poisson_kernel_stencil(
 	uint512_dt row3_p32[BURST_LEN + 2];
 
 
+	uint512_dt row1_p33[BURST_LEN + 2];
+	uint512_dt row2_p33[BURST_LEN + 2];
+	uint512_dt row3_p33[BURST_LEN + 2];
+
+	uint512_dt row1_p34[BURST_LEN + 2];
+	uint512_dt row2_p34[BURST_LEN + 2];
+	uint512_dt row3_p34[BURST_LEN + 2];
+
+	uint512_dt row1_p35[BURST_LEN + 2];
+	uint512_dt row2_p35[BURST_LEN + 2];
+	uint512_dt row3_p35[BURST_LEN + 2];
+
+	uint512_dt row1_p36[BURST_LEN + 2];
+	uint512_dt row2_p36[BURST_LEN + 2];
+	uint512_dt row3_p36[BURST_LEN + 2];
+
+	uint512_dt row1_p37[BURST_LEN + 2];
+	uint512_dt row2_p37[BURST_LEN + 2];
+	uint512_dt row3_p37[BURST_LEN + 2];
+
+	uint512_dt row1_p38[BURST_LEN + 2];
+	uint512_dt row2_p38[BURST_LEN + 2];
+	uint512_dt row3_p38[BURST_LEN + 2];
+
+	uint512_dt row1_p39[BURST_LEN + 2];
+	uint512_dt row2_p39[BURST_LEN + 2];
+	uint512_dt row3_p39[BURST_LEN + 2];
+
+	uint512_dt row1_p40[BURST_LEN + 2];
+	uint512_dt row2_p40[BURST_LEN + 2];
+	uint512_dt row3_p40[BURST_LEN + 2];
+
+
 	#pragma HLS STREAM variable=row1_p1 off
 	#pragma HLS STREAM variable=row2_p1 off
 	#pragma HLS STREAM variable=row3_p1 off
@@ -606,6 +682,39 @@ void ops_poisson_kernel_stencil(
 	#pragma HLS STREAM variable=row2_p32 off
 	#pragma HLS STREAM variable=row3_p32 off
 
+
+	#pragma HLS STREAM variable=row1_p33 off
+	#pragma HLS STREAM variable=row2_p33 off
+	#pragma HLS STREAM variable=row3_p33 off
+
+	#pragma HLS STREAM variable=row1_p34 off
+	#pragma HLS STREAM variable=row2_p34 off
+	#pragma HLS STREAM variable=row3_p34 off
+
+	#pragma HLS STREAM variable=row1_p35 off
+	#pragma HLS STREAM variable=row2_p35 off
+	#pragma HLS STREAM variable=row3_p35 off
+
+	#pragma HLS STREAM variable=row1_p36 off
+	#pragma HLS STREAM variable=row2_p36 off
+	#pragma HLS STREAM variable=row3_p36 off
+
+	#pragma HLS STREAM variable=row1_p37 off
+	#pragma HLS STREAM variable=row2_p37 off
+	#pragma HLS STREAM variable=row3_p37 off
+
+	#pragma HLS STREAM variable=row1_p38 off
+	#pragma HLS STREAM variable=row2_p38 off
+	#pragma HLS STREAM variable=row3_p38 off
+
+	#pragma HLS STREAM variable=row1_p39 off
+	#pragma HLS STREAM variable=row2_p39 off
+	#pragma HLS STREAM variable=row3_p39 off
+
+	#pragma HLS STREAM variable=row1_p40 off
+	#pragma HLS STREAM variable=row2_p40 off
+	#pragma HLS STREAM variable=row3_p40 off
+
 	loop_beats: for(int i = 0 ; i < end_row; i++){
 		#pragma HLS loop_tripcount min=min_size_y max=max_size_y avg=avg_size_y
 		#pragma HLS dataflow
@@ -628,7 +737,6 @@ void ops_poisson_kernel_stencil(
 				row1_p15, row2_p15, row3_p15,
 				row1_p16, row2_p16, row3_p16,
 
-
 				row1_p17, row2_p17, row3_p17,
 				row1_p18, row2_p18, row3_p18,
 				row1_p19, row2_p19, row3_p19,
@@ -646,6 +754,15 @@ void ops_poisson_kernel_stencil(
 				row1_p30, row2_p30, row3_p30,
 				row1_p31, row2_p31, row3_p31,
 				row1_p32, row2_p32, row3_p32,
+
+				row1_p33, row2_p33, row3_p33,
+				row1_p34, row2_p34, row3_p34,
+				row1_p35, row2_p35, row3_p35,
+				row1_p36, row2_p36, row3_p36,
+				row1_p37, row2_p37, row3_p37,
+				row1_p38, row2_p38, row3_p38,
+				row1_p39, row2_p39, row3_p39,
+				row1_p40, row2_p40, row3_p40,
 
 				xdim0_poisson_kernel_stencil, base0, xdim0_poisson_kernel_stencil, base0, size0, size1,  i);
 	}

@@ -297,7 +297,7 @@ int main(int argc,  char **argv)
   ops_timers(&ct1, &et1);
   ops_timing_output(stdout);
   ops_printf("\nTotal Wall time %lf\n",et1-et0);
-  float err_diff=fabs((100.0*(err/37.7403193644329))-100.0);
+  float err_diff=fabs((100.0*(err/108.535715522578))-100.0);
   ops_printf("Total error: %3.15g\n",err);
   ops_printf("Total error is within %3.15E %% of the expected error\n",err_diff);
 
