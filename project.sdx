@@ -200,7 +200,7 @@
   </configuration>
   <configuration name="System" id="com.xilinx.sdx.opencl.config.hw.1631457947">
     <configBuildOptions xsi:type="openclProject:OpenCLOptions" target="hw">
-      <binaryContainers name="ops_poisson_kernels" xoccOptions="--sp  ops_poisson_kernel_stencil_1.m_axi_gmem0:DDR[0]  --sp ops_poisson_kernel_stencil_1.m_axi_gmem1:DDR[1]">
+      <binaryContainers name="ops_poisson_kernels" xoccOptions="">
         <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cpp" maxMemoryPorts="true" memoryPortDataWidth="512">
           <computeUnits name="ops_poisson_kernel_stencil_1" slr="">
             <args name="arg0" master="true" memory=""/>
@@ -224,7 +224,7 @@
       </binaryContainers>
     </configBuildOptions>
     <lastBuildOptions xsi:type="openclProject:OpenCLOptions" target="hw">
-      <binaryContainers name="ops_poisson_kernels" xoccOptions="--sp  ops_poisson_kernel_stencil_1.m_axi_gmem0:DDR[0]  --sp ops_poisson_kernel_stencil_1.m_axi_gmem1:DDR[1]">
+      <binaryContainers name="ops_poisson_kernels" xoccOptions="">
         <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cpp" maxMemoryPorts="true" memoryPortDataWidth="512">
           <computeUnits name="ops_poisson_kernel_stencil_1" slr="">
             <args name="arg0" master="true" memory=""/>
