@@ -38,7 +38,7 @@ void ops_par_loop_poisson_kernel_update(char const *, ops_block, int , int*,
 void ops_par_loop_poisson_kernel_initial(char const *, ops_block, int , int*,
   ops_arg );
 
-void ops_par_loop_poisson_kernel_stencil(char const *, ops_block, int , int*,
+void ops_par_loop_poisson_kernel_stencil(char const *, ops_block, int , int, int*,
   ops_arg,
   ops_arg );
 
@@ -234,16 +234,17 @@ int main(int argc,  char **argv)
   double it0, it1;
   ops_timers(&ct0, &it0);
 
-  for (int iter = 0; iter < n_iter; iter++) {
-    if (ngrid_x>1 || ngrid_y>1) ops_halo_transfer(u_halos);
-    if (iter%itertile == 0) ops_execute();
+//  for (int iter = 0; iter < n_iter; iter++) {
+//    if (ngrid_x>1 || ngrid_y>1) ops_halo_transfer(u_halos);
+//    if (iter%itertile == 0) ops_execute();
 
     for (int j = 0; j < ngrid_y; j++) {
       for (int i = 0; i < ngrid_x; i++) {
         int iter_range[] = {0,sizes[2*(i+ngrid_x*j)],0,sizes[2*(i+ngrid_x*j)+1]};
 
+//        ops_print_dat_to_txtfile((u[i+ngrid_x*j]), "u.txt");
 
-        ops_par_loop_poisson_kernel_stencil("poisson_kernel_stencil", blocks[i+ngrid_x*j], 2, iter_range,
+        ops_par_loop_poisson_kernel_stencil("poisson_kernel_stencil", blocks[i+ngrid_x*j], 2, n_iter, iter_range,
                      ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00_P10_M10_0P1_0M1, "float", OPS_READ),
                      ops_arg_dat(u2[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
 
@@ -253,28 +254,40 @@ int main(int argc,  char **argv)
       }
     }
 
+//    for (int j = 0; j < ngrid_y; j++) {
+//        for (int i = 0; i < ngrid_x; i++) {
+//          int iter_range[] = {0,sizes[2*(i+ngrid_x*j)],0,sizes[2*(i+ngrid_x*j)+1]};
+//
+//          ops_par_loop_poisson_kernel_stencil("poisson_kernel_stencil", blocks[i+ngrid_x*j], 2, n_iter, iter_range,
+//                       ops_arg_dat(u2[i+ngrid_x*j], 1, S2D_00_P10_M10_0P1_0M1, "float", OPS_READ),
+//                       ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
+//
+//
+//        }
+//      }
 
 
-		if (non_copy) {
-			for (int j = 0; j < ngrid_y; j++) {
-				for (int i = 0; i < ngrid_x; i++) {
-					int iter_range[] = {0,sizes[2*(i+ngrid_x*j)],0,sizes[2*(i+ngrid_x*j)+1]};
-				 ops_par_loop_poisson_kernel_stencil("poisson_kernel_stencil", blocks[i+ngrid_x*j], 2, iter_range,
-                  ops_arg_dat(u2[i+ngrid_x*j], 1, S2D_00_P10_M10_0P1_0M1, "float", OPS_READ),
-                  ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
-				}
-			}
-		} else {
-			for (int j = 0; j < ngrid_y; j++) {
-				for (int i = 0; i < ngrid_x; i++) {
-					int iter_range[] = {0,sizes[2*(i+ngrid_x*j)],0,sizes[2*(i+ngrid_x*j)+1]};
-				 ops_par_loop_poisson_kernel_update("poisson_kernel_update", blocks[i+ngrid_x*j], 2, iter_range,
-                  ops_arg_dat(u2[i+ngrid_x*j], 1, S2D_00, "float", OPS_READ),
-                  ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
-				}
-			}
-		}
-  }
+
+//		if (non_copy) {
+//			for (int j = 0; j < ngrid_y; j++) {
+//				for (int i = 0; i < ngrid_x; i++) {
+//					int iter_range[] = {0,sizes[2*(i+ngrid_x*j)],0,sizes[2*(i+ngrid_x*j)+1]};
+//				 ops_par_loop_poisson_kernel_stencil("poisson_kernel_stencil", blocks[i+ngrid_x*j], 2, n_iter, iter_range,
+//                  ops_arg_dat(u2[i+ngrid_x*j], 1, S2D_00_P10_M10_0P1_0M1, "float", OPS_READ),
+//                  ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
+//				}
+//			}
+//		} else {
+//			for (int j = 0; j < ngrid_y; j++) {
+//				for (int i = 0; i < ngrid_x; i++) {
+//					int iter_range[] = {0,sizes[2*(i+ngrid_x*j)],0,sizes[2*(i+ngrid_x*j)+1]};
+//				 ops_par_loop_poisson_kernel_update("poisson_kernel_update", blocks[i+ngrid_x*j], 2,  iter_range,
+//                  ops_arg_dat(u2[i+ngrid_x*j], 1, S2D_00, "float", OPS_READ),
+//                  ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_WRITE));
+//				}
+//			}
+//		}
+//  }
 	ops_execute();
   ops_timers(&ct0, &it1);
 
@@ -286,7 +299,7 @@ int main(int argc,  char **argv)
     for (int i = 0; i < ngrid_x; i++) {
       int iter_range[] = {0,sizes[2*(i+ngrid_x*j)],0,sizes[2*(i+ngrid_x*j)+1]};
       ops_par_loop_poisson_kernel_error("poisson_kernel_error", blocks[i+ngrid_x*j], 2, iter_range,
-                   ops_arg_dat(u[i+ngrid_x*j], 1, S2D_00, "float", OPS_READ),
+                   ops_arg_dat(u2[i+ngrid_x*j], 1, S2D_00, "float", OPS_READ),
                    ops_arg_dat(ref[i+ngrid_x*j], 1, S2D_00, "float", OPS_READ),
                    ops_arg_reduce(red_err, 1, "float", OPS_INC));
     }

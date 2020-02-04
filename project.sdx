@@ -198,7 +198,7 @@
       </binaryContainers>
     </lastBuildOptions>
   </configuration>
-  <configuration name="System" id="com.xilinx.sdx.opencl.config.hw.1631457947">
+  <configuration name="System" id="com.xilinx.sdx.opencl.config.hw.1631457947" dirty="true">
     <configBuildOptions xsi:type="openclProject:OpenCLOptions" target="hw">
       <binaryContainers name="ops_poisson_kernels">
         <kernels name="ops_poisson_kernel_stencil" sourceFile="src/OpenCL/poisson_kernel_stencil.cpp" maxMemoryPorts="true" memoryPortDataWidth="512">
