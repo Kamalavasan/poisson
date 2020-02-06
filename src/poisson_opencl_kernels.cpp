@@ -392,7 +392,7 @@ void ops_par_loop_poisson_kernel_stencil(char const *name, ops_block block, int 
 
 	if (OPS_diags > 1) {
 		ops_timing_realloc(3,"poisson_kernel_stencil");
-		OPS_kernels[3].count = OPS_kernels[3].count + 1;
+		OPS_kernels[3].count = OPS_kernels[3].count + niters;
 		ops_timers_core(&c1,&t1);
 	}
 
@@ -507,8 +507,8 @@ void ops_par_loop_poisson_kernel_stencil(char const *name, ops_block block, int 
 		//Update kernel record
 		ops_timers_core(&c2,&t2);
 		OPS_kernels[3].mpi_time += t2-t1;
-		OPS_kernels[3].transfer += ops_compute_transfer(dim, start, end, &arg0);
-		OPS_kernels[3].transfer += ops_compute_transfer(dim, start, end, &arg1);
+		OPS_kernels[3].transfer += ops_compute_transfer(dim, start, end, &arg0) * niters;
+		OPS_kernels[3].transfer += ops_compute_transfer(dim, start, end, &arg1) * niters;
 	}
 }
 

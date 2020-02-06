@@ -1,10 +1,9 @@
 #include <ap_int.h>
 #include <hls_stream.h>
-#include <stdio.h>
 
 typedef ap_uint<512> uint512_dt;
 
-#define MAX_SIZE_X 128
+#define MAX_SIZE_X 600
 #define MAX_DEPTH_16 (MAX_SIZE_X/16)
 
 //user function
@@ -37,41 +36,33 @@ typedef union  {
 
 
 
-static void read_row(const uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, hls::stream<uint512_dt> &loop_back, const int xdim0_poisson_kernel_stencil, const int base0, int i, int size1, int count){
-//static void read_row(const uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, const int xdim0_poisson_kernel_stencil, const int base0, int i, int size1, int count){
-
-	int base_index = (base0 + ((i-1) * xdim0_poisson_kernel_stencil) -1) >> SHIFT_BITS;
-	int end_index = (xdim0_poisson_kernel_stencil >> SHIFT_BITS) + 2;
+static void read_row(const uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, hls::stream<uint512_dt> &loop_back, const int xdim0_poisson_kernel_stencil, const int base0, int i_notusing, int size1, int count){
+	int end_index = (xdim0_poisson_kernel_stencil >> SHIFT_BITS);
 	int end_row = size1+3;
-	if(i < end_row && count == 0){
-		read_row_loop: for(int k =0; k < end_index; k++){
+	int base_index = (base0 + ((0-1) * xdim0_poisson_kernel_stencil) -1) >> SHIFT_BITS;
+
+	if(count == 0){
+		for (int itr = 0; itr < end_row * end_index; itr++){
 			#pragma HLS PIPELINE II=1
 			#pragma HLS loop_tripcount min=min_block_x max=max_block_x avg=avg_block_x
-			//rd_buffer << arg0[base_index -1 + k];
-			rd_buffer << arg0[base_index -1 + k];
+			rd_buffer << arg0[base_index + itr];
 		}
-	}
-	else if(i < end_row ){
-		read_row_loop_back: for(int k =0; k < end_index; k++){
+	}else {
+		for (int itr = 0; itr < end_row * end_index; itr++){
 			#pragma HLS PIPELINE II=1
 			#pragma HLS loop_tripcount min=min_block_x max=max_block_x avg=avg_block_x
-			//rd_buffer << arg0[base_index -1 + k];
 			rd_buffer << loop_back.read();
 		}
 	}
-//	else if (i == end_row -1){
-//		for(int k =0; k < end_index; k++)
-//			rd_buffer << 0;
-//	}
 }
 
-static void process_a_row( hls::stream<uint512_dt> &rd_buffer, hls::stream<uint512_dt> &wr_buffer,  uint512_dt* row1, uint512_dt* row2, uint512_dt* row3, const int size0, int size1,  const int xdim0_poisson_kernel_stencil, int i, int pipeline_stage){
+static void process_a_row( hls::stream<uint512_dt> &rd_buffer, hls::stream<uint512_dt> &wr_buffer,  uint512_dt* row1, uint512_dt* row2, uint512_dt* row3, const int size0, int size1,  const int xdim0_poisson_kernel_stencil, int i_notusing, int pipeline_stage){
+
 
 	int end_index = (xdim0_poisson_kernel_stencil >> SHIFT_BITS) + 2;
 	uint512_dt tmp1_b1, tmp2_b1, tmp3_b1;
 	uint512_dt tmp1_b2, tmp2_b2, tmp3_b2;
 	uint512_dt tmp1, tmp2, tmp3;
-	int end_row = size1+3;
 	uint512_dt update_j;
 
 
@@ -87,9 +78,27 @@ static void process_a_row( hls::stream<uint512_dt> &rd_buffer, hls::stream<uint5
 	#pragma HLS ARRAY_PARTITION variable=mem_wr complete dim=1
 
 
-	main_process_loop: for(int j =0; j < end_index; j++){
-		#pragma HLS loop_tripcount min=min_block_x max=max_block_x avg=avg_block_x
-		#pragma HLS PIPELINE II=2
+
+	static hls::stream<uint512_dt> row1_n("row1_n");
+	static hls::stream<uint512_dt> row2_n("row2_n");
+	static hls::stream<uint512_dt> row3_n("row3_n");
+
+	#pragma HLS STREAM variable = row1_n depth = max_depth_16
+	#pragma HLS STREAM variable = row2_n depth = max_depth_16
+	#pragma HLS STREAM variable = row3_n depth = max_depth_16
+
+
+//	int pipeline_stage  = 0;
+	int end_row = size1+3;
+	int outer_loop_limit = size1+5;
+
+	for(int itr = 0; itr < outer_loop_limit * end_index; itr++) {
+		#pragma HLS loop_tripcount min=min_block_x*min_size_y max=max_block_x*max_size_y avg=avg_block_x*avg_size_y
+		#pragma HLS PIPELINE II=1
+
+		int i = itr / end_index;
+		int j = itr % end_index;
+
 
 		tmp1_b2 = tmp1_b1;
 		tmp2_b2 = tmp2_b1;
@@ -99,19 +108,19 @@ static void process_a_row( hls::stream<uint512_dt> &rd_buffer, hls::stream<uint5
 		tmp2_b1 = tmp2;
 		tmp3_b1 = tmp3;
 
-		if(i >= pipeline_stage+2 && (i < pipeline_stage + end_row+2)){
-			tmp3 = row2[j];
-			row3[j] = tmp3;
+		if(i >= pipeline_stage+2 && (i < pipeline_stage + end_row+2) && (j != 0 && j != end_index -1) ){
+			tmp3 = row2_n.read();
+
 		}
 
-		if(i >= pipeline_stage+1 && (i < pipeline_stage + end_row+1)){
-			tmp2 = row1[j];
-			row2[j] = tmp2;
+		if(i >= pipeline_stage+1 && (i < pipeline_stage + end_row+1) && (j != 0 && j != end_index -1)){
+			tmp2 = row1_n.read();
+			row2_n << tmp2;
 		}
 
-		if(i >= pipeline_stage && (i < pipeline_stage + end_row)){
+		if(i >= pipeline_stage && (i < pipeline_stage + end_row) && (j != 0 && j != end_index -1) ){
 			tmp1 = rd_buffer.read();
-			row1[j] = tmp1;
+			row1_n << tmp1;
 		}
 
 		vec2arr: for(int k = 0; k < PORT_WIDTH; k++){
@@ -151,34 +160,27 @@ static void process_a_row( hls::stream<uint512_dt> &rd_buffer, hls::stream<uint5
 			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
 
-		if((i >= 1 + pipeline_stage) && j >= 1 && ( i <= end_row + pipeline_stage)) {
+		if( (i >= 1 + pipeline_stage) && j > 1 && ( i <= end_row + pipeline_stage)) {
 			wr_buffer << update_j;
 		}
-	}
-	if((i >= 1 + pipeline_stage) && ( i <= end_row + pipeline_stage)){
-		wr_buffer << tmp2;
+
 	}
 }
 
 
-static void write_row( uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, hls::stream<uint512_dt> &loop_back, const int xdim1_poisson_kernel_stencil, const int base1, int i, int pipeline_stage, int count, int niters){
-//static void write_row( uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, const int xdim1_poisson_kernel_stencil, const int base1, int i, int pipeline_stage, int count, int niters){
+static void write_row( uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, hls::stream<uint512_dt> &loop_back, const int xdim1_poisson_kernel_stencil, const int base1, int i_notusing, int size1, int pipeline_stage, int count, int niters){
+	int end_index = (xdim1_poisson_kernel_stencil >> SHIFT_BITS);
+	int base_index = (base1 + ((0-1 -pipeline_stage) * xdim1_poisson_kernel_stencil) -1) >> SHIFT_BITS;
 
-	int base_index = (base1 + ((i-2 -pipeline_stage) * xdim1_poisson_kernel_stencil) -1) >> SHIFT_BITS;
-	int end_index = (xdim1_poisson_kernel_stencil >> SHIFT_BITS) + 1;
-//	int end_row = size1+2;
-
-	if(i >= (1 + pipeline_stage) && count == niters -1){
-		uint512_dt tmp1 = wr_buffer.read();
-		write_row_loop: for(int k =0; k < end_index; k++){
+	int End_row = size1+3;
+	if(count == niters -1){
+		for (int itr = 0; itr < End_row * end_index; itr++){
 			#pragma HLS loop_tripcount min=min_block_x max=max_block_x avg=avg_block_x
 			#pragma HLS PIPELINE II=1
-			arg1[base_index   + k] =  wr_buffer.read();
+			arg1[base_index   + itr] =  wr_buffer.read();
 		}
-	}
-	else if (i >= (1 + pipeline_stage)){
-		//uint512_dt tmp1 = wr_buffer.read();
-		write_row_loop_back: for(int k =0; k < end_index+1; k++){
+	} else {
+		for (int itr = 0; itr < End_row * (end_index); itr++){
 			#pragma HLS loop_tripcount min=min_block_x max=max_block_x avg=avg_block_x
 			#pragma HLS PIPELINE II=1
 			loop_back <<  wr_buffer.read();
@@ -342,7 +344,7 @@ void process ( uint512_dt*  arg0, uint512_dt*  arg1,
 //	process_a_row(rd_buffer_p31, rd_buffer_p32, row1_p31, row2_p31, row3_p31, size0, size1, xdim0_poisson_kernel_stencil, i, 30);
 //	process_a_row(rd_buffer_p32, wr_buffer, row1_p32, row2_p32, row3_p32, size0, size1, xdim0_poisson_kernel_stencil, i, 31);
 
-	write_row(arg1, wr_buffer, loop_back, xdim1_poisson_kernel_stencil, base1, i, 0, count, niters);
+	write_row(arg1, wr_buffer, loop_back, xdim1_poisson_kernel_stencil, base1, i, size1,  0, count, niters);
 //	write_row(arg1, wr_buffer, xdim1_poisson_kernel_stencil, base1, i, 0, count, niters);
 
 }
@@ -645,14 +647,17 @@ void ops_poisson_kernel_stencil(
 
 
 
-//	int niter1 = 1;
-
+	//for (int itr = 0; itr < niters * end_row; itr++){
 	for (int count = 0; count < niters; count++){
-		printf("Count is %d\n", count);
-		loop_beats: for(int i = 0 ; i < end_row; i++){
-			#pragma HLS loop_tripcount min=min_size_y max=max_size_y avg=avg_size_y
-			#pragma HLS dataflow
-			process(arg0, arg1,
+//		loop_beats: for(int i = 0 ; i < end_row; i++){
+
+
+		#pragma HLS loop_tripcount min=min_size_y max=max_size_y avg=avg_size_y
+		#pragma HLS dataflow
+
+		int i = 0;
+//		int count =
+		process(arg0, arg1,
 					row1_p1, row2_p1, row3_p1,
 					row1_p2, row2_p2, row3_p2,
 					row1_p3, row2_p3, row3_p3,
@@ -691,7 +696,7 @@ void ops_poisson_kernel_stencil(
 					row1_p32, row2_p32, row3_p32,
 
 					xdim0_poisson_kernel_stencil, base0, xdim0_poisson_kernel_stencil, base0, size0, size1,  i, count, niters);
-		}
+
 	}
 }
 }
