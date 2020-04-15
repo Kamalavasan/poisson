@@ -176,7 +176,7 @@ void process (const uint512_dt*  arg0, uint512_dt*  arg1,
 		const int xdim0_poisson_kernel_stencil, const int base0, const int xdim1_poisson_kernel_stencil, const int base1, const int size0, int size1, int count){
 
 
-    static hls::stream<uint512_dt> streamArray[4 + 1];
+    static hls::stream<uint512_dt> streamArray[12 + 1];
     static hls::stream<uint512_dt> rd_buffer;
     static hls::stream<uint512_dt> wr_buffer;
 
@@ -189,15 +189,15 @@ void process (const uint512_dt*  arg0, uint512_dt*  arg1,
 	read_row(arg0, rd_buffer, xdim0_poisson_kernel_stencil, base0, size1, count);
 
 
-	process_a_row( rd_buffer, wr_buffer, size0, size1, xdim0_poisson_kernel_stencil, count);
-//	process_a_row( streamArray[1], streamArray[2], size0, size1, xdim0_poisson_kernel_stencil, count);
-//	process_a_row( streamArray[2], streamArray[3], size0, size1, xdim0_poisson_kernel_stencil, count);
-//	process_a_row( streamArray[3], streamArray[4], size0, size1, xdim0_poisson_kernel_stencil, count);
+	process_a_row( rd_buffer, streamArray[1], size0, size1, xdim0_poisson_kernel_stencil, count);
+	process_a_row( streamArray[1], streamArray[2], size0, size1, xdim0_poisson_kernel_stencil, count);
+	process_a_row( streamArray[2], streamArray[3], size0, size1, xdim0_poisson_kernel_stencil, count);
+	process_a_row( streamArray[3], streamArray[4], size0, size1, xdim0_poisson_kernel_stencil, count);
 //
-//	process_a_row( streamArray[4], streamArray[5], size0, size1, xdim0_poisson_kernel_stencil, count);
-//	process_a_row( streamArray[5], streamArray[6], size0, size1, xdim0_poisson_kernel_stencil, count);
-//	process_a_row( streamArray[6], streamArray[7], size0, size1, xdim0_poisson_kernel_stencil, count);
-//	process_a_row( streamArray[7], streamArray[8], size0, size1, xdim0_poisson_kernel_stencil, count);
+	process_a_row( streamArray[4], streamArray[5], size0, size1, xdim0_poisson_kernel_stencil, count);
+	process_a_row( streamArray[5], streamArray[6], size0, size1, xdim0_poisson_kernel_stencil, count);
+	process_a_row( streamArray[6], streamArray[7], size0, size1, xdim0_poisson_kernel_stencil, count);
+	process_a_row( streamArray[7], wr_buffer, size0, size1, xdim0_poisson_kernel_stencil, count);
 //
 //	process_a_row( streamArray[8], streamArray[9], size0, size1, xdim0_poisson_kernel_stencil, count);
 //	process_a_row( streamArray[9], streamArray[10], size0, size1, xdim0_poisson_kernel_stencil, count);

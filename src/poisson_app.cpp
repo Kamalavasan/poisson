@@ -41,6 +41,7 @@
 #include <math.h>
 #include "xcl2.hpp"
 #include <chrono>
+#include "omp.h"
 
 int stencil_computation(float* current, float* next, int act_sizex, int act_sizey, int grid_size_x, int grid_size_y){
     for(int i = 0; i < act_sizey; i++){
@@ -119,29 +120,29 @@ int main(int argc, char **argv)
   int itertile = n_iter;
   int non_copy = 0;
 
-//  const char* pch;
-//  for ( int n = 1; n < argc; n++ ) {
-//    pch = strstr(argv[n], "-sizex=");
-//    if(pch != NULL) {
-//      logical_size_x = atoi ( argv[n] + 7 ); continue;
-//    }
-//    pch = strstr(argv[n], "-sizey=");
-//    if(pch != NULL) {
-//      logical_size_y = atoi ( argv[n] + 7 ); continue;
-//    }
-//    pch = strstr(argv[n], "-iters=");
-//    if(pch != NULL) {
-//      n_iter = atoi ( argv[n] + 7 ); continue;
-//    }
-//    pch = strstr(argv[n], "-itert=");
-//    if(pch != NULL) {
-//      itertile = atoi ( argv[n] + 7 ); continue;
-//    }
-//    pch = strstr(argv[n], "-non-copy");
-//    if(pch != NULL) {
-//      non_copy = 1; continue;
-//    }
-//  }
+  const char* pch;
+  for ( int n = 1; n < argc; n++ ) {
+    pch = strstr(argv[n], "-sizex=");
+    if(pch != NULL) {
+      logical_size_x = atoi ( argv[n] + 7 ); continue;
+    }
+    pch = strstr(argv[n], "-sizey=");
+    if(pch != NULL) {
+      logical_size_y = atoi ( argv[n] + 7 ); continue;
+    }
+    pch = strstr(argv[n], "-iters=");
+    if(pch != NULL) {
+      n_iter = atoi ( argv[n] + 7 ); continue;
+    }
+    pch = strstr(argv[n], "-itert=");
+    if(pch != NULL) {
+      itertile = atoi ( argv[n] + 7 ); continue;
+    }
+    pch = strstr(argv[n], "-non-copy");
+    if(pch != NULL) {
+      non_copy = 1; continue;
+    }
+  }
 
   printf("Grid: %dx%d in %dx%d blocks, %d iterations, %d tile height\n",logical_size_x,logical_size_y,ngrid_x,ngrid_y,n_iter,itertile);
 
@@ -196,7 +197,7 @@ int main(int argc, char **argv)
     //Allocate Buffer in Global Memory
     OCL_CHECK(err,
               cl::Buffer buffer_input(context,
-                                      CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+                                      CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
                                       data_size_bytes,
                                       grid_u1_d,
                                       &err));
@@ -223,6 +224,8 @@ int main(int argc, char **argv)
               err = q.enqueueMigrateMemObjects({buffer_input},
                                                0 /* 0 means from host*/));
 
+    uint64_t wtime = 0;
+    uint64_t nstimestart, nstimeend;
     auto start = std::chrono::high_resolution_clock::now();
     for(int i = 0; i < n_iter; i++){
         //Set the Kernel Arguments
@@ -238,6 +241,12 @@ int main(int argc, char **argv)
 
 		//Launch the Kernel
 		OCL_CHECK(err, err = q.enqueueTask(krnl_stencil));
+//		q.finish();
+//		OCL_CHECK(err, err = q.enqueueTask(krnl_stencil, NULL, &event));
+//		q.finish();
+//		OCL_CHECK(err, err = event.getProfilingInfo<uint64_t>(CL_PROFILING_COMMAND_START, &nstimestart));
+//		OCL_CHECK(err, err = event.getProfilingInfo<uint64_t>(CL_PROFILING_COMMAND_END, &nstimeend));
+//		wtime += nstimeend - nstimestart;
 
         //Set the Kernel Arguments
         narg = 0;
@@ -252,32 +261,46 @@ int main(int argc, char **argv)
 
 		//Launch the Kernel
 		OCL_CHECK(err, err = q.enqueueTask(krnl_stencil));
+//		q.finish();
+//		OCL_CHECK(err, err = q.enqueueTask(krnl_stencil, NULL, &event));
+//		q.finish();
+//		OCL_CHECK(err, err = event.getProfilingInfo<uint64_t>(CL_PROFILING_COMMAND_START, &nstimestart));
+//		OCL_CHECK(err, err = event.getProfilingInfo<uint64_t>(CL_PROFILING_COMMAND_END, &nstimeend));
+//		wtime += nstimeend - nstimestart;
     }
 
-
-    //Copy Result from Device Global Memory to Host Local Memory
-    OCL_CHECK(err,
-              err = q.enqueueMigrateMemObjects({buffer_output},
-                                               CL_MIGRATE_MEM_OBJECT_HOST));
     q.finish();
     auto finish = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed = finish - start;
+    //Copy Result from Device Global Memory to Host Local Memory
+    OCL_CHECK(err,
+              err = q.enqueueMigrateMemObjects({buffer_input},
+                                               CL_MIGRATE_MEM_OBJECT_HOST));
 
-  for(int itr = 0; itr < n_iter; itr++){
+    q.finish();
+//    auto finish = std::chrono::high_resolution_clock::now();
+
+
+  for(int itr = 0; itr < n_iter*8; itr++){
       stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y);
       stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y);
   }
     
-  double error = square_error(grid_u2, grid_u2_d, act_sizex, act_sizey, grid_size_x, grid_size_y);
-  float bandwidth = (logical_size_x * logical_size_y * sizeof(float) * 2 * n_iter)/(elapsed.count() * 1024 * 1024);
-  printf("\nSquare error is  %f\n\n", error);
-  printf("\nBandwidth is %f\n", bandwidth);
+    std::chrono::duration<double> elapsed = finish - start;
 
-  for(int i = 0; i < act_sizey; i++){
-    for(int j = 0; j < act_sizex; j++){
-        printf("%f ", grid_u2_d[i*grid_size_x + j]);
-    }
-    printf("\n");
-  }
+//  printf("Runtime on FPGA (profile) is %f seconds\n", wtime/1000000000.0);
+  printf("Runtime on FPGA is %f seconds\n", elapsed.count());
+  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y);
+//  float bandwidth_prof = (logical_size_x * logical_size_y * sizeof(float) * 4.0 * n_iter*1000000000)/(wtime * 1024 * 1024 * 1024);
+  float bandwidth = (logical_size_x * logical_size_y * sizeof(float) * 4.0 * n_iter)/(elapsed.count() * 1024 * 1024 * 1024);
+  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
+  printf("\nBandwidth is %f\n", bandwidth);
+//  printf("\nBandwidth prof is %f\n", bandwidth_prof);
+
+//  for(int i = 0; i < 20; i++){
+//    for(int j = 0; j < 20; j++){
+//        printf("%f ", grid_u1_d[i*grid_size_x + j] - grid_u1[i*grid_size_x + j]);
+//    }
+//    printf("\n");
+//  }
   return 0;
 }
