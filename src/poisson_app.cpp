@@ -190,7 +190,7 @@ int main(int argc, char **argv)
     cl::Program::Binaries bins{{fileBuf.data(), fileBuf.size()}};
     devices.resize(1);
     OCL_CHECK(err, cl::Program program(context, devices, bins, NULL, &err));
-    OCL_CHECK(err, cl::Kernel krnl_stencil(program, "stencil", &err));
+    OCL_CHECK(err, cl::Kernel krnl_stencil(program, "stencil_SLR0", &err));
 
 
 
@@ -218,6 +218,7 @@ int main(int argc, char **argv)
     OCL_CHECK(err, err = krnl_stencil.setArg(narg++, logical_size_y));
     OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_size_x));
     OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_size_y));
+    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, n_iter));
 
     //Copy input data to device global memory
     OCL_CHECK(err,
@@ -227,47 +228,11 @@ int main(int argc, char **argv)
     uint64_t wtime = 0;
     uint64_t nstimestart, nstimeend;
     auto start = std::chrono::high_resolution_clock::now();
-    for(int i = 0; i < n_iter; i++){
-        //Set the Kernel Arguments
-        int narg = 0;
-        OCL_CHECK(err, err = krnl_stencil.setArg(narg++, buffer_input));
-        OCL_CHECK(err, err = krnl_stencil.setArg(narg++, buffer_output));
-        OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_size_x+1));
-        OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_size_y+1));
-        OCL_CHECK(err, err = krnl_stencil.setArg(narg++, logical_size_x));
-        OCL_CHECK(err, err = krnl_stencil.setArg(narg++, logical_size_y));
-        OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_size_x));
-        OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_size_y));
 
-		//Launch the Kernel
-		OCL_CHECK(err, err = q.enqueueTask(krnl_stencil));
-//		q.finish();
-//		OCL_CHECK(err, err = q.enqueueTask(krnl_stencil, NULL, &event));
-//		q.finish();
-//		OCL_CHECK(err, err = event.getProfilingInfo<uint64_t>(CL_PROFILING_COMMAND_START, &nstimestart));
-//		OCL_CHECK(err, err = event.getProfilingInfo<uint64_t>(CL_PROFILING_COMMAND_END, &nstimeend));
-//		wtime += nstimeend - nstimestart;
 
-        //Set the Kernel Arguments
-        narg = 0;
-        OCL_CHECK(err, err = krnl_stencil.setArg(narg++, buffer_output));
-        OCL_CHECK(err, err = krnl_stencil.setArg(narg++, buffer_input));
-        OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_size_x+1));
-        OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_size_y+1));
-        OCL_CHECK(err, err = krnl_stencil.setArg(narg++, logical_size_x));
-        OCL_CHECK(err, err = krnl_stencil.setArg(narg++, logical_size_y));
-        OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_size_x));
-        OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_size_y));
+	OCL_CHECK(err, err = q.enqueueTask(krnl_stencil));
+	q.finish();
 
-		//Launch the Kernel
-		OCL_CHECK(err, err = q.enqueueTask(krnl_stencil));
-//		q.finish();
-//		OCL_CHECK(err, err = q.enqueueTask(krnl_stencil, NULL, &event));
-//		q.finish();
-//		OCL_CHECK(err, err = event.getProfilingInfo<uint64_t>(CL_PROFILING_COMMAND_START, &nstimestart));
-//		OCL_CHECK(err, err = event.getProfilingInfo<uint64_t>(CL_PROFILING_COMMAND_END, &nstimeend));
-//		wtime += nstimeend - nstimestart;
-    }
 
     q.finish();
     auto finish = std::chrono::high_resolution_clock::now();
@@ -280,27 +245,19 @@ int main(int argc, char **argv)
 //    auto finish = std::chrono::high_resolution_clock::now();
 
 
-  for(int itr = 0; itr < n_iter*8; itr++){
+  for(int itr = 0; itr < n_iter*26; itr++){
       stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y);
       stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y);
   }
     
     std::chrono::duration<double> elapsed = finish - start;
 
-//  printf("Runtime on FPGA (profile) is %f seconds\n", wtime/1000000000.0);
+
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
   double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y);
-//  float bandwidth_prof = (logical_size_x * logical_size_y * sizeof(float) * 4.0 * n_iter*1000000000)/(wtime * 1024 * 1024 * 1024);
   float bandwidth = (logical_size_x * logical_size_y * sizeof(float) * 4.0 * n_iter)/(elapsed.count() * 1024 * 1024 * 1024);
   printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
   printf("\nBandwidth is %f\n", bandwidth);
-//  printf("\nBandwidth prof is %f\n", bandwidth_prof);
 
-//  for(int i = 0; i < 20; i++){
-//    for(int j = 0; j < 20; j++){
-//        printf("%f ", grid_u1_d[i*grid_size_x + j] - grid_u1[i*grid_size_x + j]);
-//    }
-//    printf("\n");
-//  }
   return 0;
 }
