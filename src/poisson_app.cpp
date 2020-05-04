@@ -49,10 +49,10 @@ int stencil_computation(float* current, float* next, int act_sizex, int act_size
         if(i == 0 || j == 0 || i == act_sizex -1  || j==act_sizey-1){
           next[i*grid_size_x + j] = current[i*grid_size_x + j] ;
         } else {
-          next[i*grid_size_x + j] = current[i*grid_size_x + j] * 0.5 + \
-                                       (current[(i-1)*grid_size_x + j] + current[(i+1)*grid_size_x + j]) * 0.125 + \
-                                       (current[i*grid_size_x + j+1] + current[i*grid_size_x + j-1]) * 0.125 ;
-        }
+          next[i*grid_size_x + j] =     current[(i-1)*grid_size_x + (j-1)] * (-0.17) + current[(i)*grid_size_x + (j-1)] * (-0.18) + current[(i+1)*grid_size_x + (j-1)] * (-0.11) + \
+                                        current[(i-1)*grid_size_x + (j)] *   (-0.16) + current[(i)*grid_size_x + (j)] *   (0.5)   + current[(i+1)*grid_size_x + (j)]   * (-0.12) + \
+                                        current[(i-1)*grid_size_x + (j+1)] * (-0.15) + current[(i)*grid_size_x + (j+1)] * (-0.14) + current[(i+1)*grid_size_x + (j+1)] * (-0.13) ;
+        } 
       }
     }
     return 0;

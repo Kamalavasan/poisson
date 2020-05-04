@@ -139,9 +139,9 @@ static void process_a_row( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint2
 
 
 
-	float row_arr3[PORT_WIDTH];
+	float row_arr3[PORT_WIDTH + 2];
 	float row_arr2[PORT_WIDTH + 2];
-	float row_arr1[PORT_WIDTH];
+	float row_arr1[PORT_WIDTH + 2];
 	float mem_wr[PORT_WIDTH];
 
 	#pragma HLS ARRAY_PARTITION variable=row_arr3 complete dim=1
@@ -212,32 +212,42 @@ static void process_a_row( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint2
 				tmp2.i = tmp2_b1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
 				tmp3.i = tmp3_b1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
 
-				row_arr3[k] =  tmp1.f;
-				row_arr2[k+1] = tmp2.f;
-				row_arr1[k] =  tmp3.f;
+				row_arr3[k+1] =  tmp1.f;
+				row_arr2[k+1] =  tmp2.f;
+				row_arr1[k+1] =  tmp3.f;
 			}
+
 			data_conv tmp1_o1, tmp2_o2;
+			// row_arr1
+			tmp1_o1.i = tmp3_b2.range(DATATYPE_SIZE * (PORT_WIDTH) - 1, (PORT_WIDTH-1) * DATATYPE_SIZE);
+			tmp2_o2.i = tmp3.range(DATATYPE_SIZE * (0 + 1) - 1, 0 * DATATYPE_SIZE);
+			row_arr1[0] = tmp1_o1.f;
+			row_arr1[PORT_WIDTH + 1] = tmp2_o2.f;
+
+			// row_arr2
 			tmp1_o1.i = tmp2_b2.range(DATATYPE_SIZE * (PORT_WIDTH) - 1, (PORT_WIDTH-1) * DATATYPE_SIZE);
 			tmp2_o2.i = tmp2.range(DATATYPE_SIZE * (0 + 1) - 1, 0 * DATATYPE_SIZE);
 			row_arr2[0] = tmp1_o1.f;
 			row_arr2[PORT_WIDTH + 1] = tmp2_o2.f;
+
+			// row_arr3
+			tmp1_o1.i = tmp1_b2.range(DATATYPE_SIZE * (PORT_WIDTH) - 1, (PORT_WIDTH-1) * DATATYPE_SIZE);
+			tmp2_o2.i = tmp1.range(DATATYPE_SIZE * (0 + 1) - 1, 0 * DATATYPE_SIZE);
+			row_arr3[0] = tmp1_o1.f;
+			row_arr3[PORT_WIDTH + 1] = tmp2_o2.f;
 
 
 
 			process: for(short q = 0; q < PORT_WIDTH; q++){
 				#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 				short index = (j << SHIFT_BITS) + q - PORT_WIDTH*2;
-				float r1 = ( (row_arr2[q])  + (row_arr2[q+2]) );
-
-				float r2 = ( row_arr1[q]  + row_arr3[q] );
+				float r1 = row_arr1[q] * (-0.17)  + row_arr1[q+1] * (-0.18) +  row_arr1[q+2] * (-0.11);
+				float r2 = row_arr2[q] * (-0.16)  + row_arr2[q+1] * (0.5)   +  row_arr2[q+2] * (-0.12);
+				float r3 = row_arr3[q] * (-0.15)  + row_arr3[q+1] * (-0.14) +  row_arr3[q+2] * (-0.13);
 //				#pragma HLS RESOURCE variable=r1 core=FAddSub_nodsp
 	//			#pragma HLS RESOURCE variable=r2 core=FAddSub_nodsp
-
-				float f1 = r1 + r2;
-				float f2 = ldexpf(f1, -3);
-				float f3 = ldexpf(row_arr2[q+1], -1);//0.5;
 //				float result1 = f1 + f2 ;
-				float result  = f2 + f3;
+				float result  = r1 + r2 + r3;
 	//			#pragma HLS RESOURCE variable=result core=FAddSub_nodsp
 	//			#pragma HLS RESOURCE variable=result1 core=FAddSub_nodsp
 				bool change_cond = (index <= 0 || index > size0 || (i <= 1) || (i >= end_row_minus1));
