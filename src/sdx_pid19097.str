@@ -1,0 +1,76 @@
+/*
+
+Xilinx SDx v2018.3.1 (64-bit) [Major: 2018, Minor: 3]
+SW Build: 2489853 on Tue Mar 26 04:19:06 MDT 2019
+
+Process ID (PID): 19097
+License: Customer
+
+Current time: 	Tue May 05 12:31:03 BST 2020
+Time zone: 	Greenwich Mean Time (Europe/London)
+
+OS: Ubuntu
+OS Version: 4.15.0-60-generic
+OS Architecture: amd64
+Available processors (cores): 6
+
+Display: localhost:11.0
+Screen size: 1920x1043
+Screen resolution (DPI): 99
+Available screens: 1
+Available disk space: 22 GB
+
+Java version: 	9.0.4 64-bit
+Java home: 	/tools/Xilinx/SDx/2018.3/tps/lnx64/jre9.0.4
+Java executable location: 	/tools/Xilinx/SDx/2018.3/tps/lnx64/jre9.0.4/bin/java
+Java initial memory (-Xms): 	64 MB
+Java maximum memory (-Xmx):	 4 GB
+
+Java library paths: /tools/Xilinx/SDx/2018.3/lib/lnx64.o/Ubuntu:/tools/Xilinx/SDx/2018.3/lib/lnx64.o:/tools/Xilinx/SDx/2018.3/tps/lnx64/jre9.0.4/lib/:/tools/Xilinx/SDx/2018.3/tps/lnx64/jre9.0.4/lib//server:/tools/Xilinx/SDK/2018.3/lib/lnx64.o:/tools/Xilinx/SDx/2018.3/lib/lnx64.o/Ubuntu:/tools/Xilinx/SDx/2018.3/lib/lnx64.o:/opt/xilinx/xrt/lib:/tools/Xilinx/SDx/2018.3/lib/lnx64.o/Ubuntu:/tools/Xilinx/SDx/2018.3/lib/lnx64.o:/tools/Xilinx/SDx/2018.3/runtime/lib/x86_64:/tools/Xilinx/SDx/2018.3/bin/../lnx64/tools/dot/lib:/usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib
+
+Java class paths: /tools/Xilinx/SDx/2018.3/eclipse/lnx64.o//plugins/org.eclipse.equinox.launcher_1.4.0.v20161219-1356.jar
+LD_LIBRARY_PATH: /tools/Xilinx/SDx
+
+User name: 	vasan
+User home directory: /home/vasan
+User working directory: /home/vasan/faraz/poisson_1/src
+User country: 	GB
+User language: 	en
+User locale: 	en_GB
+
+RDI_BASEROOT: /tools/Xilinx/SDx
+HDI_APPROOT: /tools/Xilinx/SDx/2018.3
+RDI_DATADIR: /tools/Xilinx/SDx/2018.3/data
+RDI_BINDIR: /tools/Xilinx/SDx/2018.3/bin
+
+SDx preferences directory: /home/vasan/.Xilinx/SDx/2018.3/
+SDx workspace directory: /home/vasan/faraz
+SDx workspace log file location: /home/vasan/faraz/.metadata/.log
+Engine tmp dir: 	./.Xil/sdx-19097-user-B360M-DS3H
+
+Xilinx Environment Variables
+----------------------------
+XILINXD_LICENSE_FILE: 27014@license.eng.warwick.ac.uk
+XILINX_DSP: 
+XILINX_PLANAHEAD: /tools/Xilinx/SDx/2018.3
+XILINX_SDK: /tools/Xilinx/SDK/2018.3
+XILINX_SDX: /tools/Xilinx/SDx/2018.3
+XILINX_VIVADO: /tools/Xilinx/Vivado/2018.3
+XILINX_VIVADO_HLS: /tools/Xilinx/Vivado/2018.3
+XILINX_XRT: /opt/xilinx/xrt
+_RDI_DONT_SET_XILINX_AS_PATH: True
+
+
+Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+
+*/
+
+activateView("poisson_app.cpp", "poisson_st/src/poisson_app.cpp", "CEditor", "CTabItem.POISSON_APP_CPP");
+selectProjectExplorer("poisson_kernel_stencil.cpp", "poisson_st > src", "ProjectExplorer", "TreeViewer.NavigatorContentServiceContentProvider");
+selectTreeTable("binary_container_1", "poisson_st > System", "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectTreeTable("stencil_SLR0", "poisson_st > System > binary_container_1", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Open HLS Project", "Assistant", "SDXAssistantView", "MenuItem.OPEN_HLS_PROJECT");
+selectButton("OK", "Vivado HLS", "LaunchHLSDialog", "Button.OK");
+selectTreeTable("stencil_SLR0", "poisson_st > System > binary_container_1", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Open HLS Project", "Assistant", "WorkbenchWindow", "MenuItem.OPEN_HLS_PROJECT");
+selectButton("OK", "Vivado HLS", "LaunchHLSDialog", "Button.OK");

@@ -49,9 +49,9 @@ int stencil_computation(float* current, float* next, int act_sizex, int act_size
         if(i == 0 || j == 0 || i == act_sizex -1  || j==act_sizey-1){
           next[i*grid_size_x + j] = current[i*grid_size_x + j] ;
         } else {
-          next[i*grid_size_x + j] =     current[(i-1)*grid_size_x + (j-1)] * (-0.17) + current[(i)*grid_size_x + (j-1)] * (-0.18) + current[(i+1)*grid_size_x + (j-1)] * (-0.11) + \
-                                        current[(i-1)*grid_size_x + (j)] *   (-0.16) + current[(i)*grid_size_x + (j)] *   (0.5)   + current[(i+1)*grid_size_x + (j)]   * (-0.12) + \
-                                        current[(i-1)*grid_size_x + (j+1)] * (-0.15) + current[(i)*grid_size_x + (j+1)] * (-0.14) + current[(i+1)*grid_size_x + (j+1)] * (-0.13) ;
+          next[i*grid_size_x + j] =     current[(i-1)*grid_size_x + (j-1)] * (0.07)  + current[(i-1)*grid_size_x + (j)] * (0.08) + current[(i-1) *grid_size_x + (j+1)] * (0.01) + \
+                                        current[(i)  *grid_size_x + (j-1)] * (0.06)  + current[(i)  *grid_size_x + (j)] * (0.64)  + current[(i)  *grid_size_x + (j+1)] * (0.02) + \
+                                        current[(i+1)*grid_size_x + (j-1)] * (0.05)  + current[(i+1)*grid_size_x + (j)] * (0.04)  + current[(i+1)*grid_size_x + (j+1)] * (0.03) ;
         } 
       }
     }
@@ -258,6 +258,14 @@ int main(int argc, char **argv)
   float bandwidth = (logical_size_x * logical_size_y * sizeof(float) * 4.0 * n_iter)/(elapsed.count() * 1024 * 1024 * 1024);
   printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
   printf("\nBandwidth is %f\n", bandwidth);
+
+  for(int i = 0; i < grid_size_y; i++){for(int j = 0; j < grid_size_x; j++){printf("%f ", grid_u1_d[i*grid_size_x+j]);}printf("\n");}
+  printf("\ngolden\n\n");
+  for(int i = 0; i < grid_size_y; i++){
+	  for(int j = 0; j < grid_size_x; j++){
+		  printf("%f ", grid_u1[i*grid_size_x+j]);
+	  }printf("\n");
+  }
 
   return 0;
 }
