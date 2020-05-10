@@ -43,16 +43,17 @@
 #include <chrono>
 #include "omp.h"
 
+
 int stencil_computation(float* current, float* next, int act_sizex, int act_sizey, int grid_size_x, int grid_size_y){
     for(int i = 0; i < act_sizey; i++){
       for(int j = 0; j < act_sizex; j++){
-        if(i == 0 || j == 0 || i == act_sizex -1  || j==act_sizey-1){
+        if(i == 0 || j == 0 || i == act_sizey -1  || j==act_sizex-1){
           next[i*grid_size_x + j] = current[i*grid_size_x + j] ;
         } else {
-          next[i*grid_size_x + j] =     current[(i-1)*grid_size_x + (j-1)] * (0.07)  + current[(i-1)*grid_size_x + (j)] * (0.08) + current[(i-1) *grid_size_x + (j+1)] * (0.01) + \
-                                        current[(i)  *grid_size_x + (j-1)] * (0.06)  + current[(i)  *grid_size_x + (j)] * (0.64)  + current[(i)  *grid_size_x + (j+1)] * (0.02) + \
-                                        current[(i+1)*grid_size_x + (j-1)] * (0.05)  + current[(i+1)*grid_size_x + (j)] * (0.04)  + current[(i+1)*grid_size_x + (j+1)] * (0.03) ;
-        } 
+          next[i*grid_size_x + j] = current[i*grid_size_x + j] * 0.5 + \
+                                       (current[(i-1)*grid_size_x + j] + current[(i+1)*grid_size_x + j]) * 0.125 + \
+                                       (current[i*grid_size_x + j+1] + current[i*grid_size_x + j-1]) * 0.125 ;
+        }
       }
     }
     return 0;
@@ -82,7 +83,7 @@ int copy_grid(float* grid_s, float* grid_d, int act_sizex, int act_sizey, int gr
 int initialise_grid(float* grid, int act_sizex, int act_sizey, int grid_size_x, int grid_size_y){
   for(int i = 0; i < act_sizey; i++){
   for(int j = 0; j < act_sizex; j++){
-      if(i == 0 || j == 0 || i == act_sizex -1  || j==act_sizey-1){
+      if(i == 0 || j == 0 || i == act_sizey -1  || j==act_sizex-1){
         float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         grid[i*grid_size_x + j] = r;
       } else {
@@ -149,7 +150,7 @@ int main(int argc, char **argv)
   int act_sizex = logical_size_x + 2;
   int act_sizey = logical_size_y + 2;
 
-  int grid_size_x = (act_sizex % 16) != 0 ? (act_sizex/16 +1) * 16 : act_sizex+2;
+  int grid_size_x = (act_sizex % 16) != 0 ? (act_sizex/16 +1) * 16 : act_sizex;
   int grid_size_y = act_sizey + 2;
   
   int data_size_bytes = grid_size_x * grid_size_y * sizeof(float);
@@ -203,7 +204,7 @@ int main(int argc, char **argv)
                                       &err));
     OCL_CHECK(err,
               cl::Buffer buffer_output(context,
-                                       CL_MEM_USE_HOST_PTR | CL_MEM_WRITE_ONLY,
+                                       CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
                                        data_size_bytes,
                                        grid_u2_d,
                                        &err));
@@ -240,16 +241,19 @@ int main(int argc, char **argv)
     OCL_CHECK(err,
               err = q.enqueueMigrateMemObjects({buffer_input},
                                                CL_MIGRATE_MEM_OBJECT_HOST));
+    OCL_CHECK(err,
+                 err = q.enqueueMigrateMemObjects({buffer_output},
+                                                  CL_MIGRATE_MEM_OBJECT_HOST));
 
     q.finish();
 //    auto finish = std::chrono::high_resolution_clock::now();
 
 
-  for(int itr = 0; itr < n_iter*26; itr++){
+  for(int itr = 0; itr < n_iter*1; itr++){
       stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y);
       stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y);
   }
-    
+
     std::chrono::duration<double> elapsed = finish - start;
 
 
@@ -258,14 +262,19 @@ int main(int argc, char **argv)
   float bandwidth = (logical_size_x * logical_size_y * sizeof(float) * 4.0 * n_iter)/(elapsed.count() * 1024 * 1024 * 1024);
   printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
   printf("\nBandwidth is %f\n", bandwidth);
-
-  for(int i = 0; i < grid_size_y; i++){for(int j = 0; j < grid_size_x; j++){printf("%f ", grid_u1_d[i*grid_size_x+j]);}printf("\n");}
-  printf("\ngolden\n\n");
-  for(int i = 0; i < grid_size_y; i++){
-	  for(int j = 0; j < grid_size_x; j++){
-		  printf("%f ", grid_u1[i*grid_size_x+j]);
-	  }printf("\n");
-  }
+//
+//  for(int i = 0; i < act_sizey; i++){
+//	  for(int j = 0; j < act_sizex; j++){
+//		  printf("%f ", grid_u2_d[i*grid_size_x+j]);
+//	  }printf("\n");
+//  }
+//
+//  printf("\ngolden\n\n");
+//  for(int i = 0; i < act_sizey; i++){
+//	  for(int j = 0; j < act_sizex; j++){
+//		  printf("%f ", grid_u2[i*grid_size_x+j]);
+//	  }printf("\n");
+//  }
 
   return 0;
 }
