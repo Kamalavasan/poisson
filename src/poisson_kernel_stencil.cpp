@@ -9,7 +9,7 @@ typedef ap_uint<512> uint512_dt;
 typedef ap_uint<256> uint256_dt;
 typedef ap_axiu<256,0,0,0> t_pkt;
 
-#define MAX_SIZE_X 2048
+#define MAX_SIZE_X 256
 #define MAX_DEPTH_16 (MAX_SIZE_X/16)
 
 //user function
@@ -25,17 +25,21 @@ const int max_size_y = MAX_SIZE_X;
 const int min_size_y = 20;
 const int avg_size_y = MAX_SIZE_X;
 
-const int max_block_x = MAX_SIZE_X/16 + 1;
-const int min_block_x = 20/16 + 1;
-const int avg_block_x = MAX_SIZE_X/16 + 1;
+const int max_block_x = MAX_SIZE_X/8 + 1;
+const int min_block_x = 20/8 + 1;
+const int avg_block_x = MAX_SIZE_X/8 + 1;
 
-const int max_grid = max_block_x * max_size_y;
-const int min_grid = min_block_x * min_size_y;
-const int avg_grid = avg_block_x * avg_size_y;
+const int max_grid = max_block_x * max_size_y * max_size_y;
+const int min_grid = min_block_x * min_size_y * min_size_y;
+const int avg_grid = avg_block_x * avg_size_y * avg_size_y;
+
+const int max_grid_2 = (max_block_x * max_size_y * max_size_y)/2;
+const int min_grid_2 = (min_block_x * min_size_y * min_size_y)/2;
+const int avg_grid_2 = (avg_block_x * avg_size_y * avg_size_y)/2;
 
 const int port_width  = PORT_WIDTH;
-const int max_depth_16 = MAX_DEPTH_16;
-const int max_depth_8 = MAX_DEPTH_16*2;
+const int max_depth_16 = MAX_DEPTH_16 * 8;
+const int max_depth_8 = MAX_DEPTH_16 * 8;
 
 typedef union  {
    int i;
@@ -58,22 +62,20 @@ struct data_G{
 
 
 static void read_row(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, const int gridsize_da){
-	#pragma HLS dataflow
 	unsigned int itr_limit = (gridsize_da >> 1);
 	for (int itr = 0; itr < itr_limit; itr++){
 		#pragma HLS PIPELINE II=1
-		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
+		#pragma HLS loop_tripcount min=min_grid_2 max=max_grid_2 avg=avg_grid_2
 		rd_buffer << arg0[itr];
 	}
 }
 
 
 static void stream_convert_512_256(hls::stream<uint512_dt> &in, hls::stream<uint256_dt> &out,  const int gridsize_da){
-	#pragma HLS dataflow
 	unsigned int itr_limit = (gridsize_da >> 1);
 	for (int itr = 0; itr < itr_limit; itr++){
 		#pragma HLS PIPELINE II=2
-		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
+		#pragma HLS loop_tripcount min=min_grid_2 max=max_grid_2 avg=avg_grid_2
 		uint512_dt tmp = in.read();
 		uint256_dt var_l = tmp.range(255,0);
 		uint256_dt var_h = tmp.range(511,256);;
@@ -83,11 +85,10 @@ static void stream_convert_512_256(hls::stream<uint512_dt> &in, hls::stream<uint
 }
 
 static void stream_convert_256_512(hls::stream<uint256_dt> &in, hls::stream<uint512_dt> &out,const int gridsize_da){
-	#pragma HLS dataflow
 	unsigned int itr_limit = (gridsize_da >> 1);
 	for (int itr = 0; itr < itr_limit; itr++){
 		#pragma HLS PIPELINE II=2
-		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
+		#pragma HLS loop_tripcount min=min_grid_2 max=max_grid_2 avg=avg_grid_2
 		uint512_dt tmp;
 		tmp.range(255,0) = in.read();
 		tmp.range(511,256) = in.read();
@@ -96,8 +97,6 @@ static void stream_convert_256_512(hls::stream<uint256_dt> &in, hls::stream<uint
 }
 
 static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint256_dt> &wr_buffer, struct data_G data_g){
-//	#pragma HLS dataflow
-
 	unsigned short xblocks = data_g.xblocks;
 	unsigned short sizex = data_g.sizex;
 	unsigned short sizey = data_g.sizey;
@@ -141,7 +140,7 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 	unsigned short i = 0, j = 0, k = 0;
 	unsigned short j_p = 0, j_l = 0;
 	for(unsigned int itr = 0; itr < gridsize; itr++) {
-		#pragma HLS loop_tripcount min=min_block_x max=max_block_x avg=avg_block_x
+		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
 		#pragma HLS PIPELINE II=1
 
 		if(k == xblocks){
@@ -178,7 +177,7 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 		if(cond_tmp1){
 			s_1_1_2 = rd_buffer.read(); // set
 		}
-		window_1[j_p] = s_1_1_2; // set 
+		window_1[j_p] = s_1_1_2; // set
 
 
 
@@ -257,10 +256,9 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 }
 
 static void write_row( uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, const int gridsize_da){
-	#pragma HLS dataflow
 	unsigned int itr_limit = (gridsize_da >> 1);
 	for (int itr = 0; itr < itr_limit; itr++){
-		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
+		#pragma HLS loop_tripcount min=min_grid_2 max=max_grid_2 avg=avg_grid_2
 		#pragma HLS PIPELINE II=1
 		arg1[itr] =  wr_buffer.read();
 	}
@@ -287,11 +285,15 @@ void process_SLR0 (uint512_dt*  arg0, uint512_dt*  arg1,
 	data_g.grid_sizey = sizey+2;
 	data_g.grid_sizez = sizez+2;
 	data_g.limit_z = sizez+3;
-	data_g.plane_diff = data_g.xblocks * (data_g.grid_sizey - 1);
-	data_g.line_diff = data_g.xblocks - 1;
-	data_g.gridsize_pr = data_g.xblocks * data_g.grid_sizey * (data_g.limit_z);
 
-	unsigned int gridsize_da = data_g.xblocks * data_g.grid_sizey * (data_g.grid_sizez);
+	unsigned short grid_sizey_1 = (data_g.grid_sizey - 1);
+	unsigned int plane_size = data_g.xblocks * data_g.grid_sizey;
+
+	data_g.plane_diff = data_g.xblocks * grid_sizey_1;
+	data_g.line_diff = data_g.xblocks - 1;
+	data_g.gridsize_pr = plane_size * (data_g.limit_z);
+
+	unsigned int gridsize_da = plane_size * (data_g.grid_sizez);
 
 
 	#pragma HLS dataflow
@@ -334,6 +336,7 @@ void stencil_SLR0(
 
 
 	for(int i =  0; i < count; i++){
+	#pragma HLS loop_tripcount min=10 max=1000 avg=1000
 		process_SLR0(arg0, arg1, sizex, sizey, sizez, xdim_aligned);
 		process_SLR0(arg1, arg0, sizex, sizey, sizez, xdim_aligned);
 	}
