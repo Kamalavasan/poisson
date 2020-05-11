@@ -258,7 +258,7 @@ int main(int argc, char **argv)
 
   for(int itr = 0; itr < n_iter*1; itr++){
       stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
-//      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
+      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
   }
 
     std::chrono::duration<double> elapsed = finish - start;
@@ -270,22 +270,22 @@ int main(int argc, char **argv)
   printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
   printf("\nBandwidth is %f\n", bandwidth);
 
-  act_sizez = 2;
-  for(int i = 0; i < act_sizez; i++){
-    for(int j = 0; j < act_sizey; j++){
-  	  for(int k = 0; k < act_sizex; k++){
-  		  printf("%f ", grid_u2_d[i*grid_size_x*grid_size_y+j*grid_size_x + k]);
-  	  }printf("\n");
-    }printf("\n");
-  }
-
- printf("\ngolden\n\n");
- for(int i = 0; i < act_sizez; i++){
-    for(int j = 0; j < act_sizey; j++){
-      for(int k = 0; k < act_sizex; k++){
-        printf("%f ", grid_u2[i*grid_size_x*grid_size_y+j*grid_size_x + k]);
-      }printf("\n");
-    }printf("\n");
-  }
+//  act_sizez = 2;
+//  for(int i = 0; i < act_sizez; i++){
+//    for(int j = 0; j < act_sizey; j++){
+//  	  for(int k = 0; k < act_sizex; k++){
+//  		  printf("%f ", grid_u2_d[i*grid_size_x*grid_size_y+j*grid_size_x + k]);
+//  	  }printf("\n");
+//    }printf("\n");
+//  }
+//
+// printf("\ngolden\n\n");
+// for(int i = 0; i < act_sizez; i++){
+//    for(int j = 0; j < act_sizey; j++){
+//      for(int k = 0; k < act_sizex; k++){
+//        printf("%f ", grid_u2[i*grid_size_x*grid_size_y+j*grid_size_x + k]);
+//      }printf("\n");
+//    }printf("\n");
+//  }
   return 0;
 }

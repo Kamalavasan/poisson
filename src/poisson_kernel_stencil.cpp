@@ -156,7 +156,7 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 
 
 
-		printf("i, j ,k is %d, %d, %d, itr %d gridsize %d\n", i,j,k,itr, gridsize);
+//		printf("i, j ,k is %d, %d, %d, itr %d gridsize %d\n", i,j,k,itr, gridsize);
 
 
 		s_1_1_0 = window_4[j_p];
@@ -228,7 +228,7 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 			float r1_1_0 =  s_1_1_0_arr[q] * 0.01;
 
 			float f1 = r1_1_2 + r1_2_1;
-			float f2 = r1_2_1 + r1_1_1;
+			float f2 = r0_1_1 + r1_1_1;
 			float f3 = r2_1_1 + r1_0_1;
 
 			float r1 = f1 + f2;
@@ -335,7 +335,7 @@ void stencil_SLR0(
 
 	for(int i =  0; i < count; i++){
 		process_SLR0(arg0, arg1, sizex, sizey, sizez, xdim_aligned);
-//		process_SLR0(arg1, arg0, sizex, sizey, sizez, xdim_aligned);
+		process_SLR0(arg1, arg0, sizex, sizey, sizez, xdim_aligned);
 	}
 
 }
