@@ -42,40 +42,35 @@ typedef union  {
 } data_conv;
 
 struct data_G{
-	unsigned short end_index;
-	unsigned short end_row;
-	unsigned int gridsize;
+	unsigned short sizex;
+	unsigned short sizey;
+	unsigned short sizez;
+	unsigned short xblocks;
+	unsigned short grid_sizey;
+	unsigned short grid_sizez;
+	unsigned short limit_z
+	unsigned int gridsize_pr;
+	unsigned int plane_diff;
+	unsigned int line_diff;
 	unsigned short outer_loop_limit;
-	unsigned short endrow_plus2;
-	unsigned short endrow_plus1;
-	unsigned short endrow_minus1;
-	unsigned short endindex_minus1;
 };
 
 
-static void read_row(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, const int xdim0_poisson_kernel_stencil, const int base0, int size1){
+static void read_row(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, const int gridsize_da){
 	#pragma HLS dataflow
-	int end_index = (xdim0_poisson_kernel_stencil >> (SHIFT_BITS+1));
-	int end_row = size1+2;
-	int base_index = (base0 + ((0-1) * xdim0_poisson_kernel_stencil) -1) >> (SHIFT_BITS+1);
-
-
-	for (int itr = 0; itr < end_row * end_index; itr++){
+	unsigned int itr_limit = (gridsize_da >> 1);
+	for (int itr = 0; itr < itr_limit; itr++){
 		#pragma HLS PIPELINE II=1
 		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
-		rd_buffer << arg0[base_index + itr];
+		rd_buffer << arg0[itr];
 	}
 }
 
 
-static void stream_convert_512_256(hls::stream<uint512_dt> &in, hls::stream<uint256_dt> &out, const int xdim0_poisson_kernel_stencil, const int base0, int size1){
+static void stream_convert_512_256(hls::stream<uint512_dt> &in, hls::stream<uint256_dt> &out,  const int gridsize_da){
 	#pragma HLS dataflow
-	int end_index = (xdim0_poisson_kernel_stencil >> (SHIFT_BITS+1));
-	int end_row = size1+2;
-	int base_index = (base0 + ((0-1) * xdim0_poisson_kernel_stencil) -1) >> (SHIFT_BITS+1);
-
-
-	for (int itr = 0; itr < end_row * end_index; itr++){
+	unsigned int itr_limit = (gridsize_da >> 1);
+	for (int itr = 0; itr < itr_limit; itr++){
 		#pragma HLS PIPELINE II=2
 		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
 		uint512_dt tmp = in.read();
@@ -86,13 +81,10 @@ static void stream_convert_512_256(hls::stream<uint512_dt> &in, hls::stream<uint
 	}
 }
 
-static void stream_convert_256_512(hls::stream<uint256_dt> &in, hls::stream<uint512_dt> &out, const int xdim0_poisson_kernel_stencil, const int base0, int size1){
+static void stream_convert_256_512(hls::stream<uint256_dt> &in, hls::stream<uint512_dt> &out,const int gridsize_da){
 	#pragma HLS dataflow
-	int end_index = (xdim0_poisson_kernel_stencil >> (SHIFT_BITS+1));
-	int end_row = size1+2;
-	int base_index = (base0 + ((0-1) * xdim0_poisson_kernel_stencil) -1) >> (SHIFT_BITS+1);
-
-	for (int itr = 0; itr < end_row * end_index; itr++){
+	unsigned int itr_limit = (gridsize_da >> 1);
+	for (int itr = 0; itr < itr_limit; itr++){
 		#pragma HLS PIPELINE II=2
 		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
 		uint512_dt tmp;
@@ -102,106 +94,146 @@ static void stream_convert_256_512(hls::stream<uint256_dt> &in, hls::stream<uint
 	}
 }
 
-static void process_a_row( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint256_dt> &wr_buffer, const int size0, int size1,  const int xdim0_poisson_kernel_stencil, struct data_G data_g){
+static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint256_dt> &wr_buffer, struct data_G data_g){
 //	#pragma HLS dataflow
 
-	short end_index = data_g.end_index;
+	unsigned short xblocks = data_g.xblocks;
+	unsigned short sizex = data_g.sizex;
+	unsigned short sizey = data_g.sizey;
+	unsigned short sizez = data_g.sizez;
+	unsigned short limit_z = data_g.limit_z;
+	unsigned short gridsizey = data_g.gridsizey;
+	unsigned int line_diff = data_g.line_diff;
+	unsigned int plane_diff = data_g.plane_diff;
+	unsigned int gridsize = data_g.gridsize_pr;
 
+	float s_1_1_2_arr[PORT_WIDTH];
+	float s_1_2_1_arr[PORT_WIDTH + 2];
+	float s_1_1_1_arr[PORT_WIDTH];
+	float s_1_0_1_arr[PORT_WIDTH];
+	float s_1_1_0_arr[PORT_WIDTH];
 
-
-
-	float row_arr3[PORT_WIDTH];
-	float row_arr2[PORT_WIDTH + 2];
-	float row_arr1[PORT_WIDTH];
 	float mem_wr[PORT_WIDTH];
 
-	#pragma HLS ARRAY_PARTITION variable=row_arr3 complete dim=1
-	#pragma HLS ARRAY_PARTITION variable=row_arr2 complete dim=1
-	#pragma HLS ARRAY_PARTITION variable=row_arr1 complete dim=1
+	#pragma HLS ARRAY_PARTITION variable=s_1_1_2_arr complete dim=1
+	#pragma HLS ARRAY_PARTITION variable=s_1_2_1_arr complete dim=1
+	#pragma HLS ARRAY_PARTITION variable=s_1_1_1_arr complete dim=1
+	#pragma HLS ARRAY_PARTITION variable=s_1_0_1_arr complete dim=1
+	#pragma HLS ARRAY_PARTITION variable=s_1_1_0_arr complete dim=1
 	#pragma HLS ARRAY_PARTITION variable=mem_wr complete dim=1
 
+	uint256_dt window_1[8192];
+	uint256_dt window_2[256];
+	uint256_dt window_3[8192];
+	uint256_dt window_4[256];
 
+	#pragma HLS RESOURCE variable=window_1 core=XPM_MEMORY uram latency=1
+	#pragma HLS RESOURCE variable=window_2 core=XPM_MEMORY uram latency=1
+	#pragma HLS RESOURCE variable=window_3 core=XPM_MEMORY uram latency=1
+	#pragma HLS RESOURCE variable=window_4 core=XPM_MEMORY uram latency=1
 
-	uint256_dt row1_n[256];
-	uint256_dt row2_n[256];
-	uint256_dt row3_n[256];
-
-
-	unsigned short end_row = data_g.end_row;
-	unsigned short outer_loop_limit = data_g.outer_loop_limit;
-	unsigned int grid_size = data_g.gridsize;
-	unsigned short end_index_minus1 = data_g.endindex_minus1;
-	unsigned short end_row_plus1 = data_g.endrow_plus1;
-	unsigned short end_row_plus2 = data_g.endrow_plus2;
-	unsigned short end_row_minus1 = data_g.endrow_minus1;
-
-	uint256_dt tmp2_b1, tmp2_f1;
-	uint256_dt tmp1, tmp2, tmp3;
+	uint256_dt s_1_1_2, s_1_2_1, s_1_1_1, s_1_1_1_b, s_1_1_1_f, s_1_0_1, s_1_1_0;
 	uint256_dt update_j;
 
-	unsigned short j_1 = 0;
+
+	unsigned short i = 0, j = 0; k = 0;
+	unsigned short j_p = 0, j_l = 0;
 	for(unsigned int itr = 0; itr < grid_size; itr++) {
 		#pragma HLS loop_tripcount min=min_block_x max=max_block_x avg=avg_block_x
 		#pragma HLS PIPELINE II=1
 
-		unsigned short i = (itr / end_index);
-		unsigned short j = itr % end_index;
+		if(k==xblocks){
+			k = 0;
+			j++;
+		}
+		if(j == gridsizey){
+			j = 0;
+			i++;
+		}
 
 
-		tmp3 = row2_n[j_1];
 
+		s_1_1_0 = window_4[j_l];
 
-		tmp2_b1 = tmp2;
-		tmp2 = tmp2_f1;
-		tmp2_f1 = row1_n[j_1];
+		s_1_0_1 = window_3[j_p];
+		window_4[j_l] = s_1_0_1;
+
+		s_1_1_1_b = s_1_1_1;
+		window_3[j_p] = s_1_1_1_b;
+
+		s_1_1_1 = s_1_1_1_f;
+		s_1_1_1_f = window_2[j_l]; 	// read
+
+		s_1_2_1 = window_1[j_p];   // read
+		window_2[j_l] = s_1_2_1;	//set 
 
 
 		row2_n[j_1] = tmp2_b1;
 
-		bool cond_tmp1 = (i < end_row);
+		bool cond_tmp1 = (i < limit_z);
 		if(cond_tmp1){
-			tmp1 = rd_buffer.read();
+			s_1_1_2 = rd_buffer.read(); // set
 		}
-		row1_n[j_1] = tmp1;
+		window_1[j_p] = s_1_1_2; // set 
 
 
 
-		j_1++;
-		if(j_1 == end_index -1)
-			j_1 = 0;
+		j_p++;
+		if(j_p == plane_diff){
+			j_p = 0;
+		}
+
+		j_l++;
+		if(j_l == line_diff){
+			j_l = 0;
+		}
 
 		vec2arr: for(int k = 0; k < PORT_WIDTH; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
-			data_conv tmp1_u, tmp2_u, tmp3_u;
-			tmp1_u.i = tmp1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
-			tmp2_u.i = tmp2.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
-			tmp3_u.i = tmp3.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			data_conv s_1_1_2_u, s_1_2_1_u, s_1_1_1_u, s_1_0_1_u, s_1_1_0_u;
+			s_1_1_2_u.i = s_1_1_2.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			s_1_2_1_u.i = s_1_2_1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			s_1_1_1_u.i = s_1_1_1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			s_1_0_1_u.i = s_1_0_1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			s_1_1_0_u.i = s_1_1_0.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
 
-			row_arr3[k] =  tmp1_u.f;
-			row_arr2[k+1] = tmp2_u.f;
-			row_arr1[k] =  tmp3_u.f;
+			s_1_1_2_arr[k]   =  s_1_1_2_u.f;
+			s_1_2_1_arr[k]   =  s_1_2_1_u.f;
+			s_1_1_1_arr[k+1] =  s_1_1_1_u.f;
+			s_1_0_1_arr[k]   =  s_1_0_1_u.f;
+			s_1_1_0_arr[k]   =  s_1_1_0_u.f;
+
 		}
 		data_conv tmp1_o1, tmp2_o2;
-		tmp1_o1.i = tmp2_b1.range(DATATYPE_SIZE * (PORT_WIDTH) - 1, (PORT_WIDTH-1) * DATATYPE_SIZE);
-		tmp2_o2.i = tmp2_f1.range(DATATYPE_SIZE * (0 + 1) - 1, 0 * DATATYPE_SIZE);
-		row_arr2[0] = tmp1_o1.f;
-		row_arr2[PORT_WIDTH + 1] = tmp2_o2.f;
+		tmp1_o1.i = s_1_1_1_b.range(DATATYPE_SIZE * (PORT_WIDTH) - 1, (PORT_WIDTH-1) * DATATYPE_SIZE);
+		tmp2_o2.i = s_1_1_1_f.range(DATATYPE_SIZE * (0 + 1) - 1, 0 * DATATYPE_SIZE);
+		s_1_1_1_arr[0] = tmp1_o1.f;
+		s_1_1_1_arr[PORT_WIDTH + 1] = tmp2_o2.f;
 
 
 
 		process: for(short q = 0; q < PORT_WIDTH; q++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
-			short index = (j << SHIFT_BITS) + q;
-			float r1 = ( (row_arr2[q])  + (row_arr2[q+2]) );
-			float r2 = ( row_arr1[q]  + row_arr3[q] );
-			float f1 = r1 + r2;
-			float f2 = ldexpf(f1, -3);
-			float f3 = ldexpf(row_arr2[q+1], -1);
-			float result  = f2 + f3;
-			bool change_cond = (index <= 0 || index > size0 || (i <= 1) || (i >= end_row));
-			mem_wr[q] = change_cond ? row_arr2[q+1] : result;
-		}
+			short index = (k << SHIFT_BITS) + q;
+			float r1_1_2 =  s_1_1_2_arr[q] * 0.02;
+			float r1_2_1 =  s_1_2_1_arr[q] * 0.04;
+			float r0_1_1 =  s_1_1_1_arr[q] * 0.05;
+			float r1_1_1 =  s_1_1_1_arr[q+1] * 0.79;
+			float r2_1_1 =  s_1_1_1_arr[q+2] * 0.06;
+			float r1_0_1 =  s_1_0_1_arr[q] * 0.03;
+			float r1_1_0 =  s_1_1_0_arr[q] * 0.01;
 
+			float f1 = r1_1_2 + r1_2_1;
+			float f2 = r1_2_1 + r1_1_1;
+			float f3 = r2_1_1 + r1_0_1;
+
+			float r1 = f1 + f2;
+			float r2=  f3 + r1_1_0;
+
+			float result  = r1 + r2;
+			bool change_cond = (index <= 0 || index > sizex || (i <= 1) || (i >= limit_z));
+			mem_wr[q] = change_cond ? s_1_1_1_arr[q+1] : result;
+		}
 
 		array2vec: for(int k = 0; k < PORT_WIDTH; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
@@ -209,28 +241,27 @@ static void process_a_row( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint2
 			tmp.f = mem_wr[k];
 			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
-		bool cond_wr = (i >= 1) && ( i <= end_row);
+
+		bool cond_wr = (i >= 1) && ( i <= limit_z);
 		if(cond_wr ) {
 			wr_buffer << update_j;
 		}
 	}
 }
 
-static void write_row( uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, const int xdim1_poisson_kernel_stencil, const int base1, int size1){
+static void write_row( uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, const int gridsize_da){
 	#pragma HLS dataflow
-	int end_index = (xdim1_poisson_kernel_stencil >> (SHIFT_BITS+1));
-	int base_index = (base1 + ((0-1) * xdim1_poisson_kernel_stencil) -1) >> (SHIFT_BITS+1);
-	int End_row = size1+2;
-	for (int itr = 0; itr < End_row * (end_index); itr++){
+	unsigned int itr_limit = (gridsize_da >> 1);
+	for (int itr = 0; itr < itr_limit; itr++){
 		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
 		#pragma HLS PIPELINE II=1
-		arg1[base_index   + itr] =  wr_buffer.read();
+		arg1[itr] =  wr_buffer.read();
 	}
 }
 
 
 void process_SLR0 (uint512_dt*  arg0, uint512_dt*  arg1,
-		const int xdim0_poisson_kernel_stencil, const int base0, const int xdim1_poisson_kernel_stencil, const int base1, const int size0, int size1){
+		const int sizex, const int sizey, const int sizez, const int xdim_aigned){
 
 
     static hls::stream<uint256_dt> streamArray[40 + 1];
@@ -242,53 +273,26 @@ void process_SLR0 (uint512_dt*  arg0, uint512_dt*  arg1,
 	#pragma HLS STREAM variable = wr_buffer depth = max_depth_8
 
     struct data_G data_g;
-	data_g.end_index = (xdim0_poisson_kernel_stencil >> SHIFT_BITS);
-	data_g.end_row = size1+2;
-	data_g.outer_loop_limit = size1+5;
-	data_g.gridsize = data_g.outer_loop_limit * data_g.end_index;
-	data_g.endindex_minus1 = data_g.end_index -1;
-	data_g.endrow_plus1 = data_g.end_row + 1;
-	data_g.endrow_plus2 = data_g.end_row + 2;
-	data_g.endrow_minus1 = data_g.end_row - 1;
+    data_g.sizex = sizex;
+    data_g.sizey = sizey;
+    data_g.sizez = sizez;
+	data_g.xblocks = (xdim_aigned >> SHIFT_BITS);
+	data_g.gridsizey = sizey+2;
+	data_g.grid_sizez = sizez+2;
+	data_g.limit_z = sizez+3;
+	data_g.plane_diff = (data_g.xblocks - 1) * data_g.gridsizey;
+	data_g.line_diff = data_g.xblocks - 1;
+	data_g.gridsize_pr = data_g.end_index * data_g.gridsizey * (data_g.limit_z+1);
+
+	unsigned int gridsize_da = data_g.end_index * data_g.gridsizey * (data_g.grid_sizez);
 
 
 	#pragma HLS dataflow
 	read_row(arg0, rd_buffer, xdim0_poisson_kernel_stencil, base0, size1);
 	stream_convert_512_256(rd_buffer, streamArray[0], xdim0_poisson_kernel_stencil, base0, size1);
 
-	process_a_row( streamArray[0], streamArray[1], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[1], streamArray[2], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[2], streamArray[3], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[3], streamArray[4], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//
-//	process_a_row( streamArray[4], streamArray[5], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[5], streamArray[6], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[6], streamArray[7], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[7], streamArray[8], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//
-//	process_a_row( streamArray[8], streamArray[9], size0, size1, xdim0_poisson_kernel_stencil,   data_g);
-//	process_a_row( streamArray[9], streamArray[10], size0, size1, xdim0_poisson_kernel_stencil,  data_g);
-//	process_a_row( streamArray[10], streamArray[11], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[11], streamArray[12], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//
-//	process_a_row( streamArray[12], streamArray[13], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[13], streamArray[14], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[14], streamArray[15], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[15], streamArray[16], size0, size1, xdim0_poisson_kernel_stencil, data_g);
+	process_a_grid( streamArray[0], streamArray[1], data_g);
 
-//	process_a_row( streamArray[16], streamArray[17], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[17], streamArray[18], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[18], streamArray[19], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[19], streamArray[20], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-
-//	process_a_row( streamArray[20], streamArray[21], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[21], streamArray[22], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[22], streamArray[23], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[23], streamArray[24], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-
-//
-//	fifo256_2axis(streamArray[16], out, xdim0_poisson_kernel_stencil, base0, size1);
-//	axis2_fifo256(in, streamArray[25], xdim0_poisson_kernel_stencil, base0, size1);
 
 	stream_convert_256_512(streamArray[1], wr_buffer, xdim0_poisson_kernel_stencil, base0, size1);
 	write_row(arg1, wr_buffer, xdim1_poisson_kernel_stencil, base1, size1);
@@ -304,31 +308,28 @@ extern "C" {
 void stencil_SLR0(
 		uint512_dt*  arg0,
 		uint512_dt*  arg1,
-		const int base0,
-		const int base1,
-		const int size0,
-		const int size1,
-		const int xdim0_poisson_kernel_stencil,
-		const int xdim1_poisson_kernel_stencil,
+		const int sizex,
+		const int sizey,
+		const int sizez,
+		const int xdim_aligned,
 		const int count){
 
 	#pragma HLS INTERFACE depth=4096 m_axi port = arg0 offset = slave bundle = gmem0 max_read_burst_length=256 max_write_burst_length=256
 	#pragma HLS INTERFACE depth=4096 m_axi port = arg1 offset = slave bundle = gmem0
 	#pragma HLS INTERFACE s_axilite port = arg0 bundle = control
 	#pragma HLS INTERFACE s_axilite port = arg1 bundle = control
-	#pragma HLS INTERFACE s_axilite port = base0 bundle = control
-	#pragma HLS INTERFACE s_axilite port = base1 bundle = control
-	#pragma HLS INTERFACE s_axilite port = size0 bundle = control
+	#pragma HLS INTERFACE s_axilite port = sizex bundle = control
+	#pragma HLS INTERFACE s_axilite port = sizey bundle = control
+	#pragma HLS INTERFACE s_axilite port = sizez bundle = control
 	#pragma HLS INTERFACE s_axilite port = size1 bundle = control
-	#pragma HLS INTERFACE s_axilite port = xdim0_poisson_kernel_stencil bundle = control
-	#pragma HLS INTERFACE s_axilite port = xdim1_poisson_kernel_stencil bundle = control
+	#pragma HLS INTERFACE s_axilite port = xdim_aligned bundle = control
 	#pragma HLS INTERFACE s_axilite port = count bundle = control
 	#pragma HLS INTERFACE s_axilite port = return bundle = control
 
 
 	for(int i =  0; i < count; i++){
-		process_SLR0(arg0, arg1, xdim0_poisson_kernel_stencil, base0, xdim0_poisson_kernel_stencil, base0, size0, size1);
-		process_SLR0(arg1, arg0, xdim0_poisson_kernel_stencil, base0, xdim0_poisson_kernel_stencil, base0, size0, size1);
+		process_SLR0(arg0, arg1, sizex, sizey, sizez, xdim_aigned);
+		process_SLR0(arg1, arg0, sizex, sizey, sizez, xdim_aigned);
 	}
 
 }
