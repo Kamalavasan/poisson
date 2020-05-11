@@ -48,9 +48,9 @@ int stencil_computation(float* current, float* next, int act_sizex, int act_size
       for(int j = 0; j < act_sizey; j++){
         for(int k = 0; k < act_sizex; k++){
           if(i == 0 || j == 0 || k ==0 || i == act_sizez -1  || j==act_sizey-1 || k == act_sizex -1){
-            next[i*grid_size_x + j] = current[i*grid_size_x + j] ;
+            next[i*grid_size_x*grid_size_y + j*grid_size_x + k] = current[i*grid_size_x*grid_size_y + j*grid_size_x + k] ;
           } else {
-            next[i*grid_size_x + j] =     current[(i-1)*grid_size_x*grid_size_y + (j)*grid_size_x + (k)] * (0.01)  + \
+            next[i*grid_size_x*grid_size_y + j*grid_size_x + k] =     current[(i-1)*grid_size_x*grid_size_y + (j)*grid_size_x + (k)] * (0.01)  + \
                                           current[(i+1)*grid_size_x*grid_size_y + (j)*grid_size_x + (k)] * (0.02)  + \
                                           current[(i)*grid_size_x*grid_size_y + (j-1)*grid_size_x + (k)] * (0.03)  + \
                                           current[(i)*grid_size_x*grid_size_y + (j+1)*grid_size_x + (k)] * (0.04)  + \
@@ -163,8 +163,8 @@ int main(int argc, char **argv)
   int act_sizez = logical_size_z + 2;
 
   int grid_size_x = (act_sizex % 16) != 0 ? (act_sizex/16 +1) * 16 : act_sizex;
-  int grid_size_y = act_sizey + 2;
-  int grid_size_z = act_sizez + 2;
+  int grid_size_y = act_sizey;
+  int grid_size_z = act_sizez;
   
   int data_size_bytes = grid_size_x * grid_size_y * grid_size_z* sizeof(float);
   float * grid_u1 = (float*)aligned_alloc(4096, data_size_bytes);
@@ -257,19 +257,20 @@ int main(int argc, char **argv)
 
 
   for(int itr = 0; itr < n_iter*1; itr++){
-      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y);
-      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y);
+      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
+//      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
   }
 
     std::chrono::duration<double> elapsed = finish - start;
 
 
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y);
+  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
   float bandwidth = (data_size_bytes * 2 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
   printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
   printf("\nBandwidth is %f\n", bandwidth);
 
+  act_sizez = 2;
   for(int i = 0; i < act_sizez; i++){
     for(int j = 0; j < act_sizey; j++){
   	  for(int k = 0; k < act_sizex; k++){

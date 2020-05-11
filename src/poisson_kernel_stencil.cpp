@@ -1,7 +1,8 @@
 #include <ap_int.h>
 #include <hls_stream.h>
 #include <ap_axi_sdata.h>
-#include<math.h>
+#include <math.h>
+#include <stdio.h>
 
 
 typedef ap_uint<512> uint512_dt;
@@ -48,7 +49,7 @@ struct data_G{
 	unsigned short xblocks;
 	unsigned short grid_sizey;
 	unsigned short grid_sizez;
-	unsigned short limit_z
+	unsigned short limit_z;
 	unsigned int gridsize_pr;
 	unsigned int plane_diff;
 	unsigned int line_diff;
@@ -102,14 +103,15 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 	unsigned short sizey = data_g.sizey;
 	unsigned short sizez = data_g.sizez;
 	unsigned short limit_z = data_g.limit_z;
-	unsigned short gridsizey = data_g.gridsizey;
+	unsigned short grid_sizey = data_g.grid_sizey;
+	unsigned short grid_sizez = data_g.grid_sizez;
 	unsigned int line_diff = data_g.line_diff;
 	unsigned int plane_diff = data_g.plane_diff;
 	unsigned int gridsize = data_g.gridsize_pr;
 
 	float s_1_1_2_arr[PORT_WIDTH];
-	float s_1_2_1_arr[PORT_WIDTH + 2];
-	float s_1_1_1_arr[PORT_WIDTH];
+	float s_1_2_1_arr[PORT_WIDTH];
+	float s_1_1_1_arr[PORT_WIDTH+2];
 	float s_1_0_1_arr[PORT_WIDTH];
 	float s_1_1_0_arr[PORT_WIDTH];
 
@@ -124,8 +126,8 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 
 	uint256_dt window_1[8192];
 	uint256_dt window_2[256];
-	uint256_dt window_3[8192];
-	uint256_dt window_4[256];
+	uint256_dt window_3[256];
+	uint256_dt window_4[8192];
 
 	#pragma HLS RESOURCE variable=window_1 core=XPM_MEMORY uram latency=1
 	#pragma HLS RESOURCE variable=window_2 core=XPM_MEMORY uram latency=1
@@ -136,30 +138,34 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 	uint256_dt update_j;
 
 
-	unsigned short i = 0, j = 0; k = 0;
+	unsigned short i = 0, j = 0, k = 0;
 	unsigned short j_p = 0, j_l = 0;
-	for(unsigned int itr = 0; itr < grid_size; itr++) {
+	for(unsigned int itr = 0; itr < gridsize; itr++) {
 		#pragma HLS loop_tripcount min=min_block_x max=max_block_x avg=avg_block_x
 		#pragma HLS PIPELINE II=1
 
-		if(k==xblocks){
+		if(k == xblocks){
 			k = 0;
 			j++;
 		}
-		if(j == gridsizey){
+
+		if(j == grid_sizey){
 			j = 0;
 			i++;
 		}
 
 
 
-		s_1_1_0 = window_4[j_l];
+		printf("i, j ,k is %d, %d, %d, itr %d gridsize %d\n", i,j,k,itr, gridsize);
 
-		s_1_0_1 = window_3[j_p];
-		window_4[j_l] = s_1_0_1;
+
+		s_1_1_0 = window_4[j_p];
+
+		s_1_0_1 = window_3[j_l];
+		window_4[j_p] = s_1_0_1;
 
 		s_1_1_1_b = s_1_1_1;
-		window_3[j_p] = s_1_1_1_b;
+		window_3[j_l] = s_1_1_1_b;
 
 		s_1_1_1 = s_1_1_1_f;
 		s_1_1_1_f = window_2[j_l]; 	// read
@@ -168,9 +174,7 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 		window_2[j_l] = s_1_2_1;	//set 
 
 
-		row2_n[j_1] = tmp2_b1;
-
-		bool cond_tmp1 = (i < limit_z);
+		bool cond_tmp1 = (i < grid_sizez);
 		if(cond_tmp1){
 			s_1_1_2 = rd_buffer.read(); // set
 		}
@@ -231,7 +235,7 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 			float r2=  f3 + r1_1_0;
 
 			float result  = r1 + r2;
-			bool change_cond = (index <= 0 || index > sizex || (i <= 1) || (i >= limit_z));
+			bool change_cond = (index <= 0 || index > sizex || (i <= 1) || (i >= limit_z -1) || (j == 0) || (j == grid_sizey -1));
 			mem_wr[q] = change_cond ? s_1_1_1_arr[q+1] : result;
 		}
 
@@ -246,6 +250,9 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 		if(cond_wr ) {
 			wr_buffer << update_j;
 		}
+
+		// move the cell block
+		k++;
 	}
 }
 
@@ -277,25 +284,25 @@ void process_SLR0 (uint512_dt*  arg0, uint512_dt*  arg1,
     data_g.sizey = sizey;
     data_g.sizez = sizez;
 	data_g.xblocks = (xdim_aigned >> SHIFT_BITS);
-	data_g.gridsizey = sizey+2;
+	data_g.grid_sizey = sizey+2;
 	data_g.grid_sizez = sizez+2;
 	data_g.limit_z = sizez+3;
-	data_g.plane_diff = (data_g.xblocks - 1) * data_g.gridsizey;
+	data_g.plane_diff = data_g.xblocks * (data_g.grid_sizey - 1);
 	data_g.line_diff = data_g.xblocks - 1;
-	data_g.gridsize_pr = data_g.end_index * data_g.gridsizey * (data_g.limit_z+1);
+	data_g.gridsize_pr = data_g.xblocks * data_g.grid_sizey * (data_g.limit_z);
 
-	unsigned int gridsize_da = data_g.end_index * data_g.gridsizey * (data_g.grid_sizez);
+	unsigned int gridsize_da = data_g.xblocks * data_g.grid_sizey * (data_g.grid_sizez);
 
 
 	#pragma HLS dataflow
-	read_row(arg0, rd_buffer, xdim0_poisson_kernel_stencil, base0, size1);
-	stream_convert_512_256(rd_buffer, streamArray[0], xdim0_poisson_kernel_stencil, base0, size1);
+	read_row(arg0, rd_buffer, gridsize_da);
+	stream_convert_512_256(rd_buffer, streamArray[0], gridsize_da);
 
 	process_a_grid( streamArray[0], streamArray[1], data_g);
 
 
-	stream_convert_256_512(streamArray[1], wr_buffer, xdim0_poisson_kernel_stencil, base0, size1);
-	write_row(arg1, wr_buffer, xdim1_poisson_kernel_stencil, base1, size1);
+	stream_convert_256_512(streamArray[1], wr_buffer, gridsize_da);
+	write_row(arg1, wr_buffer, gridsize_da);
 
 }
 
@@ -321,15 +328,14 @@ void stencil_SLR0(
 	#pragma HLS INTERFACE s_axilite port = sizex bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizey bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizez bundle = control
-	#pragma HLS INTERFACE s_axilite port = size1 bundle = control
 	#pragma HLS INTERFACE s_axilite port = xdim_aligned bundle = control
 	#pragma HLS INTERFACE s_axilite port = count bundle = control
 	#pragma HLS INTERFACE s_axilite port = return bundle = control
 
 
 	for(int i =  0; i < count; i++){
-		process_SLR0(arg0, arg1, sizex, sizey, sizez, xdim_aigned);
-		process_SLR0(arg1, arg0, sizex, sizey, sizez, xdim_aigned);
+		process_SLR0(arg0, arg1, sizex, sizey, sizez, xdim_aligned);
+//		process_SLR0(arg1, arg0, sizex, sizey, sizez, xdim_aligned);
 	}
 
 }
