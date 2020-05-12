@@ -1,9 +1,0 @@
-selectTreeTable("Emulation-SW", "poisson_st", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
-selectMenuItem("Build", "Assistant", "SDXAssistantView", "MenuItem.BUILD");
-selectTreeTable("poisson_st-Default", "poisson_st > Emulation-SW", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
-selectMenuItem("Run", "Assistant", "SDXAssistantView", "MenuItem.RUN");
-selectTreeTable("stencil_SLR0", "poisson_st > System > binary_container_1", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
-selectMenuItem("Open HLS Project", "Assistant", "SDXAssistantView", "MenuItem.OPEN_HLS_PROJECT");
-selectButton("OK", "Vivado HLS", "LaunchHLSDialog", "Button.OK");
-activateView("poisson_app.cpp", "poisson_st/src/poisson_app.cpp", "CEditor", "CTabItem.POISSON_APP_CPP");
-activateView("poisson_kernel_stencil.cpp", "poisson_st/src/poisson_kernel_stencil.cpp", "CEditor", "CTabItem.POISSON_KERNEL_STENCIL_CPP");

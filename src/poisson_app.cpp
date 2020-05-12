@@ -56,8 +56,8 @@ int stencil_computation(float* current, float* next, int act_sizex, int act_size
                                           current[(i)*grid_size_x*grid_size_y + (j+1)*grid_size_x + (k)] * (0.04)  + \
                                           current[(i)*grid_size_x*grid_size_y + (j)*grid_size_x + (k-1)] * (0.05)  + \
                                           current[(i)*grid_size_x*grid_size_y + (j)*grid_size_x + (k+1)] * (0.06)  + \
-                                          current[(i)*grid_size_x*grid_size_y + (j)*grid_size_x + (k)] * (0.79) ; 
-          } 
+                                          current[(i)*grid_size_x*grid_size_y + (j)*grid_size_x + (k)] * (0.79) ;
+          }
         }
       }
     }
@@ -165,7 +165,7 @@ int main(int argc, char **argv)
   int grid_size_x = (act_sizex % 16) != 0 ? (act_sizex/16 +1) * 16 : act_sizex;
   int grid_size_y = act_sizey;
   int grid_size_z = act_sizez;
-  
+
   int data_size_bytes = grid_size_x * grid_size_y * grid_size_z* sizeof(float);
   float * grid_u1 = (float*)aligned_alloc(4096, data_size_bytes);
   float * grid_u2 = (float*)aligned_alloc(4096, data_size_bytes);
@@ -266,7 +266,7 @@ int main(int argc, char **argv)
 
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
   double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
-  float bandwidth = (data_size_bytes * 2 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
+  float bandwidth = (data_size_bytes * 4.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
   printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
   printf("\nBandwidth is %f\n", bandwidth);
 
