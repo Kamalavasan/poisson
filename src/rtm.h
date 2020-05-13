@@ -2,29 +2,12 @@
 #define __RTM__
 #define ORDER 4
 
-double dx = 0.005;
-double dy = 0.005;
-double dz = 0.005;
-
-float coeffs[9][9] = {
- 		{-2.717857142857143,8.0,-14.0,18.666666666666668,-17.5,11.2,-4.666666666666667,1.1428571428571428,-0.125}, 
- 		{-0.125,-1.5928571428571427,3.5,-3.5,2.9166666666666665,-1.75,0.7,-0.16666666666666666,0.017857142857142856}, 
- 		{0.017857142857142856,-0.2857142857142857,-0.95,2.0,-1.25,0.6666666666666666,-0.25,0.05714285714285714,-0.005952380952380952},
- 		{-0.005952380952380952,0.07142857142857142,-0.5,-0.45,1.25,-0.5,0.16666666666666666,-0.03571428571428571,0.0035714285714285713}, 
- 		{0.0035714285714285713,-0.0380952380952381,0.2,-0.8,0.0,0.8,-0.2,0.0380952380952381,-0.0035714285714285713}, 
- 		{-0.0035714285714285713,0.03571428571428571,-0.16666666666666666,0.5,-1.25,0.45,0.5,-0.07142857142857142,0.005952380952380952}, 
- 		{0.005952380952380952,-0.05714285714285714,0.25,-0.6666666666666666,1.25,-2.0,0.95,0.2857142857142857,-0.017857142857142856},
- 		{-0.017857142857142856,0.16666666666666666,-0.7,1.75,-2.9166666666666665,3.5,-3.5,1.5928571428571427,0.125}, 
- 		{0.125,-1.1428571428571428,4.666666666666667,-11.2,17.5,-18.666666666666668,14.0,-8.0,2.717857142857143}
-};
-
-
 
 struct Grid_d
 {
 	int logical_size_x;
-	int logical_size_x;
-	int logical_size_x;
+	int logical_size_y;
+	int logical_size_z;
 	int act_sizex;
 	int act_sizey;
 	int act_sizez;
@@ -38,13 +21,12 @@ struct Grid_d
 
 };
 
-int populate_rho(float* grid, struct Grid_d grid_d);
-int populate_mu(float* grid, struct Grid_d grid_d);
-int populate_yy(float* grid, struct Grid_d grid_d);
+
+int populate_rho_mu_yy(float* grid, struct Grid_d grid_d);
 
 
 int copy_grid(float* grid_s, float* grid_d, int grid_size);
-int caculate_index(struct Grid_d grid_d, int z, int y, int x, int pt);
+inline int caculate_index(struct Grid_d grid_d, int z, int y, int x, int pt);
 void fd3d_pml_kernel(float* yy, float* dyy, struct Grid_d grid_d);
 
 #endif

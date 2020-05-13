@@ -1,9 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
 #include "rtm.h"
 
-double dx = 0.005;
-double dy = 0.005;
-double dz = 0.005;
 
 int copy_grid(float* grid_s, float* grid_d, int grid_size){
     memcpy(grid_d, grid_s, grid_size);
@@ -15,19 +15,24 @@ int populate_rho_mu_yy(float* grid, struct Grid_d grid_d){
     for(int j = 0; j < grid_d.act_sizey; j++){
       for(int k = 0; k < grid_d.act_sizex; k++){
 
+        if(i < ORDER || i >= (grid_d.act_sizez+ORDER) || j < ORDER || j >= (grid_d.act_sizey+ORDER) || k < ORDER || k >= (grid_d.act_sizex+ORDER)){
+          for(int p = 0; p < 8; p++){
+            grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p] = 0;
+          }
+        } else {
+          float x = 1.0 * (float ) (i - grid_d.act_sizex/2)/(grid_d.logical_size_x);
+          float y = 1.0 * (float ) (j - grid_d.act_sizey/2)/(grid_d.logical_size_y);
+          float z = 1.0 * (float ) (k - grid_d.act_sizez/2)/(grid_d.logical_size_z);
 
-        float x = 1.0 * (float ) (i - grid_d.act_sizex/2)/(grid_d.logical_size_x);
-        float y = 1.0 * (float ) (j - grid_d.act_sizey/2)/(grid_d.logical_size_y);
-        float z = 1.0 * (float ) (k - grid_d.act_sizez/2)/(grid_d.logical_size_z);
+          const float C = 1;
+          const float r0 = 0.001;
 
-        const float C = 1;
-        const float r0 = 0.001;
-
-        float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-        grid[i*grid_size_x*grid_size_y*6 + j * grid_size_x*6 + k*6+0] = 1.0;
-        grid[i*grid_size_x*grid_size_y*6 + j * grid_size_x*6 + k*6+1] = 1.0;
-        for(int p = 2; p < 8; p++){
-          grid[i*grid_size_x*grid_size_y*6 + j * grid_size_x*6 + k*6+p] = (1.0/3) * C * exp(-(x*x+y*y+z*z)/r0);
+          float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+          grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 0] = 1.0;
+          grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 1] = 1.0;
+          for(int p = 2; p < 8; p++){
+            grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p] = (1.0/3) * C * exp(-(x*x+y*y+z*z)/r0);
+          }
         }
       }
     }
@@ -36,13 +41,31 @@ int populate_rho_mu_yy(float* grid, struct Grid_d grid_d){
 }
 
 
-int caculate_index(struct Grid_d grid_d, int z, int y, int x, int pt){
-  return (x*grid_size_x*grid_size_y*6 + y * grid_size_x*6 + z*6+pt);
+inline int caculate_index(struct Grid_d grid_d, int z, int y, int x, int pt){
+  return (x * grid_d.grid_size_x * grid_d.grid_size_y * 8 + y * grid_d.grid_size_x * 8 + z*8 + pt);
 }
 
 
 
 void fd3d_pml_kernel(float* yy, float* dyy, struct Grid_d grid_d){
+  int half = 4;
+  int pml_width = 10;
+  double dx = 0.005;
+  double dy = 0.005;
+  double dz = 0.005;
+
+  float coeffs[9][9] = {
+    {-2.717857142857143,8.0,-14.0,18.666666666666668,-17.5,11.2,-4.666666666666667,1.1428571428571428,-0.125}, 
+    {-0.125,-1.5928571428571427,3.5,-3.5,2.9166666666666665,-1.75,0.7,-0.16666666666666666,0.017857142857142856}, 
+    {0.017857142857142856,-0.2857142857142857,-0.95,2.0,-1.25,0.6666666666666666,-0.25,0.05714285714285714,-0.005952380952380952},
+    {-0.005952380952380952,0.07142857142857142,-0.5,-0.45,1.25,-0.5,0.16666666666666666,-0.03571428571428571,0.0035714285714285713}, 
+    {0.0035714285714285713,-0.0380952380952381,0.2,-0.8,0.0,0.8,-0.2,0.0380952380952381,-0.0035714285714285713}, 
+    {-0.0035714285714285713,0.03571428571428571,-0.16666666666666666,0.5,-1.25,0.45,0.5,-0.07142857142857142,0.005952380952380952}, 
+    {0.005952380952380952,-0.05714285714285714,0.25,-0.6666666666666666,1.25,-2.0,0.95,0.2857142857142857,-0.017857142857142856},
+    {-0.017857142857142856,0.16666666666666666,-0.7,1.75,-2.9166666666666665,3.5,-3.5,1.5928571428571427,0.125}, 
+    {0.125,-1.1428571428571428,4.666666666666667,-11.2,17.5,-18.666666666666668,14.0,-8.0,2.717857142857143}
+  };
+
 
   float* c = &coeffs[half][half];
   float invdx = 1.0 / dx;
@@ -63,12 +86,12 @@ void fd3d_pml_kernel(float* yy, float* dyy, struct Grid_d grid_d){
 
 
 
-  for(int i = ORDER; i < grid_d.logical_size_z; i++){
-    for(int j = ORDER; j < grid_d.logical_size_y; j++){
-      for(int k = ORDER; k < grid_d.logical_size_x; k++){
+  for(int i = ORDER; i < grid_d.logical_size_z+ORDER; i++){
+    for(int j = ORDER; j < grid_d.logical_size_y+ORDER; j++){
+      for(int k = ORDER; k < grid_d.logical_size_x+ORDER; k++){
 
 
-        float sigma = grid[caculate_index(grid_d,i,j,k,1)] / grid[caculate_index(grid_d,i,j,k,0)];
+        float sigma = yy[caculate_index(grid_d,i,j,k,1)] / yy[caculate_index(grid_d,i,j,k,0)];
         float sigmax=0.0;
         float sigmay=0.0;
         float sigmaz=0.0;
@@ -153,14 +176,14 @@ void fd3d_pml_kernel(float* yy, float* dyy, struct Grid_d grid_d){
         }
       
 
-        dyy[caculate_index(grid_d,i+l,j,k,2)]=vxx/yy[caculate_index(grid_d,i+l,j,k,0)]- sigmax*px;
-        dyy[caculate_index(grid_d,i+l,j,k,5)]=(pxx+pyx+pxz)*yy[caculate_index(grid_d,i+l,j,k,1)] - sigmax*vx;
+        dyy[caculate_index(grid_d,i,j,k,2)]=vxx/yy[caculate_index(grid_d,i,j,k,0)]- sigmax*px;
+        dyy[caculate_index(grid_d,i,j,k,5)]=(pxx+pyx+pxz)*yy[caculate_index(grid_d,i,j,k,1)] - sigmax*vx;
         
-        dyy[caculate_index(grid_d,i+l,j,k,3)]=vyy/yy[caculate_index(grid_d,i+l,j,k,0)]  - sigmay*py;
-        dyy[caculate_index(grid_d,i+l,j,k,6)]=(pxy+pyy+pyz)*yy[caculate_index(grid_d,i+l,j,k,1)]  - sigmay*vy;
+        dyy[caculate_index(grid_d,i,j,k,3)]=vyy/yy[caculate_index(grid_d,i,j,k,0)]  - sigmay*py;
+        dyy[caculate_index(grid_d,i,j,k,6)]=(pxy+pyy+pyz)*yy[caculate_index(grid_d,i,j,k,1)]  - sigmay*vy;
         
-        dyy[caculate_index(grid_d,i+l,j,k,4)]=vzz/yy[caculate_index(grid_d,i+l,j,k,0)]  - sigmaz*pz;
-        dyy[caculate_index(grid_d,i+l,j,k,7)]=(pxz+pyz+pzz)*yy[caculate_index(grid_d,i+l,j,k,1)]  - sigmaz*vz;
+        dyy[caculate_index(grid_d,i,j,k,4)]=vzz/yy[caculate_index(grid_d,i,j,k,0)]  - sigmaz*pz;
+        dyy[caculate_index(grid_d,i,j,k,7)]=(pxz+pyz+pzz)*yy[caculate_index(grid_d,i,j,k,1)]  - sigmaz*vz;
 
 
       }

@@ -39,7 +39,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include "xcl2.hpp"
+// #include "xcl2.hpp"
 #include <chrono>
 #include "omp.h"
 
@@ -47,26 +47,6 @@
 #include "rtm.h"
 
 
-int stencil_computation(float* current, float* next, int act_sizex, int act_sizey, int act_sizez, int grid_size_x, int grid_size_y, int grid_size_z){
-    for(int i = 0; i < act_sizez; i++){
-      for(int j = 0; j < act_sizey; j++){
-        for(int k = 0; k < act_sizex; k++){
-          if(i == 0 || j == 0 || k ==0 || i == act_sizez -1  || j==act_sizey-1 || k == act_sizex -1){
-            next[i*grid_size_x*grid_size_y + j*grid_size_x + k] = current[i*grid_size_x*grid_size_y + j*grid_size_x + k] ;
-          } else {
-            next[i*grid_size_x*grid_size_y + j*grid_size_x + k] =     current[(i-1)*grid_size_x*grid_size_y + (j)*grid_size_x + (k)] * (0.01)  + \
-                                          current[(i+1)*grid_size_x*grid_size_y + (j)*grid_size_x + (k)] * (0.02)  + \
-                                          current[(i)*grid_size_x*grid_size_y + (j-1)*grid_size_x + (k)] * (0.03)  + \
-                                          current[(i)*grid_size_x*grid_size_y + (j+1)*grid_size_x + (k)] * (0.04)  + \
-                                          current[(i)*grid_size_x*grid_size_y + (j)*grid_size_x + (k-1)] * (0.05)  + \
-                                          current[(i)*grid_size_x*grid_size_y + (j)*grid_size_x + (k+1)] * (0.06)  + \
-                                          current[(i)*grid_size_x*grid_size_y + (j)*grid_size_x + (k)] * (0.79) ;
-          }
-        }
-      }
-    }
-    return 0;
-}
 
 double square_error(float* current, float* next, int act_sizex, int act_sizey, int act_sizez, int grid_size_x, int grid_size_y, int grid_size_z){
     double sum = 0;
@@ -100,12 +80,12 @@ int main(int argc, char **argv)
 
 
   //Mesh
-  int logical_size_x = 20;
-  int logical_size_y = 20;
-  int logical_size_z = 20;
+  int logical_size_x = 256;
+  int logical_size_y = 245;
+  int logical_size_z = 256;
   int ngrid_x = 1;
   int ngrid_y = 1;
-  int n_iter = 10;
+  int n_iter = 100;
   int itertile = n_iter;
   int non_copy = 0;
 
@@ -264,8 +244,9 @@ int main(int argc, char **argv)
 
 
   for(int itr = 0; itr < n_iter*1; itr++){
-      fd3d_pml_kernel(grid_yy_rho_mu, grid_yy_rho_mu_temp struct Grid_d grid_d);
-      fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_yy_rho_mu, struct Grid_d grid_d);
+  	  printf("Current itr is %d\n", itr);
+      fd3d_pml_kernel(grid_yy_rho_mu, grid_yy_rho_mu_temp, grid_d);
+      fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_yy_rho_mu, grid_d);
   }
 
     // std::chrono::duration<double> elapsed = finish - start;
