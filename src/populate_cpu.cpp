@@ -191,21 +191,21 @@ void fd3d_pml_kernel(float* yy, float* dyy, struct Grid_d grid_d){
           vyx += yy[caculate_index(grid_d,i,j,k+l,6)]*c[l]*invdx;
           vzx += yy[caculate_index(grid_d,i,j,k+l,7)]*c[l]*invdx;
           
-          pxy += yy[caculate_index(grid_d,i,j+l,k,2)]*c[l]*invdx;
-          pyy += yy[caculate_index(grid_d,i,j+l,k,3)]*c[l]*invdx;
-          pzy += yy[caculate_index(grid_d,i,j+l,k,4)]*c[l]*invdx;
+          pxy += yy[caculate_index(grid_d,i,j+l,k,2)]*c[l]*invdy;
+          pyy += yy[caculate_index(grid_d,i,j+l,k,3)]*c[l]*invdy;
+          pzy += yy[caculate_index(grid_d,i,j+l,k,4)]*c[l]*invdy;
           
-          vxy += yy[caculate_index(grid_d,i,j+l,k,5)]*c[l]*invdx;
-          vyy += yy[caculate_index(grid_d,i,j+l,k,6)]*c[l]*invdx;
-          vzy += yy[caculate_index(grid_d,i,j+l,k,7)]*c[l]*invdx;
+          vxy += yy[caculate_index(grid_d,i,j+l,k,5)]*c[l]*invdy;
+          vyy += yy[caculate_index(grid_d,i,j+l,k,6)]*c[l]*invdy;
+          vzy += yy[caculate_index(grid_d,i,j+l,k,7)]*c[l]*invdy;
           
-          pxz += yy[caculate_index(grid_d,i+l,j,k,2)]*c[l]*invdx;
-          pyz += yy[caculate_index(grid_d,i+l,j,k,3)]*c[l]*invdx;
-          pzz += yy[caculate_index(grid_d,i+l,j,k,4)]*c[l]*invdx;
+          pxz += yy[caculate_index(grid_d,i+l,j,k,2)]*c[l]*invdz;
+          pyz += yy[caculate_index(grid_d,i+l,j,k,3)]*c[l]*invdz;
+          pzz += yy[caculate_index(grid_d,i+l,j,k,4)]*c[l]*invdz;
           
-          vxz += yy[caculate_index(grid_d,i+l,j,k,5)]*c[l]*invdx;
-          vyz += yy[caculate_index(grid_d,i+l,j,k,6)]*c[l]*invdx;
-          vzz += yy[caculate_index(grid_d,i+l,j,k,7)]*c[l]*invdx;
+          vxz += yy[caculate_index(grid_d,i+l,j,k,5)]*c[l]*invdz;
+          vyz += yy[caculate_index(grid_d,i+l,j,k,6)]*c[l]*invdz;
+          vzz += yy[caculate_index(grid_d,i+l,j,k,7)]*c[l]*invdz;
         }
       
 
