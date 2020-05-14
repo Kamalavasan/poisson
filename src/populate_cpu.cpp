@@ -48,10 +48,10 @@ int dump_rho_mu_yy(float* grid, struct Grid_d grid_d){
   for(int i = 0; i < grid_d.act_sizez; i++){
     for(int j = 0; j < grid_d.act_sizey; j++){
       for(int k = 0; k < grid_d.act_sizex; k++){
-        fprintf(fp_rho, "%f ", grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 0]);
-        fprintf(fp_mu, "%f ",  grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 1]);
+        fprintf(fp_rho, "%e ", grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 0]);
+        fprintf(fp_mu, "%e ",  grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 1]);
         for(int p = 2; p < 8; p++){
-            fprintf(fp_yy, "%f ",  grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p]);
+            fprintf(fp_yy, "%e ",  grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p]);
         }
       }
       fprintf(fp_rho, "\n");
@@ -70,7 +70,7 @@ int dump_rho_mu_yy(float* grid, struct Grid_d grid_d){
 
 
 inline int caculate_index(struct Grid_d grid_d, int z, int y, int x, int pt){
-  return (x * grid_d.grid_size_x * grid_d.grid_size_y * 8 + y * grid_d.grid_size_x * 8 + z*8 + pt);
+  return (z * grid_d.grid_size_x * grid_d.grid_size_y * 8 + y * grid_d.grid_size_x * 8 + x*8 + pt);
 }
 
 
@@ -123,23 +123,28 @@ void fd3d_pml_kernel(float* yy, float* dyy, struct Grid_d grid_d){
         float sigmax=0.0;
         float sigmay=0.0;
         float sigmaz=0.0;
-        if(k<=xbeg+pml_width){
-          sigmax = (xbeg+pml_width-k)*sigma/pml_width;
+
+        int x = k - ORDER;
+        int y = j - ORDER;
+        int z = i - ORDER;
+
+        if(x<=xbeg+pml_width){
+          sigmax = (xbeg+pml_width-x)*sigma/pml_width;
         }
-        if( k >= xend-pml_width){
-          sigmax=( k -(xend-pml_width))*sigma/pml_width;
+        if( x >= xend-pml_width){
+          sigmax=( x -(xend-pml_width))*sigma/pml_width;
         }
-        if(j <=ybeg+pml_width){
-          sigmay=(ybeg+pml_width-j)*sigma/pml_width;
+        if(y <=ybeg+pml_width){
+          sigmay=(ybeg+pml_width-y)*sigma/pml_width;
         }
-        if(j >=yend-pml_width){
-          sigmay=(j-(yend-pml_width))*sigma/pml_width;
+        if(y >=yend-pml_width){
+          sigmay=(y-(yend-pml_width))*sigma/pml_width;
         }
-        if(i <=zbeg+pml_width){
-          sigmaz=(zbeg+pml_width- i)*sigma/pml_width;
+        if(z <=zbeg+pml_width){
+          sigmaz=(zbeg+pml_width- z)*sigma/pml_width;
         }
-        if( i >=zend-pml_width){
-          sigmaz=( i -(zend-pml_width))*sigma/pml_width;
+        if( z >=zend-pml_width){
+          sigmaz=( z -(zend-pml_width))*sigma/pml_width;
         }
 
         //sigmax=0.0;
@@ -204,13 +209,13 @@ void fd3d_pml_kernel(float* yy, float* dyy, struct Grid_d grid_d){
         }
       
 
-        dyy[caculate_index(grid_d,i,j,k,2)]=vxx/yy[caculate_index(grid_d,i,j,k,0)]- sigmax*px;
+        dyy[caculate_index(grid_d,i,j,k,2)]=vxx/yy[caculate_index(grid_d,i,j,k,0)]- sigmax * px;
         dyy[caculate_index(grid_d,i,j,k,5)]=(pxx+pyx+pxz)*yy[caculate_index(grid_d,i,j,k,1)] - sigmax*vx;
         
         dyy[caculate_index(grid_d,i,j,k,3)]=vyy/yy[caculate_index(grid_d,i,j,k,0)]  - sigmay*py;
         dyy[caculate_index(grid_d,i,j,k,6)]=(pxy+pyy+pyz)*yy[caculate_index(grid_d,i,j,k,1)]  - sigmay*vy;
         
-        dyy[caculate_index(grid_d,i,j,k,4)]=vzz/yy[caculate_index(grid_d,i,j,k,0)]  - sigmaz*pz;
+        dyy[caculate_index(grid_d,i,j,k,4)]= vzz/yy[caculate_index(grid_d,i,j,k,0)]  - sigmaz*pz;
         dyy[caculate_index(grid_d,i,j,k,7)]=(pxz+pyz+pzz)*yy[caculate_index(grid_d,i,j,k,1)]  - sigmaz*vz;
 
 
