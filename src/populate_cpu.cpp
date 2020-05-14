@@ -15,28 +15,56 @@ int populate_rho_mu_yy(float* grid, struct Grid_d grid_d){
     for(int j = 0; j < grid_d.act_sizey; j++){
       for(int k = 0; k < grid_d.act_sizex; k++){
 
-        if(i < ORDER || i >= (grid_d.act_sizez+ORDER) || j < ORDER || j >= (grid_d.act_sizey+ORDER) || k < ORDER || k >= (grid_d.act_sizex+ORDER)){
+        if(i < ORDER || i >= (grid_d.logical_size_z+ORDER) || j < ORDER || j >= (grid_d.logical_size_y+ORDER) || k < ORDER || k >= (grid_d.logical_size_x+ORDER)){
           for(int p = 0; p < 8; p++){
             grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p] = 0;
           }
         } else {
-          float x = 1.0 * (float ) (i - grid_d.act_sizex/2)/(grid_d.logical_size_x);
+          float x = 1.0 * (float ) (k - grid_d.act_sizex/2)/(grid_d.logical_size_x);
           float y = 1.0 * (float ) (j - grid_d.act_sizey/2)/(grid_d.logical_size_y);
-          float z = 1.0 * (float ) (k - grid_d.act_sizez/2)/(grid_d.logical_size_z);
+          float z = 1.0 * (float ) (i - grid_d.act_sizez/2)/(grid_d.logical_size_z);
 
           const float C = 1;
-          const float r0 = 0.001;
+          const float r0 = 0.1;
 
-          float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
           grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 0] = 1.0;
           grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 1] = 1.0;
-          for(int p = 2; p < 8; p++){
-            grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p] = (1.0/3) * C * exp(-(x*x+y*y+z*z)/r0);
+          grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 2] = (1.0/3) * C * exp(-(x*x+y*y+z*z)/r0);
+          for(int p = 3; p < 8; p++){
+            grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p] = 0;
           }
         }
       }
     }
   }
+  return 0;
+}
+
+int dump_rho_mu_yy(float* grid, struct Grid_d grid_d){
+  FILE* fp_rho = fopen("rho.txt", "w");
+  FILE* fp_mu  = fopen("mu.txt", "w");
+  FILE* fp_yy  = fopen("yy.txt", "w");
+
+  for(int i = 0; i < grid_d.act_sizez; i++){
+    for(int j = 0; j < grid_d.act_sizey; j++){
+      for(int k = 0; k < grid_d.act_sizex; k++){
+        fprintf(fp_rho, "%f ", grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 0]);
+        fprintf(fp_mu, "%f ",  grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 1]);
+        for(int p = 2; p < 8; p++){
+            fprintf(fp_yy, "%f ",  grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p]);
+        }
+      }
+      fprintf(fp_rho, "\n");
+      fprintf(fp_mu, "\n");
+      fprintf(fp_yy, "\n");
+    }
+    fprintf(fp_rho, "\n");
+    fprintf(fp_mu, "\n");
+    fprintf(fp_yy, "\n");
+  }
+  fclose(fp_rho);
+  fclose(fp_mu);
+  fclose(fp_yy);
   return 0;
 }
 

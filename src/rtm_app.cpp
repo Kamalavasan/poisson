@@ -80,9 +80,9 @@ int main(int argc, char **argv)
 
 
   //Mesh
-  int logical_size_x = 256;
-  int logical_size_y = 245;
-  int logical_size_z = 256;
+  int logical_size_x = 16;
+  int logical_size_y = 16;
+  int logical_size_z = 16;
   int ngrid_x = 1;
   int ngrid_y = 1;
   int n_iter = 100;
@@ -242,13 +242,14 @@ int main(int argc, char **argv)
  //    q.finish();
 //    auto finish = std::chrono::high_resolution_clock::now();
 
-
+  dump_rho_mu_yy(grid_yy_rho_mu, grid_d);
   for(int itr = 0; itr < n_iter*1; itr++){
-  	  printf("Current itr is %d\n", itr);
+  	  // printf("Current itr is %d\n", itr);
       fd3d_pml_kernel(grid_yy_rho_mu, grid_yy_rho_mu_temp, grid_d);
       fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_yy_rho_mu, grid_d);
   }
 
+	
     // std::chrono::duration<double> elapsed = finish - start;
 
 
