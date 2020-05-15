@@ -40,24 +40,6 @@ int populate_rho_mu_yy(float* grid, struct Grid_d grid_d){
   return 0;
 }
 
-
-double square_error(float* current, float* next, struct Grid_d grid_d){
-    double sum = 0;
-    for(int i = 0; i < grid_d.grid_size_z; i++){
-      for(int j = 0; j < grid_d.grid_size_y; j++){
-        for(int k = 0; k < grid_d.grid_size_x; k++){
-          for(int p = 0; p < 6; p++){
-            float val1 = next[i*grid_d.grid_size_x*grid_d.grid_size_y*8 + j*grid_d.grid_size_x*8 + k*8 + p];
-            float val2 = current[i*grid_d.grid_size_x*grid_d.grid_size_y*8 + j*grid_d.grid_size_x*8 + k*8 + p];
-            sum +=  val1*val1 - val2*val2;
-        }
-        }
-      }
-    }
-    return sum;
-}
-
-
 int dump_rho_mu_yy(float* grid, struct Grid_d grid_d, char* n_rho, char* n_mu, char* n_yy){
   FILE* fp_rho = fopen(n_rho, "w");
   FILE* fp_mu  = fopen(n_mu, "w");

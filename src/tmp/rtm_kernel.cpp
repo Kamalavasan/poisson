@@ -130,11 +130,11 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 
 	float mem_wr[PORT_WIDTH];
 
-//	#pragma HLS ARRAY_PARTITION variable=s_1_1_2_arr complete dim=1
-//	#pragma HLS ARRAY_PARTITION variable=s_1_2_1_arr complete dim=1
-//	#pragma HLS ARRAY_PARTITION variable=s_1_1_1_arr complete dim=1
-//	#pragma HLS ARRAY_PARTITION variable=s_1_0_1_arr complete dim=1
-//	#pragma HLS ARRAY_PARTITION variable=s_1_1_0_arr complete dim=1
+	#pragma HLS ARRAY_PARTITION variable=s_1_1_2_arr complete dim=1
+	#pragma HLS ARRAY_PARTITION variable=s_1_2_1_arr complete dim=1
+	#pragma HLS ARRAY_PARTITION variable=s_1_1_1_arr complete dim=1
+	#pragma HLS ARRAY_PARTITION variable=s_1_0_1_arr complete dim=1
+	#pragma HLS ARRAY_PARTITION variable=s_1_1_0_arr complete dim=1
 	#pragma HLS ARRAY_PARTITION variable=mem_wr complete dim=1
 
 
@@ -442,7 +442,7 @@ void stencil_SLR0(
 	for(int i =  0; i < count; i++){
 	#pragma HLS loop_tripcount min=10 max=1000 avg=1000
 		process_SLR0(arg0, arg1, sizex, sizey, sizez, xdim_aligned);
-		// process_SLR0(arg1, arg0, sizex, sizey, sizez, xdim_aligned);
+		process_SLR0(arg1, arg0, sizex, sizey, sizez, xdim_aligned);
 	}
 
 }
