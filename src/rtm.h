@@ -24,7 +24,7 @@ struct Grid_d
 
 int populate_rho_mu_yy(float* grid, struct Grid_d grid_d);
 int dump_rho_mu_yy(float* grid, struct Grid_d grid_d);
-int dump_rho_mu_yy(float* grid, struct Grid_d grid_d, char n_rho[100], char n_mu[100], char n_yy[100]);
+int dump_rho_mu_yy(float* grid, struct Grid_d grid_d, char* n_rho, char* n_mu, char* n_yy);
 
 int copy_grid(float* grid_s, float* grid_d, int grid_size);
 inline int caculate_index(struct Grid_d grid_d, int z, int y, int x, int pt);

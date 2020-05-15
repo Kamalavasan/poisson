@@ -246,12 +246,12 @@ int main(int argc, char **argv)
   for(int itr = 0; itr < n_iter*1; itr++){
   	  // printf("Current itr is %d\n", itr);
       fd3d_pml_kernel(grid_yy_rho_mu, grid_yy_rho_mu_temp, grid_d);
-      // dump_rho_mu_yy(grid_yy_rho_mu_temp, grid_d);
+      dump_rho_mu_yy(grid_yy_rho_mu_temp, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
       fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_yy_rho_mu, grid_d);
   }
 
 	
-    // std::chrono::duration<double> elapsed = finish - start;
+  std::chrono::duration<double> elapsed = finish - start;
 
 
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());

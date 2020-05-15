@@ -40,7 +40,7 @@ int populate_rho_mu_yy(float* grid, struct Grid_d grid_d){
   return 0;
 }
 
-int dump_rho_mu_yy(float* grid, struct Grid_d grid_d, char n_rho[100], char n_mu[100], char n_yy[100]){
+int dump_rho_mu_yy(float* grid, struct Grid_d grid_d, char* n_rho, char* n_mu, char* n_yy){
   FILE* fp_rho = fopen(n_rho, "w");
   FILE* fp_mu  = fopen(n_mu, "w");
   FILE* fp_yy  = fopen(n_yy, "w");
