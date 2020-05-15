@@ -227,8 +227,8 @@ int main(int argc, char **argv)
 
     q.finish();
 
-    grid_yy_rho_mu_temp_d
-    dump_rho_mu_yy(grid_yy_rho_mu_temp, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
+
+    dump_rho_mu_yy(grid_yy_rho_mu, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
     dump_rho_mu_yy(grid_yy_rho_mu_temp_d, grid_d, (char*)"rho_d.txt", (char*)"mu_d.txt", (char*)"yy_d.txt");
 
   // dump_rho_mu_yy(grid_yy_rho_mu, grid_d);

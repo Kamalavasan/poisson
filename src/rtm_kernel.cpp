@@ -384,10 +384,10 @@ void process_SLR0 (uint512_dt*  arg0, uint512_dt*  arg1,
     data_g.sizex = sizex;
     data_g.sizey = sizey;
     data_g.sizez = sizez;
-	data_g.grid_sizex = sizex+ORDER;
-	data_g.grid_sizey = sizey+ORDER;
-	data_g.grid_sizez = sizez+ORDER;
-	data_g.limit_z = sizez+2*ORDER;
+	data_g.grid_sizex = sizex+2*ORDER;
+	data_g.grid_sizey = sizey+2*ORDER;
+	data_g.grid_sizez = sizez+2*ORDER;
+	data_g.limit_z = sizez+3*ORDER;
 
 
 	unsigned short grid_sizey_4 = (data_g.grid_sizey - 4);
