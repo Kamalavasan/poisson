@@ -39,7 +39,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-// #include "xcl2.hpp"
+#include "xcl2.hpp"
 #include <chrono>
 #include "omp.h"
 
@@ -195,13 +195,13 @@ int main(int argc, char **argv)
     OCL_CHECK(err,
               cl::Buffer buffer_input(context,
                                       CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-                                      data_size_bytes_dim8,
+                                      grid_d.data_size_bytes_dim8,
                                       grid_yy_rho_mu_d,
                                       &err));
     OCL_CHECK(err,
               cl::Buffer buffer_output(context,
                                        CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-                                       data_size_bytes_dim8,
+                                       grid_d.data_size_bytes_dim8,
                                        grid_yy_rho_mu_temp_d,
                                        &err));
 
@@ -209,10 +209,10 @@ int main(int argc, char **argv)
     int narg = 0;
     OCL_CHECK(err, err = krnl_stencil.setArg(narg++, buffer_input));
     OCL_CHECK(err, err = krnl_stencil.setArg(narg++, buffer_output));
-    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, logical_size_x));
-    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, logical_size_y));
-    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, logical_size_z));
-    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_size_x));
+    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_d.logical_size_x));
+    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_d.logical_size_y));
+    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_d.logical_size_z));
+    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_d.grid_size_x));
     OCL_CHECK(err, err = krnl_stencil.setArg(narg++, n_iter));
 
     //Copy input data to device global memory
@@ -240,7 +240,6 @@ int main(int argc, char **argv)
                                                   CL_MIGRATE_MEM_OBJECT_HOST));
 
     q.finish();
-   auto finish = std::chrono::high_resolution_clock::now();
 
   // dump_rho_mu_yy(grid_yy_rho_mu, grid_d);
   for(int itr = 0; itr < n_iter*1; itr++){
@@ -255,9 +254,9 @@ int main(int argc, char **argv)
 
 
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
-  float bandwidth = (data_size_bytes * 4.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
-  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
+//  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
+  float bandwidth = (grid_d.data_size_bytes_dim8 * 4.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
+//  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
   printf("\nBandwidth is %f\n", bandwidth);
 
 //  act_sizez = 2;

@@ -130,11 +130,11 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 
 	float mem_wr[PORT_WIDTH];
 
-	#pragma HLS ARRAY_PARTITION variable=s_1_1_2_arr complete dim=1
-	#pragma HLS ARRAY_PARTITION variable=s_1_2_1_arr complete dim=1
-	#pragma HLS ARRAY_PARTITION variable=s_1_1_1_arr complete dim=1
-	#pragma HLS ARRAY_PARTITION variable=s_1_0_1_arr complete dim=1
-	#pragma HLS ARRAY_PARTITION variable=s_1_1_0_arr complete dim=1
+//	#pragma HLS ARRAY_PARTITION variable=s_1_1_2_arr complete dim=1
+//	#pragma HLS ARRAY_PARTITION variable=s_1_2_1_arr complete dim=1
+//	#pragma HLS ARRAY_PARTITION variable=s_1_1_1_arr complete dim=1
+//	#pragma HLS ARRAY_PARTITION variable=s_1_0_1_arr complete dim=1
+//	#pragma HLS ARRAY_PARTITION variable=s_1_1_0_arr complete dim=1
 	#pragma HLS ARRAY_PARTITION variable=mem_wr complete dim=1
 
 
