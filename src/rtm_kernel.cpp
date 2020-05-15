@@ -116,25 +116,22 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 	unsigned int plane_size = data_g.plane_size;
 	unsigned int gridsize = data_g.gridsize_pr;
 
-	float s_4_4_8_arr[PORT_WIDTH], s_4_4_7_arr[PORT_WIDTH], s_4_4_6_arr[PORT_WIDTH], s_4_4_5_arr[PORT_WIDTH];
-	float s_4_8_4_arr[PORT_WIDTH], s_4_7_4_arr[PORT_WIDTH], s_4_6_4_arr[PORT_WIDTH], s_4_5_4_arr[PORT_WIDTH];
-	float s_8_4_4_arr[PORT_WIDTH], s_7_4_4_arr[PORT_WIDTH], s_6_4_4_arr[PORT_WIDTH], s_5_4_4_arr[PORT_WIDTH];
-	float s_4_4_4_arr[PORT_WIDTH];
-	float s_3_4_4_arr[PORT_WIDTH], s_2_4_4_arr[PORT_WIDTH], s_1_4_4_arr[PORT_WIDTH], s_0_4_4_arr[PORT_WIDTH];
-	float s_4_3_4_arr[PORT_WIDTH], s_4_2_4_arr[PORT_WIDTH], s_4_1_4_arr[PORT_WIDTH], s_4_0_4_arr[PORT_WIDTH];
-	float s_4_4_3_arr[PORT_WIDTH], s_4_4_2_arr[PORT_WIDTH], s_4_4_1_arr[PORT_WIDTH], s_4_4_0_arr[PORT_WIDTH];
+	// float s_4_4_8_arr[PORT_WIDTH], s_4_4_7_arr[PORT_WIDTH], s_4_4_6_arr[PORT_WIDTH], s_4_4_5_arr[PORT_WIDTH];
+	// float s_4_8_4_arr[PORT_WIDTH], s_4_7_4_arr[PORT_WIDTH], s_4_6_4_arr[PORT_WIDTH], s_4_5_4_arr[PORT_WIDTH];
+	// float s_8_4_4_arr[PORT_WIDTH], s_7_4_4_arr[PORT_WIDTH], s_6_4_4_arr[PORT_WIDTH], s_5_4_4_arr[PORT_WIDTH];
+	// float s_4_4_4_arr[PORT_WIDTH];
+	// float s_3_4_4_arr[PORT_WIDTH], s_2_4_4_arr[PORT_WIDTH], s_1_4_4_arr[PORT_WIDTH], s_0_4_4_arr[PORT_WIDTH];
+	// float s_4_3_4_arr[PORT_WIDTH], s_4_2_4_arr[PORT_WIDTH], s_4_1_4_arr[PORT_WIDTH], s_4_0_4_arr[PORT_WIDTH];
+	// float s_4_4_3_arr[PORT_WIDTH], s_4_4_2_arr[PORT_WIDTH], s_4_4_1_arr[PORT_WIDTH], s_4_4_0_arr[PORT_WIDTH];
 	// float s_1_2_1_arr[PORT_WIDTH];
 	// float s_1_1_1_arr[PORT_WIDTH];
 	// float s_1_0_1_arr[PORT_WIDTH];
 	// float s_1_1_0_arr[PORT_WIDTH];
 
-	float mem_wr[PORT_WIDTH];
 
-//	#pragma HLS ARRAY_PARTITION variable=s_1_1_2_arr complete dim=1
-//	#pragma HLS ARRAY_PARTITION variable=s_1_2_1_arr complete dim=1
-//	#pragma HLS ARRAY_PARTITION variable=s_1_1_1_arr complete dim=1
-//	#pragma HLS ARRAY_PARTITION variable=s_1_0_1_arr complete dim=1
-//	#pragma HLS ARRAY_PARTITION variable=s_1_1_0_arr complete dim=1
+
+
+
 	#pragma HLS ARRAY_PARTITION variable=mem_wr complete dim=1
 
 
@@ -185,6 +182,30 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 	uint256_dt s_3_4_4, s_2_4_4, s_1_4_4, s_0_4_4;
 	uint256_dt s_4_3_4, s_4_2_4, s_4_1_4, s_4_0_4;
 	uint256_dt s_4_4_3, s_4_4_2, s_4_4_1, s_4_4_0;
+
+
+	const float c = {0.0035714285714285713,-0.0380952380952381,0.2,-0.8,0.0,0.8,-0.2,0.0380952380952381,-0.0035714285714285713};
+	const float invdx = 200; // 1/0.005
+	const float invdy = 200; // 1/0.005
+	const float invdz = 200; // 1/0.005
+	const unsigned short half = 4;
+	const unsigned short pml_width = 10;
+
+	unsigned short xbeg=half;
+	unsigned short xend=sizex-half;
+	unsigned short ybeg=half;
+	unsigned short yend=sizey-half;
+	unsigned short zbeg=half;
+	unsigned short zend=sizez-half;
+	unsigned short xpmlbeg=xbeg+pml_width;
+	unsigned short ypmlbeg=ybeg+pml_width;
+	unsigned short zpmlbeg=zbeg+pml_width;
+	unsigned short xpmlend=xend-pml_width;
+	unsigned short ypmlend=yend-pml_width;
+	unsigned short zpmlend=zend-pml_width;
+
+
+
 	
 	unsigned short i = 0, j = 0, k = 0;
 	unsigned short j_p = 0, j_l = 0, j_p_diff = 0, j_l_diff = 0;
@@ -300,22 +321,62 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 		}
 
 
-		// vec2arr: for(int k = 0; k < PORT_WIDTH; k++){
-		// 	#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
-		// 	data_conv s_1_1_2_u, s_1_2_1_u, s_1_1_1_u, s_1_0_1_u, s_1_1_0_u;
-		// 	s_1_1_2_u.i = s_1_1_2.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
-		// 	s_1_2_1_u.i = s_1_2_1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
-		// 	s_1_1_1_u.i = s_1_1_1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
-		// 	s_1_0_1_u.i = s_1_0_1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
-		// 	s_1_1_0_u.i = s_1_1_0.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
 
-		// 	s_1_1_2_arr[k]   =  s_1_1_2_u.f;
-		// 	s_1_2_1_arr[k]   =  s_1_2_1_u.f;
-		// 	s_1_1_1_arr[k+1] =  s_1_1_1_u.f;
-		// 	s_1_0_1_arr[k]   =  s_1_0_1_u.f;
-		// 	s_1_1_0_arr[k]   =  s_1_1_0_u.f;
+		// X ARM
+		float X_ARM_0[2*ORDER+1] = {s_0_4_4.range(31,0), s_1_4_4.range(31,0), s_2_4_4.range(31,0), s_3_4_4.range(31,0), s_4_4_4.range(31,0), s_5_4_4.range(31,0), s_6_4_4.range(31,0), s_7_4_4.range(31,0), s_8_4_4.range(31,0)}; 
 
-		// }
+		float X_ARM_1[2*ORDER+1] = {s_0_4_4.range(63,32), s_1_4_4.range(63,32), s_2_4_4.range(63,32), s_3_4_4.range(63,32), s_4_4_4.range(63,32), s_5_4_4.range(63,32), s_6_4_4.range(63,32), s_7_4_4.range(63,32), s_8_4_4.range(63,32)}; 
+
+		float X_ARM_2[2*ORDER+1] = {s_0_4_4.range(95,64), s_1_4_4.range(95,64), s_2_4_4.range(95,64), s_3_4_4.range(95,64), s_4_4_4.range(95,64), s_5_4_4.range(95,64), s_6_4_4.range(95,64), s_7_4_4.range(95,64), s_8_4_4.range(95,64)}; 
+
+		float X_ARM_3[2*ORDER+1] = {s_0_4_4.range(127,96), s_1_4_4.range(127,96), s_2_4_4.range(127,96), s_3_4_4.range(127,96), s_4_4_4.range(127,96), s_5_4_4.range(127,96), s_6_4_4.range(127,96), s_7_4_4.range(127,96), s_8_4_4.range(127,96)}; 
+
+		float X_ARM_4[2*ORDER+1] = {s_0_4_4.range(159,128), s_1_4_4.range(159,128), s_2_4_4.range(159,128), s_3_4_4.range(159,128), s_4_4_4.range(159,128), s_5_4_4.range(159,128), s_6_4_4.range(159,128), s_7_4_4.range(159,128), s_8_4_4.range(159,128)}; 
+
+		// Y ARM
+		float Y_ARM_0[2*ORDER+1] = {s_4_0_4.range(31,0), s_4_1_4.range(31,0), s_4_2_4.range(31,0), s_4_3_4.range(31,0), s_4_4_4.range(31,0), s_4_5_4.range(31,0), s_4_6_4.range(31,0), s_4_7_4.range(31,0), s_4_8_4.range(31,0)}; 
+
+		float Y_ARM_1[2*ORDER+1] = {s_4_0_4.range(63,32), s_4_1_4.range(63,32), s_4_2_4.range(63,32), s_4_3_4.range(63,32), s_4_4_4.range(63,32), s_4_5_4.range(63,32), s_4_6_4.range(63,32), s_4_7_4.range(63,32), s_4_8_4.range(63,32)}; 
+
+		float Y_ARM_2[2*ORDER+1] = {s_4_0_4.range(95,64), s_4_1_4.range(95,64), s_4_2_4.range(95,64), s_4_3_4.range(95,64), s_4_4_4.range(95,64), s_4_5_4.range(95,64), s_4_6_4.range(95,64), s_4_7_4.range(95,64), s_4_8_4.range(95,64)}; 
+
+		float Y_ARM_3[2*ORDER+1] = {s_4_0_4.range(127,96), s_4_1_4.range(127,96), s_4_2_4.range(127,96), s_4_3_4.range(127,96), s_4_4_4.range(127,96), s_4_5_4.range(127,96), s_4_6_4.range(127,96), s_4_7_4.range(127,96), s_4_8_4.range(127,96)}; 
+
+		float Y_ARM_4[2*ORDER+1] = {s_4_0_4.range(159,128), s_4_1_4.range(159,128), s_4_2_4.range(159,128), s_4_3_4.range(159,128), s_4_4_4.range(159,128), s_4_5_4.range(159,128), s_4_6_4.range(159,128), s_4_7_4.range(159,128), s_4_8_4.range(159,128)}; 
+
+		// Z ARM
+		float Z_ARM_0[2*ORDER+1] = {s_4_4_0.range(31,0), s_4_4_1.range(31,0), s_4_4_2.range(31,0), s_4_4_3.range(31,0), s_4_4_4.range(31,0), s_4_4_5.range(31,0), s_4_4_6.range(31,0), s_4_4_7.range(31,0), s_4_4_8.range(31,0)}; 
+
+		float Z_ARM_1[2*ORDER+1] = {s_4_4_0.range(63,32), s_4_4_1.range(63,32), s_4_4_2.range(63,32), s_4_4_3.range(63,32), s_4_4_4.range(63,32), s_4_4_5.range(63,32), s_4_4_6.range(63,32), s_4_4_7.range(63,32), s_4_4_8.range(63,32)}; 
+
+		float Z_ARM_2[2*ORDER+1] = {s_4_4_0.range(95,64), s_4_4_1.range(95,64), s_4_4_2.range(95,64), s_4_4_3.range(95,64), s_4_4_4.range(95,64), s_4_4_5.range(95,64), s_4_4_6.range(95,64), s_4_4_7.range(95,64), s_4_4_8.range(95,64)}; 
+
+		float Z_ARM_3[2*ORDER+1] = {s_4_4_0.range(127,96), s_4_4_1.range(127,96), s_4_4_2.range(127,96), s_4_4_3.range(127,96), s_4_4_4.range(127,96), s_4_4_5.range(127,96), s_4_4_6.range(127,96), s_4_4_7.range(127,96), s_4_4_8.range(127,96)}; 
+
+		float Z_ARM_4[2*ORDER+1] = {s_4_4_0.range(159,128), s_4_4_1.range(159,128), s_4_4_2.range(159,128), s_4_4_3.range(159,128), s_4_4_4.range(159,128), s_4_4_5.range(159,128), s_4_4_6.range(159,128), s_4_4_7.range(159,128), s_4_4_8.range(159,128)}; 
+
+		float mem_wr[PORT_WIDTH];
+
+		#pragma HLS ARRAY_PARTITION variable=X_ARM_0 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X_ARM_1 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X_ARM_2 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X_ARM_3 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X_ARM_4 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X_ARM_5 complete dim=1
+
+		#pragma HLS ARRAY_PARTITION variable=Y_ARM_0 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y_ARM_1 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y_ARM_2 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y_ARM_3 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y_ARM_4 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y_ARM_5 complete dim=1
+
+		#pragma HLS ARRAY_PARTITION variable=Z_ARM_0 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z_ARM_1 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z_ARM_2 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z_ARM_3 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z_ARM_4 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z_ARM_5 complete dim=1
 
 
 		// process: for(short q = 0; q < PORT_WIDTH; q++){
