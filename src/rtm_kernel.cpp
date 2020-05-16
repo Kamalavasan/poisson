@@ -356,6 +356,17 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 		float Z_ARM_4[2*ORDER+1] = {s_4_4_0.range(159,128), s_4_4_1.range(159,128), s_4_4_2.range(159,128), s_4_4_3.range(159,128), s_4_4_4.range(159,128), s_4_4_5.range(159,128), s_4_4_6.range(159,128), s_4_4_7.range(159,128), s_4_4_8.range(159,128)}; 
 
 		float mem_wr[PORT_WIDTH];
+		float s_4_4_4_arr[PORT_WIDTH];
+		vec2s_4_4_4_arr: for(int k = 0; k < PORT_WIDTH; k++){
+			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
+			data_conv tmp;
+			tmp.i = s_4_4_4.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			s_4_4_4_arr[k] = tmp.f;
+		}
+
+
+
+
 
 		#pragma HLS ARRAY_PARTITION variable=X_ARM_0 complete dim=1
 		#pragma HLS ARRAY_PARTITION variable=X_ARM_1 complete dim=1
@@ -378,40 +389,121 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 		#pragma HLS ARRAY_PARTITION variable=Z_ARM_4 complete dim=1
 		#pragma HLS ARRAY_PARTITION variable=Z_ARM_5 complete dim=1
 
+		#pragma HLS ARRAY_PARTITION variable=mem_wr complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=s_4_4_4_arr complete dim=1
 
-		// process: for(short q = 0; q < PORT_WIDTH; q++){
-		// 	#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
-		// 	short index = (k << SHIFT_BITS) + q;
-		// 	float r1_1_2 =  s_1_1_2_arr[q] * 0.02;
-		// 	float r1_2_1 =  s_1_2_1_arr[q] * 0.04;
-		// 	float r0_1_1 =  s_1_1_1_arr[q] * 0.05;
-		// 	float r1_1_1 =  s_1_1_1_arr[q+1] * 0.79;
-		// 	float r2_1_1 =  s_1_1_1_arr[q+2] * 0.06;
-		// 	float r1_0_1 =  s_1_0_1_arr[q] * 0.03;
-		// 	float r1_1_0 =  s_1_1_0_arr[q] * 0.01;
 
-		// 	float f1 = r1_1_2 + r1_2_1;
-		// 	float f2 = r0_1_1 + r1_1_1;
-		// 	float f3 = r2_1_1 + r1_0_1;
 
-		// 	float r1 = f1 + f2;
-		// 	float r2=  f3 + r1_1_0;
 
-		// 	float result  = r1 + r2;
-		// 	bool change_cond = (index <= 0 || index > sizex || (i <= 1) || (i >= limit_z -1) || (j == 0) || (j == grid_sizey -1));
-		// 	mem_wr[q] = change_cond ? s_1_1_1_arr[q+1] : result;
-		// }
+	  	float sigma = 1 ; //mu[OPS_ACC5(0,0,0)]/rho[OPS_ACC4(0,0,0)];
+	  	float sigmax=0.0;
+	  	float sigmay=0.0;
+	  	float sigmaz=0.0;
 
-		// array2vec: for(int k = 0; k < PORT_WIDTH; k++){
-		// 	#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
-		// 	data_conv tmp;
-		// 	tmp.f = mem_wr[k];
-		// 	update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
-		// }
+	  	unsigned short idx = k - ORDER;
+	  	unsigned short idy = j - ORDER;
+	  	unsigned short idz = i - ORDER;
+
+	  	if(idx <= xbeg+pml_width){
+	  	  sigmax = (xbeg+pml_width-idx ) * 0.1;//sigma/pml_width;
+	  	}else if(idy >=xend-pml_width){
+	  	  sigmax=(idy -(xend-pml_width)) * 0.1; //sigma/pml_width;
+	  	}
+	  	if(idz <= ybeg+pml_width){
+	  	  sigmay=(ybeg+pml_width-idy) * 0.1; //sigma/pml_width;
+	  	}else if(idy >= yend-pml_width){
+	  	  sigmay=(idx[1]-(yend-pml_width)) * 0.1; //sigma/pml_width;
+	  	}
+	  	if(idz <= zbeg+pml_width){
+	  	  sigmaz=(zbeg+pml_width-idz) * 0.1; //sigma/pml_width;
+	  	}else if(idz >= zend-pml_width){
+	  	  sigmaz=(idz -(zend-pml_width)) * 0.1; //sigma/pml_width;
+	  	}
+
+
+	  	float px = X_ARM_0[5];
+	  	float py = X_ARM_1[5];
+	  	float pz = X_ARM_2[5];
+
+	  	float vx = X_ARM_3[5];
+	  	float vy = X_ARM_4[5];
+	  	float vz = X_ARM_5[5];
+
+
+	  	float vxx=0.0;
+	  	float vxy=0.0;
+	  	float vxz=0.0;
+	  	
+	  	float vyx=0.0;
+	  	float vyy=0.0;
+	  	float vyz=0.0;
+	
+	  	float vzx=0.0;
+	  	float vzy=0.0;
+	  	float vzz=0.0;
+	  	
+	  	float pxx=0.0;
+	  	float pxy=0.0;
+	  	float pxz=0.0;
+	  	
+	  	float pyx=0.0;
+	  	float pyy=0.0;
+	  	float pyz=0.0;
+	
+	  	float pzx=0.0;
+	  	float pzy=0.0;
+	  	float pzz=0.0;
+
+	  	for(int i=0;i <= ORDER*2; i++){
+		    pxx += X_ARM_0[i] * c[i] * invdx;
+		    pyx += X_ARM_1[i] * c[i] * invdx;
+		    pzx += X_ARM_2[i] * c[i] * invdx;
+		    
+		    vxx += X_ARM_3[i] * c[i] * invdx;
+		    vyx += X_ARM_4[i] * c[i] * invdx;
+		    vzx += X_ARM_5[i] * c[i] * invdx;
+		    
+		    pxy += Y_ARM_0[i] * c[i] * invdx;
+		    pyy += Y_ARM_1[i] * c[i] * invdx;
+		    pzy += Y_ARM_2[i] * c[i] * invdx;
+		    
+		    vxy += Y_ARM_0[i] * c[i] * invdx;
+		    vyy += Y_ARM_1[i] * c[i] * invdx;
+		    vzy += Y_ARM_2[i] * c[i] * invdx;
+		    
+		    pxz += Z_ARM_0[i] * c[i] * invdx;
+		    pyz += Z_ARM_1[i] * c[i] * invdx;
+		    pzz += Z_ARM_2[i] * c[i] * invdx;
+		    
+		    vxz += Z_ARM_0[i] * c[i] * invdx;
+		    vyz += Z_ARM_1[i] * c[i] * invdx;
+		    vzz += Z_ARM_2[i] * c[i] * invdx;
+		}
+  
+
+  		mem_wr[0]=vxx - sigmax*px;            //vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
+  		mem_wr[3]=(pxx+pyx+pxz) - sigmax*vx;  //(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
+  		
+  		mem_wr[1]=vyy - sigmay*py;  		  // vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
+  		mem_wr[4]=(pxy+pyy+pyz)- sigmay*vy;   //(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
+  		
+  		mem_wr[2]=vzz  - sigmaz*pz;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
+  		mem_wr[5]=(pxz+pyz+pzz) - sigmaz*vz;  //(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
+
+  		mem_wr[6] = s_4_4_4_arr[6];
+  		mem_wr[7] = s_4_4_4_arr[7];
+
+		array2vec: for(int k = 0; k < PORT_WIDTH; k++){
+			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
+			data_conv tmp;
+			bool change_cond = (idx < 0 || idx >= sizex || (idy < 0) || (idy >= sizey ) || (idz < ORDER) || (idz >= grid_sizez));
+			tmp.f = change_cond ? : s_4_4_4_arr[k] : mem_wr[k];
+			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
+		}
 
 		bool cond_wr = (i >= ORDER) && ( i <= limit_z);
 		if(cond_wr ) {
-			wr_buffer << s_4_4_4;// update_j;
+			wr_buffer << update_j;// update_j;
 		}
 
 		// move the cell block
