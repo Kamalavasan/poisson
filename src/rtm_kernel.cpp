@@ -337,7 +337,7 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 
 		int i_X_ARM_5[2*ORDER+1] = {s_0_4_4.range(255,224), s_1_4_4.range(255,224), s_2_4_4.range(255,224), s_3_4_4.range(255,224), s_4_4_4.range(255,224), s_5_4_4.range(255,224), s_6_4_4.range(255,224), s_7_4_4.range(255,224), s_8_4_4.range(255,224)};
 
-		float X_ARM_0[2*ORDER+1], X_ARM_0[2*ORDER+1], X_ARM_0[2*ORDER+1], X_ARM_0[2*ORDER+1], X_ARM_0[2*ORDER+1], X_ARM_0[2*ORDER+1];
+		float X_ARM_0[2*ORDER+1], X_ARM_1[2*ORDER+1], X_ARM_2[2*ORDER+1], X_ARM_3[2*ORDER+1], X_ARM_4[2*ORDER+1], X_ARM_5[2*ORDER+1];
 		for(int i = 0; i < 2*ORDER+1; i++){
 			data_conv tmp;
 			tmp.i = i_X_ARM_0[i];
@@ -373,7 +373,7 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 
 		int i_Y_ARM_5[2*ORDER+1] = {s_4_0_4.range(255,224), s_4_1_4.range(255,224), s_4_2_4.range(255,224), s_4_3_4.range(255,224), s_4_4_4.range(255,224), s_4_5_4.range(255,224), s_4_6_4.range(255,224), s_4_7_4.range(255,224), s_4_8_4.range(255,224)};
 
-		float Y_ARM_0[2*ORDER+1], Y_ARM_0[2*ORDER+1], Y_ARM_0[2*ORDER+1], Y_ARM_0[2*ORDER+1], Y_ARM_0[2*ORDER+1], Y_ARM_0[2*ORDER+1];
+		float Y_ARM_0[2*ORDER+1], Y_ARM_1[2*ORDER+1], Y_ARM_2[2*ORDER+1], Y_ARM_3[2*ORDER+1], Y_ARM_4[2*ORDER+1], Y_ARM_5[2*ORDER+1];
 		for(int i = 0; i < 2*ORDER+1; i++){
 			data_conv tmp;
 			tmp.i = i_Y_ARM_0[i];
@@ -405,11 +405,11 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 
 		int i_Z_ARM_3[2*ORDER+1] = {s_4_4_0.range(191,160), s_4_4_1.range(191,160), s_4_4_2.range(191,160), s_4_4_3.range(191,160), s_4_4_4.range(191,160), s_4_4_5.range(191,160), s_4_4_6.range(191,160), s_4_4_7.range(191,160), s_4_4_8.range(191,160)};
 
-		int i_Z_ARM_4[2*ORDER+1] = {s_4_4_0.range(223,192), s_4_4_1.range(223,192), s_4_4_2.range(223,192), s_4_4_3.range(223,192), s_4_4_4.range(223,192), s_4_4_5.range(223,192), s_4_4_6.range(223,192), s_4_4_7.range(223,192), s_4_4_8.range(223,192)};i_
+		int i_Z_ARM_4[2*ORDER+1] = {s_4_4_0.range(223,192), s_4_4_1.range(223,192), s_4_4_2.range(223,192), s_4_4_3.range(223,192), s_4_4_4.range(223,192), s_4_4_5.range(223,192), s_4_4_6.range(223,192), s_4_4_7.range(223,192), s_4_4_8.range(223,192)};
 
 		int i_Z_ARM_5[2*ORDER+1] = {s_4_4_0.range(255,224), s_4_4_1.range(255,224), s_4_4_2.range(255,224), s_4_4_3.range(255,224), s_4_4_4.range(255,224), s_4_4_5.range(255,224), s_4_4_6.range(255,224), s_4_4_7.range(255,224), s_4_4_8.range(255,224)};
 
-		float Z_ARM_0[2*ORDER+1], Z_ARM_0[2*ORDER+1], Z_ARM_0[2*ORDER+1], Z_ARM_0[2*ORDER+1], Z_ARM_0[2*ORDER+1], Z_ARM_0[2*ORDER+1];
+		float Z_ARM_0[2*ORDER+1], Z_ARM_1[2*ORDER+1], Z_ARM_2[2*ORDER+1], Z_ARM_3[2*ORDER+1], Z_ARM_4[2*ORDER+1], Z_ARM_5[2*ORDER+1];
 		for(int i = 0; i < 2*ORDER+1; i++){
 			data_conv tmp;
 			tmp.i = i_Z_ARM_0[i];
@@ -562,14 +562,14 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 		}
   
 
-  		mem_wr[2]= px; // sigmax;///**vxx -*/ sigmax*px;            //vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
-  		mem_wr[5]= 3; //(pxx+pyx+pxz) - sigmax*vx;  //(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
+  		mem_wr[2]= vxx - sigmax*px;            //vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
+  		mem_wr[5]= 5;//(pxx+pyx+pxz) - sigmax*vx;  //(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
   		
-  		mem_wr[3]= 1; //vyy - sigmay*py;  		  // vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
-  		mem_wr[6]= 4; //(pxy+pyy+pyz)- sigmay*vy;   //(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
+  		mem_wr[3]= vyy - sigmay*py;  		  // vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
+  		mem_wr[6]= 6;//(pxy+pyy+pyz)- sigmay*vy;   //(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
   		
-  		mem_wr[4]= 2; //vzz  - sigmaz*pz;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
-  		mem_wr[7]= 5; //(pxz+pyz+pzz) - sigmaz*vz;  //(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
+  		mem_wr[4]= vzz  - sigmaz*pz;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
+  		mem_wr[7]= (pxz+pyz+pzz) - sigmaz*vz;  //(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
 
   		mem_wr[0] = s_4_4_4_arr[6];
   		mem_wr[1] = s_4_4_4_arr[7];
