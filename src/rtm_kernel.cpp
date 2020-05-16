@@ -252,9 +252,11 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 
 
 		// negetive to positive x arm
-		window_y_n_1[j_l_diff] = s_0_4_4;
+
 
 		s_0_4_4 = s_1_4_4;
+		window_y_n_1[j_l_diff] = s_0_4_4;
+
 		s_1_4_4 = s_2_4_4;
 		s_2_4_4 = s_3_4_4;
 		s_3_4_4 = s_4_4_4;
@@ -535,7 +537,7 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 	  	float pzy=0.0;
 	  	float pzz=0.0;
 
-	  	for(int l=ORDER;l <= ORDER*2; l++){
+	  	for(int l=0;l <= ORDER*2; l++){
 		    pxx += X_ARM_0[l] * c[l] * invdx;
 		    pyx += X_ARM_1[l] * c[l] * invdx;
 		    pzx += X_ARM_2[l] * c[l] * invdx;

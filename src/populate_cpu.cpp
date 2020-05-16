@@ -205,7 +205,7 @@ void fd3d_pml_kernel(float* yy, float* dyy, struct Grid_d grid_d){
         float pzy=0.0;
         float pzz=0.0;
 
-        for(int l=0;l<=half;l++){
+        for(int l=-half;l<=half;l++){
           pxx += yy[caculate_index(grid_d,i,j,k+l,2)]*c[l]*invdx;
           pyx += yy[caculate_index(grid_d,i,j,k+l,3)]*c[l]*invdx;
           pzx += yy[caculate_index(grid_d,i,j,k+l,4)]*c[l]*invdx;
