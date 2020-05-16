@@ -46,12 +46,17 @@ double square_error(float* current, float* next, struct Grid_d grid_d){
     for(int i = 0; i < grid_d.grid_size_z; i++){
       for(int j = 0; j < grid_d.grid_size_y; j++){
         for(int k = 0; k < grid_d.grid_size_x; k++){
-          for(int p = 0; p < 6; p++){
+          for(int p = 2; p < 8; p++){
             float val1 = next[i*grid_d.grid_size_x*grid_d.grid_size_y*8 + j*grid_d.grid_size_x*8 + k*8 + p];
             float val2 = current[i*grid_d.grid_size_x*grid_d.grid_size_y*8 + j*grid_d.grid_size_x*8 + k*8 + p];
+            if(fabs(val2- val1) > 0.1){
+            	printf("(%d %d %d %f) ", i,j,k, (val2- val1));
+            }
             sum +=  val1*val1 - val2*val2;
         }
+//          printf("\n");
         }
+//        printf("\n");
       }
     }
     return sum;
@@ -227,7 +232,7 @@ void fd3d_pml_kernel(float* yy, float* dyy, struct Grid_d grid_d){
         }
       
 
-        dyy[caculate_index(grid_d,i,j,k,2)]= 0; //vxx/yy[caculate_index(grid_d,i,j,k,0)]- sigmax * px;
+        dyy[caculate_index(grid_d,i,j,k,2)]= px ; // sigmax ; //* px; ///*vxx/yy[caculate_index(grid_d,i,j,k,0)]-*/ ;
         dyy[caculate_index(grid_d,i,j,k,5)]= 3; //(pxx+pyx+pxz)*yy[caculate_index(grid_d,i,j,k,1)] - sigmax*vx;
         
         dyy[caculate_index(grid_d,i,j,k,3)]= 1; //vyy/yy[caculate_index(grid_d,i,j,k,0)]  - sigmay*py;

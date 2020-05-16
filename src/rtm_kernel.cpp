@@ -192,18 +192,18 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 	const unsigned short half = 4;
 	const unsigned short pml_width = 10;
 
-	unsigned short xbeg=half;
-	unsigned short xend=sizex-half;
-	unsigned short ybeg=half;
-	unsigned short yend=sizey-half;
-	unsigned short zbeg=half;
-	unsigned short zend=sizez-half;
-	unsigned short xpmlbeg=xbeg+pml_width;
-	unsigned short ypmlbeg=ybeg+pml_width;
-	unsigned short zpmlbeg=zbeg+pml_width;
-	unsigned short xpmlend=xend-pml_width;
-	unsigned short ypmlend=yend-pml_width;
-	unsigned short zpmlend=zend-pml_width;
+	short xbeg=half;
+	short xend=sizex-half;
+	short ybeg=half;
+	short yend=sizey-half;
+	short zbeg=half;
+	short zend=sizez-half;
+	short xpmlbeg=xbeg+pml_width;
+	short ypmlbeg=ybeg+pml_width;
+	short zpmlbeg=zbeg+pml_width;
+	short xpmlend=xend-pml_width;
+	short ypmlend=yend-pml_width;
+	short zpmlend=zend-pml_width;
 
 
 
@@ -416,28 +416,33 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 
 	  	if(idx <= xbeg+pml_width){
 	  	  sigmax = (xbeg+pml_width-idx ) * 0.1;//sigma/pml_width;
-	  	}else if(idx >=xend-pml_width){
+	  	}
+	  	if(idx >=xend-pml_width){
 	  	  sigmax=(idx -(xend-pml_width)) * 0.1; //sigma/pml_width;
 	  	}
+
 	  	if(idy <= ybeg+pml_width){
 	  	  sigmay=(ybeg+pml_width-idy) * 0.1; //sigma/pml_width;
-	  	}else if(idy >= yend-pml_width){
+	  	}
+	  	if(idy >= yend-pml_width){
 	  	  sigmay=(idy-(yend-pml_width)) * 0.1; //sigma/pml_width;
 	  	}
+
 	  	if(idz <= zbeg+pml_width){
 	  	  sigmaz=(zbeg+pml_width-idz) * 0.1; //sigma/pml_width;
-	  	}else if(idz >= zend-pml_width){
+	  	}
+	  	if(idz >= zend-pml_width){
 	  	  sigmaz=(idz -(zend-pml_width)) * 0.1; //sigma/pml_width;
 	  	}
 
 
-	  	float px = X_ARM_0[5];
-	  	float py = X_ARM_1[5];
-	  	float pz = X_ARM_2[5];
+	  	float px = s_4_4_4_arr[2]; //X_ARM_0[4];
+	  	float py = X_ARM_1[4];
+	  	float pz = X_ARM_2[4];
 
-	  	float vx = X_ARM_3[5];
-	  	float vy = X_ARM_4[5];
-	  	float vz = X_ARM_5[5];
+	  	float vx = X_ARM_3[4];
+	  	float vy = X_ARM_4[4];
+	  	float vz = X_ARM_5[4];
 
 
 	  	float vxx=0.0;
@@ -464,49 +469,49 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 	  	float pzy=0.0;
 	  	float pzz=0.0;
 
-	  	for(int i=0;i <= ORDER*2; i++){
-		    pxx += X_ARM_0[i] * c[i] * invdx;
-		    pyx += X_ARM_1[i] * c[i] * invdx;
-		    pzx += X_ARM_2[i] * c[i] * invdx;
+	  	for(int l=0;l <= ORDER*2; l++){
+		    pxx += X_ARM_0[l] * c[l] * invdx;
+		    pyx += X_ARM_1[l] * c[l] * invdx;
+		    pzx += X_ARM_2[l] * c[l] * invdx;
 		    
-		    vxx += X_ARM_3[i] * c[i] * invdx;
-		    vyx += X_ARM_4[i] * c[i] * invdx;
-		    vzx += X_ARM_5[i] * c[i] * invdx;
+		    vxx += X_ARM_3[l] * c[l] * invdx;
+		    vyx += X_ARM_4[l] * c[l] * invdx;
+		    vzx += X_ARM_5[l] * c[l] * invdx;
 		    
-		    pxy += Y_ARM_0[i] * c[i] * invdx;
-		    pyy += Y_ARM_1[i] * c[i] * invdx;
-		    pzy += Y_ARM_2[i] * c[i] * invdx;
+		    pxy += Y_ARM_0[l] * c[l] * invdx;
+		    pyy += Y_ARM_1[l] * c[l] * invdx;
+		    pzy += Y_ARM_2[l] * c[l] * invdx;
 		    
-		    vxy += Y_ARM_0[i] * c[i] * invdx;
-		    vyy += Y_ARM_1[i] * c[i] * invdx;
-		    vzy += Y_ARM_2[i] * c[i] * invdx;
+		    vxy += Y_ARM_0[l] * c[l] * invdx;
+		    vyy += Y_ARM_1[l] * c[l] * invdx;
+		    vzy += Y_ARM_2[l] * c[l] * invdx;
 		    
-		    pxz += Z_ARM_0[i] * c[i] * invdx;
-		    pyz += Z_ARM_1[i] * c[i] * invdx;
-		    pzz += Z_ARM_2[i] * c[i] * invdx;
+		    pxz += Z_ARM_0[l] * c[l] * invdx;
+		    pyz += Z_ARM_1[l] * c[l] * invdx;
+		    pzz += Z_ARM_2[l] * c[l] * invdx;
 		    
-		    vxz += Z_ARM_0[i] * c[i] * invdx;
-		    vyz += Z_ARM_1[i] * c[i] * invdx;
-		    vzz += Z_ARM_2[i] * c[i] * invdx;
+		    vxz += Z_ARM_0[l] * c[l] * invdx;
+		    vyz += Z_ARM_1[l] * c[l] * invdx;
+		    vzz += Z_ARM_2[l] * c[l] * invdx;
 		}
   
 
-  		mem_wr[0]= 0; //vxx - sigmax*px;            //vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
-  		mem_wr[3]= 3; //(pxx+pyx+pxz) - sigmax*vx;  //(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
+  		mem_wr[2]= px; // sigmax;///**vxx -*/ sigmax*px;            //vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
+  		mem_wr[5]= 3; //(pxx+pyx+pxz) - sigmax*vx;  //(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
   		
-  		mem_wr[1]= 1; //vyy - sigmay*py;  		  // vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
-  		mem_wr[4]= 4; //(pxy+pyy+pyz)- sigmay*vy;   //(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
+  		mem_wr[3]= 1; //vyy - sigmay*py;  		  // vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
+  		mem_wr[6]= 4; //(pxy+pyy+pyz)- sigmay*vy;   //(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
   		
-  		mem_wr[2]= 2; //vzz  - sigmaz*pz;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
-  		mem_wr[5]= 5; //(pxz+pyz+pzz) - sigmaz*vz;  //(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
+  		mem_wr[4]= 2; //vzz  - sigmaz*pz;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
+  		mem_wr[7]= 5; //(pxz+pyz+pzz) - sigmaz*vz;  //(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
 
-  		mem_wr[6] = s_4_4_4_arr[6];
-  		mem_wr[7] = s_4_4_4_arr[7];
+  		mem_wr[0] = s_4_4_4_arr[6];
+  		mem_wr[1] = s_4_4_4_arr[7];
 
 		array2vec: for(int k = 0; k < PORT_WIDTH; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			data_conv tmp;
-			bool change_cond = (idx < 0 || idx >= sizex || (idy < 0) || (idy >= sizey ) || (idz < ORDER) || (idz >= grid_sizez));
+			bool change_cond = (idx < 0 || idx >= sizex || (idy < 0) || (idy >= sizey ) || (idz < ORDER) || (idz >= grid_sizez -ORDER));
 //			tmp.f =  s_4_4_4_arr[k] ;
 			tmp.f = change_cond ? s_4_4_4_arr[k] : mem_wr[k];
 			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
