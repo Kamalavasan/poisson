@@ -325,45 +325,111 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 
 		// X ARM
 
-		float X_ARM_0[2*ORDER+1] = {s_0_4_4.range(95,64), s_1_4_4.range(95,64), s_2_4_4.range(95,64), s_3_4_4.range(95,64), s_4_4_4.range(95,64), s_5_4_4.range(95,64), s_6_4_4.range(95,64), s_7_4_4.range(95,64), s_8_4_4.range(95,64)}; 
+		int i_X_ARM_0[2*ORDER+1] = {s_0_4_4.range(95,64), s_1_4_4.range(95,64), s_2_4_4.range(95,64), s_3_4_4.range(95,64), s_4_4_4.range(95,64), s_5_4_4.range(95,64), s_6_4_4.range(95,64), s_7_4_4.range(95,64), s_8_4_4.range(95,64)}; 
 
-		float X_ARM_1[2*ORDER+1] = {s_0_4_4.range(127,96), s_1_4_4.range(127,96), s_2_4_4.range(127,96), s_3_4_4.range(127,96), s_4_4_4.range(127,96), s_5_4_4.range(127,96), s_6_4_4.range(127,96), s_7_4_4.range(127,96), s_8_4_4.range(127,96)}; 
+		int i_X_ARM_1[2*ORDER+1] = {s_0_4_4.range(127,96), s_1_4_4.range(127,96), s_2_4_4.range(127,96), s_3_4_4.range(127,96), s_4_4_4.range(127,96), s_5_4_4.range(127,96), s_6_4_4.range(127,96), s_7_4_4.range(127,96), s_8_4_4.range(127,96)}; 
 
-		float X_ARM_2[2*ORDER+1] = {s_0_4_4.range(159,128), s_1_4_4.range(159,128), s_2_4_4.range(159,128), s_3_4_4.range(159,128), s_4_4_4.range(159,128), s_5_4_4.range(159,128), s_6_4_4.range(159,128), s_7_4_4.range(159,128), s_8_4_4.range(159,128)}; 
+		int i_X_ARM_2[2*ORDER+1] = {s_0_4_4.range(159,128), s_1_4_4.range(159,128), s_2_4_4.range(159,128), s_3_4_4.range(159,128), s_4_4_4.range(159,128), s_5_4_4.range(159,128), s_6_4_4.range(159,128), s_7_4_4.range(159,128), s_8_4_4.range(159,128)}; 
 
-		float X_ARM_3[2*ORDER+1] = {s_0_4_4.range(191,160), s_1_4_4.range(191,160), s_2_4_4.range(191,160), s_3_4_4.range(191,160), s_4_4_4.range(191,160), s_5_4_4.range(191,160), s_6_4_4.range(191,160), s_7_4_4.range(191,160), s_8_4_4.range(191,160)}; 
+		int i_X_ARM_3[2*ORDER+1] = {s_0_4_4.range(191,160), s_1_4_4.range(191,160), s_2_4_4.range(191,160), s_3_4_4.range(191,160), s_4_4_4.range(191,160), s_5_4_4.range(191,160), s_6_4_4.range(191,160), s_7_4_4.range(191,160), s_8_4_4.range(191,160)}; 
 
-		float X_ARM_4[2*ORDER+1] = {s_0_4_4.range(223,192), s_1_4_4.range(223,192), s_2_4_4.range(223,192), s_3_4_4.range(223,192), s_4_4_4.range(223,192), s_5_4_4.range(223,192), s_6_4_4.range(223,192), s_7_4_4.range(223,192), s_8_4_4.range(223,192)}; 
+		int i_X_ARM_4[2*ORDER+1] = {s_0_4_4.range(223,192), s_1_4_4.range(223,192), s_2_4_4.range(223,192), s_3_4_4.range(223,192), s_4_4_4.range(223,192), s_5_4_4.range(223,192), s_6_4_4.range(223,192), s_7_4_4.range(223,192), s_8_4_4.range(223,192)}; 
 
-		float X_ARM_5[2*ORDER+1] = {s_0_4_4.range(255,224), s_1_4_4.range(255,224), s_2_4_4.range(255,224), s_3_4_4.range(255,224), s_4_4_4.range(255,224), s_5_4_4.range(255,224), s_6_4_4.range(255,224), s_7_4_4.range(255,224), s_8_4_4.range(255,224)};
+		int i_X_ARM_5[2*ORDER+1] = {s_0_4_4.range(255,224), s_1_4_4.range(255,224), s_2_4_4.range(255,224), s_3_4_4.range(255,224), s_4_4_4.range(255,224), s_5_4_4.range(255,224), s_6_4_4.range(255,224), s_7_4_4.range(255,224), s_8_4_4.range(255,224)};
+
+		float X_ARM_0[2*ORDER+1], X_ARM_0[2*ORDER+1], X_ARM_0[2*ORDER+1], X_ARM_0[2*ORDER+1], X_ARM_0[2*ORDER+1], X_ARM_0[2*ORDER+1];
+		for(int i = 0; i < 2*ORDER+1; i++){
+			data_conv tmp;
+			tmp.i = i_X_ARM_0[i];
+			X_ARM_0[i] = tmp.f;
+
+			tmp.i = i_X_ARM_1[i];
+			X_ARM_1[i] = tmp.f;
+
+			tmp.i = i_X_ARM_2[i];
+			X_ARM_2[i] = tmp.f;
+
+			tmp.i = i_X_ARM_3[i];
+			X_ARM_3[i] = tmp.f;
+
+			tmp.i = i_X_ARM_4[i];
+			X_ARM_4[i] = tmp.f;
+
+			tmp.i = i_X_ARM_5[i];
+			X_ARM_5[i] = tmp.f;
+		}
 
 		// Y ARM
 
-		float Y_ARM_0[2*ORDER+1] = {s_4_0_4.range(95,64), s_4_1_4.range(95,64), s_4_2_4.range(95,64), s_4_3_4.range(95,64), s_4_4_4.range(95,64), s_4_5_4.range(95,64), s_4_6_4.range(95,64), s_4_7_4.range(95,64), s_4_8_4.range(95,64)}; 
+		int i_Y_ARM_0[2*ORDER+1] = {s_4_0_4.range(95,64), s_4_1_4.range(95,64), s_4_2_4.range(95,64), s_4_3_4.range(95,64), s_4_4_4.range(95,64), s_4_5_4.range(95,64), s_4_6_4.range(95,64), s_4_7_4.range(95,64), s_4_8_4.range(95,64)}; 
 
-		float Y_ARM_1[2*ORDER+1] = {s_4_0_4.range(127,96), s_4_1_4.range(127,96), s_4_2_4.range(127,96), s_4_3_4.range(127,96), s_4_4_4.range(127,96), s_4_5_4.range(127,96), s_4_6_4.range(127,96), s_4_7_4.range(127,96), s_4_8_4.range(127,96)}; 
+		int i_Y_ARM_1[2*ORDER+1] = {s_4_0_4.range(127,96), s_4_1_4.range(127,96), s_4_2_4.range(127,96), s_4_3_4.range(127,96), s_4_4_4.range(127,96), s_4_5_4.range(127,96), s_4_6_4.range(127,96), s_4_7_4.range(127,96), s_4_8_4.range(127,96)}; 
 
-		float Y_ARM_2[2*ORDER+1] = {s_4_0_4.range(159,128), s_4_1_4.range(159,128), s_4_2_4.range(159,128), s_4_3_4.range(159,128), s_4_4_4.range(159,128), s_4_5_4.range(159,128), s_4_6_4.range(159,128), s_4_7_4.range(159,128), s_4_8_4.range(159,128)}; 
+		int i_Y_ARM_2[2*ORDER+1] = {s_4_0_4.range(159,128), s_4_1_4.range(159,128), s_4_2_4.range(159,128), s_4_3_4.range(159,128), s_4_4_4.range(159,128), s_4_5_4.range(159,128), s_4_6_4.range(159,128), s_4_7_4.range(159,128), s_4_8_4.range(159,128)}; 
 
-		float Y_ARM_3[2*ORDER+1] = {s_4_0_4.range(191,160), s_4_1_4.range(191,160), s_4_2_4.range(191,160), s_4_3_4.range(191,160), s_4_4_4.range(191,160), s_4_5_4.range(191,160), s_4_6_4.range(191,160), s_4_7_4.range(191,160), s_4_8_4.range(191,160)};
+		int i_Y_ARM_3[2*ORDER+1] = {s_4_0_4.range(191,160), s_4_1_4.range(191,160), s_4_2_4.range(191,160), s_4_3_4.range(191,160), s_4_4_4.range(191,160), s_4_5_4.range(191,160), s_4_6_4.range(191,160), s_4_7_4.range(191,160), s_4_8_4.range(191,160)};
 
-		float Y_ARM_4[2*ORDER+1] = {s_4_0_4.range(223,192), s_4_1_4.range(223,192), s_4_2_4.range(223,192), s_4_3_4.range(223,192), s_4_4_4.range(223,192), s_4_5_4.range(223,192), s_4_6_4.range(223,192), s_4_7_4.range(223,192), s_4_8_4.range(223,192)};
+		int i_Y_ARM_4[2*ORDER+1] = {s_4_0_4.range(223,192), s_4_1_4.range(223,192), s_4_2_4.range(223,192), s_4_3_4.range(223,192), s_4_4_4.range(223,192), s_4_5_4.range(223,192), s_4_6_4.range(223,192), s_4_7_4.range(223,192), s_4_8_4.range(223,192)};
 
-		float Y_ARM_5[2*ORDER+1] = {s_4_0_4.range(255,224), s_4_1_4.range(255,224), s_4_2_4.range(255,224), s_4_3_4.range(255,224), s_4_4_4.range(255,224), s_4_5_4.range(255,224), s_4_6_4.range(255,224), s_4_7_4.range(255,224), s_4_8_4.range(255,224)};
+		int i_Y_ARM_5[2*ORDER+1] = {s_4_0_4.range(255,224), s_4_1_4.range(255,224), s_4_2_4.range(255,224), s_4_3_4.range(255,224), s_4_4_4.range(255,224), s_4_5_4.range(255,224), s_4_6_4.range(255,224), s_4_7_4.range(255,224), s_4_8_4.range(255,224)};
+
+		float Y_ARM_0[2*ORDER+1], Y_ARM_0[2*ORDER+1], Y_ARM_0[2*ORDER+1], Y_ARM_0[2*ORDER+1], Y_ARM_0[2*ORDER+1], Y_ARM_0[2*ORDER+1];
+		for(int i = 0; i < 2*ORDER+1; i++){
+			data_conv tmp;
+			tmp.i = i_Y_ARM_0[i];
+			Y_ARM_0[i] = tmp.f;
+
+			tmp.i = i_Y_ARM_1[i];
+			Y_ARM_1[i] = tmp.f;
+
+			tmp.i = i_Y_ARM_2[i];
+			Y_ARM_2[i] = tmp.f;
+
+			tmp.i = i_Y_ARM_3[i];
+			Y_ARM_3[i] = tmp.f;
+
+			tmp.i = i_Y_ARM_4[i];
+			Y_ARM_4[i] = tmp.f;
+
+			tmp.i = i_Y_ARM_5[i];
+			Y_ARM_5[i] = tmp.f;
+		}
 
 		// Z ARM
 
-		float Z_ARM_0[2*ORDER+1] = {s_4_4_0.range(95,64), s_4_4_1.range(95,64), s_4_4_2.range(95,64), s_4_4_3.range(95,64), s_4_4_4.range(95,64), s_4_4_5.range(95,64), s_4_4_6.range(95,64), s_4_4_7.range(95,64), s_4_4_8.range(95,64)}; 
+		int i_Z_ARM_0[2*ORDER+1] = {s_4_4_0.range(95,64), s_4_4_1.range(95,64), s_4_4_2.range(95,64), s_4_4_3.range(95,64), s_4_4_4.range(95,64), s_4_4_5.range(95,64), s_4_4_6.range(95,64), s_4_4_7.range(95,64), s_4_4_8.range(95,64)}; 
 
-		float Z_ARM_1[2*ORDER+1] = {s_4_4_0.range(127,96), s_4_4_1.range(127,96), s_4_4_2.range(127,96), s_4_4_3.range(127,96), s_4_4_4.range(127,96), s_4_4_5.range(127,96), s_4_4_6.range(127,96), s_4_4_7.range(127,96), s_4_4_8.range(127,96)}; 
+		int i_Z_ARM_1[2*ORDER+1] = {s_4_4_0.range(127,96), s_4_4_1.range(127,96), s_4_4_2.range(127,96), s_4_4_3.range(127,96), s_4_4_4.range(127,96), s_4_4_5.range(127,96), s_4_4_6.range(127,96), s_4_4_7.range(127,96), s_4_4_8.range(127,96)}; 
 
-		float Z_ARM_2[2*ORDER+1] = {s_4_4_0.range(159,128), s_4_4_1.range(159,128), s_4_4_2.range(159,128), s_4_4_3.range(159,128), s_4_4_4.range(159,128), s_4_4_5.range(159,128), s_4_4_6.range(159,128), s_4_4_7.range(159,128), s_4_4_8.range(159,128)}; 
+		int i_Z_ARM_2[2*ORDER+1] = {s_4_4_0.range(159,128), s_4_4_1.range(159,128), s_4_4_2.range(159,128), s_4_4_3.range(159,128), s_4_4_4.range(159,128), s_4_4_5.range(159,128), s_4_4_6.range(159,128), s_4_4_7.range(159,128), s_4_4_8.range(159,128)}; 
 
-		float Z_ARM_3[2*ORDER+1] = {s_4_4_0.range(191,160), s_4_4_1.range(191,160), s_4_4_2.range(191,160), s_4_4_3.range(191,160), s_4_4_4.range(191,160), s_4_4_5.range(191,160), s_4_4_6.range(191,160), s_4_4_7.range(191,160), s_4_4_8.range(191,160)};
+		int i_Z_ARM_3[2*ORDER+1] = {s_4_4_0.range(191,160), s_4_4_1.range(191,160), s_4_4_2.range(191,160), s_4_4_3.range(191,160), s_4_4_4.range(191,160), s_4_4_5.range(191,160), s_4_4_6.range(191,160), s_4_4_7.range(191,160), s_4_4_8.range(191,160)};
 
-		float Z_ARM_4[2*ORDER+1] = {s_4_4_0.range(223,192), s_4_4_1.range(223,192), s_4_4_2.range(223,192), s_4_4_3.range(223,192), s_4_4_4.range(223,192), s_4_4_5.range(223,192), s_4_4_6.range(223,192), s_4_4_7.range(223,192), s_4_4_8.range(223,192)};
+		int i_Z_ARM_4[2*ORDER+1] = {s_4_4_0.range(223,192), s_4_4_1.range(223,192), s_4_4_2.range(223,192), s_4_4_3.range(223,192), s_4_4_4.range(223,192), s_4_4_5.range(223,192), s_4_4_6.range(223,192), s_4_4_7.range(223,192), s_4_4_8.range(223,192)};i_
 
-		float Z_ARM_5[2*ORDER+1] = {s_4_4_0.range(255,224), s_4_4_1.range(255,224), s_4_4_2.range(255,224), s_4_4_3.range(255,224), s_4_4_4.range(255,224), s_4_4_5.range(255,224), s_4_4_6.range(255,224), s_4_4_7.range(255,224), s_4_4_8.range(255,224)};
+		int i_Z_ARM_5[2*ORDER+1] = {s_4_4_0.range(255,224), s_4_4_1.range(255,224), s_4_4_2.range(255,224), s_4_4_3.range(255,224), s_4_4_4.range(255,224), s_4_4_5.range(255,224), s_4_4_6.range(255,224), s_4_4_7.range(255,224), s_4_4_8.range(255,224)};
+
+		float Z_ARM_0[2*ORDER+1], Z_ARM_0[2*ORDER+1], Z_ARM_0[2*ORDER+1], Z_ARM_0[2*ORDER+1], Z_ARM_0[2*ORDER+1], Z_ARM_0[2*ORDER+1];
+		for(int i = 0; i < 2*ORDER+1; i++){
+			data_conv tmp;
+			tmp.i = i_Z_ARM_0[i];
+			Z_ARM_0[i] = tmp.f;
+
+			tmp.i = i_Z_ARM_1[i];
+			Z_ARM_1[i] = tmp.f;
+
+			tmp.i = i_Z_ARM_2[i];
+			Z_ARM_2[i] = tmp.f;
+
+			tmp.i = i_Z_ARM_3[i];
+			Z_ARM_3[i] = tmp.f;
+
+			tmp.i = i_Z_ARM_4[i];
+			Z_ARM_4[i] = tmp.f;
+
+			tmp.i = i_Z_ARM_5[i];
+			Z_ARM_5[i] = tmp.f;
+		}
 
 		float mem_wr[PORT_WIDTH];
 		float s_4_4_4_arr[PORT_WIDTH];
@@ -436,7 +502,7 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 	  	}
 
 
-	  	float px = s_4_4_4_arr[2]; //X_ARM_0[4];
+	  	float px = X_ARM_0[4];
 	  	float py = X_ARM_1[4];
 	  	float pz = X_ARM_2[4];
 
