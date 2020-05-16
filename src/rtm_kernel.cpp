@@ -182,6 +182,7 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 	uint256_dt s_3_4_4, s_2_4_4, s_1_4_4, s_0_4_4;
 	uint256_dt s_4_3_4, s_4_2_4, s_4_1_4, s_4_0_4;
 	uint256_dt s_4_4_3, s_4_4_2, s_4_4_1, s_4_4_0;
+	uint256_dt update_j;
 
 
 	const float c = {0.0035714285714285713,-0.0380952380952381,0.2,-0.8,0.0,0.8,-0.2,0.0380952380952381,-0.0035714285714285713};
@@ -333,6 +334,8 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 
 		float X_ARM_4[2*ORDER+1] = {s_0_4_4.range(159,128), s_1_4_4.range(159,128), s_2_4_4.range(159,128), s_3_4_4.range(159,128), s_4_4_4.range(159,128), s_5_4_4.range(159,128), s_6_4_4.range(159,128), s_7_4_4.range(159,128), s_8_4_4.range(159,128)}; 
 
+		float X_ARM_5[2*ORDER+1] = {s_0_4_4.range(191,160), s_1_4_4.range(191,160), s_2_4_4.range(191,160), s_3_4_4.range(191,160), s_4_4_4.range(191,160), s_5_4_4.range(191,160), s_6_4_4.range(191,160), s_7_4_4.range(191,160), s_8_4_4.range(191,160)}; 
+
 		// Y ARM
 		float Y_ARM_0[2*ORDER+1] = {s_4_0_4.range(31,0), s_4_1_4.range(31,0), s_4_2_4.range(31,0), s_4_3_4.range(31,0), s_4_4_4.range(31,0), s_4_5_4.range(31,0), s_4_6_4.range(31,0), s_4_7_4.range(31,0), s_4_8_4.range(31,0)}; 
 
@@ -344,6 +347,8 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 
 		float Y_ARM_4[2*ORDER+1] = {s_4_0_4.range(159,128), s_4_1_4.range(159,128), s_4_2_4.range(159,128), s_4_3_4.range(159,128), s_4_4_4.range(159,128), s_4_5_4.range(159,128), s_4_6_4.range(159,128), s_4_7_4.range(159,128), s_4_8_4.range(159,128)}; 
 
+		float Y_ARM_5[2*ORDER+1] = {s_4_0_4.range(191,160), s_4_1_4.range(191,160), s_4_2_4.range(191,160), s_4_3_4.range(191,160), s_4_4_4.range(191,160), s_4_5_4.range(191,160), s_4_6_4.range(191,160), s_4_7_4.range(191,160), s_4_8_4.range(191,160)};
+
 		// Z ARM
 		float Z_ARM_0[2*ORDER+1] = {s_4_4_0.range(31,0), s_4_4_1.range(31,0), s_4_4_2.range(31,0), s_4_4_3.range(31,0), s_4_4_4.range(31,0), s_4_4_5.range(31,0), s_4_4_6.range(31,0), s_4_4_7.range(31,0), s_4_4_8.range(31,0)}; 
 
@@ -354,6 +359,8 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 		float Z_ARM_3[2*ORDER+1] = {s_4_4_0.range(127,96), s_4_4_1.range(127,96), s_4_4_2.range(127,96), s_4_4_3.range(127,96), s_4_4_4.range(127,96), s_4_4_5.range(127,96), s_4_4_6.range(127,96), s_4_4_7.range(127,96), s_4_4_8.range(127,96)}; 
 
 		float Z_ARM_4[2*ORDER+1] = {s_4_4_0.range(159,128), s_4_4_1.range(159,128), s_4_4_2.range(159,128), s_4_4_3.range(159,128), s_4_4_4.range(159,128), s_4_4_5.range(159,128), s_4_4_6.range(159,128), s_4_4_7.range(159,128), s_4_4_8.range(159,128)}; 
+
+		float Z_ARM_5[2*ORDER+1] = {s_4_4_0.range(191,160), s_4_4_1.range(191,160), s_4_4_2.range(191,160), s_4_4_3.range(191,160), s_4_4_4.range(191,160), s_4_4_5.range(191,160), s_4_4_6.range(191,160), s_4_4_7.range(191,160), s_4_4_8.range(191,160)};
 
 		float mem_wr[PORT_WIDTH];
 		float s_4_4_4_arr[PORT_WIDTH];
@@ -497,7 +504,7 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			data_conv tmp;
 			bool change_cond = (idx < 0 || idx >= sizex || (idy < 0) || (idy >= sizey ) || (idz < ORDER) || (idz >= grid_sizez));
-			tmp.f = change_cond ? : s_4_4_4_arr[k] : mem_wr[k];
+			tmp.f = change_cond ? s_4_4_4_arr[k] : mem_wr[k];
 			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
 
