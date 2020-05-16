@@ -132,7 +132,7 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 
 
 
-	#pragma HLS ARRAY_PARTITION variable=mem_wr complete dim=1
+
 
 
 	uint256_dt window_z_p_1[plane_buff_size];
@@ -185,7 +185,7 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 	uint256_dt update_j;
 
 
-	const float c = {0.0035714285714285713,-0.0380952380952381,0.2,-0.8,0.0,0.8,-0.2,0.0380952380952381,-0.0035714285714285713};
+	const float c[2*ORDER+1] = {0.0035714285714285713,-0.0380952380952381,0.2,-0.8,0.0,0.8,-0.2,0.0380952380952381,-0.0035714285714285713};
 	const float invdx = 200; // 1/0.005
 	const float invdy = 200; // 1/0.005
 	const float invdz = 200; // 1/0.005
@@ -407,19 +407,19 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 	  	float sigmay=0.0;
 	  	float sigmaz=0.0;
 
-	  	unsigned short idx = k - ORDER;
-	  	unsigned short idy = j - ORDER;
-	  	unsigned short idz = i - ORDER;
+	  	short idx = k - ORDER;
+	  	short idy = j - ORDER;
+	  	short idz = i - ORDER;
 
 	  	if(idx <= xbeg+pml_width){
 	  	  sigmax = (xbeg+pml_width-idx ) * 0.1;//sigma/pml_width;
-	  	}else if(idy >=xend-pml_width){
-	  	  sigmax=(idy -(xend-pml_width)) * 0.1; //sigma/pml_width;
+	  	}else if(idx >=xend-pml_width){
+	  	  sigmax=(idx -(xend-pml_width)) * 0.1; //sigma/pml_width;
 	  	}
-	  	if(idz <= ybeg+pml_width){
+	  	if(idy <= ybeg+pml_width){
 	  	  sigmay=(ybeg+pml_width-idy) * 0.1; //sigma/pml_width;
 	  	}else if(idy >= yend-pml_width){
-	  	  sigmay=(idx[1]-(yend-pml_width)) * 0.1; //sigma/pml_width;
+	  	  sigmay=(idy-(yend-pml_width)) * 0.1; //sigma/pml_width;
 	  	}
 	  	if(idz <= zbeg+pml_width){
 	  	  sigmaz=(zbeg+pml_width-idz) * 0.1; //sigma/pml_width;
@@ -488,14 +488,14 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 		}
   
 
-  		mem_wr[0]=vxx - sigmax*px;            //vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
-  		mem_wr[3]=(pxx+pyx+pxz) - sigmax*vx;  //(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
+  		mem_wr[0]= 0; //vxx - sigmax*px;            //vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
+  		mem_wr[3]= 3; //(pxx+pyx+pxz) - sigmax*vx;  //(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
   		
-  		mem_wr[1]=vyy - sigmay*py;  		  // vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
-  		mem_wr[4]=(pxy+pyy+pyz)- sigmay*vy;   //(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
+  		mem_wr[1]= 1; //vyy - sigmay*py;  		  // vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
+  		mem_wr[4]= 4; //(pxy+pyy+pyz)- sigmay*vy;   //(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
   		
-  		mem_wr[2]=vzz  - sigmaz*pz;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
-  		mem_wr[5]=(pxz+pyz+pzz) - sigmaz*vz;  //(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
+  		mem_wr[2]= 2; //vzz  - sigmaz*pz;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
+  		mem_wr[5]= 5; //(pxz+pyz+pzz) - sigmaz*vz;  //(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
 
   		mem_wr[6] = s_4_4_4_arr[6];
   		mem_wr[7] = s_4_4_4_arr[7];
@@ -504,13 +504,14 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			data_conv tmp;
 			bool change_cond = (idx < 0 || idx >= sizex || (idy < 0) || (idy >= sizey ) || (idz < ORDER) || (idz >= grid_sizez));
+//			tmp.f =  s_4_4_4_arr[k] ;
 			tmp.f = change_cond ? s_4_4_4_arr[k] : mem_wr[k];
 			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
 
 		bool cond_wr = (i >= ORDER) && ( i <= limit_z);
 		if(cond_wr ) {
-			wr_buffer << update_j;// update_j;
+			wr_buffer <<  update_j;
 		}
 
 		// move the cell block

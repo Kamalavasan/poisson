@@ -228,23 +228,22 @@ int main(int argc, char **argv)
     q.finish();
 
 
-    dump_rho_mu_yy(grid_yy_rho_mu, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
-    dump_rho_mu_yy(grid_yy_rho_mu_temp_d, grid_d, (char*)"rho_d.txt", (char*)"mu_d.txt", (char*)"yy_d.txt");
 
-  // dump_rho_mu_yy(grid_yy_rho_mu, grid_d);
-  // for(int itr = 0; itr < n_iter*1; itr++){
-  // 	  // printf("Current itr is %d\n", itr);
-  //     fd3d_pml_kernel(grid_yy_rho_mu, grid_yy_rho_mu_temp, grid_d);
-  //     dump_rho_mu_yy(grid_yy_rho_mu_temp, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
-  //     fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_yy_rho_mu, grid_d);
-  // }
+   dump_rho_mu_yy(grid_yy_rho_mu_temp_d, grid_d, (char*)"rho_d.txt", (char*)"mu_d.txt", (char*)"yy_d.txt");
+
+   for(int itr = 0; itr < n_iter*1; itr++){
+   	  // printf("Current itr is %d\n", itr);
+       fd3d_pml_kernel(grid_yy_rho_mu, grid_yy_rho_mu_temp, grid_d);
+       dump_rho_mu_yy(grid_yy_rho_mu_temp, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
+//       fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_yy_rho_mu, grid_d);
+   }
 
 	
   std::chrono::duration<double> elapsed = finish - start;
 
 
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-  double error = square_error(grid_yy_rho_mu, grid_yy_rho_mu_temp_d, grid_d);
+  double error = square_error(grid_yy_rho_mu_temp, grid_yy_rho_mu_temp_d, grid_d);
   float bandwidth = (grid_d.data_size_bytes_dim8 * 4.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
   printf("\nMean Square error is  %f\n\n", error/(grid_d.logical_size_x * grid_d.logical_size_y * grid_d.logical_size_z));
   printf("\nBandwidth is %f\n", bandwidth);
