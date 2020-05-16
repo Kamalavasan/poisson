@@ -535,7 +535,7 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 	  	float pzy=0.0;
 	  	float pzz=0.0;
 
-	  	for(int l=0;l <= ORDER*2; l++){
+	  	for(int l=ORDER;l <= ORDER*2; l++){
 		    pxx += X_ARM_0[l] * c[l] * invdx;
 		    pyx += X_ARM_1[l] * c[l] * invdx;
 		    pzx += X_ARM_2[l] * c[l] * invdx;
@@ -563,10 +563,10 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
   
 
   		mem_wr[2]= vxx - sigmax*px;            //vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
-  		mem_wr[5]= 5;//(pxx+pyx+pxz) - sigmax*vx;  //(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
+  		mem_wr[5]= (pxx+pyx+pxz) - sigmax*vx;  //(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
   		
   		mem_wr[3]= vyy - sigmay*py;  		  // vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
-  		mem_wr[6]= 6;//(pxy+pyy+pyz)- sigmay*vy;   //(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
+  		mem_wr[6]= (pxy+pyy+pyz)- sigmay*vy;   //(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
   		
   		mem_wr[4]= vzz  - sigmaz*pz;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
   		mem_wr[7]= (pxz+pyz+pzz) - sigmaz*vz;  //(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
