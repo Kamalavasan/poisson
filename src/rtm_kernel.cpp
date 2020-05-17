@@ -538,31 +538,54 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 	  	float pzz=0.0;
 
 	  	for(int l=0;l <= ORDER*2; l++){
-		    pxx += X_ARM_0[l] * c[l] * invdx;
-		    pyx += X_ARM_1[l] * c[l] * invdx;
-		    pzx += X_ARM_2[l] * c[l] * invdx;
+		    pxx += X_ARM_0[l] * c[l];
+		    pyx += X_ARM_1[l] * c[l];
+		    pzx += X_ARM_2[l] * c[l];
 		    
-		    vxx += X_ARM_3[l] * c[l] * invdx;
-		    vyx += X_ARM_4[l] * c[l] * invdx;
-		    vzx += X_ARM_5[l] * c[l] * invdx;
+		    vxx += X_ARM_3[l] * c[l];
+		    vyx += X_ARM_4[l] * c[l];
+		    vzx += X_ARM_5[l] * c[l];
 		    
-		    pxy += Y_ARM_0[l] * c[l] * invdx;
-		    pyy += Y_ARM_1[l] * c[l] * invdx;
-		    pzy += Y_ARM_2[l] * c[l] * invdx;
+		    pxy += Y_ARM_0[l] * c[l];
+		    pyy += Y_ARM_1[l] * c[l];
+		    pzy += Y_ARM_2[l] * c[l];
 		    
-		    vxy += Y_ARM_0[l] * c[l] * invdx;
-		    vyy += Y_ARM_1[l] * c[l] * invdx;
-		    vzy += Y_ARM_2[l] * c[l] * invdx;
+		    vxy += Y_ARM_0[l] * c[l];
+		    vyy += Y_ARM_1[l] * c[l];
+		    vzy += Y_ARM_2[l] * c[l];
 		    
-		    pxz += Z_ARM_0[l] * c[l] * invdx;
-		    pyz += Z_ARM_1[l] * c[l] * invdx;
-		    pzz += Z_ARM_2[l] * c[l] * invdx;
+		    pxz += Z_ARM_0[l] * c[l];
+		    pyz += Z_ARM_1[l] * c[l];
+		    pzz += Z_ARM_2[l] * c[l];
 		    
-		    vxz += Z_ARM_0[l] * c[l] * invdx;
-		    vyz += Z_ARM_1[l] * c[l] * invdx;
-		    vzz += Z_ARM_2[l] * c[l] * invdx;
+		    vxz += Z_ARM_0[l] * c[l];
+		    vyz += Z_ARM_1[l] * c[l];
+		    vzz += Z_ARM_2[l] * c[l];
 		}
-  
+
+	  	pxx *= invdx;
+	  	pyx *= invdx;
+		pzx *= invdx;
+
+		vxx *= invdx;
+		vyx *= invdx;
+		vzx *= invdx;
+
+		pxy *= invdy;
+		pyy *= invdy;
+		pzy *= invdy;
+
+		vxy *= invdy;
+		vyy *= invdy;
+		vzy *= invdy;
+
+		pxz *= invdz;
+		pyz *= invdz;
+		pzz *= invdz;
+
+		vxz *= invdz;
+		vyz *= invdz;
+		vzz *= invdz;
 
   		mem_wr[2]= vxx - sigmax*px;            //vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
   		mem_wr[5]= (pxx+pyx+pxz) - sigmax*vx;  //(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
