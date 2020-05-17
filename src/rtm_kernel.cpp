@@ -43,8 +43,8 @@ const int port_width  = PORT_WIDTH;
 const int max_depth_16 = MAX_DEPTH_16 * 8;
 const int max_depth_8 = MAX_DEPTH_16 * 8;
 
-const int plane_buff_size = 128*128;
-const int line_buff_size = 128;
+const int plane_buff_size = 80*80;
+const int line_buff_size = 80;
 
 
 typedef union  {
@@ -155,25 +155,25 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 	uint256_dt window_z_n_3[plane_buff_size];
 	uint256_dt window_z_n_4[plane_buff_size];
 
-	#pragma HLS RESOURCE variable=window_z_p_1 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_z_p_2 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_z_p_3 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_z_p_4 core=XPM_MEMORY uram latency=1
+	#pragma HLS RESOURCE variable=window_z_p_1 core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_z_p_2 core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_z_p_3 core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_z_p_4 core=XPM_MEMORY uram latency=2
 
-	#pragma HLS RESOURCE variable=window_y_p_1 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_y_p_2 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_y_p_3 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_y_p_4 core=XPM_MEMORY uram latency=1
+	#pragma HLS RESOURCE variable=window_y_p_1 core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_y_p_2 core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_y_p_3 core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_y_p_4 core=XPM_MEMORY uram latency=2
 
-	#pragma HLS RESOURCE variable=window_y_n_1 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_y_n_2 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_y_n_3 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_y_n_4 core=XPM_MEMORY uram latency=1
+	#pragma HLS RESOURCE variable=window_y_n_1 core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_y_n_2 core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_y_n_3 core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_y_n_4 core=XPM_MEMORY uram latency=2
 
-	#pragma HLS RESOURCE variable=window_z_n_1 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_z_n_2 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_z_n_3 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_z_n_4 core=XPM_MEMORY uram latency=1
+	#pragma HLS RESOURCE variable=window_z_n_1 core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_z_n_2 core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_z_n_3 core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_z_n_4 core=XPM_MEMORY uram latency=2
 
 	uint256_dt s_4_4_8, s_4_4_7, s_4_4_6, s_4_4_5;
 	uint256_dt s_4_8_4, s_4_7_4, s_4_6_4, s_4_5_4;
