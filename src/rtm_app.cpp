@@ -234,8 +234,12 @@ int main(int argc, char **argv)
    for(int itr = 0; itr < n_iter*1; itr++){
    	  // printf("Current itr is %d\n", itr);
        fd3d_pml_kernel(grid_yy_rho_mu, grid_k1, grid_d);
-
        calc_ytemp_kernel(grid_yy_rho_mu, grid_k1, dt, grid_yy_rho_mu_temp, 0.5, grid_d);
+
+       fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_k2, grid_d);
+       calc_ytemp_kernel(grid_yy_rho_mu, grid_k2, dt, grid_yy_rho_mu_temp, 0.5, grid_d);
+
+
        dump_rho_mu_yy(grid_yy_rho_mu_temp, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
        
 //       fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_yy_rho_mu, grid_d);
