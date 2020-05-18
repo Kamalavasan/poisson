@@ -44,6 +44,9 @@ int calc_ytemp_kernel(float* rho_mu_yy, float* k_grid, float dt, float* rho_mu_y
   for(int i = ORDER; i < grid_d.act_sizez - ORDER; i++){
     for(int j = ORDER; j < grid_d.act_sizey - ORDER; j++){
       for(int k = ORDER; k < grid_d.act_sizex - ORDER; k++){
+        int index_b = i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8;
+        rho_mu_yy_temp[index_b] = rho_mu_yy[index_b];
+        rho_mu_yy_temp[index_b+1] = rho_mu_yy[index_b+1];
         for(int p = 2; p < 8; p++){
           int index = i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p;
           k_grid[index] *= dt;
@@ -246,6 +249,8 @@ void fd3d_pml_kernel(float* yy, float* dyy, struct Grid_d grid_d){
           vzz += yy[caculate_index(grid_d,i+l,j,k,7)]*c[l]*invdz;
         }
       
+        dyy[caculate_index(grid_d,i,j,k,0)] = yy[caculate_index(grid_d,i,j,k,0)];
+        dyy[caculate_index(grid_d,i,j,k,1)] = yy[caculate_index(grid_d,i,j,k,1)];
 
         dyy[caculate_index(grid_d,i,j,k,2)]= vxx/yy[caculate_index(grid_d,i,j,k,0)]- sigmax*px;
         dyy[caculate_index(grid_d,i,j,k,5)]= (pxx+pyx+pxz)*yy[caculate_index(grid_d,i,j,k,1)] - sigmax*vx;
