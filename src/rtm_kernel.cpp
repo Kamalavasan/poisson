@@ -642,12 +642,13 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		bool cond_wr = (i >= ORDER) && ( i < grid_sizez + ORDER);
 		if(cond_wr ) {
 			wr_buffer <<  update_j;
+			yy <<  s_4_4_4;
 		}
 
-		bool cond_wr_yy = (i >= 2*ORDER) && ( i < limit_z);
-		if(cond_wr_yy ) {
-			yy <<  s_4_4_0;
-		}
+//		bool cond_wr_yy = (i >= 3*ORDER) && ( i < limit_z);
+//		if(cond_wr_yy ) {
+//
+//		}
 
 		// move the cell block
 		k++;
@@ -707,6 +708,8 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 	uint256_dt window_z_n_3[plane_buff_size];
 	uint256_dt window_z_n_4[plane_buff_size];
 
+	uint256_dt window_yy[4*plane_buff_size];
+
 	#pragma HLS RESOURCE variable=window_z_p_1 core=XPM_MEMORY uram latency=2
 	#pragma HLS RESOURCE variable=window_z_p_2 core=XPM_MEMORY uram latency=2
 	#pragma HLS RESOURCE variable=window_z_p_3 core=XPM_MEMORY uram latency=2
@@ -727,6 +730,8 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 	#pragma HLS RESOURCE variable=window_z_n_3 core=XPM_MEMORY uram latency=2
 	#pragma HLS RESOURCE variable=window_z_n_4 core=XPM_MEMORY uram latency=2
 
+	#pragma HLS RESOURCE variable=window_yy core=XPM_MEMORY uram latency=2
+
 	uint256_dt s_4_4_8, s_4_4_7, s_4_4_6, s_4_4_5;
 	uint256_dt s_4_8_4, s_4_7_4, s_4_6_4, s_4_5_4;
 	uint256_dt s_8_4_4, s_7_4_4, s_6_4_4, s_5_4_4;
@@ -734,7 +739,7 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 	uint256_dt s_3_4_4, s_2_4_4, s_1_4_4, s_0_4_4;
 	uint256_dt s_4_3_4, s_4_2_4, s_4_1_4, s_4_0_4;
 	uint256_dt s_4_4_3, s_4_4_2, s_4_4_1, s_4_4_0;
-	uint256_dt yy_vec;
+	uint256_dt yy_vec, yy_vec_tmp;
 	uint256_dt update_j;
 
 
@@ -762,7 +767,7 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 
 	
 	unsigned short i = 0, j = 0, k = 0;
-	unsigned short j_p = 0, j_l = 0, j_p_diff = 0, j_l_diff = 0;
+	unsigned short j_p = 0, j_l = 0, j_p_diff = 0, j_l_diff = 0, j_p_4 = 0;;
 	for(unsigned int itr = 0; itr < gridsize; itr++) {
 		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
 		#pragma HLS PIPELINE II=1
@@ -854,10 +859,14 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		}
 		window_z_p_4[j_p] = s_4_4_8; // set
 
-		bool cond_tmp2 = (i < grid_sizez+ORDER && i >= ORDER);
+
+
+		yy_vec = window_yy[j_p_4];
+		bool cond_tmp2 = (i < grid_sizez);
 		if(cond_tmp1){
-			yy_vec = yy.read(); // set
+			yy_vec_tmp = yy.read(); // set
 		}
+		window_yy[j_p_4] = yy_vec_tmp;
 
 
 
@@ -880,6 +889,11 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		j_l_diff++;
 		if(j_l_diff >= line_diff){
 			j_l_diff = 0;
+		}
+
+		j_p_4++;
+		if(j_p_4 >= 4*plane_size){
+			j_p_4 = 0;
 		}
 
 
@@ -1195,7 +1209,7 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 			data_conv tmp;
 			bool change_cond = (idx < 0 || idx >= sizex || (idy < 0) || (idy >= sizey ) || (idz < 0) || (idz >= sizez));
 //			tmp.f =  s_4_4_4_arr[k] ;
-			tmp.f = change_cond ? s_4_4_4_arr[k] : mem_wr_k[k];
+			tmp.f = change_cond ? s_4_4_4_arr[k] : mem_wr_y_tmp[k];
 			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
 

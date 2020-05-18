@@ -237,11 +237,11 @@ int main(int argc, char **argv)
        calc_ytemp_kernel(grid_yy_rho_mu, grid_k1, dt, grid_yy_rho_mu_temp, 0.5, grid_d);
 //
        fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_k2, grid_d);
-//       calc_ytemp_kernel(grid_yy_rho_mu, grid_k2, dt, grid_yy_rho_mu_temp, 0.5, grid_d);
+       calc_ytemp_kernel(grid_yy_rho_mu, grid_k2, dt, grid_yy_rho_mu_temp, 0.5, grid_d);
 
 
 
-       dump_rho_mu_yy(grid_k2, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
+       dump_rho_mu_yy(grid_yy_rho_mu_temp, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
        
 //       fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_yy_rho_mu, grid_d);
    }
@@ -251,7 +251,7 @@ int main(int argc, char **argv)
 
 
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-  double error = square_error(grid_k2, grid_yy_rho_mu_temp_d, grid_d);
+  double error = square_error(grid_yy_rho_mu_temp, grid_yy_rho_mu_temp_d, grid_d);
   float bandwidth = (grid_d.data_size_bytes_dim8 * 2.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
   printf("\nSquare error is  %f\n\n", error);
   printf("\nBandwidth is %f\n", bandwidth);
