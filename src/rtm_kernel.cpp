@@ -433,7 +433,9 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 			Z_ARM_5[i] = tmp.f;
 		}
 
-		float mem_wr[PORT_WIDTH];
+		float mem_wr_k[PORT_WIDTH];
+		float mem_wr_k_dt[PORT_WIDTH];
+		float mem_wr_y_tmp[PORT_WIDTH];
 		float s_4_4_4_arr[PORT_WIDTH];
 		vec2s_4_4_4_arr: for(int k = 0; k < PORT_WIDTH; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
@@ -587,24 +589,57 @@ static void process_a_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint
 		vyz *= invdz;
 		vzz *= invdz;
 
-  		mem_wr[2]= vxx - sigmax*px;            //vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
-  		mem_wr[5]= (pxx+pyx+pxz) - sigmax*vx;  //(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
+
+		float mem_wr_k[PORT_WIDTH];
+		float mem_wr_k_dt[PORT_WIDTH];
+		float mem_wr_y_tmp[PORT_WIDTH];
+
+  		mem_wr_k[2]= vxx - sigmax*px;            //vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
+  		mem_wr_k[5]= (pxx+pyx+pxz) - sigmax*vx;  //(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
   		
-  		mem_wr[3]= vyy - sigmay*py;  		  // vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
-  		mem_wr[6]= (pxy+pyy+pyz)- sigmay*vy;   //(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
+  		mem_wr_k[3]= vyy - sigmay*py;  		  // vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
+  		mem_wr_k[6]= (pxy+pyy+pyz)- sigmay*vy;   //(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
   		
-  		mem_wr[4]= vzz  - sigmaz*pz;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
-  		mem_wr[7]= (pxz+pyz+pzz) - sigmaz*vz;  //(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
+  		mem_wr_k[4]= vzz  - sigmaz*pz;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
+  		mem_wr_k[7]= (pxz+pyz+pzz) - sigmaz*vz;  //(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
+
+  		mem_wr_k[0] = s_4_4_4_arr[6];
+  		mem_wr_k[1] = s_4_4_4_arr[7];
+
+
+  		// calc K dt
+  		mem_wr_k_dt[2] *= 0.1;            
+  		mem_wr_k_dt[5] *= 0.1;  
+  		
+  		mem_wr_k_dt[3] *= 0.1;  		  
+  		mem_wr_k_dt[6] *= 0.1;  
+  		
+  		mem_wr_k_dt[4] *= 0.1;  		  
+  		mem_wr_k_dt[7] *= 0.1;
 
   		mem_wr[0] = s_4_4_4_arr[6];
   		mem_wr[1] = s_4_4_4_arr[7];
+
+  		// calc Y temp
+  		mem_wr_y_tmp[2] = s_4_4_4_arr[2] + mem_wr_k_dt[2]*0.5;            
+  		mem_wr_y_tmp[5] = s_4_4_4_arr[3] + mem_wr_k_dt[3]*0.5;  
+  	
+  		mem_wr_y_tmp[3] = s_4_4_4_arr[4] + mem_wr_k_dt[4]*0.5;   		  
+  		mem_wr_y_tmp[6] = s_4_4_4_arr[5] + mem_wr_k_dt[5]*0.5; ;  
+  	
+  		mem_wr_y_tmp[4] = s_4_4_4_arr[6] + mem_wr_k_dt[6]*0.5;   		  
+  		mem_wr_y_tmp[7] = s_4_4_4_arr[7] + mem_wr_k_dt[7]*0.5; 
+
+  		mem_wr_y_tmp[0] = s_4_4_4_arr[6];
+  		mem_wr_y_tmp[1] = s_4_4_4_arr[7];
+
 
 		array2vec: for(int k = 0; k < PORT_WIDTH; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			data_conv tmp;
 			bool change_cond = (idx < 0 || idx >= sizex || (idy < 0) || (idy >= sizey ) || (idz < ORDER) || (idz >= grid_sizez -ORDER));
 //			tmp.f =  s_4_4_4_arr[k] ;
-			tmp.f = change_cond ? s_4_4_4_arr[k] : mem_wr[k];
+			tmp.f = change_cond ? s_4_4_4_arr[k] : mem_wr_y_tmp[k];
 			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
 

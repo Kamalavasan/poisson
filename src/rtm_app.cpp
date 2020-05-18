@@ -133,10 +133,10 @@ int main(int argc, char **argv)
   // float * grid_mu     = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim1);
   float * grid_yy_rho_mu              = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim8);
   float * grid_yy_rho_mu_temp         = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim8);
-  float * grid_k1                     = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim6);
-  float * grid_k2                     = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim6);
-  float * grid_k3                     = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim6);
-  float * grid_k4                     = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim6);
+  float * grid_k1                     = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim8);
+  float * grid_k2                     = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim8);
+  float * grid_k3                     = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim8);
+  float * grid_k4                     = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim8);
 
   // storage for device transfers
   // float * grid_rho_d    = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim1);
@@ -230,11 +230,14 @@ int main(int argc, char **argv)
 
 
    dump_rho_mu_yy(grid_yy_rho_mu_temp_d, grid_d, (char*)"rho_d.txt", (char*)"mu_d.txt", (char*)"yy_d.txt");
-
+   float dt = 0.1;
    for(int itr = 0; itr < n_iter*1; itr++){
    	  // printf("Current itr is %d\n", itr);
-       fd3d_pml_kernel(grid_yy_rho_mu, grid_yy_rho_mu_temp, grid_d);
+       fd3d_pml_kernel(grid_yy_rho_mu, grid_k1, grid_d);
+
+       calc_ytemp_kernel(grid_yy_rho_mu, grid_k1, dt, grid_yy_rho_mu_temp, 0.5, grid_d);
        dump_rho_mu_yy(grid_yy_rho_mu_temp, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
+       
 //       fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_yy_rho_mu, grid_d);
    }
 

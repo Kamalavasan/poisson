@@ -40,6 +40,21 @@ int populate_rho_mu_yy(float* grid, struct Grid_d grid_d){
   return 0;
 }
 
+int calc_ytemp_kernel(float* rho_mu_yy, float* k_grid, float dt, float* rho_mu_yy_temp, float val, struct Grid_d grid_d){
+  for(int i = ORDER; i < grid_d.act_sizez - ORDER; i++){
+    for(int j = ORDER; j < grid_d.act_sizey - ORDER; j++){
+      for(int k = ORDER; k < grid_d.act_sizex - ORDER; k++){
+        for(int p = 2; p < 8; p++){
+          int index = i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p;
+          k_grid[index] *= dt;
+          rho_mu_yy_temp[index] = rho_mu_yy[index] + k_grid[index] * val;
+        }      
+      }
+    }
+  }  
+  return 0;
+}
+
 
 double square_error(float* current, float* next, struct Grid_d grid_d){
     double sum = 0;
