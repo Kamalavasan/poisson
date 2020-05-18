@@ -482,7 +482,7 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 
 	  	short idx = k - ORDER;
 	  	short idy = j - ORDER;
-	  	short idz = i - ORDER;
+	  	short idz = i - 2*ORDER;
 
 	  	if(idx <= xbeg+pml_width){
 	  	  sigmax = (xbeg+pml_width-idx ) * 0.1;//sigma/pml_width;
@@ -552,17 +552,17 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		    pyy += Y_ARM_1[l] * c[l];
 		    pzy += Y_ARM_2[l] * c[l];
 		    
-		    vxy += Y_ARM_0[l] * c[l];
-		    vyy += Y_ARM_1[l] * c[l];
-		    vzy += Y_ARM_2[l] * c[l];
+		    vxy += Y_ARM_3[l] * c[l];
+		    vyy += Y_ARM_4[l] * c[l];
+		    vzy += Y_ARM_5[l] * c[l];
 		    
 		    pxz += Z_ARM_0[l] * c[l];
 		    pyz += Z_ARM_1[l] * c[l];
 		    pzz += Z_ARM_2[l] * c[l];
 		    
-		    vxz += Z_ARM_0[l] * c[l];
-		    vyz += Z_ARM_1[l] * c[l];
-		    vzz += Z_ARM_2[l] * c[l];
+		    vxz += Z_ARM_3[l] * c[l];
+		    vyz += Z_ARM_4[l] * c[l];
+		    vzz += Z_ARM_5[l] * c[l];
 		}
 
 	  	pxx *= invdx;
@@ -596,11 +596,11 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
   		mem_wr_k[3]= vyy - sigmay*py;  		  // vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
   		mem_wr_k[6]= (pxy+pyy+pyz)- sigmay*vy;   //(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
   		
-  		mem_wr_k[4]= vzz  - sigmaz*pz;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
+  		mem_wr_k[4]= vzz - sigmaz*pz;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
   		mem_wr_k[7]= (pxz+pyz+pzz) - sigmaz*vz;  //(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
 
-  		mem_wr_k[0] = s_4_4_4_arr[6];
-  		mem_wr_k[1] = s_4_4_4_arr[7];
+  		mem_wr_k[0] = s_4_4_4_arr[0];
+  		mem_wr_k[1] = s_4_4_4_arr[1];
 
 
   		// calc K dt
@@ -613,8 +613,8 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
   		mem_wr_k_dt[4] = mem_wr_k[4] * 0.1;
   		mem_wr_k_dt[7] = mem_wr_k[7] * 0.1;
 
-  		mem_wr_k_dt[0] = s_4_4_4_arr[6];
-  		mem_wr_k_dt[1] = s_4_4_4_arr[7];
+  		mem_wr_k_dt[0] = s_4_4_4_arr[0];
+  		mem_wr_k_dt[1] = s_4_4_4_arr[1];
 
   		// calc Y temp
   		mem_wr_y_tmp[2] = s_4_4_4_arr[2] + mem_wr_k_dt[2]*0.5;            
@@ -626,27 +626,27 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
   		mem_wr_y_tmp[4] = s_4_4_4_arr[4] + mem_wr_k_dt[4]*0.5;
   		mem_wr_y_tmp[7] = s_4_4_4_arr[7] + mem_wr_k_dt[7]*0.5; 
 
-  		mem_wr_y_tmp[0] = s_4_4_4_arr[6];
-  		mem_wr_y_tmp[1] = s_4_4_4_arr[7];
+  		mem_wr_y_tmp[0] = s_4_4_4_arr[0];
+  		mem_wr_y_tmp[1] = s_4_4_4_arr[1];
 
 
 		array2vec: for(int k = 0; k < PORT_WIDTH; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			data_conv tmp;
-			bool change_cond = (idx < 0 || idx >= sizex || (idy < 0) || (idy >= sizey ) || (idz < ORDER) || (idz >= grid_sizez -ORDER));
+			bool change_cond = (idx < 0 || idx >= sizex || (idy < 0) || (idy >= sizey ) || (idz < 0) || (idz >= sizez));
 //			tmp.f =  s_4_4_4_arr[k] ;
 			tmp.f = change_cond ? s_4_4_4_arr[k] : mem_wr_y_tmp[k];
 			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
 
-		bool cond_wr = (i >= ORDER) && ( i < limit_z - ORDER);
+		bool cond_wr = (i >= ORDER) && ( i < grid_sizez + ORDER);
 		if(cond_wr ) {
 			wr_buffer <<  update_j;
 		}
 
 		bool cond_wr_yy = (i >= 2*ORDER) && ( i < limit_z);
 		if(cond_wr_yy ) {
-			wr_buffer <<  s_4_4_0;
+			yy <<  s_4_4_0;
 		}
 
 		// move the cell block
@@ -856,7 +856,7 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 
 		bool cond_tmp2 = (i < grid_sizez+ORDER && i >= ORDER);
 		if(cond_tmp1){
-			yy_vec = rd_buffer.read(); // set
+			yy_vec = yy.read(); // set
 		}
 
 
@@ -1042,7 +1042,7 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 
 	  	short idx = k - ORDER;
 	  	short idy = j - ORDER;
-	  	short idz = i - ORDER;
+	  	short idz = i - 2*ORDER;
 
 	  	if(idx <= xbeg+pml_width){
 	  	  sigmax = (xbeg+pml_width-idx ) * 0.1;//sigma/pml_width;
@@ -1112,17 +1112,17 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		    pyy += Y_ARM_1[l] * c[l];
 		    pzy += Y_ARM_2[l] * c[l];
 		    
-		    vxy += Y_ARM_0[l] * c[l];
-		    vyy += Y_ARM_1[l] * c[l];
-		    vzy += Y_ARM_2[l] * c[l];
+		    vxy += Y_ARM_3[l] * c[l];
+		    vyy += Y_ARM_4[l] * c[l];
+		    vzy += Y_ARM_5[l] * c[l];
 		    
 		    pxz += Z_ARM_0[l] * c[l];
 		    pyz += Z_ARM_1[l] * c[l];
 		    pzz += Z_ARM_2[l] * c[l];
 		    
-		    vxz += Z_ARM_0[l] * c[l];
-		    vyz += Z_ARM_1[l] * c[l];
-		    vzz += Z_ARM_2[l] * c[l];
+		    vxz += Z_ARM_3[l] * c[l];
+		    vyz += Z_ARM_4[l] * c[l];
+		    vzz += Z_ARM_5[l] * c[l];
 		}
 
 	  	pxx *= invdx;
@@ -1159,8 +1159,8 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
   		mem_wr_k[4]= vzz  - sigmaz*pz;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
   		mem_wr_k[7]= (pxz+pyz+pzz) - sigmaz*vz;  //(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
 
-  		mem_wr_k[0] = s_4_4_4_arr[6];
-  		mem_wr_k[1] = s_4_4_4_arr[7];
+  		mem_wr_k[0] = s_4_4_4_arr[0];
+  		mem_wr_k[1] = s_4_4_4_arr[1];
 
 
   		// calc K dt
@@ -1173,33 +1173,33 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
   		mem_wr_k_dt[4] = mem_wr_k[4] * 0.1;
   		mem_wr_k_dt[7] = mem_wr_k[7] * 0.1;
 
-  		mem_wr_k_dt[0] = s_4_4_4_arr[6];
-  		mem_wr_k_dt[1] = s_4_4_4_arr[7];
+  		mem_wr_k_dt[0] = s_4_4_4_arr[0];
+  		mem_wr_k_dt[1] = s_4_4_4_arr[1];
 
   		// calc Y temp
-  		mem_wr_y_tmp[2] = yy_vec_arr[2] + mem_wr_k_dt[2]*0.5;            
+  		mem_wr_y_tmp[2] = yy_vec_arr[2] + mem_wr_k_dt[2]*0.5;
   		mem_wr_y_tmp[5] = yy_vec_arr[5] + mem_wr_k_dt[5]*0.5;
   	
   		mem_wr_y_tmp[3] = yy_vec_arr[3] + mem_wr_k_dt[3]*0.5;
   		mem_wr_y_tmp[6] = yy_vec_arr[6] + mem_wr_k_dt[6]*0.5; ;
   	
   		mem_wr_y_tmp[4] = yy_vec_arr[4] + mem_wr_k_dt[4]*0.5;
-  		mem_wr_y_tmp[7] = yy_vec_arr[7] + mem_wr_k_dt[7]*0.5; 
+  		mem_wr_y_tmp[7] = yy_vec_arr[7] + mem_wr_k_dt[7]*0.5;
 
-  		mem_wr_y_tmp[0] = s_4_4_4_arr[6];
-  		mem_wr_y_tmp[1] = s_4_4_4_arr[7];
+  		mem_wr_y_tmp[0] = s_4_4_4_arr[0];
+  		mem_wr_y_tmp[1] = s_4_4_4_arr[1];
 
 
 		array2vec: for(int k = 0; k < PORT_WIDTH; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			data_conv tmp;
-			bool change_cond = (idx < 0 || idx >= sizex || (idy < 0) || (idy >= sizey ) || (idz < ORDER) || (idz >= grid_sizez -ORDER));
+			bool change_cond = (idx < 0 || idx >= sizex || (idy < 0) || (idy >= sizey ) || (idz < 0) || (idz >= sizez));
 //			tmp.f =  s_4_4_4_arr[k] ;
-			tmp.f = change_cond ? s_4_4_4_arr[k] : mem_wr_y_tmp[k];
+			tmp.f = change_cond ? s_4_4_4_arr[k] : mem_wr_k[k];
 			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
 
-		bool cond_wr = (i >= ORDER) && ( i < limit_z - ORDER);
+		bool cond_wr = (i >= ORDER) && ( i < grid_sizez + ORDER);
 		if(cond_wr ) {
 			wr_buffer <<  update_j;
 		}
@@ -1263,8 +1263,8 @@ void process_SLR0 (uint512_dt*  arg0, uint512_dt*  arg1,
 	read_row(arg0, rd_buffer, gridsize_da);
 	stream_convert_512_256(rd_buffer, streamArray[0], gridsize_da);
 
-	void derives_calc_ytep_k1( streamArray[0], streamArray[1], streamArray_yy[0], data_g)
-	void derives_calc_ytep_k2( streamArray[1], streamArray_yy[0], streamArray[2], data_g)
+	derives_calc_ytep_k1( streamArray[0], streamArray[1], streamArray_yy[0], data_g);
+	derives_calc_ytep_k2( streamArray[1], streamArray_yy[0], streamArray[2], data_g);
 
 
 	stream_convert_256_512(streamArray[2], wr_buffer, gridsize_da);

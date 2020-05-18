@@ -31,7 +31,7 @@ int populate_rho_mu_yy(float* grid, struct Grid_d grid_d){
           grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 1] = 1.0;
           grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 2] = (1.0/3) * C * exp(-(x*x+y*y+z*z)/r0);
           for(int p = 3; p < 8; p++){
-            grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p] = 0;
+            grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p] = p*0.1;
           }
         }
       }
@@ -67,8 +67,8 @@ double square_error(float* current, float* next, struct Grid_d grid_d){
           for(int p = 2; p < 8; p++){
             float val1 = next[i*grid_d.grid_size_x*grid_d.grid_size_y*8 + j*grid_d.grid_size_x*8 + k*8 + p];
             float val2 = current[i*grid_d.grid_size_x*grid_d.grid_size_y*8 + j*grid_d.grid_size_x*8 + k*8 + p];
-            if(fabs(val2- val1) > 0.1){
-            	printf("(%d %d %d %f) ", i,j,k, (val2- val1));
+            if(fabs(val2- val1) > 0.001){
+            	printf("(%d %d %d %d %f) ", i,j,k,p, (val2- val1));
             }
             sum +=  val1*val1 - val2*val2;
         }
