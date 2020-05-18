@@ -247,7 +247,7 @@ int main(int argc, char **argv)
 
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
   double error = square_error(grid_yy_rho_mu_temp, grid_yy_rho_mu_temp_d, grid_d);
-  float bandwidth = (grid_d.data_size_bytes_dim8 * 4.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
+  float bandwidth = (grid_d.data_size_bytes_dim8 * 2.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
   printf("\nSquare error is  %f\n\n", error);
   printf("\nBandwidth is %f\n", bandwidth);
 
