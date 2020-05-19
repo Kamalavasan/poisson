@@ -3,6 +3,7 @@
 #define ORDER 4
 
 
+
 struct Grid_d
 {
 	int logical_size_x;
@@ -20,7 +21,6 @@ struct Grid_d
 	int data_size_bytes_dim8;
 
 };
-
 
 int populate_rho_mu_yy(float* grid, struct Grid_d grid_d);
 int calc_ytemp_kernel(float* rho_mu_yy, float* k, float dt, float* rho_mu_yy_temp, float val, struct Grid_d grid_d);
