@@ -3,7 +3,6 @@
 #define ORDER 4
 
 
-
 struct Grid_d
 {
 	int logical_size_x;

@@ -39,14 +39,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-//#include "xcl2.hpp"
+#include "xcl2.hpp"
 #include <chrono>
 #include "omp.h"
-#include <ap_int.h>
 
 
 #include "rtm.h"
-#include "/home/kkvasan/poisson_ws/poisson_1/Hardware/binary_container_1.build/stencil_SLR0/stencil_SLR0/stencil_SLR0/rtm_kernel.h"
 
 
 
@@ -154,83 +152,82 @@ int main(int argc, char **argv)
 
   //OPENCL HOST CODE AREA START
 
-//    auto binaryFile = argv[1];
-//    cl_int err;
-//    cl::Event event;
-//
-//    auto devices = xcl::get_xil_devices();
-//    auto device = devices[0];
-//
-//    OCL_CHECK(err, cl::Context context(device, NULL, NULL, NULL, &err));
-//    OCL_CHECK(
-//        err,
-//        cl::CommandQueue q(context, device, CL_QUEUE_PROFILING_ENABLE, &err));
-//    OCL_CHECK(err,
-//              std::string device_name = device.getInfo<CL_DEVICE_NAME>(&err));
-//
-//
-//
-//    //Create Program and Kernel
-//    auto fileBuf = xcl::read_binary_file(binaryFile);
-//    cl::Program::Binaries bins{{fileBuf.data(), fileBuf.size()}};
-//    devices.resize(1);
-//    OCL_CHECK(err, cl::Program program(context, devices, bins, NULL, &err));
-//    OCL_CHECK(err, cl::Kernel krnl_stencil(program, "stencil_SLR0", &err));
-//
-//
-//
-//    //Allocate Buffer in Global Memory
-//    OCL_CHECK(err,
-//              cl::Buffer buffer_input(context,
-//                                      CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-//                                      grid_d.data_size_bytes_dim8,
-//                                      grid_yy_rho_mu_d,
-//                                      &err));
-//    OCL_CHECK(err,
-//              cl::Buffer buffer_output(context,
-//                                       CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-//                                       grid_d.data_size_bytes_dim8,
-//                                       grid_yy_rho_mu_temp_d,
-//                                       &err));
-//
-//    //Set the Kernel Arguments
-//    int narg = 0;
-//    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, buffer_input));
-//    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, buffer_output));
-//    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_d.logical_size_x));
-//    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_d.logical_size_y));
-//    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_d.logical_size_z));
-//    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_d.grid_size_x));
-//    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, n_iter));
-//
-//    //Copy input data to device global memory
-//    OCL_CHECK(err,
-//              err = q.enqueueMigrateMemObjects({buffer_input},
-//                                               0 /* 0 means from host*/));
-//
-//    uint64_t wtime = 0;
-//    uint64_t nstimestart, nstimeend;
-//    auto start = std::chrono::high_resolution_clock::now();
-//
-//
-//	OCL_CHECK(err, err = q.enqueueTask(krnl_stencil));
-//	q.finish();
+    auto binaryFile = argv[1];
+    cl_int err;
+    cl::Event event;
+
+    auto devices = xcl::get_xil_devices();
+    auto device = devices[0];
+
+    OCL_CHECK(err, cl::Context context(device, NULL, NULL, NULL, &err));
+    OCL_CHECK(
+        err,
+        cl::CommandQueue q(context, device, CL_QUEUE_PROFILING_ENABLE, &err));
+    OCL_CHECK(err,
+              std::string device_name = device.getInfo<CL_DEVICE_NAME>(&err));
 
 
-//    q.finish();
-//    auto finish = std::chrono::high_resolution_clock::now();
-//    //Copy Result from Device Global Memory to Host Local Memory
-//    OCL_CHECK(err,
-//              err = q.enqueueMigrateMemObjects({buffer_input},
-//                                               CL_MIGRATE_MEM_OBJECT_HOST));
-//    OCL_CHECK(err,
-//                 err = q.enqueueMigrateMemObjects({buffer_output},
-//                                                  CL_MIGRATE_MEM_OBJECT_HOST));
-//
-//    q.finish();
-//
-  typedef ap_uint<512> uint512_dt;
-  stencil_SLR0((uint512_dt*)grid_yy_rho_mu_d, (uint512_dt*)grid_yy_rho_mu_temp_d, grid_d.logical_size_x, grid_d.logical_size_y, grid_d.logical_size_z, 0, 1);
+
+    //Create Program and Kernel
+    auto fileBuf = xcl::read_binary_file(binaryFile);
+    cl::Program::Binaries bins{{fileBuf.data(), fileBuf.size()}};
+    devices.resize(1);
+    OCL_CHECK(err, cl::Program program(context, devices, bins, NULL, &err));
+    OCL_CHECK(err, cl::Kernel krnl_stencil(program, "stencil_SLR0", &err));
+
+
+
+    //Allocate Buffer in Global Memory
+    OCL_CHECK(err,
+              cl::Buffer buffer_input(context,
+                                      CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
+                                      grid_d.data_size_bytes_dim8,
+                                      grid_yy_rho_mu_d,
+                                      &err));
+    OCL_CHECK(err,
+              cl::Buffer buffer_output(context,
+                                       CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
+                                       grid_d.data_size_bytes_dim8,
+                                       grid_yy_rho_mu_temp_d,
+                                       &err));
+
+    //Set the Kernel Arguments
+    int narg = 0;
+    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, buffer_input));
+    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, buffer_output));
+    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_d.logical_size_x));
+    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_d.logical_size_y));
+    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_d.logical_size_z));
+    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_d.grid_size_x));
+    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, n_iter));
+
+    //Copy input data to device global memory
+    OCL_CHECK(err,
+              err = q.enqueueMigrateMemObjects({buffer_input},
+                                               0 /* 0 means from host*/));
+
+    uint64_t wtime = 0;
+    uint64_t nstimestart, nstimeend;
+    auto start = std::chrono::high_resolution_clock::now();
+
+
+	OCL_CHECK(err, err = q.enqueueTask(krnl_stencil));
+	q.finish();
+
+
+    q.finish();
+    auto finish = std::chrono::high_resolution_clock::now();
+    //Copy Result from Device Global Memory to Host Local Memory
+    OCL_CHECK(err,
+              err = q.enqueueMigrateMemObjects({buffer_input},
+                                               CL_MIGRATE_MEM_OBJECT_HOST));
+    OCL_CHECK(err,
+                 err = q.enqueueMigrateMemObjects({buffer_output},
+                                                  CL_MIGRATE_MEM_OBJECT_HOST));
+
+    q.finish();
+
+
 
    dump_rho_mu_yy(grid_yy_rho_mu_temp_d, grid_d, (char*)"rho_d.txt", (char*)"mu_d.txt", (char*)"yy_d.txt");
    float dt = 0.1;
@@ -240,24 +237,24 @@ int main(int argc, char **argv)
        calc_ytemp_kernel(grid_yy_rho_mu, grid_k1, dt, grid_yy_rho_mu_temp, 0.5, grid_d);
 //
        fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_k2, grid_d);
-       calc_ytemp_kernel(grid_yy_rho_mu, grid_k2, dt, grid_yy_rho_mu_temp, 0.5, grid_d);
+//       calc_ytemp_kernel(grid_yy_rho_mu, grid_k2, dt, grid_yy_rho_mu_temp, 0.5, grid_d);
 
 
 
-       dump_rho_mu_yy(grid_yy_rho_mu_temp, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
+       dump_rho_mu_yy(grid_k2, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
        
 //       fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_yy_rho_mu, grid_d);
    }
 
 	
-//  std::chrono::duration<double> elapsed = finish - start;
+  std::chrono::duration<double> elapsed = finish - start;
 
-//
-//  printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-//  double error = square_error(grid_yy_rho_mu_temp, grid_yy_rho_mu_temp_d, grid_d);
-//  float bandwidth = (grid_d.data_size_bytes_dim8 * 2.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
-//  printf("\nSquare error is  %f\n\n", error);
-//  printf("\nBandwidth is %f\n", bandwidth);
+
+  printf("Runtime on FPGA is %f seconds\n", elapsed.count());
+  double error = square_error(grid_k2, grid_yy_rho_mu_temp_d, grid_d);
+  float bandwidth = (grid_d.data_size_bytes_dim8 * 2.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
+  printf("\nSquare error is  %f\n\n", error);
+  printf("\nBandwidth is %f\n", bandwidth);
 
 //  act_sizez = 2;
 //  for(int i = 0; i < act_sizez; i++){

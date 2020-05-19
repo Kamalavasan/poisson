@@ -1,8 +1,9 @@
-#include <ap_int.h>
+
 #include <hls_stream.h>
 #include <ap_axi_sdata.h>
 #include <math.h>
 #include <stdio.h>
+#include <ap_int.h>
 
 
 typedef ap_uint<512> uint512_dt;
@@ -642,13 +643,10 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		bool cond_wr = (i >= ORDER) && ( i < grid_sizez + ORDER);
 		if(cond_wr ) {
 			wr_buffer <<  update_j;
-			yy <<  s_4_4_4;
+//			yy <<  s_4_4_4;
 		}
 
-//		bool cond_wr_yy = (i >= 3*ORDER) && ( i < limit_z);
-//		if(cond_wr_yy ) {
-//
-//		}
+
 
 		// move the cell block
 		k++;
@@ -861,12 +859,12 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 
 
 
-		yy_vec = window_yy[j_p_4];
-		bool cond_tmp2 = (i < grid_sizez);
-		if(cond_tmp1){
-			yy_vec_tmp = yy.read(); // set
-		}
-		window_yy[j_p_4] = yy_vec_tmp;
+//		yy_vec = window_yy[j_p_4];
+//		bool cond_tmp2 = (i < grid_sizez);
+//		if(cond_tmp1){
+//			yy_vec_tmp = yy.read(); // set
+//		}
+//		window_yy[j_p_4] = yy_vec_tmp;
 
 
 
@@ -1016,6 +1014,13 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 			data_conv tmp;
 			tmp.i = yy_vec.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
 			yy_vec_arr[k] = tmp.f;
+		}
+
+		vecs2_4_4_4_arr: for(int k = 0; k < PORT_WIDTH; k++){
+			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
+			data_conv tmp;
+			tmp.i = s_4_4_4.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			s_4_4_4_arr[k] = tmp.f;
 		}
 
 
@@ -1209,7 +1214,7 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 			data_conv tmp;
 			bool change_cond = (idx < 0 || idx >= sizex || (idy < 0) || (idy >= sizey ) || (idz < 0) || (idz >= sizez));
 //			tmp.f =  s_4_4_4_arr[k] ;
-			tmp.f = change_cond ? s_4_4_4_arr[k] : mem_wr_y_tmp[k];
+			tmp.f = change_cond ? s_4_4_4_arr[k] : mem_wr_k[k];
 			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
 
@@ -1302,7 +1307,7 @@ void stencil_SLR0(
 		const int count){
 
 	#pragma HLS INTERFACE depth=4096 m_axi port = arg0 offset = slave bundle = gmem0 max_read_burst_length=256 max_write_burst_length=256
-	#pragma HLS INTERFACE depth=4096 m_axi port = arg1 offset = slave bundle = gmem0
+	#pragma HLS INTERFACE depth=4096 m_axi port = arg1 offset = slave bundle = gmem1 max_read_burst_length=256 max_write_burst_length=256
 	#pragma HLS INTERFACE s_axilite port = arg0 bundle = control
 	#pragma HLS INTERFACE s_axilite port = arg1 bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizex bundle = control

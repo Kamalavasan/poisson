@@ -68,7 +68,7 @@ double square_error(float* current, float* next, struct Grid_d grid_d){
             float val1 = next[i*grid_d.grid_size_x*grid_d.grid_size_y*8 + j*grid_d.grid_size_x*8 + k*8 + p];
             float val2 = current[i*grid_d.grid_size_x*grid_d.grid_size_y*8 + j*grid_d.grid_size_x*8 + k*8 + p];
             if(fabs(val2- val1) > 0.001){
-            	printf("(%d %d %d %d %f) ", i,j,k,p, (val2- val1));
+            	printf("(%d %d %d %d %f) \n", i,j,k,p, (val2- val1));
             }
             sum +=  val1*val1 - val2*val2;
         }
