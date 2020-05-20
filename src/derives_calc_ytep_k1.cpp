@@ -541,12 +541,10 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
   		yy_final_arr[0] = s_4_4_4_arr[0];
   		yy_final_arr[1] = s_4_4_4_arr[1];
 
-
+  		bool change_cond = (idx < 0 || idx >= sizex || (idy < 0) || (idy >= sizey ) || (idz < 0) || (idz >= sizez));
 		array2vec: for(int k = 0; k < PORT_WIDTH; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			data_conv tmp;
-			bool change_cond = (idx < 0 || idx >= sizex || (idy < 0) || (idy >= sizey ) || (idz < 0) || (idz >= sizez));
-//			tmp.f =  s_4_4_4_arr[k] ;
 			tmp.f = change_cond ? s_4_4_4_arr[k] : mem_wr_y_tmp[k];
 			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
@@ -554,7 +552,7 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		yy_final2vec: for(int k = 0; k < PORT_WIDTH; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			data_conv tmp;
-			tmp.f = yy_final_arr[k];
+			tmp.f = change_cond ? s_4_4_4_arr[k] : yy_final_arr[k];
 			yy_final_vec.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
 

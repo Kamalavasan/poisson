@@ -150,11 +150,14 @@ void process_rtm (hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
 
     static hls::stream<uint256_dt> streamArray[40 + 1];
     static hls::stream<uint256_dt> streamArray_yy[40 + 1];
+    static hls::stream<uint256_dt> streamArray_yy_final[40 + 1];
     static hls::stream<uint512_dt> rd_buffer;
     static hls::stream<uint512_dt> wr_buffer;
 
     #pragma HLS STREAM variable = streamArray depth = 2
     #pragma HLS STREAM variable = streamArray_yy depth = 2
+	#pragma HLS STREAM variable = streamArray_yy_final depth = 2
+
 	#pragma HLS STREAM variable = rd_buffer depth = max_depth_8
 	#pragma HLS STREAM variable = wr_buffer depth = max_depth_8
 
@@ -182,10 +185,10 @@ void process_rtm (hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
 
 	axis2_fifo256(in, streamArray[0], gridsize_da);
 
-	derives_calc_ytep_k1( streamArray[0], streamArray[1], streamArray_yy[0], data_g);
-	derives_calc_ytep_k2( streamArray[1], streamArray_yy[0], streamArray[2], streamArray_yy[1], data_g);
-	derives_calc_ytep_k3( streamArray[2], streamArray_yy[1], streamArray[3], streamArray_yy[2], data_g);
-	derives_calc_ytep_k4( streamArray[3], streamArray_yy[2], streamArray[4],streamArray_yy[3], data_g);
+	derives_calc_ytep_k1( streamArray[0], streamArray[1], streamArray_yy[0], streamArray_yy_final[0], data_g);
+	derives_calc_ytep_k2( streamArray[1], streamArray_yy[0],streamArray_yy_final[0], streamArray[2], streamArray_yy[1],streamArray_yy_final[1], data_g);
+	derives_calc_ytep_k3( streamArray[2], streamArray_yy[1],streamArray_yy_final[1], streamArray[3], streamArray_yy[2],streamArray_yy_final[2], data_g);
+	derives_calc_ytep_k4( streamArray[3], streamArray_yy[2],streamArray_yy_final[2], streamArray[4],streamArray_yy[3],streamArray_yy_final[3], data_g);
 
 	fifo256_2axis(streamArray[4], out, gridsize_da);
 

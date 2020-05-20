@@ -25,7 +25,7 @@ int populate_rho_mu_yy(float* grid, struct Grid_d grid_d){
           float z = 1.0 * (float ) (i - grid_d.act_sizez/2)/(grid_d.logical_size_z);
 
           const float C = 1;
-          const float r0 = 0.001;
+          const float r0 = 0.1;
 
           grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 0] = 1.0;
           grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 1] = 1.0;
