@@ -206,7 +206,7 @@ static void derives_calc_ytep_k4( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		yy_vec = window_yy[j_p_4];
 		bool cond_tmp2 = (i < grid_sizez);
 		if(cond_tmp1){
-			// yy_vec_tmp = yy_read.read(); // set
+			 yy_vec_tmp = yy_read.read(); // set
 		}
 		window_yy[j_p_4] = yy_vec_tmp;
 

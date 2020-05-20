@@ -162,7 +162,7 @@ int main(int argc, char **argv)
     OCL_CHECK(err, cl::Context context(device, NULL, NULL, NULL, &err));
     OCL_CHECK(
         err,
-        cl::CommandQueue q(context, device, CL_QUEUE_PROFILING_ENABLE, &err));
+        cl::CommandQueue q(context, device, CL_QUEUE_PROFILING_ENABLE | CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &err));
     OCL_CHECK(err,
               std::string device_name = device.getInfo<CL_DEVICE_NAME>(&err));
 
@@ -173,7 +173,8 @@ int main(int argc, char **argv)
     cl::Program::Binaries bins{{fileBuf.data(), fileBuf.size()}};
     devices.resize(1);
     OCL_CHECK(err, cl::Program program(context, devices, bins, NULL, &err));
-    OCL_CHECK(err, cl::Kernel krnl_stencil(program, "stencil_SLR0", &err));
+    OCL_CHECK(err, cl::Kernel krnl_rtm(program, "rtm", &err));
+    OCL_CHECK(err, cl::Kernel krnl_Read_write_SLR0(program, "Read_write_SLR0", &err));
 
 
 
@@ -193,13 +194,21 @@ int main(int argc, char **argv)
 
     //Set the Kernel Arguments
     int narg = 0;
-    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, buffer_input));
-    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, buffer_output));
-    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_d.logical_size_x));
-    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_d.logical_size_y));
-    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_d.logical_size_z));
-    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, grid_d.grid_size_x));
-    OCL_CHECK(err, err = krnl_stencil.setArg(narg++, n_iter));
+    OCL_CHECK(err, err = krnl_rtm.setArg(narg++, grid_d.logical_size_x));
+    OCL_CHECK(err, err = krnl_rtm.setArg(narg++, grid_d.logical_size_y));
+    OCL_CHECK(err, err = krnl_rtm.setArg(narg++, grid_d.logical_size_z));
+    OCL_CHECK(err, err = krnl_rtm.setArg(narg++, grid_d.grid_size_x));
+    OCL_CHECK(err, err = krnl_rtm.setArg(narg++, n_iter));
+
+
+    narg = 0;
+    OCL_CHECK(err, err = krnl_Read_write_SLR0.setArg(narg++, buffer_input));
+    OCL_CHECK(err, err = krnl_Read_write_SLR0.setArg(narg++, buffer_output));
+    OCL_CHECK(err, err = krnl_Read_write_SLR0.setArg(narg++, grid_d.logical_size_x));
+    OCL_CHECK(err, err = krnl_Read_write_SLR0.setArg(narg++, grid_d.logical_size_y));
+    OCL_CHECK(err, err = krnl_Read_write_SLR0.setArg(narg++, grid_d.logical_size_z));
+    OCL_CHECK(err, err = krnl_Read_write_SLR0.setArg(narg++, grid_d.grid_size_x));
+    OCL_CHECK(err, err = krnl_Read_write_SLR0.setArg(narg++, n_iter));
 
     //Copy input data to device global memory
     OCL_CHECK(err,
@@ -211,7 +220,8 @@ int main(int argc, char **argv)
     auto start = std::chrono::high_resolution_clock::now();
 
 
-	OCL_CHECK(err, err = q.enqueueTask(krnl_stencil));
+	OCL_CHECK(err, err = q.enqueueTask(krnl_rtm));
+	OCL_CHECK(err, err = q.enqueueTask(krnl_Read_write_SLR0));
 	q.finish();
 
 
@@ -242,14 +252,14 @@ int main(int argc, char **argv)
 
        fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_k3, grid_d);
        calc_ytemp_kernel(grid_yy_rho_mu, grid_k3, dt, grid_yy_rho_mu_temp, 1.0, grid_d);
-
-
-
-
+//
+//
+//
+//
        fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_k4, grid_d);
-       final_update_kernel(grid_yy_rho_mu, grid_k1, grid_k2, grid_k3, grid_k4, dt, grid_d);
+//       final_update_kernel(grid_yy_rho_mu, grid_k1, grid_k2, grid_k3, grid_k4, dt, grid_d);
        
-       dump_rho_mu_yy(grid_yy_rho_mu, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
+       dump_rho_mu_yy(grid_k4, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
        
 //       fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_yy_rho_mu, grid_d);
    }
@@ -259,7 +269,7 @@ int main(int argc, char **argv)
 
 
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-  double error = square_error(grid_yy_rho_mu, grid_yy_rho_mu_temp_d, grid_d);
+  double error = square_error(grid_k4, grid_yy_rho_mu_temp_d, grid_d);
   float bandwidth = (grid_d.data_size_bytes_dim8 * 2.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
   printf("\nSquare error is  %f\n\n", error);
   printf("\nBandwidth is %f\n", bandwidth);

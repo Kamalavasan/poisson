@@ -544,7 +544,7 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
   		mem_wr_y_tmp[5] = yy_vec_arr[5] + mem_wr_k_dt[5]*0.5;
   	
   		mem_wr_y_tmp[3] = yy_vec_arr[3] + mem_wr_k_dt[3]*0.5;
-  		mem_wr_y_tmp[6] = yy_vec_arr[6] + mem_wr_k_dt[6]*0.5; ;
+  		mem_wr_y_tmp[6] = yy_vec_arr[6] + mem_wr_k_dt[6]*0.5;
   	
   		mem_wr_y_tmp[4] = yy_vec_arr[4] + mem_wr_k_dt[4]*0.5;
   		mem_wr_y_tmp[7] = yy_vec_arr[7] + mem_wr_k_dt[7]*0.5;

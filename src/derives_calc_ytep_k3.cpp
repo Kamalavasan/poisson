@@ -568,7 +568,7 @@ static void derives_calc_ytep_k3( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		}
 
 		if(cond_wr ) {
-			// yy_write <<  yy_vec;
+			 yy_write <<  yy_vec;
 		}
 
 		// move the cell block
