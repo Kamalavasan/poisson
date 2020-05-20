@@ -59,6 +59,23 @@ int calc_ytemp_kernel(float* rho_mu_yy, float* k_grid, float dt, float* rho_mu_y
 }
 
 
+int final_update_kernel(float* rho_mu_yy, float* k_grid1, float* k_grid2, float* k_grid3, float* k_grid4, float dt, struct Grid_d grid_d){
+  for(int i = ORDER; i < grid_d.act_sizez - ORDER; i++){
+    for(int j = ORDER; j < grid_d.act_sizey - ORDER; j++){
+      for(int k = ORDER; k < grid_d.act_sizex - ORDER; k++){
+        int index_b = i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8;
+        for(int p = 2; p < 8; p++){
+          int index = i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p;
+          k_grid4[index] *= dt;
+          rho_mu_yy[index] = rho_mu_yy[index] + k_grid1[index]/6.0 + k_grid2[index]/3.0 + k_grid3[index]/3.0 + k_grid4[index]/6.0;
+        }      
+      }
+    }
+  }  
+  return 0;
+}
+
+
 double square_error(float* current, float* next, struct Grid_d grid_d){
     double sum = 0;
     double sq_sum = 0;

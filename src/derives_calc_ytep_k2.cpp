@@ -1,4 +1,4 @@
-static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint256_dt> &yy_read, hls::stream<uint256_dt> &wr_buffer, hls::stream<uint256_dt> &yy_write, struct data_G data_g){
+static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint256_dt> &yy_read, hls::stream<uint256_dt> &yy_final_read,hls::stream<uint256_dt> &wr_buffer, hls::stream<uint256_dt> &yy_write, hls::stream<uint256_dt> &yy_final_write, struct data_G data_g){
 	unsigned short grid_sizex = data_g.grid_sizex;
 	unsigned short sizex = data_g.sizex;
 	unsigned short sizey = data_g.sizey;
@@ -51,6 +51,7 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 	uint256_dt window_z_n_4[plane_buff_size];
 
 	uint256_dt window_yy[4*plane_buff_size];
+	uint256_dt window_yy_final[4*plane_buff_size];
 
 	#pragma HLS RESOURCE variable=window_z_p_1 core=XPM_MEMORY uram latency=2
 	#pragma HLS RESOURCE variable=window_z_p_2 core=XPM_MEMORY uram latency=2
@@ -73,6 +74,7 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 	#pragma HLS RESOURCE variable=window_z_n_4 core=XPM_MEMORY uram latency=2
 
 	#pragma HLS RESOURCE variable=window_yy core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_yy_final core=XPM_MEMORY uram latency=2
 
 	uint256_dt s_4_4_8, s_4_4_7, s_4_4_6, s_4_4_5;
 	uint256_dt s_4_8_4, s_4_7_4, s_4_6_4, s_4_5_4;
@@ -82,6 +84,7 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 	uint256_dt s_4_3_4, s_4_2_4, s_4_1_4, s_4_0_4;
 	uint256_dt s_4_4_3, s_4_4_2, s_4_4_1, s_4_4_0;
 	uint256_dt yy_vec, yy_vec_tmp;
+	uint256_dt yy_final_vec, yy_final_vec_tmp, yy_final_vec_write;
 	uint256_dt update_j;
 
 
@@ -211,6 +214,13 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		window_yy[j_p_4] = yy_vec_tmp;
 
 
+		
+		yy_final_vec = window_yy_final[j_p_4];
+		bool cond_tmp2 = (i < grid_sizez);
+		if(cond_tmp1){
+			yy_final_vec_tmp = yy_final_read.read(); // set
+		}
+		window_yy_final[j_p_4] = yy_final_vec_tmp;
 
 
 		j_p++;
@@ -351,6 +361,7 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		float mem_wr_k[PORT_WIDTH];
 		float mem_wr_k_dt[PORT_WIDTH];
 		float mem_wr_y_tmp[PORT_WIDTH];
+		float yy_final_arr[PORT_WIDTH];
 		float s_4_4_4_arr[PORT_WIDTH];
 		float yy_vec_arr[PORT_WIDTH];
 		vec2s_4_4_4_arr: for(int k = 0; k < PORT_WIDTH; k++){
@@ -365,6 +376,13 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 			data_conv tmp;
 			tmp.i = s_4_4_4.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
 			s_4_4_4_arr[k] = tmp.f;
+		}
+
+		vecs2_yy_final_vec_write: for(int k = 0; k < PORT_WIDTH; k++){
+			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
+			data_conv tmp;
+			tmp.i = yy_final_vec.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			yy_final_arr[k] = tmp.f;
 		}
 
 
@@ -539,6 +557,21 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
   		mem_wr_k_dt[0] = s_4_4_4_arr[0];
   		mem_wr_k_dt[1] = s_4_4_4_arr[1];
 
+
+  		// YY final 
+  		yy_final_arr[2] += mem_wr_k_dt[2] * 0.33333333;
+  		yy_final_arr[5] += mem_wr_k_dt[5] * 0.33333333;
+
+  		yy_final_arr[3] += mem_wr_k_dt[3] * 0.33333333;
+  		yy_final_arr[6] += mem_wr_k_dt[6] * 0.33333333;
+
+  		yy_final_arr[4] += mem_wr_k_dt[4] * 0.33333333;
+  		yy_final_arr[7] += mem_wr_k_dt[7] * 0.33333333;
+
+  		yy_final_arr[0] += mem_wr_k_dt[0] * 0.33333333;
+  		yy_final_arr[1] += mem_wr_k_dt[1] * 0.33333333;
+
+
   		// calc Y temp
   		mem_wr_y_tmp[2] = yy_vec_arr[2] + mem_wr_k_dt[2]*0.5;
   		mem_wr_y_tmp[5] = yy_vec_arr[5] + mem_wr_k_dt[5]*0.5;
@@ -562,14 +595,23 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
 
+		yy_final_arr2vec: for(int k = 0; k < PORT_WIDTH; k++){
+			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
+			data_conv tmp;
+			tmp.f = yy_final_arr[k];
+			yy_final_vec_write.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
+		}
+
+
+
 		bool cond_wr = (i >= ORDER) && ( i < grid_sizez + ORDER);
 		if(cond_wr ) {
 			wr_buffer <<  update_j;
+			yy_write <<  yy_vec;
+			yy_final_write << yy_final_vec_write;
+
 		}
 
-		if(cond_wr ) {
-			yy_write <<  yy_vec;
-		}
 
 		// move the cell block
 		k++;

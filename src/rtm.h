@@ -30,5 +30,6 @@ double square_error(float* current, float* next, struct Grid_d grid_d);
 int copy_grid(float* grid_s, float* grid_d, int grid_size);
 inline int caculate_index(struct Grid_d grid_d, int z, int y, int x, int pt);
 void fd3d_pml_kernel(float* yy, float* dyy, struct Grid_d grid_d);
+int final_update_kernel(float* rho_mu_yy, float* k_grid1, float* k_grid2, float* k_grid3, float* k_grid4, float dt, struct Grid_d grid_d);
 
 #endif

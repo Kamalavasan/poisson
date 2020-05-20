@@ -1,4 +1,4 @@
-static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint256_dt> &wr_buffer, hls::stream<uint256_dt> &yy, struct data_G data_g){
+static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint256_dt> &wr_buffer, hls::stream<uint256_dt> &yy, hls::stream<uint256_dt> &yy_final, struct data_G data_g){
 	unsigned short grid_sizex = data_g.grid_sizex;
 	unsigned short sizex = data_g.sizex;
 	unsigned short sizey = data_g.sizey;
@@ -78,6 +78,8 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 	uint256_dt s_4_3_4, s_4_2_4, s_4_1_4, s_4_0_4;
 	uint256_dt s_4_4_3, s_4_4_2, s_4_4_1, s_4_4_0;
 	uint256_dt update_j;
+
+	uint256_dt yy_final_vec;
 
 
 	const float c[2*ORDER+1] = {0.0035714285714285713,-0.0380952380952381,0.2,-0.8,0.0,0.8,-0.2,0.0380952380952381,-0.0035714285714285713};
@@ -331,6 +333,7 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		float mem_wr_k[PORT_WIDTH];
 		float mem_wr_k_dt[PORT_WIDTH];
 		float mem_wr_y_tmp[PORT_WIDTH];
+		float yy_final_arr[PORT_WIDTH];
 		float s_4_4_4_arr[PORT_WIDTH];
 		vec2s_4_4_4_arr: for(int k = 0; k < PORT_WIDTH; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
@@ -525,6 +528,20 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
   		mem_wr_y_tmp[1] = s_4_4_4_arr[1];
 
 
+  		// calc Y final
+  		yy_final_arr[2] = s_4_4_4_arr[2] + mem_wr_k_dt[2] *  0.16666666;
+  		yy_final_arr[5] = s_4_4_4_arr[5] + mem_wr_k_dt[5] *  0.16666666;
+
+  		yy_final_arr[3] = s_4_4_4_arr[3] + mem_wr_k_dt[3] *  0.16666666;
+  		yy_final_arr[6] = s_4_4_4_arr[6] + mem_wr_k_dt[6] *  0.16666666;
+
+  		yy_final_arr[4] = s_4_4_4_arr[4] + mem_wr_k_dt[4] *  0.16666666;
+  		yy_final_arr[7] = s_4_4_4_arr[7] + mem_wr_k_dt[7] *  0.16666666;
+
+  		yy_final_arr[0] = s_4_4_4_arr[0];
+  		yy_final_arr[1] = s_4_4_4_arr[1];
+
+
 		array2vec: for(int k = 0; k < PORT_WIDTH; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			data_conv tmp;
@@ -534,13 +551,19 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
 
+		yy_final2vec: for(int k = 0; k < PORT_WIDTH; k++){
+			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
+			data_conv tmp;
+			tmp.f = yy_final_arr[k];
+			yy_final_vec.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
+		}
+
 		bool cond_wr = (i >= ORDER) && ( i < grid_sizez + ORDER);
 		if(cond_wr ) {
 			wr_buffer <<  update_j;
 			yy <<  s_4_4_4;
+			yy_final << yy_final_vec;
 		}
-
-
 
 		// move the cell block
 		k++;
