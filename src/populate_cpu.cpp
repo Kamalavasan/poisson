@@ -85,9 +85,9 @@ double square_error(float* current, float* next, struct Grid_d grid_d){
           for(int p = 2; p < 8; p++){
             float val1 = next[i*grid_d.grid_size_x*grid_d.grid_size_y*8 + j*grid_d.grid_size_x*8 + k*8 + p];
             float val2 = current[i*grid_d.grid_size_x*grid_d.grid_size_y*8 + j*grid_d.grid_size_x*8 + k*8 + p];
-            double error = val1*val1 - val2*val2;
-            double s_sum = val1*val1 + val2*val2;
-            if(error/s_sum > 0.01){
+            double error = (val1-val2) * (val1-val2);
+            double s_sum = (val1+val2) * (val1+val2);
+            if(error/s_sum > 0.01 || isunordered(error,s_sum)){
             	printf("(%d %d %d %d %f %f) \n", i,j,k,p, val1 , val2);
             }
             sum += error;

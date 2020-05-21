@@ -58,15 +58,15 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 	#pragma HLS RESOURCE variable=window_z_p_3 core=XPM_MEMORY uram latency=2
 	#pragma HLS RESOURCE variable=window_z_p_4 core=XPM_MEMORY uram latency=2
 
-	#pragma HLS RESOURCE variable=window_y_p_1 core=XPM_MEMORY uram latency=2
-	#pragma HLS RESOURCE variable=window_y_p_2 core=XPM_MEMORY uram latency=2
-	#pragma HLS RESOURCE variable=window_y_p_3 core=XPM_MEMORY uram latency=2
-	#pragma HLS RESOURCE variable=window_y_p_4 core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_y_p_1 core=RAM_1P_BRAM  latency=2
+	#pragma HLS RESOURCE variable=window_y_p_2 core=RAM_1P_BRAM  latency=2
+	#pragma HLS RESOURCE variable=window_y_p_3 core=RAM_1P_BRAM  latency=2
+	#pragma HLS RESOURCE variable=window_y_p_4 core=RAM_1P_BRAM  latency=2
 
-	#pragma HLS RESOURCE variable=window_y_n_1 core=XPM_MEMORY uram latency=2
-	#pragma HLS RESOURCE variable=window_y_n_2 core=XPM_MEMORY uram latency=2
-	#pragma HLS RESOURCE variable=window_y_n_3 core=XPM_MEMORY uram latency=2
-	#pragma HLS RESOURCE variable=window_y_n_4 core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_y_n_1 core=RAM_1P_BRAM  latency=2
+	#pragma HLS RESOURCE variable=window_y_n_2 core=RAM_1P_BRAM  latency=2
+	#pragma HLS RESOURCE variable=window_y_n_3 core=RAM_1P_BRAM  latency=2
+	#pragma HLS RESOURCE variable=window_y_n_4 core=RAM_1P_BRAM  latency=2
 
 	#pragma HLS RESOURCE variable=window_z_n_1 core=XPM_MEMORY uram latency=2
 	#pragma HLS RESOURCE variable=window_z_n_2 core=XPM_MEMORY uram latency=2
@@ -584,10 +584,13 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
   		mem_wr_y_tmp[0] = s_4_4_4_arr[0];
   		mem_wr_y_tmp[1] = s_4_4_4_arr[1];
 
-  		bool change_cond = (idx < 0 || idx >= sizex || (idy < 0) || (idy >= sizey ) || (idz < 0) || (idz >= sizez));
+
+  		bool change_cond1 = (idx < 0) || (idx >= sizex) || (idy < 0) ;
+  		bool change_cond2 = (idy >= sizey ) || (idz < 0) || (idz >= sizez);
 		array2vec: for(int k = 0; k < PORT_WIDTH; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			data_conv tmp;
+			bool change_cond = change_cond1 || change_cond2;
 			tmp.f = change_cond ? s_4_4_4_arr[k] : mem_wr_y_tmp[k];
 			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
@@ -595,6 +598,7 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		yy_final_arr2vec: for(int k = 0; k < PORT_WIDTH; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			data_conv tmp;
+			bool change_cond = change_cond1 || change_cond2;
 			tmp.f = change_cond ? s_4_4_4_arr[k] : yy_final_arr[k];
 			yy_final_vec_write.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
