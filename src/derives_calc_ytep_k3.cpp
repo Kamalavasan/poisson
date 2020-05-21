@@ -40,18 +40,18 @@ static void derives_calc_ytep_k3( hls::stream<uint256_dt> &rd_buffer, hls::strea
 	uint256_dt window_y_p_3[line_buff_size];
 	uint256_dt window_y_p_4[line_buff_size];
 
-	uint256_dt window_y_n_1[line_buff_size];
-	uint256_dt window_y_n_2[line_buff_size];
-	uint256_dt window_y_n_3[line_buff_size];
-	uint256_dt window_y_n_4[line_buff_size];
+	uint192_dt window_y_n_1[line_buff_size];
+	uint192_dt window_y_n_2[line_buff_size];
+	uint192_dt window_y_n_3[line_buff_size];
+	uint192_dt window_y_n_4[line_buff_size];
 
-	uint256_dt window_z_n_1[plane_buff_size];
-	uint256_dt window_z_n_2[plane_buff_size];
-	uint256_dt window_z_n_3[plane_buff_size];
-	uint256_dt window_z_n_4[plane_buff_size];
+	uint192_dt window_z_n_1[plane_buff_size];
+	uint192_dt window_z_n_2[plane_buff_size];
+	uint192_dt window_z_n_3[plane_buff_size];
+	uint192_dt window_z_n_4[plane_buff_size];
 
-	uint256_dt window_yy[4*plane_buff_size];
-	uint256_dt window_yy_final[4*plane_buff_size];
+	uint192_dt window_yy[4*plane_buff_size];
+	uint192_dt window_yy_final[4*plane_buff_size];
 
 	#pragma HLS RESOURCE variable=window_z_p_1 core=XPM_MEMORY uram latency=2
 	#pragma HLS RESOURCE variable=window_z_p_2 core=XPM_MEMORY uram latency=2
@@ -128,37 +128,37 @@ static void derives_calc_ytep_k3( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		}
 
 		// negetive z arm
-		s_4_4_0 = window_z_n_4[j_p];
+		s_4_4_0.range(255,64) = window_z_n_4[j_p];
 
-		s_4_4_1 = window_z_n_3[j_p];
-		window_z_n_4[j_p] = s_4_4_1;
+		s_4_4_1.range(255,64) = window_z_n_3[j_p];
+		window_z_n_4[j_p] = s_4_4_1.range(255,64);
 
-		s_4_4_2 = window_z_n_2[j_p];
-		window_z_n_3[j_p] = s_4_4_2;
+		s_4_4_2.range(255,64) = window_z_n_2[j_p];
+		window_z_n_3[j_p] = s_4_4_2.range(255,64);
 
-		s_4_4_3 = window_z_n_1[j_p_diff];
-		window_z_n_2[j_p] = s_4_4_3;
+		s_4_4_3.range(255,64) = window_z_n_1[j_p_diff];
+		window_z_n_2[j_p] = s_4_4_3.range(255,64);
 
 
-		// positive y arm
-		s_4_0_4 = window_y_n_4[j_l]; 
-		window_z_n_1[j_p_diff] = s_4_0_4;
+		// Negetive y arm
+		s_4_0_4.range(255,64) = window_y_n_4[j_l]; 
+		window_z_n_1[j_p_diff] = s_4_0_4.range(255,64);
 
-		s_4_1_4 = window_y_n_3[j_l];
-		window_y_n_4[j_l] = s_4_1_4;
+		s_4_1_4.range(255,64) = window_y_n_3[j_l];
+		window_y_n_4[j_l] = s_4_1_4.range(255,64);
 
-		s_4_2_4 = window_y_n_2[j_l];
-		window_y_n_3[j_l] = s_4_2_4;
+		s_4_2_4.range(255,64) = window_y_n_2[j_l];
+		window_y_n_3[j_l] = s_4_2_4.range(255,64);
 
-		s_4_3_4 = window_y_n_1[j_l_diff];
-		window_y_n_2[j_l] = s_4_3_4;
+		s_4_3_4.range(255,64) = window_y_n_1[j_l_diff];
+		window_y_n_2[j_l] = s_4_3_4.range(255,64);
 
 
 		// negetive to positive x arm
 
 
 		s_0_4_4 = s_1_4_4;
-		window_y_n_1[j_l_diff] = s_0_4_4;
+		window_y_n_1[j_l_diff] = s_0_4_4.range(255,64);
 
 		s_1_4_4 = s_2_4_4;
 		s_2_4_4 = s_3_4_4;
@@ -206,19 +206,19 @@ static void derives_calc_ytep_k3( hls::stream<uint256_dt> &rd_buffer, hls::strea
 
 
 
-		yy_vec = window_yy[j_p_4];
+		yy_vec.range(255,64) = window_yy[j_p_4];
 		bool cond_tmp2 = (i < grid_sizez);
 		if(cond_tmp1){
 			yy_vec_tmp = yy_read.read(); // set
 		}
-		window_yy[j_p_4] = yy_vec_tmp;
+		window_yy[j_p_4] = yy_vec_tmp.range(255,64);
 
 
-		yy_final_vec = window_yy_final[j_p_4];
+		yy_final_vec.range(255,64) = window_yy_final[j_p_4];
 		if(cond_tmp1){
 			yy_final_vec_tmp = yy_final_read.read(); // set
 		}
-		window_yy_final[j_p_4] = yy_final_vec_tmp;
+		window_yy_final[j_p_4] = yy_final_vec_tmp.range(255,64);
 
 
 

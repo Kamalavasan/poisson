@@ -10,6 +10,7 @@
 
 typedef ap_uint<512> uint512_dt;
 typedef ap_uint<256> uint256_dt;
+typedef ap_uint<192> uint192_dt;
 typedef ap_axiu<256,0,0,0> t_pkt;
 
 #define MAX_SIZE_X 128
