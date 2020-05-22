@@ -112,16 +112,16 @@ int main(int argc, const char **argv)
     }
   }
 
-  logical_size_x = 64;
-  logical_size_y = 64;
-  logical_size_z = 64;
+  // logical_size_x = 64;
+  // logical_size_y = 64;
+  // logical_size_z = 64;
   nx = logical_size_x;
   ny = logical_size_y;
   nz = logical_size_z;
   ngrid_x = 1;
   ngrid_y = 1;
   ngrid_z = 1;
-  n_iter = 100;
+  // n_iter = 100;
   itertile = n_iter;
   non_copy = 0;
 
