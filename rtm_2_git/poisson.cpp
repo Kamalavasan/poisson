@@ -70,9 +70,9 @@ int main(int argc, const char **argv)
 
 
   //Mesh
-  int logical_size_x = 16;
-  int logical_size_y = 16;
-  int logical_size_z = 16;
+  int logical_size_x = 64;
+  int logical_size_y = 64;
+  int logical_size_z = 64;
   nx = logical_size_x;
   ny = logical_size_y;
   nz = logical_size_z;
@@ -112,20 +112,20 @@ int main(int argc, const char **argv)
     }
   }
 
-  logical_size_x = 16;
-  logical_size_y = 16;
-  logical_size_z = 16;
+  logical_size_x = 64;
+  logical_size_y = 64;
+  logical_size_z = 64;
   nx = logical_size_x;
   ny = logical_size_y;
   nz = logical_size_z;
   ngrid_x = 1;
   ngrid_y = 1;
   ngrid_z = 1;
-  n_iter = 1;
+  n_iter = 100;
   itertile = n_iter;
   non_copy = 0;
 
-  ops_printf("Grid: %dx%d in %dx%d in %dz%d blocks, %d iterations, %d tile height\n",logical_size_x,logical_size_y,logical_size_z,ngrid_x,ngrid_y,ngrid_z,n_iter,itertile);
+  ops_printf("Grid: %dx%dx%d , %d iterations, %d tile height\n",logical_size_x,logical_size_y,logical_size_z ,n_iter ,itertile);
   dx = 0.005;
   dy = 0.005;
   dz = 0.005;
@@ -300,18 +300,18 @@ int main(int argc, const char **argv)
   double it0, it1;
   ops_timers(&ct0, &it0);
 //#ifdef NOT_NOW  
-  for (int iter = 0; iter < 1 /*n_iter*/; iter++) {
+  for (int iter = 0; iter < n_iter; iter++) {
     //if (ngrid_x>1 || ngrid_y>1 || ngrid_z>1) ops_halo_transfer(u_halos);
     // if (iter%itertile == 0) ops_execute();
 
     /* The following is 4th order Runga-Kutta */
     float dt = 0.1; //=sqrt(mu/rho);
     // calc dydt (store it in k1)
-    printf(" CALLING FIRST derivs \n");
+    //printf(" CALLING FIRST derivs \n");
     derivs(ngrid_x, ngrid_y, ngrid_z, sizes, disps, blocks, S3D_000, S3D_big_sten,
 	   rho, mu, yy, k1);
 
-    printf(" DONE derivs\n");
+    //printf(" DONE derivs\n");
     
 
     //k1 = dt*k1
@@ -321,9 +321,9 @@ int main(int argc, const char **argv)
 
 
 
-    ops_print_dat_to_txtfile(k1, "k1.txt");
+    //ops_print_dat_to_txtfile(k1, "k1.txt");
     
-    printf(" DONE calc_ytemp\n");
+    //printf(" DONE calc_ytemp\n");
 
     // calc dytemp/dt store it in k2
     derivs(ngrid_x, ngrid_y, ngrid_z, sizes, disps, blocks, S3D_000, S3D_big_sten,
@@ -353,7 +353,7 @@ int main(int argc, const char **argv)
     final_update(ngrid_x, ngrid_y, ngrid_z, sizes, disps, blocks, S3D_000, &dt,
 	         k1, k2, k3, k4, yy);
 
-    ops_print_dat_to_txtfile(yy, "yy.txt");
+    //ops_print_dat_to_txtfile(yy, "yy.txt");
 
 
 
