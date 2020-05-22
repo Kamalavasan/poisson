@@ -47,7 +47,7 @@ const int port_width  = PORT_WIDTH;
 const int max_depth_16 = MAX_DEPTH_16 * 8;
 const int max_depth_8 = MAX_DEPTH_16 * 8;
 
-const int plane_buff_size = 80*80;
+const int plane_buff_size = 73*73;
 const int line_buff_size = 80;
 
 
