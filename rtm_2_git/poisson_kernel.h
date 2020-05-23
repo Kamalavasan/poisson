@@ -21,14 +21,15 @@ void rtm_kernel_populate(const int *dispx, const int *dispy, const int *dispz, c
   float y = 1.0*((float)(idx[1]-ny/2)/ny);
   float z = 1.0*((float)(idx[2]-nz/2)/nz);
   //printf("x,y,z = %f %f %f\n",x,y,z);
-  const float C = 1.;
-  const float r0 = 0.1;
+  const float C = 1.0;
+  const float r0 = 0.001;
   rho[OPS_ACC4(0,0,0)] = 1.; /* density */
   mu[OPS_ACC5(0,0,0)] = 1.; /* bulk modulus */
   /* pressures */
   //printf("0\n");
   //printf("index = %d %d\n",OPS_ACC_MD6(0,0,0,0),OPS_ACC_MD6(1,0,0,0));
   //printf("pressx = %f\n",(1./3.)*C*exp(-(x*x+y*y+z*z)/r0));
+  // float r = (static_cast <float> (rand()) - RAND_MAX/2) / static_cast <float> (RAND_MAX);
 
   yy[OPS_ACC_MD6(0,0,0,0)] = (1./3.)*C*exp(-(x*x+y*y+z*z)/r0); //idx[0] + idx[1] + idx[2];//
   /*
@@ -68,11 +69,11 @@ void calc_ytemp2_kernel(const int *dispx, const int *dispy, const int *dispz, co
   
 }
 
-void final_update_kernel(const int *dispx, const int *dispy, const int *dispz, const int *idx, const float *dt, const float *k1, const float *k2, const float* k3, float* k4, float *yy) {
+void final_update_kernel(const int *dispx, const int *dispy, const int *dispz, const int *idx, const float *dt, const float *k1, const float *k2, const float* k3, float* k4, float *yy, float *yy_new) {
 
   for (int i=0;i<6;i++) {
     k4[OPS_ACC_MD8(i,0,0,0)] = k4[OPS_ACC_MD8(i,0,0,0)]* *dt;
-    yy[OPS_ACC_MD9(i,0,0,0)] = yy[OPS_ACC_MD9(i,0,0,0)] +
+    yy_new[OPS_ACC_MD10(i,0,0,0)] = yy[OPS_ACC_MD9(i,0,0,0)] +
       k1[OPS_ACC_MD5(i,0,0,0)]/6. +
       k2[OPS_ACC_MD6(i,0,0,0)]/3. +
       k3[OPS_ACC_MD7(i,0,0,0)]/3. +
