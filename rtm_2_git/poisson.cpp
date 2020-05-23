@@ -454,6 +454,6 @@ void final_update(int ngrid_x, int ngrid_y, int ngrid_z, int* sizes, int disps[]
 	       ops_arg_dat(k3, 6, S3D_000, "float", OPS_READ),
 	       ops_arg_dat(k4, 6, S3D_000, "float", OPS_RW),
 	       ops_arg_dat(yy, 6, S3D_000, "float", OPS_READ),
-         ops_arg_dat(yy_new, 6, S3D_000, "float", OPS_RW)
+         ops_arg_dat(yy_new, 6, S3D_000, "float", OPS_WRITE)
 	       );
 }  

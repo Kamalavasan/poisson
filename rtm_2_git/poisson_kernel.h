@@ -69,7 +69,7 @@ void calc_ytemp2_kernel(const int *dispx, const int *dispy, const int *dispz, co
   
 }
 
-void final_update_kernel(const int *dispx, const int *dispy, const int *dispz, const int *idx, const float *dt, const float *k1, const float *k2, const float* k3, float* k4, float *yy, float *yy_new) {
+void final_update_kernel(const int *dispx, const int *dispy, const int *dispz, const int *idx, const float *dt, const float *k1, const float *k2, const float* k3, float* k4, const float *yy, float *yy_new) {
 
   for (int i=0;i<6;i++) {
     k4[OPS_ACC_MD8(i,0,0,0)] = k4[OPS_ACC_MD8(i,0,0,0)]* *dt;
