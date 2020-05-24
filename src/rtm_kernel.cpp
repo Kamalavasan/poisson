@@ -47,7 +47,7 @@ const int port_width  = PORT_WIDTH;
 const int max_depth_16 = MAX_DEPTH_16 * 8;
 const int max_depth_8 = MAX_DEPTH_16 * 8;
 
-const int plane_buff_size = 73*73;
+const int plane_buff_size = 64*64;
 const int line_buff_size = 80;
 
 
@@ -217,8 +217,8 @@ void rtm(
 	#pragma HLS INTERFACE s_axilite port = xdim_aligned bundle = control
 	#pragma HLS INTERFACE s_axilite port = count bundle = control
 	#pragma HLS INTERFACE s_axilite port = return bundle = control
-	#pragma HLS INTERFACE axis port = in
-	#pragma HLS INTERFACE axis port = out
+	#pragma HLS INTERFACE axis port = in register
+	#pragma HLS INTERFACE axis port = out register
 
 
 	for(int i =  0; i < count; i++){

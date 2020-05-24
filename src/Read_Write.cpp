@@ -205,8 +205,8 @@ void Read_write_SLR0(
 
 	#pragma HLS INTERFACE depth=4096 m_axi port = arg0 offset = slave bundle = gmem0 max_read_burst_length=256 max_write_burst_length=256
 	#pragma HLS INTERFACE depth=4096 m_axi port = arg1 offset = slave bundle = gmem1 max_read_burst_length=256 max_write_burst_length=256
-	#pragma HLS INTERFACE axis port = in
-	#pragma HLS INTERFACE axis port = out
+	#pragma HLS INTERFACE axis port = in register
+	#pragma HLS INTERFACE axis port = out register
 	#pragma HLS INTERFACE s_axilite port = arg0 bundle = control
 	#pragma HLS INTERFACE s_axilite port = arg1 bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizex bundle = control

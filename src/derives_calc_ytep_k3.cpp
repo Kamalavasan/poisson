@@ -525,11 +525,11 @@ static void derives_calc_ytep_k3( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		    vzz += Z_ARM_5[l] * c[l];
 
 
-			#pragma HLS RESOURCE variable=pxx core=FAddSub_nodsp
-			#pragma HLS RESOURCE variable=pyx core=FAddSub_nodsp
-			#pragma HLS RESOURCE variable=pzx core=FAddSub_nodsp
-			#pragma HLS RESOURCE variable=vxx core=FAddSub_nodsp
-			#pragma HLS RESOURCE variable=vyx core=FAddSub_nodsp
+//			#pragma HLS RESOURCE variable=pxx core=FAddSub_nodsp
+//			#pragma HLS RESOURCE variable=pyx core=FAddSub_nodsp
+//			#pragma HLS RESOURCE variable=pzx core=FAddSub_nodsp
+//			#pragma HLS RESOURCE variable=vxx core=FAddSub_nodsp
+//			#pragma HLS RESOURCE variable=vyx core=FAddSub_nodsp
 		}
 
 	  	pxx *= invdx;
