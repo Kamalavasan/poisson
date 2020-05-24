@@ -241,7 +241,7 @@ int main(int argc, char **argv)
 
    dump_rho_mu_yy(grid_yy_rho_mu_temp_d, grid_d, (char*)"rho_d.txt", (char*)"mu_d.txt", (char*)"yy_d.txt");
    float dt = 0.1;
-   for(int itr = 0; itr < n_iter*1; itr++){
+   for(int itr = 0; itr < /*n_iter**/1; itr++){
        fd3d_pml_kernel(grid_yy_rho_mu, grid_k1, grid_d);
        calc_ytemp_kernel(grid_yy_rho_mu, grid_k1, dt, grid_yy_rho_mu_temp, 0.5, grid_d);
 

@@ -82,7 +82,7 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 	uint256_dt yy_final_vec;
 
 
-	const float c[2*ORDER+1] = {0.0035714285714285713,-0.0380952380952381,0.2,-0.8,0.0,0.8,-0.2,0.0380952380952381,-0.0035714285714285713};
+	const float c[2*ORDER+1] = {0.003571428f ,-0.03809523f , 0.2f, -0.8f, 0.0f, 0.8f, -0.2f, 0.03809523f,-0.003571428f};
 	const float invdx = 200; // 1/0.005
 	const float invdy = 200; // 1/0.005
 	const float invdz = 200; // 1/0.005
@@ -105,21 +105,32 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 
 
 	
-	unsigned short i = 0, j = 0, k = 0;
-	unsigned short j_p = 0, j_l = 0, j_p_diff = 0, j_l_diff = 0;
+	unsigned short i, j, k;
+	unsigned short i_dum = 0, j_dum = 0, k_dum = 0;
+	unsigned short j_p_dum = 0, j_l_dum = 0, j_p_diff_dum = 0, j_l_diff_dum = 0;
+	unsigned short j_p, j_l, j_p_diff, j_l_diff;
 	for(unsigned int itr = 0; itr < gridsize; itr++) {
 		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
 		#pragma HLS PIPELINE II=1
 
-		if(k == grid_sizex){
-			k = 0;
-			j++;
+		j_p = j_p_dum;
+		j_l = j_l_dum;
+		j_p_diff = j_p_diff_dum;
+		j_l_diff = j_l_diff_dum;
+
+		if(k_dum == grid_sizex){
+			k_dum = 0;
+			j_dum++;
 		}
 
-		if(j == grid_sizey){
-			j = 0;
-			i++;
+		if(j_dum == grid_sizey){
+			j_dum = 0;
+			i_dum++;
 		}
+
+		i = i_dum;
+		j = j_dum;
+		k = k_dum;
 
 		// negetive z arm
 		s_4_4_0.range(255,64) = window_z_n_4[j_p];
@@ -200,24 +211,24 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 
 
 
-		j_p++;
-		if(j_p >= plane_size){
-			j_p = 0;
+		j_p_dum++;
+		if(j_p_dum >= plane_size){
+			j_p_dum = 0;
 		}
 
-		j_l++;
-		if(j_l >= grid_sizex){
-			j_l = 0;
+		j_l_dum++;
+		if(j_l_dum >= grid_sizex){
+			j_l_dum = 0;
 		}
 
-		j_p_diff++;
-		if(j_p_diff >= plane_diff){
-			j_p_diff = 0;
+		j_p_diff_dum++;
+		if(j_p_diff_dum >= plane_diff){
+			j_p_diff_dum = 0;
 		}
 
-		j_l_diff++;
-		if(j_l_diff >= line_diff){
-			j_l_diff = 0;
+		j_l_diff_dum++;
+		if(j_l_diff_dum >= line_diff){
+			j_l_diff_dum = 0;
 		}
 
 
@@ -382,25 +393,33 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 	  	short idy = j - ORDER;
 	  	short idz = i - 2*ORDER;
 
-	  	if(idx <= xbeg+pml_width){
-	  	  sigmax = (xbeg+pml_width-idx ) * 0.1;//sigma/pml_width;
-	  	}
-	  	if(idx >=xend-pml_width){
-	  	  sigmax=(idx -(xend-pml_width)) * 0.1; //sigma/pml_width;
+
+	  	bool idx_cond1 = idx <= xbeg+pml_width;
+	  	if(idx_cond1){
+	  	  sigmax = (xbeg+pml_width-idx ) * 0.1f;//sigma/pml_width;
 	  	}
 
-	  	if(idy <= ybeg+pml_width){
-	  	  sigmay=(ybeg+pml_width-idy) * 0.1; //sigma/pml_width;
-	  	}
-	  	if(idy >= yend-pml_width){
-	  	  sigmay=(idy-(yend-pml_width)) * 0.1; //sigma/pml_width;
+	  	bool idx_cond2 = idx >=xend-pml_width;
+	  	if(idx_cond2){
+	  	  sigmax=(idx -(xend-pml_width)) * 0.1f; //sigma/pml_width;
 	  	}
 
-	  	if(idz <= zbeg+pml_width){
-	  	  sigmaz=(zbeg+pml_width-idz) * 0.1; //sigma/pml_width;
+	  	bool idy_cond1 = idy <= ybeg+pml_width;
+	  	if(idy_cond1){
+	  	  sigmay=(ybeg+pml_width-idy) * 0.1f; //sigma/pml_width;
 	  	}
-	  	if(idz >= zend-pml_width){
-	  	  sigmaz=(idz -(zend-pml_width)) * 0.1; //sigma/pml_width;
+	  	bool idy_cond2 = idy >= yend-pml_width;
+	  	if(idy_cond2){
+	  	  sigmay=(idy-(yend-pml_width)) * 0.1f; //sigma/pml_width;
+	  	}
+
+	  	bool idz_cond1 = idz <= zbeg+pml_width;
+	  	if(idz_cond1){
+	  	  sigmaz=(zbeg+pml_width-idz) * 0.1f; //sigma/pml_width;
+	  	}
+	  	bool idz_cond2 = idz >= zend-pml_width;
+	  	if(idz_cond2){
+	  	  sigmaz=(idz -(zend-pml_width)) * 0.1f; //sigma/pml_width;
 	  	}
 
 
@@ -508,41 +527,41 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 
 
   		// calc K dt
-  		mem_wr_k_dt[2] = mem_wr_k[2] * 0.1;
-  		mem_wr_k_dt[5] = mem_wr_k[5] * 0.1;
+  		mem_wr_k_dt[2] = mem_wr_k[2] * 0.1f;
+  		mem_wr_k_dt[5] = mem_wr_k[5] * 0.1f;
   		
-  		mem_wr_k_dt[3] = mem_wr_k[3] * 0.1;
-  		mem_wr_k_dt[6] = mem_wr_k[6] * 0.1;
+  		mem_wr_k_dt[3] = mem_wr_k[3] * 0.1f;
+  		mem_wr_k_dt[6] = mem_wr_k[6] * 0.1f;
   		
-  		mem_wr_k_dt[4] = mem_wr_k[4] * 0.1;
-  		mem_wr_k_dt[7] = mem_wr_k[7] * 0.1;
+  		mem_wr_k_dt[4] = mem_wr_k[4] * 0.1f;
+  		mem_wr_k_dt[7] = mem_wr_k[7] * 0.1f;
 
   		mem_wr_k_dt[0] = s_4_4_4_arr[0];
   		mem_wr_k_dt[1] = s_4_4_4_arr[1];
 
   		// calc Y temp
-  		mem_wr_y_tmp[2] = s_4_4_4_arr[2] + mem_wr_k_dt[2]*0.5;            
-  		mem_wr_y_tmp[5] = s_4_4_4_arr[5] + mem_wr_k_dt[5]*0.5;
+  		mem_wr_y_tmp[2] = s_4_4_4_arr[2] + mem_wr_k_dt[2]*0.5f;
+  		mem_wr_y_tmp[5] = s_4_4_4_arr[5] + mem_wr_k_dt[5]*0.5f;
   	
-  		mem_wr_y_tmp[3] = s_4_4_4_arr[3] + mem_wr_k_dt[3]*0.5;
-  		mem_wr_y_tmp[6] = s_4_4_4_arr[6] + mem_wr_k_dt[6]*0.5; ;
+  		mem_wr_y_tmp[3] = s_4_4_4_arr[3] + mem_wr_k_dt[3]*0.5f;
+  		mem_wr_y_tmp[6] = s_4_4_4_arr[6] + mem_wr_k_dt[6]*0.5f;
   	
-  		mem_wr_y_tmp[4] = s_4_4_4_arr[4] + mem_wr_k_dt[4]*0.5;
-  		mem_wr_y_tmp[7] = s_4_4_4_arr[7] + mem_wr_k_dt[7]*0.5; 
+  		mem_wr_y_tmp[4] = s_4_4_4_arr[4] + mem_wr_k_dt[4]*0.5f;
+  		mem_wr_y_tmp[7] = s_4_4_4_arr[7] + mem_wr_k_dt[7]*0.5f;
 
   		mem_wr_y_tmp[0] = s_4_4_4_arr[0];
   		mem_wr_y_tmp[1] = s_4_4_4_arr[1];
 
 
   		// calc Y final
-  		yy_final_arr[2] = s_4_4_4_arr[2] + mem_wr_k_dt[2] *  0.16666666;
-  		yy_final_arr[5] = s_4_4_4_arr[5] + mem_wr_k_dt[5] *  0.16666666;
+  		yy_final_arr[2] = s_4_4_4_arr[2] + mem_wr_k_dt[2] *  0.1666666f;
+  		yy_final_arr[5] = s_4_4_4_arr[5] + mem_wr_k_dt[5] *  0.1666666f;
 
-  		yy_final_arr[3] = s_4_4_4_arr[3] + mem_wr_k_dt[3] *  0.16666666;
-  		yy_final_arr[6] = s_4_4_4_arr[6] + mem_wr_k_dt[6] *  0.16666666;
+  		yy_final_arr[3] = s_4_4_4_arr[3] + mem_wr_k_dt[3] *  0.1666666f;
+  		yy_final_arr[6] = s_4_4_4_arr[6] + mem_wr_k_dt[6] *  0.1666666f;
 
-  		yy_final_arr[4] = s_4_4_4_arr[4] + mem_wr_k_dt[4] *  0.16666666;
-  		yy_final_arr[7] = s_4_4_4_arr[7] + mem_wr_k_dt[7] *  0.16666666;
+  		yy_final_arr[4] = s_4_4_4_arr[4] + mem_wr_k_dt[4] *  0.1666666f;
+  		yy_final_arr[7] = s_4_4_4_arr[7] + mem_wr_k_dt[7] *  0.1666666f;
 
   		yy_final_arr[0] = s_4_4_4_arr[0];
   		yy_final_arr[1] = s_4_4_4_arr[1];
@@ -573,6 +592,6 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		}
 
 		// move the cell block
-		k++;
+		k_dum++;
 	}
 }
