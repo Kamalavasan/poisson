@@ -108,22 +108,22 @@ void fd3d_pml_kernel(const int *dispx, const int *dispy, const int *dispz, const
   float sigmay=0.0;
   float sigmaz=0.0;
   if(idx[0]<=xbeg+pml_width){
-    sigmax = (xbeg+pml_width-idx[0])*sigma/pml_width;
+    sigmax = (xbeg+pml_width-idx[0])*sigma * 0.1f;///pml_width;
   }
   if(idx[0]>=xend-pml_width){
-    sigmax=(idx[0]-(xend-pml_width))*sigma/pml_width;
+    sigmax=(idx[0]-(xend-pml_width))*sigma * 0.1f;///pml_width;
   }
   if(idx[1]<=ybeg+pml_width){
-    sigmay=(ybeg+pml_width-idx[1])*sigma/pml_width;
+    sigmay=(ybeg+pml_width-idx[1])*sigma * 0.1f;///pml_width;
   }
   if(idx[1]>=yend-pml_width){
-    sigmay=(idx[1]-(yend-pml_width))*sigma/pml_width;
+    sigmay=(idx[1]-(yend-pml_width))*sigma * 0.1f;///pml_width;
   }
   if(idx[2]<=zbeg+pml_width){
-    sigmaz=(zbeg+pml_width-idx[2])*sigma/pml_width;
+    sigmaz=(zbeg+pml_width-idx[2])*sigma * 0.1f;///pml_width;
   }
   if(idx[2]>=zend-pml_width){
-    sigmaz=(idx[2]-(zend-pml_width))*sigma/pml_width;
+    sigmaz=(idx[2]-(zend-pml_width))*sigma * 0.1f;///pml_width;
   }
 
 					//sigmax=0.0;
@@ -187,14 +187,14 @@ void fd3d_pml_kernel(const int *dispx, const int *dispy, const int *dispz, const
     vzz += yy[OPS_ACC_MD6(5,0,0,i)]*c[i]*invdz;
   }
   
-  dyy[OPS_ACC_MD7(0,0,0,0)]=vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
-  dyy[OPS_ACC_MD7(3,0,0,0)]=(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
+  dyy[OPS_ACC_MD7(0,0,0,0)]=vxx/*/rho[OPS_ACC4(0,0,0)]*/ - sigmax*px;
+  dyy[OPS_ACC_MD7(3,0,0,0)]=(pxx+pyx+pxz)/**mu[OPS_ACC5(0,0,0)]*/ - sigmax*vx;
   
-  dyy[OPS_ACC_MD7(1,0,0,0)]=vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
-  dyy[OPS_ACC_MD7(4,0,0,0)]=(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
+  dyy[OPS_ACC_MD7(1,0,0,0)]=vyy/*/rho[OPS_ACC4(0,0,0)]*/ - sigmay*py;
+  dyy[OPS_ACC_MD7(4,0,0,0)]=(pxy+pyy+pyz)/**mu[OPS_ACC5(0,0,0)]*/ - sigmay*vy;
   
-  dyy[OPS_ACC_MD7(2,0,0,0)]=vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
-  dyy[OPS_ACC_MD7(5,0,0,0)]=(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
+  dyy[OPS_ACC_MD7(2,0,0,0)]=vzz/*/rho[OPS_ACC4(0,0,0)]*/ - sigmaz*pz;
+  dyy[OPS_ACC_MD7(5,0,0,0)]=(pxz+pyz+pzz)/**mu[OPS_ACC5(0,0,0)]*/ - sigmaz*vz;
   
 }
 
