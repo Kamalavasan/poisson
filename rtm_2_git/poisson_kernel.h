@@ -162,30 +162,55 @@ void fd3d_pml_kernel(const int *dispx, const int *dispy, const int *dispz, const
   float pzz=0.0;
 
   for(int i=-half;i<=half;i++){
-    pxx += yy[OPS_ACC_MD6(0,i,0,0)]*c[i]*invdx;
-    pyx += yy[OPS_ACC_MD6(1,i,0,0)]*c[i]*invdx;
-    pzx += yy[OPS_ACC_MD6(2,i,0,0)]*c[i]*invdx;
+    pxx += yy[OPS_ACC_MD6(0,i,0,0)]*c[i];
+    pyx += yy[OPS_ACC_MD6(1,i,0,0)]*c[i];
+    pzx += yy[OPS_ACC_MD6(2,i,0,0)]*c[i];
     
-    vxx += yy[OPS_ACC_MD6(3,i,0,0)]*c[i]*invdx;
-    vyx += yy[OPS_ACC_MD6(4,i,0,0)]*c[i]*invdx;
-    vzx += yy[OPS_ACC_MD6(5,i,0,0)]*c[i]*invdx;
+    vxx += yy[OPS_ACC_MD6(3,i,0,0)]*c[i];
+    vyx += yy[OPS_ACC_MD6(4,i,0,0)]*c[i];
+    vzx += yy[OPS_ACC_MD6(5,i,0,0)]*c[i];
     
-    pxy += yy[OPS_ACC_MD6(0,0,i,0)]*c[i]*invdy;
-    pyy += yy[OPS_ACC_MD6(1,0,i,0)]*c[i]*invdy;
-    pzy += yy[OPS_ACC_MD6(2,0,i,0)]*c[i]*invdy;
+    pxy += yy[OPS_ACC_MD6(0,0,i,0)]*c[i];
+    pyy += yy[OPS_ACC_MD6(1,0,i,0)]*c[i];
+    pzy += yy[OPS_ACC_MD6(2,0,i,0)]*c[i];
     
-    vxy += yy[OPS_ACC_MD6(3,0,i,0)]*c[i]*invdy;
-    vyy += yy[OPS_ACC_MD6(4,0,i,0)]*c[i]*invdy;
-    vzy += yy[OPS_ACC_MD6(5,0,i,0)]*c[i]*invdy;
+    vxy += yy[OPS_ACC_MD6(3,0,i,0)]*c[i];
+    vyy += yy[OPS_ACC_MD6(4,0,i,0)]*c[i];
+    vzy += yy[OPS_ACC_MD6(5,0,i,0)]*c[i];
     
-    pxz += yy[OPS_ACC_MD6(0,0,0,i)]*c[i]*invdz;
-    pyz += yy[OPS_ACC_MD6(1,0,0,i)]*c[i]*invdz;
-    pzz += yy[OPS_ACC_MD6(2,0,0,i)]*c[i]*invdz;
+    pxz += yy[OPS_ACC_MD6(0,0,0,i)]*c[i];
+    pyz += yy[OPS_ACC_MD6(1,0,0,i)]*c[i];
+    pzz += yy[OPS_ACC_MD6(2,0,0,i)]*c[i];
     
-    vxz += yy[OPS_ACC_MD6(3,0,0,i)]*c[i]*invdz;
-    vyz += yy[OPS_ACC_MD6(4,0,0,i)]*c[i]*invdz;
-    vzz += yy[OPS_ACC_MD6(5,0,0,i)]*c[i]*invdz;
+    vxz += yy[OPS_ACC_MD6(3,0,0,i)]*c[i];
+    vyz += yy[OPS_ACC_MD6(4,0,0,i)]*c[i];
+    vzz += yy[OPS_ACC_MD6(5,0,0,i)]*c[i];
   }
+
+
+  pxx *= invdx
+  pyx *= invdx
+  pzx *= invdx
+
+  vxx *= invdx
+  vyx *= invdx
+  vzx *= invdx
+
+  pxy *= invdy
+  pyy *= invdy
+  pzy *= invdy
+
+  vxy *= invdy
+  vyy *= invdy
+  vzy *= invdy
+
+  pxz *= invdz
+  pyz *= invdz
+  pzz *= invdz
+
+  vxz *= invdz
+  vyz *= invdz
+  vzz *= invdz
   
   dyy[OPS_ACC_MD7(0,0,0,0)]=vxx/*/rho[OPS_ACC4(0,0,0)]*/ - sigmax*px;
   dyy[OPS_ACC_MD7(3,0,0,0)]=(pxx+pyx+pxz)/**mu[OPS_ACC5(0,0,0)]*/ - sigmax*vx;
