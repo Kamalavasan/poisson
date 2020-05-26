@@ -188,29 +188,29 @@ void fd3d_pml_kernel(const int *dispx, const int *dispy, const int *dispz, const
   }
 
 
-  pxx *= invdx
-  pyx *= invdx
-  pzx *= invdx
+  pxx *= invdx;
+  pyx *= invdx;
+  pzx *= invdx:
 
-  vxx *= invdx
-  vyx *= invdx
-  vzx *= invdx
+  vxx *= invdx;
+  vyx *= invdx;
+  vzx *= invdx;
 
-  pxy *= invdy
-  pyy *= invdy
-  pzy *= invdy
+  pxy *= invdy;
+  pyy *= invdy;
+  pzy *= invdy;
 
-  vxy *= invdy
-  vyy *= invdy
-  vzy *= invdy
+  vxy *= invdy;
+  vyy *= invdy;
+  vzy *= invdy;
 
-  pxz *= invdz
-  pyz *= invdz
-  pzz *= invdz
+  pxz *= invdz;
+  pyz *= invdz;
+  pzz *= invdz;
 
-  vxz *= invdz
-  vyz *= invdz
-  vzz *= invdz
+  vxz *= invdz;
+  vyz *= invdz;
+  vzz *= invdz;
   
   dyy[OPS_ACC_MD7(0,0,0,0)]=vxx/*/rho[OPS_ACC4(0,0,0)]*/ - sigmax*px;
   dyy[OPS_ACC_MD7(3,0,0,0)]=(pxx+pyx+pxz)/**mu[OPS_ACC5(0,0,0)]*/ - sigmax*vx;
