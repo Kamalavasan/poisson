@@ -190,7 +190,7 @@ void fd3d_pml_kernel(const int *dispx, const int *dispy, const int *dispz, const
 
   pxx *= invdx;
   pyx *= invdx;
-  pzx *= invdx:
+  pzx *= invdx;
 
   vxx *= invdx;
   vyx *= invdx;
