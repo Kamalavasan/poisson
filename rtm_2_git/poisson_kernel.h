@@ -21,10 +21,10 @@ void rtm_kernel_populate(const int *dispx, const int *dispy, const int *dispz, c
   float y = 1.0*((float)(idx[1]-ny/2)/ny);
   float z = 1.0*((float)(idx[2]-nz/2)/nz);
   //printf("x,y,z = %f %f %f\n",x,y,z);
-  const float C = 1.0;
-  const float r0 = 0.001;
-  rho[OPS_ACC4(0,0,0)] = 1.; /* density */
-  mu[OPS_ACC5(0,0,0)] = 1.; /* bulk modulus */
+  const float C = 1.0f;
+  const float r0 = 0.001f;
+  rho[OPS_ACC4(0,0,0)] = 1000.0f; /* density */
+  mu[OPS_ACC5(0,0,0)] = 0.001f; /* bulk modulus */
   /* pressures */
   //printf("0\n");
   //printf("index = %d %d\n",OPS_ACC_MD6(0,0,0,0),OPS_ACC_MD6(1,0,0,0));
@@ -55,7 +55,7 @@ void calc_ytemp_kernel(const int *dispx, const int *dispy, const int *dispz, con
 
   for (int i=0;i<6;i++) {
     k[OPS_ACC_MD6(i,0,0,0)] = k[OPS_ACC_MD6(i,0,0,0)]* *dt;
-    ytemp[OPS_ACC_MD7(i,0,0,0)] = yy[OPS_ACC_MD5(i,0,0,0)] + k[OPS_ACC_MD6(i,0,0,0)]*0.5;
+    ytemp[OPS_ACC_MD7(i,0,0,0)] = yy[OPS_ACC_MD5(i,0,0,0)] + k[OPS_ACC_MD6(i,0,0,0)]*0.5f;
   }
   
 }
@@ -74,10 +74,10 @@ void final_update_kernel(const int *dispx, const int *dispy, const int *dispz, c
   for (int i=0;i<6;i++) {
     k4[OPS_ACC_MD8(i,0,0,0)] = k4[OPS_ACC_MD8(i,0,0,0)]* *dt;
     yy_new[OPS_ACC_MD10(i,0,0,0)] = yy[OPS_ACC_MD9(i,0,0,0)] +
-      k1[OPS_ACC_MD5(i,0,0,0)]/6. +
-      k2[OPS_ACC_MD6(i,0,0,0)]/3. +
-      k3[OPS_ACC_MD7(i,0,0,0)]/3. +
-      k4[OPS_ACC_MD8(i,0,0,0)]/6.;
+      k1[OPS_ACC_MD5(i,0,0,0)]/6.0f +
+      k2[OPS_ACC_MD6(i,0,0,0)]/3.0f +
+      k3[OPS_ACC_MD7(i,0,0,0)]/3.0f +
+      k4[OPS_ACC_MD8(i,0,0,0)]/6.0f;
   }
   
 }
@@ -86,7 +86,7 @@ void fd3d_pml_kernel(const int *dispx, const int *dispy, const int *dispz, const
   
 #include "../coeffs/coeffs8.h"
 //  float* c = &coeffs[half+half*(order+1)];
-  float* c = &coeffs[half][half];
+  float* c = {0.0035714285714285713,-0.0380952380952381,0.2,-0.8,0.0,0.8,-0.2,0.0380952380952381,-0.0035714285714285713};
   float invdx = 1.0 / dx;
   float invdy = 1.0 / dy;
   float invdz = 1.0 / dz;
@@ -162,29 +162,29 @@ void fd3d_pml_kernel(const int *dispx, const int *dispy, const int *dispz, const
   float pzz=0.0;
 
   for(int i=-half;i<=half;i++){
-    pxx += yy[OPS_ACC_MD6(0,i,0,0)]*c[i];
-    pyx += yy[OPS_ACC_MD6(1,i,0,0)]*c[i];
-    pzx += yy[OPS_ACC_MD6(2,i,0,0)]*c[i];
+    pxx += yy[OPS_ACC_MD6(0,i,0,0)]*c[i+half];
+    pyx += yy[OPS_ACC_MD6(1,i,0,0)]*c[i+half];
+    pzx += yy[OPS_ACC_MD6(2,i,0,0)]*c[i+half];
     
-    vxx += yy[OPS_ACC_MD6(3,i,0,0)]*c[i];
-    vyx += yy[OPS_ACC_MD6(4,i,0,0)]*c[i];
-    vzx += yy[OPS_ACC_MD6(5,i,0,0)]*c[i];
+    vxx += yy[OPS_ACC_MD6(3,i,0,0)]*c[i+half];
+    vyx += yy[OPS_ACC_MD6(4,i,0,0)]*c[i+half];
+    vzx += yy[OPS_ACC_MD6(5,i,0,0)]*c[i+half];
     
-    pxy += yy[OPS_ACC_MD6(0,0,i,0)]*c[i];
-    pyy += yy[OPS_ACC_MD6(1,0,i,0)]*c[i];
-    pzy += yy[OPS_ACC_MD6(2,0,i,0)]*c[i];
+    pxy += yy[OPS_ACC_MD6(0,0,i,0)]*c[i+half];
+    pyy += yy[OPS_ACC_MD6(1,0,i,0)]*c[i+half];
+    pzy += yy[OPS_ACC_MD6(2,0,i,0)]*c[i+half];
     
-    vxy += yy[OPS_ACC_MD6(3,0,i,0)]*c[i];
-    vyy += yy[OPS_ACC_MD6(4,0,i,0)]*c[i];
-    vzy += yy[OPS_ACC_MD6(5,0,i,0)]*c[i];
+    vxy += yy[OPS_ACC_MD6(3,0,i,0)]*c[i+half];
+    vyy += yy[OPS_ACC_MD6(4,0,i,0)]*c[i+half];
+    vzy += yy[OPS_ACC_MD6(5,0,i,0)]*c[i+half];
     
-    pxz += yy[OPS_ACC_MD6(0,0,0,i)]*c[i];
-    pyz += yy[OPS_ACC_MD6(1,0,0,i)]*c[i];
-    pzz += yy[OPS_ACC_MD6(2,0,0,i)]*c[i];
+    pxz += yy[OPS_ACC_MD6(0,0,0,i)]*c[i+half];
+    pyz += yy[OPS_ACC_MD6(1,0,0,i)]*c[i+half];
+    pzz += yy[OPS_ACC_MD6(2,0,0,i)]*c[i+half];
     
-    vxz += yy[OPS_ACC_MD6(3,0,0,i)]*c[i];
-    vyz += yy[OPS_ACC_MD6(4,0,0,i)]*c[i];
-    vzz += yy[OPS_ACC_MD6(5,0,0,i)]*c[i];
+    vxz += yy[OPS_ACC_MD6(3,0,0,i)]*c[i+half];
+    vyz += yy[OPS_ACC_MD6(4,0,0,i)]*c[i+half];
+    vzz += yy[OPS_ACC_MD6(5,0,0,i)]*c[i+half];
   }
 
 
@@ -212,14 +212,14 @@ void fd3d_pml_kernel(const int *dispx, const int *dispy, const int *dispz, const
   vyz *= invdz;
   vzz *= invdz;
   
-  dyy[OPS_ACC_MD7(0,0,0,0)]=vxx/*/rho[OPS_ACC4(0,0,0)]*/ - sigmax*px;
-  dyy[OPS_ACC_MD7(3,0,0,0)]=(pxx+pyx+pxz)/**mu[OPS_ACC5(0,0,0)]*/ - sigmax*vx;
+  dyy[OPS_ACC_MD7(0,0,0,0)]=vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
+  dyy[OPS_ACC_MD7(3,0,0,0)]=(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
   
-  dyy[OPS_ACC_MD7(1,0,0,0)]=vyy/*/rho[OPS_ACC4(0,0,0)]*/ - sigmay*py;
-  dyy[OPS_ACC_MD7(4,0,0,0)]=(pxy+pyy+pyz)/**mu[OPS_ACC5(0,0,0)]*/ - sigmay*vy;
+  dyy[OPS_ACC_MD7(1,0,0,0)]=vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
+  dyy[OPS_ACC_MD7(4,0,0,0)]=(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
   
-  dyy[OPS_ACC_MD7(2,0,0,0)]=vzz/*/rho[OPS_ACC4(0,0,0)]*/ - sigmaz*pz;
-  dyy[OPS_ACC_MD7(5,0,0,0)]=(pxz+pyz+pzz)/**mu[OPS_ACC5(0,0,0)]*/ - sigmaz*vz;
+  dyy[OPS_ACC_MD7(2,0,0,0)]=vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
+  dyy[OPS_ACC_MD7(5,0,0,0)]=(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
   
 }
 
