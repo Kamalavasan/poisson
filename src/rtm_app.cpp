@@ -173,7 +173,9 @@ int main(int argc, char **argv)
     cl::Program::Binaries bins{{fileBuf.data(), fileBuf.size()}};
     devices.resize(1);
     OCL_CHECK(err, cl::Program program(context, devices, bins, NULL, &err));
-    OCL_CHECK(err, cl::Kernel krnl_rtm(program, "rtm", &err));
+    OCL_CHECK(err, cl::Kernel krnl_rtm_SLR0(program, "rtm_SLR0", &err));
+    OCL_CHECK(err, cl::Kernel krnl_rtm_SLR1(program, "rtm_SLR1", &err));
+    OCL_CHECK(err, cl::Kernel krnl_rtm_SLR2(program, "rtm_SLR2", &err));
     OCL_CHECK(err, cl::Kernel krnl_Read_write_SLR0(program, "Read_write_SLR0", &err));
 
 
@@ -194,11 +196,25 @@ int main(int argc, char **argv)
 
     //Set the Kernel Arguments
     int narg = 0;
-    OCL_CHECK(err, err = krnl_rtm.setArg(narg++, grid_d.logical_size_x));
-    OCL_CHECK(err, err = krnl_rtm.setArg(narg++, grid_d.logical_size_y));
-    OCL_CHECK(err, err = krnl_rtm.setArg(narg++, grid_d.logical_size_z));
-    OCL_CHECK(err, err = krnl_rtm.setArg(narg++, grid_d.grid_size_x));
-    OCL_CHECK(err, err = krnl_rtm.setArg(narg++, n_iter));
+    OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, grid_d.logical_size_x));
+    OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, grid_d.logical_size_y));
+    OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, grid_d.logical_size_z));
+    OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, grid_d.grid_size_x));
+    OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, n_iter));
+
+    narg = 0;
+    OCL_CHECK(err, err = krnl_rtm_SLR1.setArg(narg++, grid_d.logical_size_x));
+    OCL_CHECK(err, err = krnl_rtm_SLR1.setArg(narg++, grid_d.logical_size_y));
+    OCL_CHECK(err, err = krnl_rtm_SLR1.setArg(narg++, grid_d.logical_size_z));
+    OCL_CHECK(err, err = krnl_rtm_SLR1.setArg(narg++, grid_d.grid_size_x));
+    OCL_CHECK(err, err = krnl_rtm_SLR1.setArg(narg++, n_iter));
+
+    narg = 0;
+    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, grid_d.logical_size_x));
+    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, grid_d.logical_size_y));
+    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, grid_d.logical_size_z));
+    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, grid_d.grid_size_x));
+    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, n_iter));
 
 
     narg = 0;
@@ -220,7 +236,9 @@ int main(int argc, char **argv)
     auto start = std::chrono::high_resolution_clock::now();
 
 
-	OCL_CHECK(err, err = q.enqueueTask(krnl_rtm));
+	OCL_CHECK(err, err = q.enqueueTask(krnl_rtm_SLR0));
+	OCL_CHECK(err, err = q.enqueueTask(krnl_rtm_SLR1));
+	OCL_CHECK(err, err = q.enqueueTask(krnl_rtm_SLR2));
 	OCL_CHECK(err, err = q.enqueueTask(krnl_Read_write_SLR0));
 	q.finish();
 
@@ -241,7 +259,7 @@ int main(int argc, char **argv)
 
    dump_rho_mu_yy(grid_yy_rho_mu_temp_d, grid_d, (char*)"rho_d.txt", (char*)"mu_d.txt", (char*)"yy_d.txt");
    float dt = 0.1;
-   for(int itr = 0; itr < /*n_iter**/1; itr++){
+   for(int itr = 0; itr < n_iter*6; itr++){
        fd3d_pml_kernel(grid_yy_rho_mu, grid_k1, grid_d);
        calc_ytemp_kernel(grid_yy_rho_mu, grid_k1, dt, grid_yy_rho_mu_temp, 0.5, grid_d);
 
@@ -259,17 +277,18 @@ int main(int argc, char **argv)
        fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_k4, grid_d);
        final_update_kernel(grid_yy_rho_mu, grid_k1, grid_k2, grid_k3, grid_k4, dt, grid_d);
        
-       dump_rho_mu_yy(grid_yy_rho_mu, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
        
+
 //       fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_yy_rho_mu, grid_d);
    }
+   dump_rho_mu_yy(grid_yy_rho_mu, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
 
 	
   std::chrono::duration<double> elapsed = finish - start;
 
 
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-  double error = square_error(grid_yy_rho_mu, grid_yy_rho_mu_temp_d, grid_d);
+  double error = square_error(grid_yy_rho_mu, grid_yy_rho_mu_d, grid_d);
   float bandwidth = (grid_d.data_size_bytes_dim8 * 2.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
   printf("\nSquare error is  %f\n\n", error);
   printf("\nBandwidth is %f\n", bandwidth);

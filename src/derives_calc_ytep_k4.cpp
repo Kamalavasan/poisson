@@ -69,7 +69,7 @@ static void derives_calc_ytep_k4( hls::stream<uint256_dt> &rd_buffer, hls::strea
 	uint256_dt update_j;
 
 
-	const float c[2*ORDER+1] = {0.003571428f ,-0.03809523f , 0.2f, -0.8f, 0.0f, 0.8f, -0.2f, 0.03809523f,-0.003571428f};
+	const float c[2*ORDER+1] = {0.0035714285714285713,-0.0380952380952381,0.2,-0.8,0.0,0.8,-0.2,0.0380952380952381,-0.0035714285714285713};
 	const float invdx = 200; // 1/0.005
 	const float invdy = 200; // 1/0.005
 	const float invdz = 200; // 1/0.005
@@ -408,7 +408,7 @@ static void derives_calc_ytep_k4( hls::stream<uint256_dt> &rd_buffer, hls::strea
 
 
 
-	  	float sigma = 1 ; //mu[OPS_ACC5(0,0,0)]/rho[OPS_ACC4(0,0,0)];
+	  	float sigma = s_4_4_4_arr[1]/s_4_4_4_arr[0]; //mu[OPS_ACC5(0,0,0)]/rho[OPS_ACC4(0,0,0)];
 	  	float sigmax=0.0;
 	  	float sigmay=0.0;
 	  	float sigmaz=0.0;
@@ -420,30 +420,30 @@ static void derives_calc_ytep_k4( hls::stream<uint256_dt> &rd_buffer, hls::strea
 
 	  	bool idx_cond1 = idx <= xbeg+pml_width;
 	  	if(idx_cond1){
-	  	  sigmax = (xbeg+pml_width-idx ) * 0.1f;//sigma/pml_width;
+	  	  sigmax = (xbeg+pml_width-idx ) * sigma * 0.1f;//sigma/pml_width;
 	  	}
 
 	  	bool idx_cond2 = idx >=xend-pml_width;
 	  	if(idx_cond2){
-	  	  sigmax=(idx -(xend-pml_width)) * 0.1f; //sigma/pml_width;
+	  	  sigmax=(idx -(xend-pml_width)) * sigma * 0.1f; //sigma/pml_width;
 	  	}
 
 	  	bool idy_cond1 = idy <= ybeg+pml_width;
 	  	if(idy_cond1){
-	  	  sigmay=(ybeg+pml_width-idy) * 0.1f; //sigma/pml_width;
+	  	  sigmay=(ybeg+pml_width-idy) * sigma * 0.1f; //sigma/pml_width;
 	  	}
 	  	bool idy_cond2 = idy >= yend-pml_width;
 	  	if(idy_cond2){
-	  	  sigmay=(idy-(yend-pml_width)) * 0.1f; //sigma/pml_width;
+	  	  sigmay=(idy-(yend-pml_width)) * sigma * 0.1f; //sigma/pml_width;
 	  	}
 
 	  	bool idz_cond1 = idz <= zbeg+pml_width;
 	  	if(idz_cond1){
-	  	  sigmaz=(zbeg+pml_width-idz) * 0.1f; //sigma/pml_width;
+	  	  sigmaz=(zbeg+pml_width-idz) * sigma * 0.1f; //sigma/pml_width;
 	  	}
 	  	bool idz_cond2 = idz >= zend-pml_width;
 	  	if(idz_cond2){
-	  	  sigmaz=(idz -(zend-pml_width)) * 0.1f; //sigma/pml_width;
+	  	  sigmaz=(idz -(zend-pml_width)) * sigma * 0.1f; //sigma/pml_width;
 	  	}
 
 
@@ -538,14 +538,14 @@ static void derives_calc_ytep_k4( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		vzz *= invdz;
 
 
-  		mem_wr_k[2]= vxx - sigmax*px;            //vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
-  		mem_wr_k[5]= (pxx+pyx+pxz) - sigmax*vx;  //(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
+  		mem_wr_k[2]= vxx/s_4_4_4_arr[0] - sigmax*px;            //vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
+  		mem_wr_k[5]= (pxx+pyx+pxz)*s_4_4_4_arr[1] - sigmax*vx;  //(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
   		
-  		mem_wr_k[3]= vyy - sigmay*py;  		  // vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
-  		mem_wr_k[6]= (pxy+pyy+pyz)- sigmay*vy;   //(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
+  		mem_wr_k[3]= vyy/s_4_4_4_arr[0] - sigmay*py;  		  // vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
+  		mem_wr_k[6]= (pxy+pyy+pyz)*s_4_4_4_arr[1]- sigmay*vy;   //(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
   		
-  		mem_wr_k[4]= vzz  - sigmaz*pz;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
-  		mem_wr_k[7]= (pxz+pyz+pzz) - sigmaz*vz;  //(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
+  		mem_wr_k[4]= vzz/s_4_4_4_arr[0]  - sigmaz*pz;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
+  		mem_wr_k[7]= (pxz+pyz+pzz)*s_4_4_4_arr[1] - sigmaz*vz;  //(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
 
   		mem_wr_k[0] = s_4_4_4_arr[0];
   		mem_wr_k[1] = s_4_4_4_arr[1];
@@ -566,14 +566,14 @@ static void derives_calc_ytep_k4( hls::stream<uint256_dt> &rd_buffer, hls::strea
 
 
   		// YY final 
-  		yy_final_arr[2] += mem_wr_k_dt[2] * 0.16666666f;
-  		yy_final_arr[5] += mem_wr_k_dt[5] * 0.16666666f;
+  		yy_final_arr[2] += mem_wr_k_dt[2] * 0.1666666667f;
+  		yy_final_arr[5] += mem_wr_k_dt[5] * 0.1666666667f;
 
-  		yy_final_arr[3] += mem_wr_k_dt[3] * 0.16666666f;
-  		yy_final_arr[6] += mem_wr_k_dt[6] * 0.16666666f;
+  		yy_final_arr[3] += mem_wr_k_dt[3] * 0.1666666667f;
+  		yy_final_arr[6] += mem_wr_k_dt[6] * 0.1666666667f;
 
-  		yy_final_arr[4] += mem_wr_k_dt[4] * 0.16666666f;
-  		yy_final_arr[7] += mem_wr_k_dt[7] * 0.16666666f;
+  		yy_final_arr[4] += mem_wr_k_dt[4] * 0.1666666667f;
+  		yy_final_arr[7] += mem_wr_k_dt[7] * 0.1666666667f;
 
   		yy_final_arr[0] += mem_wr_k_dt[0];
   		yy_final_arr[1] += mem_wr_k_dt[1];

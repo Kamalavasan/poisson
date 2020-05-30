@@ -27,11 +27,11 @@ int populate_rho_mu_yy(float* grid, struct Grid_d grid_d){
           const float C = 1;
           const float r0 = 0.1;
 
-          grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 0] = 1.0;
-          grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 1] = 1.0;
+          grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 0] = 1000.0f;
+          grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 1] = 0.001f;
           grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 2] = (1.0/3) * C * exp(-(x*x+y*y+z*z)/r0);
           for(int p = 3; p < 8; p++){
-            grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p] = 0;
+            grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p] = p*0.1f;
           }
         }
       }
@@ -67,7 +67,7 @@ int final_update_kernel(float* rho_mu_yy, float* k_grid1, float* k_grid2, float*
         for(int p = 2; p < 8; p++){
           int index = i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p;
           k_grid4[index] *= dt;
-          rho_mu_yy[index] = rho_mu_yy[index] + k_grid1[index]/6.0 + k_grid2[index]/3.0 + k_grid3[index]/3.0 + k_grid4[index]/6.0;
+          rho_mu_yy[index] = rho_mu_yy[index] + k_grid1[index] * 0.1666666667f+ k_grid2[index] * 0.33333333333f + k_grid3[index] * 0.33333333333f + k_grid4[index]*0.1666666667f;
         }      
       }
     }
@@ -85,20 +85,22 @@ double square_error(float* current, float* next, struct Grid_d grid_d){
           for(int p = 2; p < 8; p++){
             float val1 = next[i*grid_d.grid_size_x*grid_d.grid_size_y*8 + j*grid_d.grid_size_x*8 + k*8 + p];
             float val2 = current[i*grid_d.grid_size_x*grid_d.grid_size_y*8 + j*grid_d.grid_size_x*8 + k*8 + p];
-            double error = (val1-val2) * (val1-val2);
+            double sq_error = (val1-val2) * (val1-val2);
             double s_sum = (val1+val2) * (val1+val2);
-            if(error/s_sum > 0.01 || isunordered(error,s_sum)){
+            double err_ratio = fabs((val1-val2)/val2);
+            if((!isunordered(err_ratio,1.0) && err_ratio > 0.01 && fabs(val2) > 0.000001)){
             	printf("(%d %d %d %d %f %f) \n", i,j,k,p, val1 , val2);
             }
-            sum += error;
-            sq_sum += s_sum;
+            sum += sq_error;
+            if(!isunordered(sq_error/s_sum,1.0))
+            	sq_sum += sq_error/s_sum ;
         }
 //          printf("\n");
         }
 //        printf("\n");
       }
     }
-    printf("sq_error/sq_sum ratio is %f \n", sum/sq_sum );
+    printf("sum of sq_error/sq_sum ratio is %f \n", sq_sum );
     return sum;
 }
 
