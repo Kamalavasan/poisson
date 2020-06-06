@@ -31,7 +31,7 @@ int populate_rho_mu_yy(float* grid, struct Grid_d grid_d){
           grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 1] = 0.001f;
           grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 2] = (1.0/3) * C * exp(-(x*x+y*y+z*z)/r0);
           for(int p = 3; p < 8; p++){
-            grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p] = p*0.1f;
+            grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p] = 0.0;
           }
         }
       }

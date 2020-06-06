@@ -42,6 +42,7 @@
 #include "xcl2.hpp"
 #include <chrono>
 #include "omp.h"
+#include <unistd.h>
 
 
 #include "rtm.h"
@@ -230,7 +231,8 @@ int main(int argc, char **argv)
     OCL_CHECK(err,
               err = q.enqueueMigrateMemObjects({buffer_input},
                                                0 /* 0 means from host*/));
-
+    q.finish();
+    usleep(100000);
     uint64_t wtime = 0;
     uint64_t nstimestart, nstimeend;
     auto start = std::chrono::high_resolution_clock::now();
@@ -242,13 +244,13 @@ int main(int argc, char **argv)
 	OCL_CHECK(err, err = q.enqueueTask(krnl_Read_write_SLR0));
 	q.finish();
 
-
-    q.finish();
     auto finish = std::chrono::high_resolution_clock::now();
     //Copy Result from Device Global Memory to Host Local Memory
     OCL_CHECK(err,
               err = q.enqueueMigrateMemObjects({buffer_input},
                                                CL_MIGRATE_MEM_OBJECT_HOST));
+    q.finish();
+
     OCL_CHECK(err,
                  err = q.enqueueMigrateMemObjects({buffer_output},
                                                   CL_MIGRATE_MEM_OBJECT_HOST));
@@ -289,7 +291,7 @@ int main(int argc, char **argv)
 
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
   double error = square_error(grid_yy_rho_mu, grid_yy_rho_mu_d, grid_d);
-  float bandwidth = (grid_d.data_size_bytes_dim8 * 2.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
+  float bandwidth = (grid_d.data_size_bytes_dim8 * 4.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
   printf("\nSquare error is  %f\n\n", error);
   printf("\nBandwidth is %f\n", bandwidth);
 
