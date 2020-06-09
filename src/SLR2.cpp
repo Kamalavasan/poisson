@@ -52,6 +52,7 @@ struct data_G{
 };
 
 
+
 static void axis2_fifo256(hls::stream <t_pkt> &in, hls::stream<uint256_dt> &out, const int xdim0_poisson_kernel_stencil, const int base0, int size1, int batches){
 	#pragma HLS dataflow
 	int end_index = (xdim0_poisson_kernel_stencil >> (SHIFT_BITS));
@@ -227,7 +228,7 @@ static void process_a_row( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint2
 
 
 
-void process_SLR (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1, hls::stream <t_pkt> &in2, hls::stream <t_pkt> &out2,
+void process_SLR (hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
 		const int xdim0_poisson_kernel_stencil, const int base0, const int xdim1_poisson_kernel_stencil, const int base1, const int size0, int size1, int batches){
 
 
@@ -245,7 +246,7 @@ void process_SLR (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1, hls::stre
 	data_g.endrow_minus1 = data_g.end_row - 1;
 
 	#pragma HLS dataflow
-    axis2_fifo256(in1, streamArray[0], xdim0_poisson_kernel_stencil, base0, size1, batches);
+    axis2_fifo256(in, streamArray[0], xdim0_poisson_kernel_stencil, base0, size1, batches);
 
     process_a_row( streamArray[0], streamArray[1], size0, size1, xdim0_poisson_kernel_stencil, data_g);
     process_a_row( streamArray[1], streamArray[2], size0, size1, xdim0_poisson_kernel_stencil, data_g);
@@ -256,38 +257,34 @@ void process_SLR (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1, hls::stre
 	process_a_row( streamArray[5], streamArray[6], size0, size1, xdim0_poisson_kernel_stencil, data_g);
 	process_a_row( streamArray[6], streamArray[7], size0, size1, xdim0_poisson_kernel_stencil, data_g);
 	process_a_row( streamArray[7], streamArray[8], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//
-//	process_a_row( streamArray[8], streamArray[9], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[9], streamArray[10], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[10], streamArray[11], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-//	process_a_row( streamArray[11], streamArray[12], size0, size1, xdim0_poisson_kernel_stencil, data_g);
 
-	fifo256_2axis(streamArray[8], out1, xdim0_poisson_kernel_stencil, base0, size1, batches);
-	axis2_fifo256(in2, streamArray[40], xdim0_poisson_kernel_stencil, base0, size1, batches);
+	process_a_row( streamArray[8], streamArray[9], size0, size1, xdim0_poisson_kernel_stencil,   data_g);
+	process_a_row( streamArray[9], streamArray[10], size0, size1, xdim0_poisson_kernel_stencil,  data_g);
+	process_a_row( streamArray[10], streamArray[11], size0, size1, xdim0_poisson_kernel_stencil, data_g);
+	process_a_row( streamArray[11], streamArray[12], size0, size1, xdim0_poisson_kernel_stencil, data_g);
 
-	process_a_row( streamArray[40], streamArray[21], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-	process_a_row( streamArray[21], streamArray[22], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-	process_a_row( streamArray[22], streamArray[23], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-	process_a_row( streamArray[23], streamArray[24], size0, size1, xdim0_poisson_kernel_stencil, data_g);
+	process_a_row( streamArray[12], streamArray[13], size0, size1, xdim0_poisson_kernel_stencil, data_g);
+	process_a_row( streamArray[13], streamArray[14], size0, size1, xdim0_poisson_kernel_stencil, data_g);
+	process_a_row( streamArray[14], streamArray[15], size0, size1, xdim0_poisson_kernel_stencil, data_g);
+	process_a_row( streamArray[15], streamArray[16], size0, size1, xdim0_poisson_kernel_stencil, data_g);
 
-	process_a_row( streamArray[24], streamArray[25], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-	process_a_row( streamArray[25], streamArray[26], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-	process_a_row( streamArray[26], streamArray[27], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-	process_a_row( streamArray[27], streamArray[28], size0, size1, xdim0_poisson_kernel_stencil, data_g);
+	process_a_row( streamArray[16], streamArray[17], size0, size1, xdim0_poisson_kernel_stencil, data_g);
+	process_a_row( streamArray[17], streamArray[18], size0, size1, xdim0_poisson_kernel_stencil, data_g);
+	process_a_row( streamArray[18], streamArray[19], size0, size1, xdim0_poisson_kernel_stencil, data_g);
+	process_a_row( streamArray[19], streamArray[20], size0, size1, xdim0_poisson_kernel_stencil, data_g);
 
+//	process_a_row( streamArray[20], streamArray[21], size0, size1, xdim0_poisson_kernel_stencil, data_g);
+//	process_a_row( streamArray[21], streamArray[22], size0, size1, xdim0_poisson_kernel_stencil, data_g);
+//	process_a_row( streamArray[22], streamArray[23], size0, size1, xdim0_poisson_kernel_stencil, data_g);
+//	process_a_row( streamArray[23], streamArray[24], size0, size1, xdim0_poisson_kernel_stencil, data_g);
 
-	process_a_row( streamArray[28], streamArray[29], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-	process_a_row( streamArray[29], streamArray[30], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-	process_a_row( streamArray[30], streamArray[31], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-	process_a_row( streamArray[31], streamArray[32], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-
-	fifo256_2axis(streamArray[32], out2, xdim0_poisson_kernel_stencil, base0, size1, batches);
+	fifo256_2axis(streamArray[20], out, xdim0_poisson_kernel_stencil, base0, size1, batches);
 
 
 }
 
 extern "C" {
-void stencil_SLR1(
+void stencil_SLR2(
 		const int base0,
 		const int base1,
 		const int size0,
@@ -296,16 +293,12 @@ void stencil_SLR1(
 		const int xdim1_poisson_kernel_stencil,
 		const int count,
 		const int batches,
-		hls::stream <t_pkt> &in1,
-		hls::stream <t_pkt> &out1,
-		hls::stream <t_pkt> &in2,
-		hls::stream <t_pkt> &out2
+		hls::stream <t_pkt> &in,
+		hls::stream <t_pkt> &out
 		){
 
-	#pragma HLS INTERFACE axis port = in1 register
-	#pragma HLS INTERFACE axis port = out1 register
-	#pragma HLS INTERFACE axis port = in2 register
-	#pragma HLS INTERFACE axis port = out2 register
+	#pragma HLS INTERFACE axis port = in register
+	#pragma HLS INTERFACE axis port = out register
 	#pragma HLS INTERFACE s_axilite port = base0 bundle = control
 	#pragma HLS INTERFACE s_axilite port = base1 bundle = control
 	#pragma HLS INTERFACE s_axilite port = size0 bundle = control
@@ -320,7 +313,7 @@ void stencil_SLR1(
 
 	for(int i =  0; i < 2*count ; i++){
 		#pragma HLS dataflow
-		process_SLR( in1, out1,in2, out2, xdim0_poisson_kernel_stencil, base0, xdim1_poisson_kernel_stencil, base1, size0, size1, batches);
+		process_SLR( in, out, xdim0_poisson_kernel_stencil, base0, xdim1_poisson_kernel_stencil, base1, size0, size1, batches);
 	}
 
 }

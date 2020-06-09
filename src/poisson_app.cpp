@@ -43,53 +43,65 @@
 #include <chrono>
 #include "omp.h"
 
-int stencil_computation(float* current, float* next, int act_sizex, int act_sizey, int grid_size_x, int grid_size_y){
-    for(int i = 0; i < act_sizey; i++){
-      for(int j = 0; j < act_sizex; j++){
-        if(i == 0 || j == 0 || i == act_sizex -1  || j==act_sizey-1){
-          next[i*grid_size_x + j] = current[i*grid_size_x + j] ;
-        } else {
-          next[i*grid_size_x + j] = current[i*grid_size_x + j] * 0.5 + \
-                                       (current[(i-1)*grid_size_x + j] + current[(i+1)*grid_size_x + j]) * 0.125 + \
-                                       (current[i*grid_size_x + j+1] + current[i*grid_size_x + j-1]) * 0.125 ;
-        }
-      }
-    }
+int stencil_computation(float* current, float* next, int act_sizex, int act_sizey, int grid_size_x, int grid_size_y, int batches){
+	for(int bat = 0; bat < batches; bat++){
+		int offset = bat * grid_size_x* grid_size_y;
+		for(int i = 0; i < act_sizey; i++){
+		  for(int j = 0; j < act_sizex; j++){
+			if(i == 0 || j == 0 || i == act_sizex -1  || j==act_sizey-1){
+			  next[i*grid_size_x + j + offset] = current[i*grid_size_x + j + offset] ;
+			} else {
+			  next[i*grid_size_x + j + offset] = current[i*grid_size_x + j + offset] * 0.5 + \
+										   (current[(i-1)*grid_size_x + j+ offset] + current[(i+1)*grid_size_x + j+offset]) * 0.125 + \
+										   (current[i*grid_size_x + j+1+offset] + current[i*grid_size_x + j-1+offset]) * 0.125 ;
+			}
+		  }
+		}
+	}
     return 0;
 }
 
-double square_error(float* current, float* next, int act_sizex, int act_sizey, int grid_size_x, int grid_size_y){
+double square_error(float* current, float* next, int act_sizex, int act_sizey, int grid_size_x, int grid_size_y, int batches){
   double sum = 0; 
+  for(int bat = 0; bat < batches; bat++){
+	  int offset = bat * grid_size_x* grid_size_y;
     for(int i = 0; i < act_sizey; i++){
       for(int j = 0; j < act_sizex; j++){
-        sum += next[i*grid_size_x + j]*next[i*grid_size_x + j] - current[i*grid_size_x + j]*current[i*grid_size_x + j];
-      }
-    }
-    return sum;
-}
-
-int copy_grid(float* grid_s, float* grid_d, int act_sizex, int act_sizey, int grid_size_x, int grid_size_y){
-    double sum = 0; 
-    for(int i = 0; i < act_sizey; i++){
-      for(int j = 0; j < act_sizex; j++){
-        grid_d[i*grid_size_x + j] = grid_s[i*grid_size_x + j];
-      }
-    }
-    return 0;
-}
-
-
-int initialise_grid(float* grid, int act_sizex, int act_sizey, int grid_size_x, int grid_size_y){
-  for(int i = 0; i < act_sizey; i++){
-  for(int j = 0; j < act_sizex; j++){
-      if(i == 0 || j == 0 || i == act_sizex -1  || j==act_sizey-1){
-        float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-        grid[i*grid_size_x + j] = r;
-      } else {
-        grid[i*grid_size_x + j] = 0;
+        sum += next[i*grid_size_x + j+offset]*next[i*grid_size_x + j+offset] - current[i*grid_size_x + j+offset]*current[i*grid_size_x + j+offset];
       }
     }
   }
+    return sum;
+}
+
+int copy_grid(float* grid_s, float* grid_d, int act_sizex, int act_sizey, int grid_size_x, int grid_size_y, int batches){
+    double sum = 0; 
+    for(int bat = 0; bat < batches; bat++){
+    	int offset = bat * grid_size_x* grid_size_y;
+		for(int i = 0; i < act_sizey; i++){
+		  for(int j = 0; j < act_sizex; j++){
+			grid_d[i*grid_size_x + j+offset] = grid_s[i*grid_size_x + j+offset];
+		  }
+		}
+    }
+    return 0;
+}
+
+
+int initialise_grid(float* grid, int act_sizex, int act_sizey, int grid_size_x, int grid_size_y, int batches){
+	for(int bat = 0; bat < batches; bat++){
+	int offset = bat * grid_size_x* grid_size_y;
+	  for(int i = 0; i < act_sizey; i++){
+	  for(int j = 0; j < act_sizex; j++){
+		  if(i == 0 || j == 0 || i == act_sizex -1  || j==act_sizey-1){
+			float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+			grid[i*grid_size_x + j+offset] = r;
+		  } else {
+			grid[i*grid_size_x + j+offset] = 0;
+		  }
+		}
+	  }
+	}
   return 0;
 }
 
@@ -149,18 +161,20 @@ int main(int argc, char **argv)
   int act_sizex = logical_size_x + 2;
   int act_sizey = logical_size_y + 2;
 
+  int batches = 2;
+
   int grid_size_x = (act_sizex % 16) != 0 ? (act_sizex/16 +1) * 16 : act_sizex+2;
-  int grid_size_y = act_sizey + 2;
+  int grid_size_y = act_sizey;
   
-  int data_size_bytes = grid_size_x * grid_size_y * sizeof(float);
+  int data_size_bytes = grid_size_x * grid_size_y * sizeof(float)*batches;
   float * grid_u1 = (float*)aligned_alloc(4096, data_size_bytes);
   float * grid_u2 = (float*)aligned_alloc(4096, data_size_bytes);
 
   float * grid_u1_d = (float*)aligned_alloc(4096, data_size_bytes);
   float * grid_u2_d = (float*)aligned_alloc(4096, data_size_bytes);
 
-  initialise_grid(grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y);
-  copy_grid(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y);
+  initialise_grid(grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+  copy_grid(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
   // stencil computation
 
 
@@ -192,6 +206,7 @@ int main(int argc, char **argv)
     OCL_CHECK(err, cl::Program program(context, devices, bins, NULL, &err));
     OCL_CHECK(err, cl::Kernel krnl_slr0(program, "stencil_SLR0", &err));
     OCL_CHECK(err, cl::Kernel krnl_slr1(program, "stencil_SLR1", &err));
+    OCL_CHECK(err, cl::Kernel krnl_slr2(program, "stencil_SLR2", &err));
 
 
 
@@ -213,7 +228,6 @@ int main(int argc, char **argv)
     int narg = 0;
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_input));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_output));
-    narg += 2;
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_x+1));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_y+1));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_x));
@@ -221,6 +235,7 @@ int main(int argc, char **argv)
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_x));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_y));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, n_iter));
+    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, batches));
 
     narg = 0;
 	OCL_CHECK(err, err = krnl_slr1.setArg(narg++, grid_size_x+1));
@@ -230,6 +245,17 @@ int main(int argc, char **argv)
 	OCL_CHECK(err, err = krnl_slr1.setArg(narg++, grid_size_x));
 	OCL_CHECK(err, err = krnl_slr1.setArg(narg++, grid_size_y));
 	OCL_CHECK(err, err = krnl_slr1.setArg(narg++, n_iter));
+	OCL_CHECK(err, err = krnl_slr1.setArg(narg++, batches));
+
+	narg = 0;
+	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, grid_size_x+1));
+	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, grid_size_y+1));
+	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, logical_size_x));
+	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, logical_size_y));
+	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, grid_size_x));
+	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, grid_size_y));
+	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, n_iter));
+	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, batches));
 
     //Copy input data to device global memory
     OCL_CHECK(err,
@@ -239,53 +265,17 @@ int main(int argc, char **argv)
     uint64_t wtime = 0;
     uint64_t nstimestart, nstimeend;
     auto start = std::chrono::high_resolution_clock::now();
-//    for(int i = 0; i < n_iter; i++){
-//        //Set the Kernel Arguments
-//        int narg = 0;
-//        OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_input));
-//        OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_output));
-//        narg += 2;
-//        OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_x+1));
-//        OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_y+1));
-//        OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_x));
-//        OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_y));
-//        OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_x));
-//        OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_y));
 
 
 
-		//Launch the Kernel
-		OCL_CHECK(err, err = q.enqueueTask(krnl_slr0));
-		OCL_CHECK(err, err = q.enqueueTask(krnl_slr1));
-//		OCL_CHECK(err, err = q.enqueueTask(krnl_stencil, NULL, &event));
-		q.finish();
-//		OCL_CHECK(err, err = event.getProfilingInfo<uint64_t>(CL_PROFILING_COMMAND_START, &nstimestart));
-//		OCL_CHECK(err, err = event.getProfilingInfo<uint64_t>(CL_PROFILING_COMMAND_END, &nstimeend));
-//		wtime += nstimeend - nstimestart;
 
-//        //Set the Kernel Arguments
-//        narg = 0;
-//        OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_output));
-//        OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_input));
-//        narg += 2;
-//        OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_x+1));
-//        OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_y+1));
-//        OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_x));
-//        OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_y));
-//        OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_x));
-//        OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_y));
-//
-//		//Launch the Kernel
-//        OCL_CHECK(err, err = q.enqueueTask(krnl_slr0));
-//        OCL_CHECK(err, err = q.enqueueTask(krnl_slr1));
-////		OCL_CHECK(err, err = q.enqueueTask(krnl_stencil, NULL, &event));
-//		q.finish();
-////		OCL_CHECK(err, err = event.getProfilingInfo<uint64_t>(CL_PROFILING_COMMAND_START, &nstimestart));
-////		OCL_CHECK(err, err = event.getProfilingInfo<uint64_t>(CL_PROFILING_COMMAND_END, &nstimeend));
-////		wtime += nstimeend - nstimestart;
-//    }
+	//Launch the Kernel
+	OCL_CHECK(err, err = q.enqueueTask(krnl_slr0));
+	OCL_CHECK(err, err = q.enqueueTask(krnl_slr1));
+	OCL_CHECK(err, err = q.enqueueTask(krnl_slr2));
+	q.finish();
 
-    q.finish();
+
     auto finish = std::chrono::high_resolution_clock::now();
     //Copy Result from Device Global Memory to Host Local Memory
     OCL_CHECK(err,
@@ -296,16 +286,16 @@ int main(int argc, char **argv)
 //    auto finish = std::chrono::high_resolution_clock::now();
 
 
-  for(int itr = 0; itr < n_iter*2; itr++){
-      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y);
-      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y);
+  for(int itr = 0; itr < n_iter*60; itr++){
+      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
   }
     
     std::chrono::duration<double> elapsed = finish - start;
 
 //  printf("Runtime on FPGA (profile) is %f seconds\n", wtime/1000000000.0);
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y);
+  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
 //  float bandwidth_prof = (logical_size_x * logical_size_y * sizeof(float) * 4.0 * n_iter*1000000000)/(wtime * 1024 * 1024 * 1024);
   float bandwidth = (logical_size_x * logical_size_y * sizeof(float) * 4.0 * n_iter)/(elapsed.count() * 1024 * 1024 * 1024);
   printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
