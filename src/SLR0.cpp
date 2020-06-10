@@ -353,7 +353,7 @@ void stencil_SLR0(
 		hls::stream <t_pkt> &out){
 
 	#pragma HLS INTERFACE depth=4096 m_axi port = arg0 offset = slave bundle = gmem0 max_read_burst_length=256 max_write_burst_length=256
-	#pragma HLS INTERFACE depth=4096 m_axi port = arg1 offset = slave bundle = gmem0
+	#pragma HLS INTERFACE depth=4096 m_axi port = arg1 offset = slave bundle = gmem1
 	#pragma HLS INTERFACE s_axilite port = arg0 bundle = control
 	#pragma HLS INTERFACE s_axilite port = arg1 bundle = control
 	#pragma HLS INTERFACE axis port = in  register
