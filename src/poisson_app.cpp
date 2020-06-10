@@ -297,7 +297,7 @@ int main(int argc, char **argv)
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
   double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
 //  float bandwidth_prof = (logical_size_x * logical_size_y * sizeof(float) * 4.0 * n_iter*1000000000)/(wtime * 1024 * 1024 * 1024);
-  float bandwidth = (logical_size_x * logical_size_y * sizeof(float) * 4.0 * n_iter)/(elapsed.count() * 1024 * 1024 * 1024);
+  float bandwidth = (act_sizex * act_sizey * sizeof(float) * 4.0 * n_iter * batches)/(elapsed.count() * 1000 * 1000 * 1000);
   printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
   printf("\nBandwidth is %f\n", bandwidth);
 //  printf("\nBandwidth prof is %f\n", bandwidth_prof);
