@@ -1,0 +1,308 @@
+/*
+
+Xilinx Vitis v2019.2 (64-bit) [Major: 2019, Minor: 2]
+SW Build: 2708876 on Wed Nov 6 21:40:25 MST 2019
+
+Process ID (PID): 33639
+License: Customer
+
+Current time: 	Thu Jun 11 10:46:35 BST 2020
+Time zone: 	Greenwich Mean Time (Europe/London)
+
+OS: Ubuntu
+OS Version: 4.15.0-101-generic
+OS Architecture: amd64
+Available processors (cores): 48
+
+Display: localhost:10.0
+Screen size: 1853x1016
+Screen resolution (DPI): 100
+Available screens: 1
+Available disk space: 30 GB
+
+Java version: 	9.0.4 64-bit
+Java home: 	/tools/Xilinx/Vitis/2019.2/tps/lnx64/jre9.0.4
+Java executable location: 	/tools/Xilinx/Vitis/2019.2/tps/lnx64/jre9.0.4/bin/java
+Java initial memory (-Xms): 	64 MB
+Java maximum memory (-Xmx):	 4 GB
+
+Java library paths: /tools/Xilinx/Vitis/2019.2/lib/lnx64.o/Ubuntu/18:/tools/Xilinx/Vitis/2019.2/lib/lnx64.o/Ubuntu:/tools/Xilinx/Vitis/2019.2/lib/lnx64.o:/tools/Xilinx/Vitis/2019.2/tps/lnx64/jre9.0.4/lib/:/tools/Xilinx/Vitis/2019.2/tps/lnx64/jre9.0.4/lib//server:/tools/Xilinx/Vitis/2019.2/lib/lnx64.o:/tools/Xilinx/Vitis/2019.2/lib/lnx64.o/Ubuntu/18:/tools/Xilinx/Vitis/2019.2/lib/lnx64.o/Ubuntu:/tools/Xilinx/Vitis/2019.2/lib/lnx64.o:/opt/xilinx/xrt/lib:/tools/Xilinx/Vitis/2019.2/lib/lnx64.o/Ubuntu/18:/tools/Xilinx/Vitis/2019.2/lib/lnx64.o/Ubuntu:/tools/Xilinx/Vitis/2019.2/lib/lnx64.o:/tools/Xilinx/Vitis/2019.2/runtime/lib/x86_64:/tools/Xilinx/Vitis/2019.2/bin/../lnx64/tools/dot/lib:/usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib
+
+Java class paths: /tools/Xilinx/Vitis/2019.2/eclipse/lnx64.o//plugins/org.eclipse.equinox.launcher_1.5.0.v20180512-1130.jar
+LD_LIBRARY_PATH: /tools/Xilinx/Vitis
+
+User name: 	kkvasan
+User home directory: /home/kkvasan
+User working directory: /home/kkvasan/git/poisson_k2k/poisson/src
+User country: 	GB
+User language: 	en
+User locale: 	en_GB
+
+RDI_BASEROOT: /tools/Xilinx/Vitis
+HDI_APPROOT: /tools/Xilinx/Vitis/2019.2
+RDI_DATADIR: /tools/Xilinx/Vitis/2019.2/data
+RDI_BINDIR: /tools/Xilinx/Vitis/2019.2/bin
+
+Vitis preferences directory: /home/kkvasan/.Xilinx/Vitis/2019.2/
+Vitis workspace directory: /home/kkvasan/poisson_u280
+Vitis workspace log file location: /home/kkvasan/poisson_u280/.metadata/.log
+Engine tmp dir: 	./.Xil/sdx-33639-donnager
+
+Xilinx Environment Variables
+----------------------------
+XILINXD_LICENSE_FILE: 27014@license.eng.warwick.ac.uk
+XILINX_DSP: 
+XILINX_ENABLE_SCOUT_HLS: 0
+XILINX_HLS: /tools/Xilinx/Vivado/2019.2
+XILINX_PLANAHEAD: /tools/Xilinx/Vitis/2019.2
+XILINX_SDK: /tools/Xilinx/Vitis/2019.2
+XILINX_VITIS: /tools/Xilinx/Vitis/2019.2
+XILINX_VIVADO: /tools/Xilinx/Vivado/2019.2
+XILINX_VIVADO_HLS: /tools/Xilinx/Vivado/2019.2
+XILINX_XRT: /opt/xilinx/xrt
+_RDI_DONT_SET_XILINX_AS_PATH: True
+
+
+Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+
+*/
+
+selectTreeTable("Hardware", "poisson_st_system > poisson_st", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Build", "Assistant", "SDXAssistantView", "MenuItem.BUILD");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=50 -sizey=50 -iters=500 -b", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=50 -sizey=50 -iters=500 -b", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=50 -sizey=50 -iters=500 -b", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("Hardware", "poisson_st_system > poisson_st", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Build", "Assistant", "SDXAssistantView", "MenuItem.BUILD");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=50 -sizey=50 -iters=500 -b", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=100 -sizey=50 -iters=500 -", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=100 -sizey=50 -iters=500 -", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=100 -sizey=50 -iters=500 -", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=100 -sizey=50 -iters=500 -", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=100 -sizey=100 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=100 -sizey=100 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=100 -sizey=100 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=100 -sizey=100 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=200 -sizey=50 -iters=500 -", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=200 -sizey=50 -iters=500 -", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=200 -sizey=50 -iters=500 -", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=200 -sizey=50 -iters=500 -", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=200 -sizey=100 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=200 -sizey=100 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=200 -sizey=100 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=200 -sizey=100 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=200 -sizey=200 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=200 -sizey=200 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=200 -sizey=200 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=200 -sizey=200 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=300 -sizey=150 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=300 -sizey=150 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=300 -sizey=150 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=300 -sizey=150 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=300 -sizey=300 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=300 -sizey=300 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=300 -sizey=300 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=300 -sizey=300 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=400 -sizey=200 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=400 -sizey=200 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=400 -sizey=200 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=400 -sizey=400 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=400 -sizey=400 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=400 -sizey=400 -iters=500", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");
+selectTreeTable("Link Summary", "poisson_st_system > poisson_st > Hardware > stencil", EventType.DOUBLE_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectTreeTable("New_configuration", "poisson_st_system > poisson_st > Hardware", EventType.POPUP_TRIGGER_CLICK, "Assistant", "SDXAssistantView", "TreeViewer.AssistantContentProvider");
+selectMenuItem("Run Configuration Settings", "Assistant", "SDXAssistantView", "MenuItem.RUN_CONFIGURATION");
+selectTab("Main", "Run Configurations", "LaunchConfigurationsDialog", "TabItem.MAIN");
+selectTab("Arguments", "Run Configurations", "LaunchConfigurationsDialog", "CTabItem.ARGUMENTS");
+setTextField("../stencil.xclbin -sizex=50 -sizey=50 -iters=500 -b", "Run Configurations", "LaunchConfigurationsDialog", "Text");
+selectButton("Run", "Run Configurations", "LaunchConfigurationsDialog", "Button.RUN");

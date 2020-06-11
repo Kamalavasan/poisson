@@ -1,0 +1,129 @@
+Thu Jun 11 10:46:34 2020: Server was asked to start on port: '36965'
+Thu Jun 11 10:46:34 2020: Server is using token UUID: 'b67082d3-8ace-4fa5-b84c-b3fdaff212c4'
+Thu Jun 11 10:46:34 2020: Attempting to start server on port '36965'
+Thu Jun 11 10:46:34 2020: XRC main fifo: created main fifo '/tmp/xrcmainb67082d3-8ace-4fa5-b84c-b3fdaff212c4', fd read = 11
+Thu Jun 11 10:46:34 2020: Running Rule Check Server
+Thu Jun 11 10:46:34 2020: Version 1.5.1
+Thu Jun 11 10:46:36 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 10:46:36 2020: EXCHANGE_TOKEN received, server token: b67082d3-8ace-4fa5-b84c-b3fdaff212c4, passed token: b67082d3-8ace-4fa5-b84c-b3fdaff212c4
+Thu Jun 11 10:48:50 2020: SESSION_MGR: creating session with session uuid: 'f91e2025-cd15-4c39-b9d4-fac53e66621f' and name 'Hardware'
+Thu Jun 11 10:48:52 2020: SESSION_MGR: closing session for UUID 'f91e2025-cd15-4c39-b9d4-fac53e66621f' with name 'Hardware'
+Thu Jun 11 10:52:54 2020: SESSION_MGR: creating session with session uuid: '9f24f237-7210-49f5-9ffd-8b4910919ff4' and name 'New_configuration'
+Thu Jun 11 10:52:56 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 10:52:57 2020: SESSION_MGR: closing session for UUID '9f24f237-7210-49f5-9ffd-8b4910919ff4' with name 'New_configuration'
+Thu Jun 11 11:00:51 2020: SESSION_MGR: creating session with session uuid: 'ee63e3ef-1cdd-4ccc-9d56-ff519de246c9' and name 'New_configuration'
+Thu Jun 11 11:00:59 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:00:59 2020: SESSION_MGR: closing session for UUID 'ee63e3ef-1cdd-4ccc-9d56-ff519de246c9' with name 'New_configuration'
+Thu Jun 11 11:02:17 2020: SESSION_MGR: creating session with session uuid: '84b041a5-f4a1-4643-9395-d5bc5633a668' and name 'New_configuration'
+Thu Jun 11 11:03:20 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:03:20 2020: SESSION_MGR: closing session for UUID '84b041a5-f4a1-4643-9395-d5bc5633a668' with name 'New_configuration'
+Thu Jun 11 11:05:19 2020: SESSION_MGR: creating session with session uuid: 'd1c8e491-11d2-4848-9fdf-dc389c903d87' and name 'Hardware'
+Thu Jun 11 11:05:21 2020: SESSION_MGR: closing session for UUID 'd1c8e491-11d2-4848-9fdf-dc389c903d87' with name 'Hardware'
+Thu Jun 11 11:05:33 2020: SESSION_MGR: creating session with session uuid: 'b62440c3-0a4e-4132-96cf-cd9bf31192d8' and name 'New_configuration'
+Thu Jun 11 11:05:36 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:05:37 2020: SESSION_MGR: closing session for UUID 'b62440c3-0a4e-4132-96cf-cd9bf31192d8' with name 'New_configuration'
+Thu Jun 11 11:07:22 2020: SESSION_MGR: creating session with session uuid: '05be48e4-b703-49f9-8db1-64cdb139052d' and name 'New_configuration'
+Thu Jun 11 11:07:24 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:07:24 2020: SESSION_MGR: closing session for UUID '05be48e4-b703-49f9-8db1-64cdb139052d' with name 'New_configuration'
+Thu Jun 11 11:08:05 2020: SESSION_MGR: creating session with session uuid: 'd8b63e3b-36d2-49b5-a177-0ac62dba3433' and name 'New_configuration'
+Thu Jun 11 11:08:07 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:08:07 2020: SESSION_MGR: closing session for UUID 'd8b63e3b-36d2-49b5-a177-0ac62dba3433' with name 'New_configuration'
+Thu Jun 11 11:09:05 2020: SESSION_MGR: creating session with session uuid: '029e4969-1e2f-4a40-b564-5553af77e93f' and name 'New_configuration'
+Thu Jun 11 11:09:07 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:09:07 2020: SESSION_MGR: closing session for UUID '029e4969-1e2f-4a40-b564-5553af77e93f' with name 'New_configuration'
+Thu Jun 11 11:10:00 2020: SESSION_MGR: creating session with session uuid: '241ef539-704f-41df-85ce-485cd8f00d91' and name 'New_configuration'
+Thu Jun 11 11:10:05 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:10:05 2020: SESSION_MGR: closing session for UUID '241ef539-704f-41df-85ce-485cd8f00d91' with name 'New_configuration'
+Thu Jun 11 11:11:40 2020: SESSION_MGR: creating session with session uuid: '60318840-0624-4350-8d8b-0497e0cb4d55' and name 'New_configuration'
+Thu Jun 11 11:11:42 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:11:42 2020: SESSION_MGR: closing session for UUID '60318840-0624-4350-8d8b-0497e0cb4d55' with name 'New_configuration'
+Thu Jun 11 11:12:31 2020: SESSION_MGR: creating session with session uuid: '83d783ea-7517-4bfe-8ba7-7270f104f584' and name 'New_configuration'
+Thu Jun 11 11:12:32 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:12:32 2020: SESSION_MGR: closing session for UUID '83d783ea-7517-4bfe-8ba7-7270f104f584' with name 'New_configuration'
+Thu Jun 11 11:13:10 2020: SESSION_MGR: creating session with session uuid: 'c48f3237-6311-46c9-afdd-d8112f5cf449' and name 'New_configuration'
+Thu Jun 11 11:13:12 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:13:12 2020: SESSION_MGR: closing session for UUID 'c48f3237-6311-46c9-afdd-d8112f5cf449' with name 'New_configuration'
+Thu Jun 11 11:14:10 2020: SESSION_MGR: creating session with session uuid: '21b01a50-e8a0-4467-9f06-8a5c80ee7064' and name 'New_configuration'
+Thu Jun 11 11:14:18 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:14:18 2020: SESSION_MGR: closing session for UUID '21b01a50-e8a0-4467-9f06-8a5c80ee7064' with name 'New_configuration'
+Thu Jun 11 11:15:24 2020: SESSION_MGR: creating session with session uuid: 'b4fdb8e7-b8b8-4dc4-a1eb-a66e557a1fe2' and name 'New_configuration'
+Thu Jun 11 11:15:26 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:15:26 2020: SESSION_MGR: closing session for UUID 'b4fdb8e7-b8b8-4dc4-a1eb-a66e557a1fe2' with name 'New_configuration'
+Thu Jun 11 11:16:09 2020: SESSION_MGR: creating session with session uuid: 'acf7fce3-b1d2-4fb4-a423-70fcf76bac4f' and name 'New_configuration'
+Thu Jun 11 11:16:11 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:16:11 2020: SESSION_MGR: closing session for UUID 'acf7fce3-b1d2-4fb4-a423-70fcf76bac4f' with name 'New_configuration'
+Thu Jun 11 11:16:46 2020: SESSION_MGR: creating session with session uuid: '3580991a-f038-4c8e-b7e3-f467a95f62ee' and name 'New_configuration'
+Thu Jun 11 11:16:49 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:16:49 2020: SESSION_MGR: closing session for UUID '3580991a-f038-4c8e-b7e3-f467a95f62ee' with name 'New_configuration'
+Thu Jun 11 11:18:22 2020: SESSION_MGR: creating session with session uuid: '3afa6d36-3afb-4532-9ea5-d22b8e258bfa' and name 'New_configuration'
+Thu Jun 11 11:18:29 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:18:29 2020: SESSION_MGR: closing session for UUID '3afa6d36-3afb-4532-9ea5-d22b8e258bfa' with name 'New_configuration'
+Thu Jun 11 11:19:32 2020: SESSION_MGR: creating session with session uuid: 'f7b27f3a-48dd-47b9-b5db-c2e95876f8b4' and name 'New_configuration'
+Thu Jun 11 11:19:33 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:19:34 2020: SESSION_MGR: closing session for UUID 'f7b27f3a-48dd-47b9-b5db-c2e95876f8b4' with name 'New_configuration'
+Thu Jun 11 11:20:08 2020: SESSION_MGR: creating session with session uuid: '2729571f-dbb0-452b-96ee-f34dbc55559e' and name 'New_configuration'
+Thu Jun 11 11:20:10 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:20:10 2020: SESSION_MGR: closing session for UUID '2729571f-dbb0-452b-96ee-f34dbc55559e' with name 'New_configuration'
+Thu Jun 11 11:20:52 2020: SESSION_MGR: creating session with session uuid: 'fa581d49-bfd4-43ea-bb02-938f8ac691c6' and name 'New_configuration'
+Thu Jun 11 11:20:55 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:20:55 2020: SESSION_MGR: closing session for UUID 'fa581d49-bfd4-43ea-bb02-938f8ac691c6' with name 'New_configuration'
+Thu Jun 11 11:21:39 2020: SESSION_MGR: creating session with session uuid: '8ee06bfd-a2a6-478a-bbe3-3c0844776bec' and name 'New_configuration'
+Thu Jun 11 11:21:52 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:21:52 2020: SESSION_MGR: closing session for UUID '8ee06bfd-a2a6-478a-bbe3-3c0844776bec' with name 'New_configuration'
+Thu Jun 11 11:22:51 2020: SESSION_MGR: creating session with session uuid: '952b0a78-83d5-4edd-941b-11d053501b0b' and name 'New_configuration'
+Thu Jun 11 11:22:53 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:22:53 2020: SESSION_MGR: closing session for UUID '952b0a78-83d5-4edd-941b-11d053501b0b' with name 'New_configuration'
+Thu Jun 11 11:23:32 2020: SESSION_MGR: creating session with session uuid: '2648cc4e-3199-48fc-b3a3-03285a1bcd2d' and name 'New_configuration'
+Thu Jun 11 11:23:34 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:23:34 2020: SESSION_MGR: closing session for UUID '2648cc4e-3199-48fc-b3a3-03285a1bcd2d' with name 'New_configuration'
+Thu Jun 11 11:24:07 2020: SESSION_MGR: creating session with session uuid: 'd4b7938e-4df9-4f53-983d-ea048037c3bb' and name 'New_configuration'
+Thu Jun 11 11:24:11 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:24:11 2020: SESSION_MGR: closing session for UUID 'd4b7938e-4df9-4f53-983d-ea048037c3bb' with name 'New_configuration'
+Thu Jun 11 11:24:53 2020: SESSION_MGR: creating session with session uuid: '835fd082-3586-41e6-9b85-dfd40084a460' and name 'New_configuration'
+Thu Jun 11 11:25:16 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:25:17 2020: SESSION_MGR: closing session for UUID '835fd082-3586-41e6-9b85-dfd40084a460' with name 'New_configuration'
+Thu Jun 11 11:27:36 2020: SESSION_MGR: creating session with session uuid: '51c99d16-6a07-48e5-b597-cc90f56a77fb' and name 'New_configuration'
+Thu Jun 11 11:27:38 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:27:38 2020: SESSION_MGR: closing session for UUID '51c99d16-6a07-48e5-b597-cc90f56a77fb' with name 'New_configuration'
+Thu Jun 11 11:28:13 2020: SESSION_MGR: creating session with session uuid: '48419940-e91d-42f8-9184-4e4c78ac4ecd' and name 'New_configuration'
+Thu Jun 11 11:28:15 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:28:15 2020: SESSION_MGR: closing session for UUID '48419940-e91d-42f8-9184-4e4c78ac4ecd' with name 'New_configuration'
+Thu Jun 11 11:28:47 2020: SESSION_MGR: creating session with session uuid: '848e8baf-ad32-45d0-93fe-f7a40949868e' and name 'New_configuration'
+Thu Jun 11 11:28:51 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:28:52 2020: SESSION_MGR: closing session for UUID '848e8baf-ad32-45d0-93fe-f7a40949868e' with name 'New_configuration'
+Thu Jun 11 11:29:27 2020: SESSION_MGR: creating session with session uuid: 'a282d4e0-b8af-4ead-93e3-8fcf0b808d02' and name 'New_configuration'
+Thu Jun 11 11:29:53 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:29:53 2020: SESSION_MGR: closing session for UUID 'a282d4e0-b8af-4ead-93e3-8fcf0b808d02' with name 'New_configuration'
+Thu Jun 11 11:30:53 2020: SESSION_MGR: creating session with session uuid: 'fa4a8ad5-9ce9-417f-93ed-2b2fb697e46a' and name 'New_configuration'
+Thu Jun 11 11:30:55 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:30:55 2020: SESSION_MGR: closing session for UUID 'fa4a8ad5-9ce9-417f-93ed-2b2fb697e46a' with name 'New_configuration'
+Thu Jun 11 11:31:53 2020: SESSION_MGR: creating session with session uuid: '2869b6f9-8935-48ee-92c0-dcf57d950c84' and name 'New_configuration'
+Thu Jun 11 11:31:55 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:31:55 2020: SESSION_MGR: closing session for UUID '2869b6f9-8935-48ee-92c0-dcf57d950c84' with name 'New_configuration'
+Thu Jun 11 11:32:41 2020: SESSION_MGR: creating session with session uuid: '61723435-b2fa-428d-9037-336c7927cc14' and name 'New_configuration'
+Thu Jun 11 11:32:47 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:32:47 2020: SESSION_MGR: closing session for UUID '61723435-b2fa-428d-9037-336c7927cc14' with name 'New_configuration'
+Thu Jun 11 11:33:29 2020: SESSION_MGR: creating session with session uuid: '5d9739aa-5cfb-4b2d-aa50-72cbb0003cc5' and name 'New_configuration'
+Thu Jun 11 11:33:32 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:33:32 2020: SESSION_MGR: closing session for UUID '5d9739aa-5cfb-4b2d-aa50-72cbb0003cc5' with name 'New_configuration'
+Thu Jun 11 11:34:58 2020: SESSION_MGR: creating session with session uuid: 'fa634d83-6bba-4fa4-b263-5424dac5d4e8' and name 'New_configuration'
+Thu Jun 11 11:34:59 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:35:00 2020: SESSION_MGR: closing session for UUID 'fa634d83-6bba-4fa4-b263-5424dac5d4e8' with name 'New_configuration'
+Thu Jun 11 11:36:09 2020: SESSION_MGR: creating session with session uuid: '1cdb43dc-b147-4c4d-aad4-b1a127684e43' and name 'New_configuration'
+Thu Jun 11 11:36:11 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:36:11 2020: SESSION_MGR: closing session for UUID '1cdb43dc-b147-4c4d-aad4-b1a127684e43' with name 'New_configuration'
+Thu Jun 11 11:36:42 2020: SESSION_MGR: creating session with session uuid: '6529a396-2a23-4a7f-8f5e-ba733ec6c1c6' and name 'New_configuration'
+Thu Jun 11 11:36:49 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:36:49 2020: SESSION_MGR: closing session for UUID '6529a396-2a23-4a7f-8f5e-ba733ec6c1c6' with name 'New_configuration'
+Thu Jun 11 11:38:04 2020: SESSION_MGR: creating session with session uuid: '5e6fe1c7-48ec-4209-a9c8-d3d57f8ef4bf' and name 'New_configuration'
+Thu Jun 11 11:38:06 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:38:06 2020: SESSION_MGR: closing session for UUID '5e6fe1c7-48ec-4209-a9c8-d3d57f8ef4bf' with name 'New_configuration'
+Thu Jun 11 11:38:41 2020: SESSION_MGR: creating session with session uuid: 'e6fb75f8-57e4-4379-9f89-48b0d8b09b7d' and name 'New_configuration'
+Thu Jun 11 11:38:44 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:38:44 2020: SESSION_MGR: closing session for UUID 'e6fb75f8-57e4-4379-9f89-48b0d8b09b7d' with name 'New_configuration'
+Thu Jun 11 11:39:30 2020: SESSION_MGR: creating session with session uuid: '393f0547-c44d-4f90-adb0-eab5eb11ac10' and name 'New_configuration'
+Thu Jun 11 11:39:40 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 11:39:41 2020: SESSION_MGR: closing session for UUID '393f0547-c44d-4f90-adb0-eab5eb11ac10' with name 'New_configuration'
+Thu Jun 11 14:39:58 2020: SESSION_MGR: creating session with session uuid: 'da56b199-e1af-4020-8f95-bd74af3c5875' and name 'New_configuration'
+Thu Jun 11 14:40:02 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 14:40:02 2020: SESSION_MGR: closing session for UUID 'da56b199-e1af-4020-8f95-bd74af3c5875' with name 'New_configuration'

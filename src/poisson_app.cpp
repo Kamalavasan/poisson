@@ -131,6 +131,7 @@ int main(int argc, char **argv)
   int n_iter = 10;
   int itertile = n_iter;
   int non_copy = 0;
+  int batches = 2;
 
   const char* pch;
   for ( int n = 1; n < argc; n++ ) {
@@ -150,18 +151,21 @@ int main(int argc, char **argv)
     if(pch != NULL) {
       itertile = atoi ( argv[n] + 7 ); continue;
     }
+    pch = strstr(argv[n], "-batch=");
+	if(pch != NULL) {
+	  batches = atoi ( argv[n] + 7 ); continue;
+	}
     pch = strstr(argv[n], "-non-copy");
     if(pch != NULL) {
       non_copy = 1; continue;
     }
   }
 
-  printf("Grid: %dx%d in %dx%d blocks, %d iterations, %d tile height\n",logical_size_x,logical_size_y,ngrid_x,ngrid_y,n_iter,itertile);
+  printf("Grid: %dx%d in %dx%d blocks, %d iterations, %d tile height, %d batches\n",logical_size_x,logical_size_y,ngrid_x,ngrid_y,n_iter,itertile, batches);
 
   int act_sizex = logical_size_x + 2;
   int act_sizey = logical_size_y + 2;
 
-  int batches = 2;
 
   int grid_size_x = (act_sizex % 16) != 0 ? (act_sizex/16 +1) * 16 : act_sizex+2;
   int grid_size_y = act_sizey;
@@ -286,19 +290,19 @@ int main(int argc, char **argv)
 //    auto finish = std::chrono::high_resolution_clock::now();
 
 
-  for(int itr = 0; itr < n_iter*60; itr++){
-      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-  }
+//  for(int itr = 0; itr < n_iter*60; itr++){
+//      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+//      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+//  }
     
     std::chrono::duration<double> elapsed = finish - start;
 
 //  printf("Runtime on FPGA (profile) is %f seconds\n", wtime/1000000000.0);
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+//  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
 //  float bandwidth_prof = (logical_size_x * logical_size_y * sizeof(float) * 4.0 * n_iter*1000000000)/(wtime * 1024 * 1024 * 1024);
   float bandwidth = (act_sizex * act_sizey * sizeof(float) * 4.0 * n_iter * batches)/(elapsed.count() * 1000 * 1000 * 1000);
-  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
+//  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
   printf("\nBandwidth is %f\n", bandwidth);
 //  printf("\nBandwidth prof is %f\n", bandwidth_prof);
 
