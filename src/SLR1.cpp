@@ -96,6 +96,8 @@ static void process_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 	float row_arr3[PORT_WIDTH + 2];
 	float row_arr2[PORT_WIDTH + 2];
 	float row_arr1[PORT_WIDTH + 2];
+
+	float same_val[PORT_WIDTH];
 	float mem_wr[PORT_WIDTH];
 
 	#pragma HLS ARRAY_PARTITION variable=row_arr3 complete dim=1
@@ -125,7 +127,7 @@ static void process_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 		uint256_dt tmp1, tmp2, tmp3;
 		uint256_dt update_j;
 
-		unsigned short i = 0, j = 0, j_l = 0;
+		short i = 0, j = -1, j_l = 0;
 		for(unsigned int itr = 0; itr < grid_size; itr++) {
 			#pragma HLS loop_tripcount min=min_block_x max=max_block_x avg=avg_block_x
 			#pragma HLS PIPELINE II=1
@@ -140,7 +142,7 @@ static void process_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 				j = 0;
 			}
 
-			tmp2_b1 = tmp1;
+			tmp1_b1 = tmp1;
 			tmp1 = tmp1_f1;
 			tmp1_f1 = row2_n[j_l];
 
@@ -155,7 +157,7 @@ static void process_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 			row3_n[j_l] = tmp3_b1;
 			tmp3 = tmp3_f1;
 
-			bool cond_tmp1 = (i < end_row);
+			bool cond_tmp1 = (i < end_row && !(i == end_row -1 && j == end_index -1) );
 			if(cond_tmp1){
 				tmp3_f1 = rd_buffer.read();
 			}
@@ -171,14 +173,16 @@ static void process_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 
 			vec2arr: for(int k = 0; k < PORT_WIDTH; k++){
 				#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
-				data_conv tmp1_u, tmp2_u, tmp3_u;
+				data_conv tmp1_u, tmp2_u, tmp3_u, tmp4_u;
 				tmp1_u.i = tmp1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
 				tmp2_u.i = tmp2.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
 				tmp3_u.i = tmp3.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+				tmp4_u.i = tmp2_f1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
 
 				row_arr3[k+1] =  tmp3_u.f;
 				row_arr2[k+1] =  tmp2_u.f;
 				row_arr1[k+1] =  tmp1_u.f;
+				same_val[k] = tmp4_u.f;
 			}
 
 			data_conv tmp2_o1, tmp2_o2;
@@ -188,8 +192,8 @@ static void process_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 			row_arr2[PORT_WIDTH + 1] = tmp2_o2.f;
 
 			data_conv tmp1_o1, tmp1_o2;
-			tmp2_o1.i = tmp1_b1.range(DATATYPE_SIZE * (PORT_WIDTH) - 1, (PORT_WIDTH-1) * DATATYPE_SIZE);
-			tmp2_o1.i = tmp1_f1.range(DATATYPE_SIZE * (0 + 1) - 1, 0 * DATATYPE_SIZE);
+			tmp1_o1.i = tmp1_b1.range(DATATYPE_SIZE * (PORT_WIDTH) - 1, (PORT_WIDTH-1) * DATATYPE_SIZE);
+			tmp1_o2.i = tmp1_f1.range(DATATYPE_SIZE * (0 + 1) - 1, 0 * DATATYPE_SIZE);
 			row_arr1[0] = tmp1_o1.f;
 			row_arr1[PORT_WIDTH + 1] = tmp1_o2.f;
 
@@ -204,9 +208,9 @@ static void process_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 			process: for(short q = 0; q < PORT_WIDTH; q++){
 				#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 				short index = (j << SHIFT_BITS) + q;
-				float r3 = row_arr3[q] * (-0.17f)  + row_arr3[q+1] * (-0.18f) +  row_arr3[q+2] * (-0.11f);
-				float r2 = row_arr2[q] * (-0.16f)  + row_arr2[q+1] * (0.5f)   +  row_arr2[q+2] * (-0.12f);
-				float r1 = row_arr1[q] * (-0.15f)  + row_arr1[q+1] * (-0.14f) +  row_arr1[q+2] * (-0.13f);
+				float r1 = row_arr1[q] * (-0.07f)  + row_arr1[q+1] * (-0.06f) +  row_arr1[q+2] * (-0.05f);
+				float r2 = row_arr2[q] * (-0.08f)  + row_arr2[q+1] * (0.36f)  +  row_arr2[q+2] * (-0.04f);
+				float r3 = row_arr3[q] * (-0.01f)  + row_arr3[q+1] * (-0.02f) +  row_arr3[q+2] * (-0.03f);
 				float result  = r1 + r2 + r3;
 
 				bool change_cond = (index <= 0 || index > size0 || (i == 1) || (i == end_row));
@@ -252,7 +256,7 @@ void process_SLR (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1, hls::stre
 	data_g.end_index = (xdim0_poisson_kernel_stencil >> SHIFT_BITS);
 	data_g.end_row = size1+2;
 	data_g.outer_loop_limit = size1+3;
-	data_g.gridsize = data_g.outer_loop_limit * data_g.end_index * batches;
+	data_g.gridsize = data_g.outer_loop_limit * data_g.end_index * batches + 1;
 	data_g.endindex_minus1 = data_g.end_index -1;
 	data_g.endrow_plus1 = data_g.end_row + 1;
 	data_g.endrow_plus2 = data_g.end_row + 2;

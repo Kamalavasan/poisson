@@ -127,3 +127,377 @@ Thu Jun 11 11:39:41 2020: SESSION_MGR: closing session for UUID '393f0547-c44d-4
 Thu Jun 11 14:39:58 2020: SESSION_MGR: creating session with session uuid: 'da56b199-e1af-4020-8f95-bd74af3c5875' and name 'New_configuration'
 Thu Jun 11 14:40:02 2020: Rule Check Server: Accepted socket connection from client
 Thu Jun 11 14:40:02 2020: SESSION_MGR: closing session for UUID 'da56b199-e1af-4020-8f95-bd74af3c5875' with name 'New_configuration'
+Thu Jun 11 22:15:44 2020: SESSION_MGR: creating session with session uuid: '4e44fe6d-cd0f-4c87-833a-4eeb5c3bdc13' and name 'Emulation-SW'
+Thu Jun 11 22:15:45 2020: SESSION_MGR: closing session for UUID '4e44fe6d-cd0f-4c87-833a-4eeb5c3bdc13' with name 'Emulation-SW'
+Thu Jun 11 22:15:45 2020: SESSION_MGR: creating session with session uuid: 'f82e1790-0e61-46b1-a646-107c854e1da0' and name 'Emulation-SW'
+Thu Jun 11 22:15:49 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:16:13 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:16:24 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:16:48 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:17:00 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:17:23 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:17:35 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:18:09 2020: SESSION_MGR: closing session for UUID 'f82e1790-0e61-46b1-a646-107c854e1da0' with name 'Emulation-SW'
+Thu Jun 11 22:18:39 2020: SESSION_MGR: creating session with session uuid: 'fe3928e4-36ab-4771-9a6a-a7e16336d7a0' and name 'Emulation-SW'
+Thu Jun 11 22:18:41 2020: SESSION_MGR: closing session for UUID 'fe3928e4-36ab-4771-9a6a-a7e16336d7a0' with name 'Emulation-SW'
+Thu Jun 11 22:18:53 2020: SESSION_MGR: creating session with session uuid: '4492fcda-84e5-4899-8687-d9f837f4f98d' and name 'poisson_st-Default'
+Thu Jun 11 22:19:02 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:19:02 2020: SESSION_MGR: closing session for UUID '4492fcda-84e5-4899-8687-d9f837f4f98d' with name 'poisson_st-Default'
+Thu Jun 11 22:31:51 2020: SESSION_MGR: creating session with session uuid: 'f81329c6-03aa-44e3-aa42-6d2349704b03' and name 'Emulation-SW'
+Thu Jun 11 22:31:55 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:32:16 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:32:26 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:32:46 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:32:57 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:33:17 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:33:27 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:33:44 2020: SESSION_MGR: closing session for UUID 'f81329c6-03aa-44e3-aa42-6d2349704b03' with name 'Emulation-SW'
+Thu Jun 11 22:33:56 2020: SESSION_MGR: creating session with session uuid: '033fd676-8e5f-49c2-afeb-4bb77f066c7f' and name 'poisson_st-Default'
+Thu Jun 11 22:34:04 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:34:04 2020: SESSION_MGR: closing session for UUID '033fd676-8e5f-49c2-afeb-4bb77f066c7f' with name 'poisson_st-Default'
+Thu Jun 11 22:39:49 2020: SESSION_MGR: creating session with session uuid: 'd2aab2f8-5b3c-4822-8867-ab21a48347ca' and name 'Emulation-SW'
+Thu Jun 11 22:39:53 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:40:13 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:40:22 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:40:42 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:40:52 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:41:12 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:41:22 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:41:38 2020: SESSION_MGR: closing session for UUID 'd2aab2f8-5b3c-4822-8867-ab21a48347ca' with name 'Emulation-SW'
+Thu Jun 11 22:41:51 2020: SESSION_MGR: creating session with session uuid: '1d7ae0b9-1888-4ab9-9334-2b947ae0bc8f' and name 'poisson_st-Default'
+Thu Jun 11 22:41:59 2020: Rule Check Server: Accepted socket connection from client
+Thu Jun 11 22:41:59 2020: SESSION_MGR: closing session for UUID '1d7ae0b9-1888-4ab9-9334-2b947ae0bc8f' with name 'poisson_st-Default'
+Fri Jun 12 09:56:49 2020: SESSION_MGR: creating session with session uuid: '26cfb411-fbdf-45e4-8386-0fe9a1a99f21' and name 'Emulation-SW'
+Fri Jun 12 09:56:53 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 09:57:13 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 09:57:23 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 09:57:43 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 09:57:52 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 09:58:12 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 09:58:23 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 09:58:39 2020: SESSION_MGR: closing session for UUID '26cfb411-fbdf-45e4-8386-0fe9a1a99f21' with name 'Emulation-SW'
+Fri Jun 12 09:58:47 2020: SESSION_MGR: creating session with session uuid: 'e80563c6-52dd-490d-847f-b3685bbd4923' and name 'poisson_st-Default'
+Fri Jun 12 09:58:55 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 09:58:55 2020: SESSION_MGR: closing session for UUID 'e80563c6-52dd-490d-847f-b3685bbd4923' with name 'poisson_st-Default'
+Fri Jun 12 10:07:33 2020: SESSION_MGR: creating session with session uuid: '6b6d5434-19e1-48ca-a19c-b0f954fde2a0' and name 'Emulation-SW'
+Fri Jun 12 10:07:37 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 10:07:57 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 10:08:06 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 10:08:27 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 10:08:36 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 10:08:56 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 10:09:05 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 10:09:22 2020: SESSION_MGR: closing session for UUID '6b6d5434-19e1-48ca-a19c-b0f954fde2a0' with name 'Emulation-SW'
+Fri Jun 12 10:09:31 2020: SESSION_MGR: creating session with session uuid: '3d7f233c-1a25-4e96-90e4-16d160270414' and name 'poisson_st-Default'
+Fri Jun 12 10:09:39 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 10:09:39 2020: SESSION_MGR: closing session for UUID '3d7f233c-1a25-4e96-90e4-16d160270414' with name 'poisson_st-Default'
+Fri Jun 12 10:12:25 2020: SESSION_MGR: creating session with session uuid: 'b530e917-49e7-406a-bd88-1e1c9dd6c763' and name 'Emulation-SW'
+Fri Jun 12 10:12:27 2020: SESSION_MGR: closing session for UUID 'b530e917-49e7-406a-bd88-1e1c9dd6c763' with name 'Emulation-SW'
+Fri Jun 12 10:12:39 2020: SESSION_MGR: creating session with session uuid: '7bdcf0b8-eaa5-44de-8f45-24887abb8399' and name 'poisson_st-Default'
+Fri Jun 12 10:12:47 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 10:12:47 2020: SESSION_MGR: closing session for UUID '7bdcf0b8-eaa5-44de-8f45-24887abb8399' with name 'poisson_st-Default'
+Fri Jun 12 10:13:47 2020: SESSION_MGR: creating session with session uuid: '5c60b48a-7d6e-4828-a780-b8b7ae7fe6d2' and name 'Emulation-SW'
+Fri Jun 12 10:13:49 2020: SESSION_MGR: closing session for UUID '5c60b48a-7d6e-4828-a780-b8b7ae7fe6d2' with name 'Emulation-SW'
+Fri Jun 12 10:14:22 2020: SESSION_MGR: creating session with session uuid: '1e1b47cb-b2ba-4972-8824-919d30b17d6c' and name 'poisson_st-Default'
+Fri Jun 12 10:14:29 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 10:14:29 2020: SESSION_MGR: closing session for UUID '1e1b47cb-b2ba-4972-8824-919d30b17d6c' with name 'poisson_st-Default'
+Fri Jun 12 10:14:46 2020: SESSION_MGR: creating session with session uuid: 'd0e2bd85-fd7d-4faa-b14a-a95d881a62a0' and name 'poisson_st-Default'
+Fri Jun 12 10:14:53 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 10:14:53 2020: SESSION_MGR: closing session for UUID 'd0e2bd85-fd7d-4faa-b14a-a95d881a62a0' with name 'poisson_st-Default'
+Fri Jun 12 10:16:39 2020: SESSION_MGR: creating session with session uuid: '8850e74c-7e73-464d-9095-f556df17095e' and name 'Emulation-SW'
+Fri Jun 12 10:16:41 2020: SESSION_MGR: closing session for UUID '8850e74c-7e73-464d-9095-f556df17095e' with name 'Emulation-SW'
+Fri Jun 12 10:16:46 2020: SESSION_MGR: creating session with session uuid: '369fab62-b0be-46a3-97f1-177aa5c81e06' and name 'poisson_st-Default'
+Fri Jun 12 10:16:53 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 10:16:53 2020: SESSION_MGR: closing session for UUID '369fab62-b0be-46a3-97f1-177aa5c81e06' with name 'poisson_st-Default'
+Fri Jun 12 11:07:01 2020: SESSION_MGR: creating session with session uuid: 'b445415e-4171-431d-9622-184e2de85cf9' and name 'Emulation-SW'
+Fri Jun 12 11:07:05 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:07:29 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:07:41 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:08:00 2020: SESSION_MGR: closing session for UUID 'b445415e-4171-431d-9622-184e2de85cf9' with name 'Emulation-SW'
+Fri Jun 12 11:08:18 2020: SESSION_MGR: creating session with session uuid: '61d454a5-d860-484e-9eec-96ef087f2d4b' and name 'poisson_st-Default'
+Fri Jun 12 11:08:23 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:08:23 2020: SESSION_MGR: closing session for UUID '61d454a5-d860-484e-9eec-96ef087f2d4b' with name 'poisson_st-Default'
+Fri Jun 12 11:09:03 2020: SESSION_MGR: creating session with session uuid: '66b834cc-8c99-4872-ab3c-4cbef474bf8a' and name 'Emulation-SW'
+Fri Jun 12 11:09:07 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:09:31 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:09:43 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:10:04 2020: SESSION_MGR: closing session for UUID '66b834cc-8c99-4872-ab3c-4cbef474bf8a' with name 'Emulation-SW'
+Fri Jun 12 11:10:14 2020: SESSION_MGR: creating session with session uuid: '65a92da4-ad60-4faf-ae01-187f00adffcb' and name 'poisson_st-Default'
+Fri Jun 12 11:10:26 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:10:26 2020: SESSION_MGR: closing session for UUID '65a92da4-ad60-4faf-ae01-187f00adffcb' with name 'poisson_st-Default'
+Fri Jun 12 11:11:06 2020: SESSION_MGR: creating session with session uuid: 'bd6e6e0f-369a-42e8-91ec-e4ed3ea919e5' and name 'Emulation-SW'
+Fri Jun 12 11:11:11 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:11:34 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:11:46 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:12:06 2020: SESSION_MGR: closing session for UUID 'bd6e6e0f-369a-42e8-91ec-e4ed3ea919e5' with name 'Emulation-SW'
+Fri Jun 12 11:12:16 2020: SESSION_MGR: creating session with session uuid: 'cbce8cd9-c3ca-4559-8fed-e39f09cf026f' and name 'poisson_st-Default'
+Fri Jun 12 11:12:23 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:12:23 2020: SESSION_MGR: closing session for UUID 'cbce8cd9-c3ca-4559-8fed-e39f09cf026f' with name 'poisson_st-Default'
+Fri Jun 12 11:14:10 2020: SESSION_MGR: creating session with session uuid: 'b1d0868b-b2dd-4c1b-9bea-8b0f7005cf50' and name 'Emulation-SW'
+Fri Jun 12 11:14:14 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:14:34 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:14:44 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:15:01 2020: SESSION_MGR: closing session for UUID 'b1d0868b-b2dd-4c1b-9bea-8b0f7005cf50' with name 'Emulation-SW'
+Fri Jun 12 11:15:05 2020: SESSION_MGR: creating session with session uuid: 'b43bbac1-51d6-4575-a470-a7775cfc31f3' and name 'poisson_st-Default'
+Fri Jun 12 11:15:12 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:15:12 2020: SESSION_MGR: closing session for UUID 'b43bbac1-51d6-4575-a470-a7775cfc31f3' with name 'poisson_st-Default'
+Fri Jun 12 11:15:46 2020: SESSION_MGR: creating session with session uuid: 'b640e479-05f9-4f06-8168-1442fde84ca2' and name 'Emulation-SW'
+Fri Jun 12 11:15:49 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:16:09 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:16:19 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:16:37 2020: SESSION_MGR: closing session for UUID 'b640e479-05f9-4f06-8168-1442fde84ca2' with name 'Emulation-SW'
+Fri Jun 12 11:16:41 2020: SESSION_MGR: creating session with session uuid: '3dffe0ba-e8d4-427a-aec2-5eb714c796c1' and name 'poisson_st-Default'
+Fri Jun 12 11:16:48 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:16:48 2020: SESSION_MGR: closing session for UUID '3dffe0ba-e8d4-427a-aec2-5eb714c796c1' with name 'poisson_st-Default'
+Fri Jun 12 11:18:19 2020: SESSION_MGR: creating session with session uuid: '663b6187-d61c-4def-884a-bffce8744c22' and name 'Emulation-SW'
+Fri Jun 12 11:18:22 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:18:42 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:18:52 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:19:10 2020: SESSION_MGR: closing session for UUID '663b6187-d61c-4def-884a-bffce8744c22' with name 'Emulation-SW'
+Fri Jun 12 11:19:17 2020: SESSION_MGR: creating session with session uuid: 'cdf61f00-276c-4131-8ebd-02f6722324ab' and name 'poisson_st-Default'
+Fri Jun 12 11:19:24 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:19:24 2020: SESSION_MGR: closing session for UUID 'cdf61f00-276c-4131-8ebd-02f6722324ab' with name 'poisson_st-Default'
+Fri Jun 12 11:25:47 2020: SESSION_MGR: creating session with session uuid: '57d4ce0d-f53f-4f5f-ba6a-6c6946b8f527' and name 'Emulation-SW'
+Fri Jun 12 11:25:51 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:26:15 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:26:27 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:26:48 2020: SESSION_MGR: closing session for UUID '57d4ce0d-f53f-4f5f-ba6a-6c6946b8f527' with name 'Emulation-SW'
+Fri Jun 12 11:26:59 2020: SESSION_MGR: creating session with session uuid: 'e50e518b-ca7d-4ede-8926-d49fec786bae' and name 'poisson_st-Default'
+Fri Jun 12 11:27:06 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:27:06 2020: SESSION_MGR: closing session for UUID 'e50e518b-ca7d-4ede-8926-d49fec786bae' with name 'poisson_st-Default'
+Fri Jun 12 11:27:43 2020: SESSION_MGR: creating session with session uuid: '0d8deb82-75ff-46e9-99e0-d8498cc0123c' and name 'Emulation-SW'
+Fri Jun 12 11:27:45 2020: SESSION_MGR: closing session for UUID '0d8deb82-75ff-46e9-99e0-d8498cc0123c' with name 'Emulation-SW'
+Fri Jun 12 11:27:49 2020: SESSION_MGR: creating session with session uuid: '3aa4d71b-e0d4-41d2-89ca-af26e628f0b8' and name 'poisson_st-Default'
+Fri Jun 12 11:27:55 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:27:56 2020: SESSION_MGR: closing session for UUID '3aa4d71b-e0d4-41d2-89ca-af26e628f0b8' with name 'poisson_st-Default'
+Fri Jun 12 11:30:30 2020: SESSION_MGR: creating session with session uuid: '75876598-3c6c-4caa-b2b9-e710167010bb' and name 'Emulation-SW'
+Fri Jun 12 11:30:35 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:30:58 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:31:10 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:31:31 2020: SESSION_MGR: closing session for UUID '75876598-3c6c-4caa-b2b9-e710167010bb' with name 'Emulation-SW'
+Fri Jun 12 11:31:37 2020: SESSION_MGR: creating session with session uuid: '089a25aa-4766-4844-92b1-6b2cdf6b13f9' and name 'poisson_st-Default'
+Fri Jun 12 11:31:44 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:31:44 2020: SESSION_MGR: closing session for UUID '089a25aa-4766-4844-92b1-6b2cdf6b13f9' with name 'poisson_st-Default'
+Fri Jun 12 11:42:09 2020: SESSION_MGR: creating session with session uuid: 'c3d0bf57-d976-4ccb-acb3-cff41390e6ab' and name 'poisson_st-Default'
+Fri Jun 12 11:42:16 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:42:16 2020: SESSION_MGR: closing session for UUID 'c3d0bf57-d976-4ccb-acb3-cff41390e6ab' with name 'poisson_st-Default'
+Fri Jun 12 11:43:01 2020: SESSION_MGR: creating session with session uuid: 'f727fbd7-9654-4d07-948a-815e76a8520d' and name 'poisson_st-Default'
+Fri Jun 12 11:43:08 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 11:43:08 2020: SESSION_MGR: closing session for UUID 'f727fbd7-9654-4d07-948a-815e76a8520d' with name 'poisson_st-Default'
+Fri Jun 12 19:00:24 2020: SESSION_MGR: creating session with session uuid: 'aac17baa-4755-42b4-8e76-0e84522eb41f' and name 'Emulation-SW'
+Fri Jun 12 19:00:28 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 19:00:47 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 19:00:57 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 19:01:14 2020: SESSION_MGR: closing session for UUID 'aac17baa-4755-42b4-8e76-0e84522eb41f' with name 'Emulation-SW'
+Fri Jun 12 19:01:45 2020: SESSION_MGR: creating session with session uuid: '79e5257d-56de-4b3a-9add-58a0a2d4be4d' and name 'poisson_st-Default'
+Fri Jun 12 19:01:52 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 19:01:52 2020: SESSION_MGR: closing session for UUID '79e5257d-56de-4b3a-9add-58a0a2d4be4d' with name 'poisson_st-Default'
+Fri Jun 12 19:04:56 2020: SESSION_MGR: creating session with session uuid: 'cbbf1b13-04da-4e35-a963-3fbdd24253c1' and name 'Emulation-SW'
+Fri Jun 12 19:05:00 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 19:05:19 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 19:05:29 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 19:05:46 2020: SESSION_MGR: closing session for UUID 'cbbf1b13-04da-4e35-a963-3fbdd24253c1' with name 'Emulation-SW'
+Fri Jun 12 19:05:50 2020: SESSION_MGR: creating session with session uuid: '7e7a7f0d-086d-4db2-b2a8-76870d8dc33c' and name 'poisson_st-Default'
+Fri Jun 12 19:05:56 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 19:05:57 2020: SESSION_MGR: closing session for UUID '7e7a7f0d-086d-4db2-b2a8-76870d8dc33c' with name 'poisson_st-Default'
+Fri Jun 12 19:06:36 2020: SESSION_MGR: creating session with session uuid: 'dcd2d71c-7d00-4c7f-9f87-45513b4ee117' and name 'poisson_st-Default'
+Fri Jun 12 19:06:42 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 19:06:43 2020: SESSION_MGR: closing session for UUID 'dcd2d71c-7d00-4c7f-9f87-45513b4ee117' with name 'poisson_st-Default'
+Fri Jun 12 19:07:31 2020: SESSION_MGR: creating session with session uuid: '9f70423e-13e2-4902-a12a-043852cb6574' and name 'poisson_st-Default'
+Fri Jun 12 19:07:38 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 19:07:38 2020: SESSION_MGR: closing session for UUID '9f70423e-13e2-4902-a12a-043852cb6574' with name 'poisson_st-Default'
+Fri Jun 12 20:07:57 2020: SESSION_MGR: creating session with session uuid: '9dd3eceb-19de-47ff-ad76-efe111f54a70' and name 'poisson_st-Default'
+Fri Jun 12 20:08:04 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:08:04 2020: SESSION_MGR: closing session for UUID '9dd3eceb-19de-47ff-ad76-efe111f54a70' with name 'poisson_st-Default'
+Fri Jun 12 20:09:15 2020: SESSION_MGR: creating session with session uuid: 'e0f47bc9-6597-4d4f-ac1f-473adf78adb0' and name 'Emulation-SW'
+Fri Jun 12 20:09:19 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:09:39 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:09:49 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:10:05 2020: SESSION_MGR: closing session for UUID 'e0f47bc9-6597-4d4f-ac1f-473adf78adb0' with name 'Emulation-SW'
+Fri Jun 12 20:10:10 2020: SESSION_MGR: creating session with session uuid: '92a1a319-05fb-43d6-9920-a944bfb5d765' and name 'poisson_st-Default'
+Fri Jun 12 20:10:16 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:10:16 2020: SESSION_MGR: closing session for UUID '92a1a319-05fb-43d6-9920-a944bfb5d765' with name 'poisson_st-Default'
+Fri Jun 12 20:11:26 2020: SESSION_MGR: creating session with session uuid: 'cf4e42ec-feb0-428e-b148-5ad503911fac' and name 'Emulation-SW'
+Fri Jun 12 20:11:30 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:11:49 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:11:59 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:12:15 2020: SESSION_MGR: closing session for UUID 'cf4e42ec-feb0-428e-b148-5ad503911fac' with name 'Emulation-SW'
+Fri Jun 12 20:12:34 2020: SESSION_MGR: creating session with session uuid: '0108f63c-e296-4660-9cb1-3df0229cd648' and name 'poisson_st-Default'
+Fri Jun 12 20:12:41 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:12:41 2020: SESSION_MGR: closing session for UUID '0108f63c-e296-4660-9cb1-3df0229cd648' with name 'poisson_st-Default'
+Fri Jun 12 20:25:55 2020: SESSION_MGR: creating session with session uuid: '6dca6590-0338-42ca-8ed4-0a9a3872232d' and name 'Emulation-SW'
+Fri Jun 12 20:25:56 2020: SESSION_MGR: closing session for UUID '6dca6590-0338-42ca-8ed4-0a9a3872232d' with name 'Emulation-SW'
+Fri Jun 12 20:25:59 2020: SESSION_MGR: creating session with session uuid: 'aff5db02-a8f6-4a6b-8b91-cc9aa2b47e57' and name 'poisson_st-Default'
+Fri Jun 12 20:26:06 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:26:06 2020: SESSION_MGR: closing session for UUID 'aff5db02-a8f6-4a6b-8b91-cc9aa2b47e57' with name 'poisson_st-Default'
+Fri Jun 12 20:44:27 2020: SESSION_MGR: creating session with session uuid: 'a0076485-66c5-4cc9-9cc4-e4fb1410d78b' and name 'Emulation-SW'
+Fri Jun 12 20:44:31 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:44:50 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:45:00 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:45:16 2020: SESSION_MGR: closing session for UUID 'a0076485-66c5-4cc9-9cc4-e4fb1410d78b' with name 'Emulation-SW'
+Fri Jun 12 20:45:31 2020: SESSION_MGR: creating session with session uuid: 'a2aa81fb-07dc-4eba-8709-265f3ab0e7fb' and name 'poisson_st-Default'
+Fri Jun 12 20:45:37 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:45:37 2020: SESSION_MGR: closing session for UUID 'a2aa81fb-07dc-4eba-8709-265f3ab0e7fb' with name 'poisson_st-Default'
+Fri Jun 12 20:46:46 2020: SESSION_MGR: creating session with session uuid: '5671d911-9382-4c2e-9c16-f95b1d23eb54' and name 'Emulation-SW'
+Fri Jun 12 20:46:48 2020: SESSION_MGR: closing session for UUID '5671d911-9382-4c2e-9c16-f95b1d23eb54' with name 'Emulation-SW'
+Fri Jun 12 20:46:51 2020: SESSION_MGR: creating session with session uuid: 'caf91110-7132-4736-89a3-21803e3dbd0d' and name 'poisson_st-Default'
+Fri Jun 12 20:46:58 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:46:58 2020: SESSION_MGR: closing session for UUID 'caf91110-7132-4736-89a3-21803e3dbd0d' with name 'poisson_st-Default'
+Fri Jun 12 20:47:36 2020: SESSION_MGR: creating session with session uuid: 'd8c2859e-4c4c-4bc1-ac26-6724b34955de' and name 'Emulation-SW'
+Fri Jun 12 20:47:40 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:48:00 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:48:10 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:48:26 2020: SESSION_MGR: closing session for UUID 'd8c2859e-4c4c-4bc1-ac26-6724b34955de' with name 'Emulation-SW'
+Fri Jun 12 20:48:42 2020: SESSION_MGR: creating session with session uuid: 'b09637f5-5a6f-4407-8bab-9bde6be7bacf' and name 'poisson_st-Default'
+Fri Jun 12 20:48:49 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:48:49 2020: SESSION_MGR: closing session for UUID 'b09637f5-5a6f-4407-8bab-9bde6be7bacf' with name 'poisson_st-Default'
+Fri Jun 12 20:52:46 2020: SESSION_MGR: creating session with session uuid: 'c6d43668-c8e2-4f4b-868e-fc2b88148020' and name 'Emulation-SW'
+Fri Jun 12 20:52:50 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:53:10 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:53:20 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:53:36 2020: SESSION_MGR: closing session for UUID 'c6d43668-c8e2-4f4b-868e-fc2b88148020' with name 'Emulation-SW'
+Fri Jun 12 20:54:20 2020: SESSION_MGR: creating session with session uuid: 'f355ed7a-f7ff-4335-b9af-5f9385adb28e' and name 'Emulation-SW'
+Fri Jun 12 20:54:23 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:54:43 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:54:53 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:55:10 2020: SESSION_MGR: closing session for UUID 'f355ed7a-f7ff-4335-b9af-5f9385adb28e' with name 'Emulation-SW'
+Fri Jun 12 20:55:14 2020: SESSION_MGR: creating session with session uuid: '78f4cbaa-6331-4720-8a01-1b025699bef2' and name 'poisson_st-Default'
+Fri Jun 12 20:55:22 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:55:22 2020: SESSION_MGR: closing session for UUID '78f4cbaa-6331-4720-8a01-1b025699bef2' with name 'poisson_st-Default'
+Fri Jun 12 20:55:28 2020: SESSION_MGR: creating session with session uuid: '5786522b-ab5e-48b9-845c-6040df914de7' and name 'poisson_st-Default'
+Fri Jun 12 20:58:23 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 20:58:23 2020: SESSION_MGR: closing session for UUID '5786522b-ab5e-48b9-845c-6040df914de7' with name 'poisson_st-Default'
+Fri Jun 12 21:00:31 2020: SESSION_MGR: creating session with session uuid: '7c196377-8e20-4bf1-90b2-7dfc7615bee7' and name 'Emulation-SW'
+Fri Jun 12 21:00:35 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:00:55 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:01:04 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:01:20 2020: SESSION_MGR: closing session for UUID '7c196377-8e20-4bf1-90b2-7dfc7615bee7' with name 'Emulation-SW'
+Fri Jun 12 21:01:24 2020: SESSION_MGR: creating session with session uuid: '0abd09cf-8611-47dd-8f63-e13b61ea5ad8' and name 'poisson_st-Default'
+Fri Jun 12 21:01:41 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:01:42 2020: SESSION_MGR: closing session for UUID '0abd09cf-8611-47dd-8f63-e13b61ea5ad8' with name 'poisson_st-Default'
+Fri Jun 12 21:02:19 2020: SESSION_MGR: creating session with session uuid: '8108446a-78fe-44c4-abb8-276cc3e9fd68' and name 'Emulation-SW'
+Fri Jun 12 21:02:23 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:02:42 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:02:52 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:03:08 2020: SESSION_MGR: closing session for UUID '8108446a-78fe-44c4-abb8-276cc3e9fd68' with name 'Emulation-SW'
+Fri Jun 12 21:07:00 2020: SESSION_MGR: creating session with session uuid: 'e1dce2ae-5bf7-46db-adcb-41c366b8f255' and name 'Emulation-SW'
+Fri Jun 12 21:07:03 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:07:24 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:07:34 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:07:51 2020: SESSION_MGR: closing session for UUID 'e1dce2ae-5bf7-46db-adcb-41c366b8f255' with name 'Emulation-SW'
+Fri Jun 12 21:07:55 2020: SESSION_MGR: creating session with session uuid: 'e625c650-5be5-4d9e-ace7-be6a74df98b1' and name 'poisson_st-Default'
+Fri Jun 12 21:08:01 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:08:02 2020: SESSION_MGR: closing session for UUID 'e625c650-5be5-4d9e-ace7-be6a74df98b1' with name 'poisson_st-Default'
+Fri Jun 12 21:08:49 2020: SESSION_MGR: creating session with session uuid: 'e9724c7b-4906-4e61-9296-dbd16f8d5a37' and name 'Emulation-SW'
+Fri Jun 12 21:08:53 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:09:13 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:09:23 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:09:39 2020: SESSION_MGR: closing session for UUID 'e9724c7b-4906-4e61-9296-dbd16f8d5a37' with name 'Emulation-SW'
+Fri Jun 12 21:09:43 2020: SESSION_MGR: creating session with session uuid: '1184ddd8-7bc6-472d-9055-9cd763fee0c5' and name 'poisson_st-Default'
+Fri Jun 12 21:09:49 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:09:50 2020: SESSION_MGR: closing session for UUID '1184ddd8-7bc6-472d-9055-9cd763fee0c5' with name 'poisson_st-Default'
+Fri Jun 12 21:15:09 2020: SESSION_MGR: creating session with session uuid: 'b7366d11-40f5-4a5a-b886-f3230650f48a' and name 'Emulation-SW'
+Fri Jun 12 21:15:13 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:15:37 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:15:48 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:16:08 2020: SESSION_MGR: closing session for UUID 'b7366d11-40f5-4a5a-b886-f3230650f48a' with name 'Emulation-SW'
+Fri Jun 12 21:16:15 2020: SESSION_MGR: creating session with session uuid: 'ff27536e-54db-4de8-8f6f-b5ae8c21510f' and name 'poisson_st-Default'
+Fri Jun 12 21:16:22 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:16:22 2020: SESSION_MGR: closing session for UUID 'ff27536e-54db-4de8-8f6f-b5ae8c21510f' with name 'poisson_st-Default'
+Fri Jun 12 21:19:08 2020: SESSION_MGR: creating session with session uuid: '5d89deb4-f7d8-4aac-ac81-4d7534c31f7b' and name 'Emulation-SW'
+Fri Jun 12 21:19:12 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:19:36 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:19:48 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:20:07 2020: SESSION_MGR: closing session for UUID '5d89deb4-f7d8-4aac-ac81-4d7534c31f7b' with name 'Emulation-SW'
+Fri Jun 12 21:20:12 2020: SESSION_MGR: creating session with session uuid: '474c8706-493f-4122-91e7-0a346a7684fb' and name 'poisson_st-Default'
+Fri Jun 12 21:20:19 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:20:19 2020: SESSION_MGR: closing session for UUID '474c8706-493f-4122-91e7-0a346a7684fb' with name 'poisson_st-Default'
+Fri Jun 12 21:23:23 2020: SESSION_MGR: creating session with session uuid: 'fab73178-8a8e-4f5e-a24c-106e7c8efc41' and name 'Emulation-SW'
+Fri Jun 12 21:23:28 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:23:49 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:23:59 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:24:15 2020: SESSION_MGR: closing session for UUID 'fab73178-8a8e-4f5e-a24c-106e7c8efc41' with name 'Emulation-SW'
+Fri Jun 12 21:24:44 2020: SESSION_MGR: creating session with session uuid: 'ae05e5ca-a612-41d0-9576-ae409b7f7cc6' and name 'poisson_st-Default'
+Fri Jun 12 21:24:50 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:24:50 2020: SESSION_MGR: closing session for UUID 'ae05e5ca-a612-41d0-9576-ae409b7f7cc6' with name 'poisson_st-Default'
+Fri Jun 12 21:26:10 2020: SESSION_MGR: creating session with session uuid: '2d72e6b9-ef32-41f7-aa9f-c75bb2429c46' and name 'Emulation-SW'
+Fri Jun 12 21:26:14 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:26:34 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:26:44 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:27:00 2020: SESSION_MGR: closing session for UUID '2d72e6b9-ef32-41f7-aa9f-c75bb2429c46' with name 'Emulation-SW'
+Fri Jun 12 21:27:04 2020: SESSION_MGR: creating session with session uuid: '00cf423e-817c-4d5c-a693-2333376695df' and name 'poisson_st-Default'
+Fri Jun 12 21:27:11 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:27:11 2020: SESSION_MGR: closing session for UUID '00cf423e-817c-4d5c-a693-2333376695df' with name 'poisson_st-Default'
+Fri Jun 12 21:27:51 2020: SESSION_MGR: creating session with session uuid: 'fda3cba1-aec2-4559-8e5e-7522eb82830f' and name 'Emulation-SW'
+Fri Jun 12 21:27:55 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:28:15 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:28:25 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:28:41 2020: SESSION_MGR: closing session for UUID 'fda3cba1-aec2-4559-8e5e-7522eb82830f' with name 'Emulation-SW'
+Fri Jun 12 21:28:46 2020: SESSION_MGR: creating session with session uuid: '274908f7-af44-4095-9b85-db465a6bb21d' and name 'poisson_st-Default'
+Fri Jun 12 21:28:52 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:28:53 2020: SESSION_MGR: closing session for UUID '274908f7-af44-4095-9b85-db465a6bb21d' with name 'poisson_st-Default'
+Fri Jun 12 21:29:47 2020: SESSION_MGR: creating session with session uuid: '79791465-1442-48df-8809-f494f1e68a04' and name 'Emulation-SW'
+Fri Jun 12 21:29:51 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:30:10 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:30:20 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:30:36 2020: SESSION_MGR: closing session for UUID '79791465-1442-48df-8809-f494f1e68a04' with name 'Emulation-SW'
+Fri Jun 12 21:30:46 2020: SESSION_MGR: creating session with session uuid: 'f8421030-deee-4bfc-a1ad-ea86e2469c79' and name 'poisson_st-Default'
+Fri Jun 12 21:30:53 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:30:53 2020: SESSION_MGR: closing session for UUID 'f8421030-deee-4bfc-a1ad-ea86e2469c79' with name 'poisson_st-Default'
+Fri Jun 12 21:33:38 2020: SESSION_MGR: creating session with session uuid: '84d02761-7343-4d94-921f-50cbfa662488' and name 'Emulation-SW'
+Fri Jun 12 21:33:42 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:34:02 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:34:12 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:34:30 2020: SESSION_MGR: closing session for UUID '84d02761-7343-4d94-921f-50cbfa662488' with name 'Emulation-SW'
+Fri Jun 12 21:34:57 2020: SESSION_MGR: creating session with session uuid: '5386f386-d0ee-418f-a0fb-0e1adbf310c5' and name 'poisson_st-Default'
+Fri Jun 12 21:35:04 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:35:04 2020: SESSION_MGR: closing session for UUID '5386f386-d0ee-418f-a0fb-0e1adbf310c5' with name 'poisson_st-Default'
+Fri Jun 12 21:36:38 2020: SESSION_MGR: creating session with session uuid: '9764194a-d1ea-4c64-ae8e-c641293c340f' and name 'Emulation-SW'
+Fri Jun 12 21:36:42 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:37:02 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:37:12 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:37:29 2020: SESSION_MGR: closing session for UUID '9764194a-d1ea-4c64-ae8e-c641293c340f' with name 'Emulation-SW'
+Fri Jun 12 21:37:35 2020: SESSION_MGR: creating session with session uuid: '416376f0-1710-48db-95f4-9f4f5d8e8afe' and name 'poisson_st-Default'
+Fri Jun 12 21:37:41 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:37:42 2020: SESSION_MGR: closing session for UUID '416376f0-1710-48db-95f4-9f4f5d8e8afe' with name 'poisson_st-Default'
+Fri Jun 12 21:40:55 2020: SESSION_MGR: creating session with session uuid: '1e93f196-7069-4a95-8dca-7d070e15322b' and name 'Emulation-SW'
+Fri Jun 12 21:40:59 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:41:19 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:41:29 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:41:49 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:41:59 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:42:19 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:42:29 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:42:46 2020: SESSION_MGR: closing session for UUID '1e93f196-7069-4a95-8dca-7d070e15322b' with name 'Emulation-SW'
+Fri Jun 12 21:42:50 2020: SESSION_MGR: creating session with session uuid: '5250b393-5fe1-4376-b101-78d477d5e47a' and name 'poisson_st-Default'
+Fri Jun 12 21:42:57 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:42:57 2020: SESSION_MGR: closing session for UUID '5250b393-5fe1-4376-b101-78d477d5e47a' with name 'poisson_st-Default'
+Fri Jun 12 21:44:46 2020: SESSION_MGR: creating session with session uuid: '7bcb6ead-9c05-4ecb-ba4e-69936d3eb781' and name 'Emulation-SW'
+Fri Jun 12 21:44:48 2020: SESSION_MGR: closing session for UUID '7bcb6ead-9c05-4ecb-ba4e-69936d3eb781' with name 'Emulation-SW'
+Fri Jun 12 21:44:50 2020: SESSION_MGR: creating session with session uuid: '9f590bd9-9af3-483f-af15-ab274de662b6' and name 'poisson_st-Default'
+Fri Jun 12 21:44:57 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:44:57 2020: SESSION_MGR: closing session for UUID '9f590bd9-9af3-483f-af15-ab274de662b6' with name 'poisson_st-Default'
+Fri Jun 12 21:47:15 2020: SESSION_MGR: creating session with session uuid: '8c45a09d-c761-48fc-a752-07d28a263d80' and name 'Emulation-SW'
+Fri Jun 12 21:47:19 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:47:39 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:47:49 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:48:09 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:48:19 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:48:39 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:48:49 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:49:06 2020: SESSION_MGR: closing session for UUID '8c45a09d-c761-48fc-a752-07d28a263d80' with name 'Emulation-SW'
+Fri Jun 12 21:49:12 2020: SESSION_MGR: creating session with session uuid: 'd5396269-7009-4cfc-8970-7e4402f60e81' and name 'poisson_st-Default'
+Fri Jun 12 21:49:19 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:49:19 2020: SESSION_MGR: closing session for UUID 'd5396269-7009-4cfc-8970-7e4402f60e81' with name 'poisson_st-Default'
+Fri Jun 12 21:52:03 2020: SESSION_MGR: creating session with session uuid: '0a36e923-0bbc-4e77-b680-abcb522b9b8f' and name 'Emulation-SW'
+Fri Jun 12 21:52:07 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:52:27 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:52:37 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:52:57 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:53:07 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:53:27 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:53:37 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:53:54 2020: SESSION_MGR: closing session for UUID '0a36e923-0bbc-4e77-b680-abcb522b9b8f' with name 'Emulation-SW'
+Fri Jun 12 21:53:59 2020: SESSION_MGR: creating session with session uuid: '6f977d34-1257-47bc-9898-6484b45b3d70' and name 'poisson_st-Default'
+Fri Jun 12 21:54:06 2020: Rule Check Server: Accepted socket connection from client
+Fri Jun 12 21:54:07 2020: SESSION_MGR: closing session for UUID '6f977d34-1257-47bc-9898-6484b45b3d70' with name 'poisson_st-Default'

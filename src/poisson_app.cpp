@@ -48,12 +48,12 @@ int stencil_computation(float* current, float* next, int act_sizex, int act_size
 		int offset = bat * grid_size_x* grid_size_y;
 		for(int i = 0; i < act_sizey; i++){
 		  for(int j = 0; j < act_sizex; j++){
-			if(i == 0 || j == 0 || i == act_sizex -1  || j==act_sizey-1){
+			if(i == 0 || j == 0 || j == act_sizex -1  || i==act_sizey-1){
 			  next[i*grid_size_x + j + offset] = current[i*grid_size_x + j + offset] ;
 			} else {
-			  next[i*grid_size_x + j + offset] = current[(i-1)*grid_size_x + (j-1) + offset] * (-0.17) + current[(i)*grid_size_x + (j-1)+offset] * (-0.18) + current[(i+1)*grid_size_x + (j-1)+offset] * (-0.11) + \
-                                        current[(i-1)*grid_size_x + (j)+ offset] *   (-0.16) + current[(i)*grid_size_x + (j)+offset] *   (0.5)   + current[(i+1)*grid_size_x + (j)+offset]   * (-0.12) + \
-                                        current[(i-1)*grid_size_x + (j+1)+offset] * (-0.15) + current[(i)*grid_size_x + (j+1)+offset] * (-0.14) + current[(i+1)*grid_size_x + (j+1)+offset] * (-0.13) ;
+			  next[i*grid_size_x + j + offset] = current[(i-1)*grid_size_x + (j-1) + offset] * (-0.07) + current[(i)*grid_size_x + (j-1)+offset] * (-0.08) + current[(i+1)*grid_size_x + (j-1)+offset] * (-0.01) + \
+                                        current[(i-1)*grid_size_x + (j)+ offset] *   (-0.06) + current[(i)*grid_size_x + (j)+offset] *   (0.36)   + current[(i+1)*grid_size_x + (j)+offset]   * (-0.02) + \
+                                        current[(i-1)*grid_size_x + (j+1)+offset] * (-0.05) + current[(i)*grid_size_x + (j+1)+offset] * (-0.04) + current[(i+1)*grid_size_x + (j+1)+offset] * (-0.03) ;
 			}
 		  }
 		}
@@ -93,7 +93,8 @@ int initialise_grid(float* grid, int act_sizex, int act_sizey, int grid_size_x, 
 	int offset = bat * grid_size_x* grid_size_y;
 	  for(int i = 0; i < act_sizey; i++){
 	  for(int j = 0; j < act_sizex; j++){
-		  if(i == 0 || j == 0 || i == act_sizex -1  || j==act_sizey-1){
+//		  grid[i*grid_size_x + j+offset] = i+j;
+		  if(i == 0 || j == 0 || j == act_sizex -1  || i==act_sizey-1){
 			float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 			grid[i*grid_size_x + j+offset] = r;
 		  } else {
@@ -131,7 +132,7 @@ int main(int argc, char **argv)
   int n_iter = 10;
   int itertile = n_iter;
   int non_copy = 0;
-  int batches = 2;
+  int batches = 1;
 
   const char* pch;
   for ( int n = 1; n < argc; n++ ) {
@@ -286,31 +287,44 @@ int main(int argc, char **argv)
               err = q.enqueueMigrateMemObjects({buffer_input},
                                                CL_MIGRATE_MEM_OBJECT_HOST));
 
+    OCL_CHECK(err,
+                  err = q.enqueueMigrateMemObjects({buffer_output},
+                                                   CL_MIGRATE_MEM_OBJECT_HOST));
+
     q.finish();
 //    auto finish = std::chrono::high_resolution_clock::now();
 
 
-//  for(int itr = 0; itr < n_iter*60; itr++){
-//      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-//      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-//  }
+  for(int itr = 0; itr < n_iter*60; itr++){
+      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+  }
     
     std::chrono::duration<double> elapsed = finish - start;
 
 //  printf("Runtime on FPGA (profile) is %f seconds\n", wtime/1000000000.0);
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-//  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
 //  float bandwidth_prof = (logical_size_x * logical_size_y * sizeof(float) * 4.0 * n_iter*1000000000)/(wtime * 1024 * 1024 * 1024);
   float bandwidth = (act_sizex * act_sizey * sizeof(float) * 4.0 * n_iter * batches)/(elapsed.count() * 1000 * 1000 * 1000);
-//  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
+  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
   printf("\nBandwidth is %f\n", bandwidth);
 //  printf("\nBandwidth prof is %f\n", bandwidth_prof);
 
-//  for(int i = 0; i < act_sizey; i++){
-//    for(int j = 0; j < act_sizex; j++){
-//        printf("%f ", grid_u2_d[i*grid_size_x + j]);
-//    }
-//    printf("\n");
-//  }
+  for(int i = 0; i < act_sizey; i++){
+    for(int j = 0; j < act_sizex; j++){
+        printf("%f ", grid_u1_d[i*grid_size_x + j]);
+    }
+    printf("\n");
+  }
+
+  printf("\ngolden\n\n");
+  for(int i = 0; i < act_sizey; i++){
+    for(int j = 0; j < act_sizex; j++){
+        printf("%f ", grid_u1[i*grid_size_x + j]);
+    }
+    printf("\n");
+  }
+
   return 0;
 }
