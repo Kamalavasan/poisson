@@ -295,36 +295,36 @@ int main(int argc, char **argv)
 //    auto finish = std::chrono::high_resolution_clock::now();
 
 
-  for(int itr = 0; itr < n_iter*60; itr++){
-      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-  }
+//  for(int itr = 0; itr < n_iter*27; itr++){
+//      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+//      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+//  }
     
     std::chrono::duration<double> elapsed = finish - start;
 
 //  printf("Runtime on FPGA (profile) is %f seconds\n", wtime/1000000000.0);
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+//  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
 //  float bandwidth_prof = (logical_size_x * logical_size_y * sizeof(float) * 4.0 * n_iter*1000000000)/(wtime * 1024 * 1024 * 1024);
   float bandwidth = (act_sizex * act_sizey * sizeof(float) * 4.0 * n_iter * batches)/(elapsed.count() * 1000 * 1000 * 1000);
-  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
+//  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
   printf("\nBandwidth is %f\n", bandwidth);
 //  printf("\nBandwidth prof is %f\n", bandwidth_prof);
 
-  for(int i = 0; i < act_sizey; i++){
-    for(int j = 0; j < act_sizex; j++){
-        printf("%f ", grid_u1_d[i*grid_size_x + j]);
-    }
-    printf("\n");
-  }
-
-  printf("\ngolden\n\n");
-  for(int i = 0; i < act_sizey; i++){
-    for(int j = 0; j < act_sizex; j++){
-        printf("%f ", grid_u1[i*grid_size_x + j]);
-    }
-    printf("\n");
-  }
+//  for(int i = 0; i < act_sizey; i++){
+//    for(int j = 0; j < act_sizex; j++){
+//        printf("%f ", grid_u1_d[i*grid_size_x + j]);
+//    }
+//    printf("\n");
+//  }
+//
+//  printf("\ngolden\n\n");
+//  for(int i = 0; i < act_sizey; i++){
+//    for(int j = 0; j < act_sizex; j++){
+//        printf("%f ", grid_u1[i*grid_size_x + j]);
+//    }
+//    printf("\n");
+//  }
 
   return 0;
 }
