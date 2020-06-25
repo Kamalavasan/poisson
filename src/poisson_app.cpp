@@ -208,11 +208,14 @@ int main(int argc, char **argv)
     auto fileBuf = xcl::read_binary_file(binaryFile);
     cl::Program::Binaries bins{{fileBuf.data(), fileBuf.size()}};
     devices.resize(1);
+    auto start_p = std::chrono::high_resolution_clock::now();
     OCL_CHECK(err, cl::Program program(context, devices, bins, NULL, &err));
     OCL_CHECK(err, cl::Kernel krnl_slr0(program, "stencil_SLR0", &err));
     OCL_CHECK(err, cl::Kernel krnl_slr1(program, "stencil_SLR1", &err));
     OCL_CHECK(err, cl::Kernel krnl_slr2(program, "stencil_SLR2", &err));
-
+    auto end_p = std::chrono::high_resolution_clock::now();
+    auto dur_p = end_p -start_p;
+    printf("time to program FPGA is %f\n", dur_p.count());
 
 
     //Allocate Buffer in Global Memory
