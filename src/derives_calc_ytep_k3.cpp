@@ -111,7 +111,7 @@ static void derives_calc_ytep_k3( hls::stream<uint256_dt> &rd_buffer, hls::strea
 
 
 	
-	unsigned short i, j, k;
+	unsigned short i = 0, j = 0, k = 0;
 	unsigned short i_dum = 0, j_dum = 0, k_dum = 0;
 	unsigned short j_p_dum = 0, j_l_dum = 0, j_p_diff_dum = 0, j_l_diff_dum = 0, j_p_4_dum = 0;
 	unsigned short j_p, j_l, j_p_diff, j_l_diff, j_p_4;
@@ -125,14 +125,42 @@ static void derives_calc_ytep_k3( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		j_l_diff = j_l_diff_dum;
 		j_p_4 = j_p_4_dum;
 
-		if(k_dum == grid_sizex){
+//		if(k_dum == grid_sizex){
+//			k_dum = 0;
+//			j_dum = j + 1;
+//		}
+//
+//		if(j_dum == grid_sizey){
+//			j_dum = 0;
+//			i_dum = i + 1;
+//		}
+//
+//		if(i_dum == limit_z){
+//			k_dum = 0;
+//			j_dum = 0;
+//			i_dum = 0;
+//
+//		}
+
+
+		bool cmp1 = (k == grid_sizex -1);
+		bool cmp2 = cmp1 && (j == grid_sizey-1);
+		bool cmp3 = cmp2 && (i == limit_z-1);
+
+		if(cmp1){
 			k_dum = 0;
-			j_dum++;
 		}
 
-		if(j_dum == grid_sizey){
+		if(cmp2){
 			j_dum = 0;
-			i_dum++;
+		} else if(cmp1){
+			j_dum = j + 1;
+		}
+
+		if(cmp3){
+			i_dum = 0;
+		} else if(cmp2){
+			i_dum = i + 1;
 		}
 
 		i = i_dum;
@@ -637,6 +665,6 @@ static void derives_calc_ytep_k3( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		}
 
 		// move the cell block
-		k_dum++;
+		k_dum = k + 1;
 	}
 }

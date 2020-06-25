@@ -146,7 +146,7 @@ static void fifo256_2axis(hls::stream <uint256_dt> &in, hls::stream<t_pkt> &out,
 }
 
 void process_rtm_SLR1 (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1,hls::stream <t_pkt> &in2, hls::stream <t_pkt> &out2,
-		const int sizex, const int sizey, const int sizez, const int xdim_aigned){
+		const int sizex, const int sizey, const int sizez, const int xdim_aigned, const int batch){
 
 
     static hls::stream<uint256_dt> streamArray[40 + 1];
@@ -169,7 +169,7 @@ void process_rtm_SLR1 (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1,hls::
 	data_g.grid_sizex = sizex+2*ORDER;
 	data_g.grid_sizey = sizey+2*ORDER;
 	data_g.grid_sizez = sizez+2*ORDER;
-	data_g.limit_z = sizez+4*ORDER;
+	data_g.limit_z = sizez+3*ORDER;
 
 
 	unsigned short grid_sizey_4 = (data_g.grid_sizey - 4);
@@ -177,9 +177,9 @@ void process_rtm_SLR1 (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1,hls::
 
 	data_g.plane_diff = data_g.grid_sizex * grid_sizey_4;
 	data_g.line_diff = data_g.grid_sizex - 4;
-	data_g.gridsize_pr = data_g.plane_size * (data_g.limit_z);
+	data_g.gridsize_pr = data_g.plane_size * (data_g.limit_z) * batch;
 
-	unsigned int gridsize_da = data_g.plane_size * (data_g.grid_sizez);
+	unsigned int gridsize_da = data_g.plane_size * (data_g.grid_sizez) * batch;
 
 
 	#pragma HLS dataflow
@@ -214,6 +214,7 @@ void rtm_SLR1(
 		const int sizez,
 		const int xdim_aligned,
 		const int count,
+		const int batch,
 		hls::stream <t_pkt> &in1,
 		hls::stream <t_pkt> &out1,
 		hls::stream <t_pkt> &in2,
@@ -225,6 +226,7 @@ void rtm_SLR1(
 	#pragma HLS INTERFACE s_axilite port = sizez bundle = control
 	#pragma HLS INTERFACE s_axilite port = xdim_aligned bundle = control
 	#pragma HLS INTERFACE s_axilite port = count bundle = control
+	#pragma HLS INTERFACE s_axilite port = batch bundle = control
 	#pragma HLS INTERFACE s_axilite port = return bundle = control
 	#pragma HLS INTERFACE axis port = in1 register
 	#pragma HLS INTERFACE axis port = out1 register
@@ -234,7 +236,7 @@ void rtm_SLR1(
 
 	for(int i =  0; i < 2*count; i++){
 		#pragma HLS loop_tripcount min=10 max=1000 avg=1000
-		process_rtm_SLR1(in1, out1, in2, out2, sizex, sizey, sizez, xdim_aligned);
+		process_rtm_SLR1(in1, out1, in2, out2, sizex, sizey, sizez, xdim_aligned, batch);
 	}
 
 }

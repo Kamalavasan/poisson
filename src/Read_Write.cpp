@@ -140,7 +140,7 @@ static void write_row( uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, co
 
 
 void process_SLR0 (uint512_dt*  arg0, uint512_dt*  arg1,  hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
-		const int sizex, const int sizey, const int sizez, const int xdim_aigned){
+		const int sizex, const int sizey, const int sizez, const int xdim_aigned, const int batch){
 
 
     static hls::stream<uint256_dt> streamArray[40 + 1];
@@ -168,9 +168,9 @@ void process_SLR0 (uint512_dt*  arg0, uint512_dt*  arg1,  hls::stream <t_pkt> &i
 
 	data_g.plane_diff = data_g.grid_sizex * grid_sizey_4;
 	data_g.line_diff = data_g.grid_sizex - 4;
-	data_g.gridsize_pr = data_g.plane_size * (data_g.limit_z);
+	data_g.gridsize_pr = data_g.plane_size * (data_g.limit_z) * batch;
 
-	unsigned int gridsize_da = data_g.plane_size * (data_g.grid_sizez);
+	unsigned int gridsize_da = data_g.plane_size * (data_g.grid_sizez) * batch;
 
 
 	#pragma HLS dataflow
@@ -199,6 +199,7 @@ void Read_write_SLR0(
 		const int sizez,
 		const int xdim_aligned,
 		const int count,
+		const int batch,
 		hls::stream <t_pkt> &in,
 		hls::stream <t_pkt> &out){
 
@@ -214,13 +215,14 @@ void Read_write_SLR0(
 	#pragma HLS INTERFACE s_axilite port = sizez bundle = control
 	#pragma HLS INTERFACE s_axilite port = xdim_aligned bundle = control
 	#pragma HLS INTERFACE s_axilite port = count bundle = control
+	#pragma HLS INTERFACE s_axilite port = batch bundle = control
 	#pragma HLS INTERFACE s_axilite port = return bundle = control
 
 
 	for(int i =  0; i < count; i++){
 	#pragma HLS loop_tripcount min=10 max=1000 avg=1000
-		process_SLR0(arg0, arg1, in, out, sizex, sizey, sizez, xdim_aligned);
-		process_SLR0(arg1, arg0, in, out, sizex, sizey, sizez, xdim_aligned);
+		process_SLR0(arg0, arg1, in, out, sizex, sizey, sizez, xdim_aligned, batch);
+		process_SLR0(arg1, arg0, in, out, sizex, sizey, sizez, xdim_aligned, batch);
 	}
 
 }

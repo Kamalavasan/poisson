@@ -15,6 +15,7 @@ struct Grid_d
 	int grid_size_y;
 	int grid_size_z;
 	int order;
+	int dims;
 	int data_size_bytes_dim1;
 	int data_size_bytes_dim6;
 	int data_size_bytes_dim8;
