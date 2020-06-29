@@ -187,7 +187,6 @@ int main(int argc, char **argv)
     OCL_CHECK(err, cl::Kernel krnl_rtm_SLR0(program, "rtm_SLR0", &err));
     OCL_CHECK(err, cl::Kernel krnl_rtm_SLR1(program, "rtm_SLR1", &err));
     OCL_CHECK(err, cl::Kernel krnl_rtm_SLR2(program, "rtm_SLR2", &err));
-    OCL_CHECK(err, cl::Kernel krnl_Read_write_SLR0(program, "Read_write_SLR0", &err));
 
     std::chrono::duration<double> p_time = end_p - start_p;
     printf("time to program FPGA is : %f\n ", p_time.count());
@@ -210,6 +209,8 @@ int main(int argc, char **argv)
 
     //Set the Kernel Arguments
     int narg = 0;
+    OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, buffer_input));
+    OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, buffer_output));
     OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, grid_d.logical_size_x));
     OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, grid_d.logical_size_y));
     OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, grid_d.logical_size_z));
@@ -234,16 +235,6 @@ int main(int argc, char **argv)
     OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, batch));
 
 
-    narg = 0;
-    OCL_CHECK(err, err = krnl_Read_write_SLR0.setArg(narg++, buffer_input));
-    OCL_CHECK(err, err = krnl_Read_write_SLR0.setArg(narg++, buffer_output));
-    OCL_CHECK(err, err = krnl_Read_write_SLR0.setArg(narg++, grid_d.logical_size_x));
-    OCL_CHECK(err, err = krnl_Read_write_SLR0.setArg(narg++, grid_d.logical_size_y));
-    OCL_CHECK(err, err = krnl_Read_write_SLR0.setArg(narg++, grid_d.logical_size_z));
-    OCL_CHECK(err, err = krnl_Read_write_SLR0.setArg(narg++, grid_d.grid_size_x));
-    OCL_CHECK(err, err = krnl_Read_write_SLR0.setArg(narg++, n_iter));
-    OCL_CHECK(err, err = krnl_Read_write_SLR0.setArg(narg++, batch));
-
     //Copy input data to device global memory
     OCL_CHECK(err,
               err = q.enqueueMigrateMemObjects({buffer_input},
@@ -258,7 +249,6 @@ int main(int argc, char **argv)
 	OCL_CHECK(err, err = q.enqueueTask(krnl_rtm_SLR0));
 	OCL_CHECK(err, err = q.enqueueTask(krnl_rtm_SLR1));
 	OCL_CHECK(err, err = q.enqueueTask(krnl_rtm_SLR2));
-	OCL_CHECK(err, err = q.enqueueTask(krnl_Read_write_SLR0));
 	q.finish();
 
     auto finish = std::chrono::high_resolution_clock::now();
@@ -314,9 +304,9 @@ int main(int argc, char **argv)
 	  error = square_error(&grid_yy_rho_mu[grid_d.dims * i], &grid_yy_rho_mu_d[grid_d.dims * i] , grid_d);
 	  printf("batch:%d, Square error is  %f\n", batch, error);
   }
-  float bandwidth = (grid_d.data_size_bytes_dim8 * 4.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
+  float bandwidth = (grid_d.data_size_bytes_dim8/1000.0 * 4.0 * n_iter)/(elapsed.count() * 1000 * 1000);
   printf("\nBandwidth is %f\n", bandwidth);
-  double syn_bandwidth = ((27*grid_d.data_size_bytes_dim6 + 8 *grid_d.data_size_bytes_dim1) * 2.0 * n_iter * 3)/(elapsed.count() * 1000 * 1000 * 1000);
+  double syn_bandwidth = ((27.0*grid_d.data_size_bytes_dim6 + 8.0 *grid_d.data_size_bytes_dim1)/1000.0 * 2.0 * n_iter * 3)/(elapsed.count() * 1000 * 1000);
   printf("synthetic bandwidth is %f\n", syn_bandwidth);
 
 //  act_sizez = 2;

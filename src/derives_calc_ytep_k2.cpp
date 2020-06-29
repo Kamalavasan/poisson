@@ -463,33 +463,26 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 	  	short idy = j - ORDER;
 	  	short idz = i - 2*ORDER;
 
-	  	bool idx_cond1 = idx <= xbeg+pml_width;
-	  	if(idx_cond1){
-	  	  sigmax = (xbeg+pml_width-idx ) * sigma * 0.1f;//sigma/pml_width;
-	  	}
+	  	float sigmax1, sigmax2, sigmay1, sigmay2, sigmaz1, sigmaz2;
 
+
+	  	bool idx_cond1 = idx <= xbeg+pml_width;
 	  	bool idx_cond2 = idx >=xend-pml_width;
-	  	if(idx_cond2){
-	  	  sigmax=(idx -(xend-pml_width)) * sigma * 0.1f; //sigma/pml_width;
-	  	}
+	  	sigmax1 = (xbeg+pml_width-idx ) * sigma * 0.1f;//sigma/pml_width;
+	  	sigmax2 =(idx -(xend-pml_width)) * sigma * 0.1f; //sigma/pml_width;
+	  	sigmax = idx_cond2 ? sigmax2 : (idx_cond1 ? sigmax1 : 0.0f);
 
 	  	bool idy_cond1 = idy <= ybeg+pml_width;
-	  	if(idy_cond1){
-	  	  sigmay=(ybeg+pml_width-idy) * sigma * 0.1f; //sigma/pml_width;
-	  	}
 	  	bool idy_cond2 = idy >= yend-pml_width;
-	  	if(idy_cond2){
-	  	  sigmay=(idy-(yend-pml_width)) * sigma * 0.1f; //sigma/pml_width;
-	  	}
+	  	sigmay1=(ybeg+pml_width-idy) * sigma * 0.1f; //sigma/pml_width;
+	  	sigmay2=(idy-(yend-pml_width)) * sigma * 0.1f; //sigma/pml_width;
+	  	sigmay = idy_cond2 ? sigmay2 : (idy_cond1 ? sigmay1 : 0.0f);
 
 	  	bool idz_cond1 = idz <= zbeg+pml_width;
-	  	if(idz_cond1){
-	  	  sigmaz=(zbeg+pml_width-idz) * sigma * 0.1f; //sigma/pml_width;
-	  	}
 	  	bool idz_cond2 = idz >= zend-pml_width;
-	  	if(idz_cond2){
-	  	  sigmaz=(idz -(zend-pml_width)) * sigma * 0.1f; //sigma/pml_width;
-	  	}
+	  	sigmaz1=(zbeg+pml_width-idz) * sigma * 0.1f; //sigma/pml_width;
+	  	sigmaz2=(idz -(zend-pml_width)) * sigma * 0.1f; //sigma/pml_width;
+	  	sigmaz = idz_cond2 ? sigmaz2 : (idz_cond1 ? sigmaz1 : 0.0f);
 
 
 	  	float px = X_ARM_0[4];
@@ -582,14 +575,32 @@ static void derives_calc_ytep_k2( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		vzz *= invdz;
 
 
-		mem_wr_k[2]= vxx/s_4_4_4_arr[0] - sigmax*px;            //vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
-		mem_wr_k[5]= (pxx+pyx+pxz)*s_4_4_4_arr[1] - sigmax*vx;  //(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
+		float k_2_1 = vxx/s_4_4_4_arr[0];
+		float k_2_2 =  sigmax*px;
+		mem_wr_k[2]= k_2_1 - k_2_2;            //vxx/rho[OPS_ACC4(0,0,0)] - sigmax*px;
 
-		mem_wr_k[3]= vyy/s_4_4_4_arr[0] - sigmay*py;  		  // vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
-		mem_wr_k[6]= (pxy+pyy+pyz)*s_4_4_4_arr[1]- sigmay*vy;   //(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
+		float k_5_1 = (pxx+pyx+pxz);
+		float k_5_2 = k_5_1 *s_4_4_4_arr[1];
+		float k_5_3 = sigmax*vx;
+		mem_wr_k[5]= k_5_2 - k_5_3;  //(pxx+pyx+pxz)*mu[OPS_ACC5(0,0,0)] - sigmax*vx;
 
-		mem_wr_k[4]= vzz/s_4_4_4_arr[0]  - sigmaz*pz;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
-		mem_wr_k[7]= (pxz+pyz+pzz)*s_4_4_4_arr[1] - sigmaz*vz;  //(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
+		float k_3_1 = vyy/s_4_4_4_arr[0];
+		float k_3_2 = sigmay*py;
+		mem_wr_k[3]= k_3_1 - k_3_2;  		  // vyy/rho[OPS_ACC4(0,0,0)] - sigmay*py;
+
+		float k_6_1 = (pxy+pyy+pyz);
+		float k_6_2 = k_6_1 *s_4_4_4_arr[1];
+		float k_6_3 = sigmay*vy;
+		mem_wr_k[6]= k_6_2 - k_6_3;   //(pxy+pyy+pyz)*mu[OPS_ACC5(0,0,0)] - sigmay*vy;
+
+		float k_4_1 = vzz/s_4_4_4_arr[0];
+		float k_4_2 = sigmaz*pz;
+		mem_wr_k[4]= k_4_1  - k_4_2;  		  //vzz/rho[OPS_ACC4(0,0,0)] - sigmaz*pz;
+
+		float k_7_1 = (pxz+pyz+pzz);
+		float k_7_2 = k_7_1*s_4_4_4_arr[1];
+		float k_7_3 = sigmaz*vz;
+		mem_wr_k[7]= k_7_2 - k_7_3;  //(pxz+pyz+pzz)*mu[OPS_ACC5(0,0,0)] - sigmaz*vz;
 
 
   		mem_wr_k[0] = s_4_4_4_arr[0];

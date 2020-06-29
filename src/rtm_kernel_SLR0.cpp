@@ -77,52 +77,49 @@ struct data_G{
 #include "derives_calc_ytep_k4.cpp"
 
 
-//static void read_row(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, const int gridsize_da){
-//	unsigned int itr_limit = (gridsize_da >> 1);
-//	for (int itr = 0; itr < itr_limit; itr++){
-//		#pragma HLS PIPELINE II=1
-//		#pragma HLS loop_tripcount min=min_grid_2 max=max_grid_2 avg=avg_grid_2
-//		rd_buffer << arg0[itr];
-//	}
-//}
-//
-//
-//static void stream_convert_512_256(hls::stream<uint512_dt> &in, hls::stream<uint256_dt> &out,  const int gridsize_da){
-//	unsigned int itr_limit = (gridsize_da >> 1);
-//	for (int itr = 0; itr < itr_limit; itr++){
-//		#pragma HLS PIPELINE II=2
-//		#pragma HLS loop_tripcount min=min_grid_2 max=max_grid_2 avg=avg_grid_2
-//		uint512_dt tmp = in.read();
-//		uint256_dt var_l = tmp.range(255,0);
-//		uint256_dt var_h = tmp.range(511,256);;
-//		out << var_l;
-//		out << var_h;
-//	}
-//}
-//
-//static void stream_convert_256_512(hls::stream<uint256_dt> &in, hls::stream<uint512_dt> &out,const int gridsize_da){
-//	unsigned int itr_limit = (gridsize_da >> 1);
-//	for (int itr = 0; itr < itr_limit; itr++){
-//		#pragma HLS PIPELINE II=2
-//		#pragma HLS loop_tripcount min=min_grid_2 max=max_grid_2 avg=avg_grid_2
-//		uint512_dt tmp;
-//		tmp.range(255,0) = in.read();
-//		tmp.range(511,256) = in.read();
-//		out << tmp;
-//	}
-//}
+static void read_row(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, const int gridsize_da){
+	unsigned int itr_limit = (gridsize_da >> 1);
+	for (int itr = 0; itr < itr_limit; itr++){
+		#pragma HLS PIPELINE II=1
+		#pragma HLS loop_tripcount min=min_grid_2 max=max_grid_2 avg=avg_grid_2
+		rd_buffer << arg0[itr];
+	}
+}
 
 
+static void stream_convert_512_256(hls::stream<uint512_dt> &in, hls::stream<uint256_dt> &out,  const int gridsize_da){
+	unsigned int itr_limit = (gridsize_da >> 1);
+	for (int itr = 0; itr < itr_limit; itr++){
+		#pragma HLS PIPELINE II=2
+		#pragma HLS loop_tripcount min=min_grid_2 max=max_grid_2 avg=avg_grid_2
+		uint512_dt tmp = in.read();
+		uint256_dt var_l = tmp.range(255,0);
+		uint256_dt var_h = tmp.range(511,256);;
+		out << var_l;
+		out << var_h;
+	}
+}
 
+static void stream_convert_256_512(hls::stream<uint256_dt> &in, hls::stream<uint512_dt> &out,const int gridsize_da){
+	unsigned int itr_limit = (gridsize_da >> 1);
+	for (int itr = 0; itr < itr_limit; itr++){
+		#pragma HLS PIPELINE II=2
+		#pragma HLS loop_tripcount min=min_grid_2 max=max_grid_2 avg=avg_grid_2
+		uint512_dt tmp;
+		tmp.range(255,0) = in.read();
+		tmp.range(511,256) = in.read();
+		out << tmp;
+	}
+}
 
-//static void write_row( uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, const int gridsize_da){
-//	unsigned int itr_limit = (gridsize_da >> 1);
-//	for (int itr = 0; itr < itr_limit; itr++){
-//		#pragma HLS loop_tripcount min=min_grid_2 max=max_grid_2 avg=avg_grid_2
-//		#pragma HLS PIPELINE II=1
-//		arg1[itr] =  wr_buffer.read();
-//	}
-//}
+static void write_row( uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, const int gridsize_da){
+	unsigned int itr_limit = (gridsize_da >> 1);
+	for (int itr = 0; itr < itr_limit; itr++){
+		#pragma HLS loop_tripcount min=min_grid_2 max=max_grid_2 avg=avg_grid_2
+		#pragma HLS PIPELINE II=1
+		arg1[itr] =  wr_buffer.read();
+	}
+}
 
 
 static void axis2_fifo256(hls::stream <t_pkt> &in, hls::stream<uint256_dt> &out, const int gridsize_da){
@@ -145,7 +142,7 @@ static void fifo256_2axis(hls::stream <uint256_dt> &in, hls::stream<t_pkt> &out,
 	}
 }
 
-void process_rtm_SLR0 (hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
+void process_rtm_SLR0 (uint512_dt*  arg0, uint512_dt*  arg1, hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
 		const int sizex, const int sizey, const int sizez, const int xdim_aigned, const int batch){
 
 
@@ -184,7 +181,10 @@ void process_rtm_SLR0 (hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
 
 	#pragma HLS dataflow
 
-	axis2_fifo256(in, streamArray[0], gridsize_da);
+	read_row(arg0, rd_buffer, gridsize_da);
+	stream_convert_512_256(rd_buffer, streamArray[0], gridsize_da);
+
+
 
 	derives_calc_ytep_k1( streamArray[0], streamArray[1], streamArray_yy[0], streamArray_yy_final[0], data_g);
 	derives_calc_ytep_k2( streamArray[1], streamArray_yy[0],streamArray_yy_final[0], streamArray[2], streamArray_yy[1],streamArray_yy_final[1], data_g);
@@ -192,6 +192,10 @@ void process_rtm_SLR0 (hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
 	derives_calc_ytep_k4( streamArray[3], streamArray_yy[2],streamArray_yy_final[2], streamArray[4],streamArray_yy[3],streamArray_yy_final[3], data_g);
 
 	fifo256_2axis(streamArray[4], out, gridsize_da);
+	axis2_fifo256(in, streamArray[5], gridsize_da);
+
+	stream_convert_256_512(streamArray[5], wr_buffer, gridsize_da);
+	write_row(arg1, wr_buffer, gridsize_da);
 
 
 }
@@ -203,6 +207,8 @@ void process_rtm_SLR0 (hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
 
 extern "C" {
 void rtm_SLR0(
+		uint512_dt*  arg0,
+		uint512_dt*  arg1,
 		const int sizex,
 		const int sizey,
 		const int sizez,
@@ -212,6 +218,10 @@ void rtm_SLR0(
 		hls::stream <t_pkt> &in,
 		hls::stream <t_pkt> &out){
 
+	#pragma HLS INTERFACE depth=4096 m_axi port = arg0 offset = slave bundle = gmem0 max_read_burst_length=256 max_write_burst_length=256
+	#pragma HLS INTERFACE depth=4096 m_axi port = arg1 offset = slave bundle = gmem1 max_read_burst_length=256 max_write_burst_length=256
+	#pragma HLS INTERFACE s_axilite port = arg0 bundle = control
+	#pragma HLS INTERFACE s_axilite port = arg1 bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizex bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizey bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizez bundle = control
@@ -223,10 +233,10 @@ void rtm_SLR0(
 	#pragma HLS INTERFACE axis port = out register
 
 
-	for(int i =  0; i < 2*count; i++){
+	for(int i =  0; i < count; i++){
 	#pragma HLS loop_tripcount min=10 max=1000 avg=1000
-		process_rtm_SLR0(in, out, sizex, sizey, sizez, xdim_aligned, batch);
-		// process_SLR0(arg1, arg0, sizex, sizey, sizez, xdim_aligned);
+		process_rtm_SLR0(arg0, arg1, in, out, sizex, sizey, sizez, xdim_aligned, batch);
+		process_rtm_SLR0(arg1, arg0, in, out, sizex, sizey, sizez, xdim_aligned, batch);
 	}
 
 }
