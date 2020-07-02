@@ -1,4 +1,7 @@
-static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint256_dt> &wr_buffer, hls::stream<uint256_dt> &yy, hls::stream<uint256_dt> &yy_final, struct data_G data_g){
+static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer0, hls::stream<uint256_dt> &wr_buffer0,
+								  hls::stream<uint256_dt> &rd_buffer1, hls::stream<uint256_dt> &wr_buffer1,
+								  hls::stream<uint256_dt> &rd_buffer2, hls::stream<uint256_dt> &wr_buffer2,
+								  hls::stream<uint256_dt> &yy, hls::stream<uint256_dt> &yy_final, struct data_G data_g){
 	unsigned short grid_sizex = data_g.grid_sizex;
 	unsigned short sizex = data_g.sizex;
 	unsigned short sizey = data_g.sizey;
@@ -30,25 +33,25 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 
 
 
-	uint256_dt window_z_p_1[plane_buff_size];
-	uint256_dt window_z_p_2[plane_buff_size];
-	uint256_dt window_z_p_3[plane_buff_size];
-	uint256_dt window_z_p_4[plane_buff_size];
+	uint768_dt window_z_p_1[plane_buff_size];
+	uint768_dt window_z_p_2[plane_buff_size];
+	uint768_dt window_z_p_3[plane_buff_size];
+	uint768_dt window_z_p_4[plane_buff_size];
 
-	uint256_dt window_y_p_1[line_buff_size];
-	uint256_dt window_y_p_2[line_buff_size];
-	uint256_dt window_y_p_3[line_buff_size];
-	uint256_dt window_y_p_4[line_buff_size];
+	uint768_dt window_y_p_1[line_buff_size];
+	uint768_dt window_y_p_2[line_buff_size];
+	uint768_dt window_y_p_3[line_buff_size];
+	uint768_dt window_y_p_4[line_buff_size];
 
-	uint192_dt window_y_n_1[line_buff_size];
-	uint192_dt window_y_n_2[line_buff_size];
-	uint192_dt window_y_n_3[line_buff_size];
-	uint192_dt window_y_n_4[line_buff_size];
+	uint576_dt window_y_n_1[line_buff_size];
+	uint576_dt window_y_n_2[line_buff_size];
+	uint576_dt window_y_n_3[line_buff_size];
+	uint576_dt window_y_n_4[line_buff_size];
 
-	uint192_dt window_z_n_1[plane_buff_size];
-	uint192_dt window_z_n_2[plane_buff_size];
-	uint192_dt window_z_n_3[plane_buff_size];
-	uint192_dt window_z_n_4[plane_buff_size];
+	uint576_dt window_z_n_1[plane_buff_size];
+	uint576_dt window_z_n_2[plane_buff_size];
+	uint576_dt window_z_n_3[plane_buff_size];
+	uint576_dt window_z_n_4[plane_buff_size];
 
 	#pragma HLS RESOURCE variable=window_z_p_1 core=XPM_MEMORY uram latency=2
 	#pragma HLS RESOURCE variable=window_z_p_2 core=XPM_MEMORY uram latency=2
@@ -70,16 +73,14 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 	#pragma HLS RESOURCE variable=window_z_n_3 core=XPM_MEMORY uram latency=2
 	#pragma HLS RESOURCE variable=window_z_n_4 core=XPM_MEMORY uram latency=2
 
-	uint256_dt s_4_4_8, s_4_4_7, s_4_4_6, s_4_4_5;
-	uint256_dt s_4_8_4, s_4_7_4, s_4_6_4, s_4_5_4;
-	uint256_dt s_8_4_4, s_7_4_4, s_6_4_4, s_5_4_4;
-	uint256_dt s_4_4_4;
-	uint256_dt s_3_4_4, s_2_4_4, s_1_4_4, s_0_4_4;
-	uint256_dt s_4_3_4, s_4_2_4, s_4_1_4, s_4_0_4;
-	uint256_dt s_4_4_3, s_4_4_2, s_4_4_1, s_4_4_0;
-	uint256_dt update_j;
+	uint768_dt s_4_4_8, s_4_4_7, s_4_4_6, s_4_4_5;
+	uint768_dt s_4_8_4, s_4_7_4, s_4_6_4, s_4_5_4;
+	uint768_dt s_4_4_4_f2, s_4_4_4_f1, s_4_4_4, s_4_4_4_b1, s_4_4_4_b2;
+	uint576_dt s_4_3_4, s_4_2_4, s_4_1_4, s_4_0_4;
+	uint576_dt s_4_4_3, s_4_4_2, s_4_4_1, s_4_4_0;
+	uint768_dt update_j;
 
-	uint256_dt yy_final_vec;
+	uint768_dt yy_final_vec;
 
 
 	const float c[2*ORDER+1] = {0.0035714285714285713,-0.0380952380952381,0.2,-0.8,0.0,0.8,-0.2,0.0380952380952381,-0.0035714285714285713};
@@ -159,49 +160,46 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		k = k_dum;
 
 		// negetive z arm
-		s_4_4_0.range(255,64) = window_z_n_4[j_p];
+		s_4_4_0 = window_z_n_4[j_p];
 
-		s_4_4_1.range(255,64) = window_z_n_3[j_p];
-		window_z_n_4[j_p] = s_4_4_1.range(255,64);
+		s_4_4_1 = window_z_n_3[j_p];
+		window_z_n_4[j_p] = s_4_4_1;
 
-		s_4_4_2.range(255,64) = window_z_n_2[j_p];
-		window_z_n_3[j_p] = s_4_4_2.range(255,64);
+		s_4_4_2 = window_z_n_2[j_p];
+		window_z_n_3[j_p] = s_4_4_2;
 
-		s_4_4_3.range(255,64) = window_z_n_1[j_p_diff];
-		window_z_n_2[j_p] = s_4_4_3.range(255,64);
+		s_4_4_3 = window_z_n_1[j_p_diff];
+		window_z_n_2[j_p] = s_4_4_3;
 
 
 		// Negetive y arm
-		s_4_0_4.range(255,64) = window_y_n_4[j_l]; 
-		window_z_n_1[j_p_diff] = s_4_0_4.range(255,64);
+		s_4_0_4 = window_y_n_4[j_l];
+		window_z_n_1[j_p_diff] = s_4_0_4;
 
-		s_4_1_4.range(255,64) = window_y_n_3[j_l];
-		window_y_n_4[j_l] = s_4_1_4.range(255,64);
+		s_4_1_4 = window_y_n_3[j_l];
+		window_y_n_4[j_l] = s_4_1_4;
 
-		s_4_2_4.range(255,64) = window_y_n_2[j_l];
-		window_y_n_3[j_l] = s_4_2_4.range(255,64);
+		s_4_2_4 = window_y_n_2[j_l];
+		window_y_n_3[j_l] = s_4_2_4;
 
-		s_4_3_4.range(255,64) = window_y_n_1[j_l_diff];
-		window_y_n_2[j_l] = s_4_3_4.range(255,64);
+		s_4_3_4 = window_y_n_1[j_l_diff];
+		window_y_n_2[j_l] = s_4_3_4;
 
 
 		// negetive to positive x arm
 
 
-		s_0_4_4 = s_1_4_4;
-		window_y_n_1[j_l_diff] = s_0_4_4.range(255,64);
+		s_4_4_4_b2 = s_4_4_4_b1;
+		window_y_n_1[j_l_diff] = {s_4_4_4_b2.range(255,64)  | s_4_4_4_b2.range(511,320)<< 256 | s_4_4_4_b2.range(767,576) << 512};
 
-		s_1_4_4 = s_2_4_4;
-		s_2_4_4 = s_3_4_4;
-		s_3_4_4 = s_4_4_4;
-		s_4_4_4 = s_5_4_4;
-		s_5_4_4 = s_6_4_4;
-		s_6_4_4 = s_7_4_4;
-		s_7_4_4 = s_8_4_4;
+
+		s_4_4_4_b1 = s_4_4_4;
+		s_4_4_4 = s_4_4_4_f1;
+		s_4_4_4_f1 = s_4_4_4_f2;
 
 
 		// positive Y arm 
-		s_8_4_4 = window_y_p_1[j_l_diff];
+		s_4_4_4_f2 = window_y_p_1[j_l_diff];
 
 
 
@@ -231,7 +229,9 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 
 		bool cond_tmp1 = (i < grid_sizez);
 		if(cond_tmp1){
-			s_4_4_8 = rd_buffer.read(); // set
+			s_4_4_8.range(255,0)   = rd_buffer0.read(); // set
+			s_4_4_8.range(511,256) = rd_buffer1.read();
+			s_4_4_8.range(767,512) = rd_buffer2.read();
 		}
 		window_z_p_4[j_p] = s_4_4_8; // set
 
@@ -260,39 +260,40 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 
 
 		// X ARM
+		#define X_0(a,c) (a+32*(c+1) -1, a+32*c)
 
-		int i_X_ARM_0[2*ORDER+1] = {s_0_4_4.range(95,64), s_1_4_4.range(95,64), s_2_4_4.range(95,64), s_3_4_4.range(95,64), s_4_4_4.range(95,64), s_5_4_4.range(95,64), s_6_4_4.range(95,64), s_7_4_4.range(95,64), s_8_4_4.range(95,64)}; 
+		int i_X0_ARM_0[(2*ORDER+1)] = {s_4_4_4_b2.range(X_0(384,0)), s_1_4_4.range(95,64), s_2_4_4.range(95,64), s_3_4_4.range(95,64), s_4_4_4.range(95,64), s_5_4_4.range(95,64), s_6_4_4.range(95,64), s_7_4_4.range(95,64), s_8_4_4.range(95,64)};
 
-		int i_X_ARM_1[2*ORDER+1] = {s_0_4_4.range(127,96), s_1_4_4.range(127,96), s_2_4_4.range(127,96), s_3_4_4.range(127,96), s_4_4_4.range(127,96), s_5_4_4.range(127,96), s_6_4_4.range(127,96), s_7_4_4.range(127,96), s_8_4_4.range(127,96)}; 
+		int i_X0_ARM_1[(2*ORDER+1)] = {s_4_4_4_b2.range(X_0(384,0)), s_1_4_4.range(127,96), s_2_4_4.range(127,96), s_3_4_4.range(127,96), s_4_4_4.range(127,96), s_5_4_4.range(127,96), s_6_4_4.range(127,96), s_7_4_4.range(127,96), s_8_4_4.range(127,96)};
 
-		int i_X_ARM_2[2*ORDER+1] = {s_0_4_4.range(159,128), s_1_4_4.range(159,128), s_2_4_4.range(159,128), s_3_4_4.range(159,128), s_4_4_4.range(159,128), s_5_4_4.range(159,128), s_6_4_4.range(159,128), s_7_4_4.range(159,128), s_8_4_4.range(159,128)}; 
+		int i_X0_ARM_2[(2*ORDER+1)] = {s_4_4_4_b2.range(X_0(384,0)), s_1_4_4.range(159,128), s_2_4_4.range(159,128), s_3_4_4.range(159,128), s_4_4_4.range(159,128), s_5_4_4.range(159,128), s_6_4_4.range(159,128), s_7_4_4.range(159,128), s_8_4_4.range(159,128)};
 
-		int i_X_ARM_3[2*ORDER+1] = {s_0_4_4.range(191,160), s_1_4_4.range(191,160), s_2_4_4.range(191,160), s_3_4_4.range(191,160), s_4_4_4.range(191,160), s_5_4_4.range(191,160), s_6_4_4.range(191,160), s_7_4_4.range(191,160), s_8_4_4.range(191,160)}; 
+		int i_X0_ARM_3[(2*ORDER+1)] = {s_0_4_4.range(191,160), s_1_4_4.range(191,160), s_2_4_4.range(191,160), s_3_4_4.range(191,160), s_4_4_4.range(191,160), s_5_4_4.range(191,160), s_6_4_4.range(191,160), s_7_4_4.range(191,160), s_8_4_4.range(191,160)};
 
-		int i_X_ARM_4[2*ORDER+1] = {s_0_4_4.range(223,192), s_1_4_4.range(223,192), s_2_4_4.range(223,192), s_3_4_4.range(223,192), s_4_4_4.range(223,192), s_5_4_4.range(223,192), s_6_4_4.range(223,192), s_7_4_4.range(223,192), s_8_4_4.range(223,192)}; 
+		int i_X0_ARM_4[(2*ORDER+1)] = {s_0_4_4.range(223,192), s_1_4_4.range(223,192), s_2_4_4.range(223,192), s_3_4_4.range(223,192), s_4_4_4.range(223,192), s_5_4_4.range(223,192), s_6_4_4.range(223,192), s_7_4_4.range(223,192), s_8_4_4.range(223,192)};
 
-		int i_X_ARM_5[2*ORDER+1] = {s_0_4_4.range(255,224), s_1_4_4.range(255,224), s_2_4_4.range(255,224), s_3_4_4.range(255,224), s_4_4_4.range(255,224), s_5_4_4.range(255,224), s_6_4_4.range(255,224), s_7_4_4.range(255,224), s_8_4_4.range(255,224)};
+		int i_X0_ARM_5[(2*ORDER+1)] = {s_0_4_4.range(255,224), s_1_4_4.range(255,224), s_2_4_4.range(255,224), s_3_4_4.range(255,224), s_4_4_4.range(255,224), s_5_4_4.range(255,224), s_6_4_4.range(255,224), s_7_4_4.range(255,224), s_8_4_4.range(255,224)};
 
-		float X_ARM_0[2*ORDER+1], X_ARM_1[2*ORDER+1], X_ARM_2[2*ORDER+1], X_ARM_3[2*ORDER+1], X_ARM_4[2*ORDER+1], X_ARM_5[2*ORDER+1];
+		float X0_ARM_0[2*ORDER+1], X0_ARM_1[2*ORDER+1], X0_ARM_2[2*ORDER+1], X0_ARM_3[2*ORDER+1], X0_ARM_4[2*ORDER+1], X0_ARM_5[2*ORDER+1];
 		for(int i = 0; i < 2*ORDER+1; i++){
 			data_conv tmp;
-			tmp.i = i_X_ARM_0[i];
-			X_ARM_0[i] = tmp.f;
+			tmp.i = i_X0_ARM_0[i];
+			X0_ARM_0[i] = tmp.f;
 
-			tmp.i = i_X_ARM_1[i];
-			X_ARM_1[i] = tmp.f;
+			tmp.i = i_X0_ARM_1[i];
+			X0_ARM_1[i] = tmp.f;
 
-			tmp.i = i_X_ARM_2[i];
-			X_ARM_2[i] = tmp.f;
+			tmp.i = i_X0_ARM_2[i];
+			X0_ARM_2[i] = tmp.f;
 
-			tmp.i = i_X_ARM_3[i];
-			X_ARM_3[i] = tmp.f;
+			tmp.i = i_X0_ARM_3[i];
+			X0_ARM_3[i] = tmp.f;
 
-			tmp.i = i_X_ARM_4[i];
-			X_ARM_4[i] = tmp.f;
+			tmp.i = i_X0_ARM_4[i];
+			X0_ARM_4[i] = tmp.f;
 
-			tmp.i = i_X_ARM_5[i];
-			X_ARM_5[i] = tmp.f;
+			tmp.i = i_X0_ARM_5[i];
+			X0_ARM_5[i] = tmp.f;
 		}
 
 		// Y ARM

@@ -8,6 +8,7 @@
 
 
 typedef ap_uint<768> uint768_dt;
+typedef ap_uint<576> uint576_dt;
 typedef ap_uint<512> uint512_dt;
 typedef ap_uint<256> uint256_dt;
 typedef ap_uint<192> uint192_dt;
@@ -128,11 +129,11 @@ void process_rtm_SLR0 ( hls::stream <t_pkt> &in0, hls::stream <t_pkt> &out0,
 
 
 	unsigned short grid_sizey_4 = (data_g.grid_sizey - 4);
-	data_g.plane_size = data_g.grid_sizex * data_g.grid_sizey;
+	data_g.plane_size = xdim_aigned * data_g.grid_sizey;
 	data_g.plane_size_3 = xdim_aigned * data_g.grid_sizey;
 
-	data_g.plane_diff = data_g.grid_sizex * grid_sizey_4;
-	data_g.line_diff = data_g.grid_sizex - 4;
+	data_g.plane_diff = xdim_aigned * grid_sizey_4;
+	data_g.line_diff = xdim_aigned - 2;
 	data_g.gridsize_pr = data_g.plane_size_3 * (data_g.limit_z) * batch;
 
 	unsigned int gridsize_da = data_g.plane_size_3 * (data_g.grid_sizez)* batch;
