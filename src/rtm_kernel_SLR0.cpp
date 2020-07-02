@@ -149,7 +149,7 @@ void process_rtm_SLR0 ( hls::stream <t_pkt> &in0, hls::stream <t_pkt> &out0,
 
 
 
-//	derives_calc_ytep_k1( streamArray[0], streamArray[1], streamArray_yy[0], streamArray_yy_final[0], data_g);
+	derives_calc_ytep_k1( rd_bufferArr[0], rd_bufferArr[0], rd_bufferArr[0], wr_bufferArr[0], wr_bufferArr[1], wr_bufferArr[2],streamArray_yy[0], streamArray_yy_final[0], data_g);
 //	derives_calc_ytep_k2( streamArray[1], streamArray_yy[0],streamArray_yy_final[0], streamArray[2], streamArray_yy[1],streamArray_yy_final[1], data_g);
 //	derives_calc_ytep_k3( streamArray[2], streamArray_yy[1],streamArray_yy_final[1], streamArray[3], streamArray_yy[2],streamArray_yy_final[2], data_g);
 //	derives_calc_ytep_k4( streamArray[3], streamArray_yy[2],streamArray_yy_final[2], streamArray[4],streamArray_yy[3],streamArray_yy_final[3], data_g);
@@ -158,9 +158,9 @@ void process_rtm_SLR0 ( hls::stream <t_pkt> &in0, hls::stream <t_pkt> &out0,
 //	axis2_fifo256(in, streamArray[5], gridsize_da);
 
 //	stream_convert_768_1536(streamArray[0], wr_bufferArr[0], wr_bufferArr[1], wr_bufferArr[2], gridsize_da);
-	fifo256_2axis(rd_bufferArr[0],out0, gridsize_da);
-	fifo256_2axis(rd_bufferArr[1],out1, gridsize_da);
-	fifo256_2axis(rd_bufferArr[2],out2, gridsize_da);
+	fifo256_2axis(wr_bufferArr[0],out0, gridsize_da);
+	fifo256_2axis(wr_bufferArr[1],out1, gridsize_da);
+	fifo256_2axis(wr_bufferArr[2],out2, gridsize_da);
 
 
 }

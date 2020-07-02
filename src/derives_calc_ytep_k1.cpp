@@ -78,7 +78,9 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer0, hls::stre
 	uint768_dt s_4_4_4_f2, s_4_4_4_f1, s_4_4_4, s_4_4_4_b1, s_4_4_4_b2;
 	uint576_dt s_4_3_4, s_4_2_4, s_4_1_4, s_4_0_4;
 	uint576_dt s_4_4_3, s_4_4_2, s_4_4_1, s_4_4_0;
-	uint768_dt update_j;
+
+
+	uint256_dt update0,update1,update2;
 
 	uint768_dt yy_final_vec;
 
@@ -258,21 +260,19 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer0, hls::stre
 		}
 
 
-
-		// X ARM
 		#define X_0(a,c) (a+32*(c+1) -1, a+32*c)
+		// X0 ARM
+		int i_X0_ARM_0[(2*ORDER+1)] = {s_4_4_4_b2.range(X_0(576,0)), s_4_4_4_b1.range(X_0(64,0)), s_4_4_4_b1.range(X_0(320,0)), s_4_4_4_b1.range(X_0(576,0)),s_4_4_4.range(X_0(64,0)), s_4_4_4.range(X_0(320,0)), s_4_4_4.range(X_0(576,0)), s_4_4_4_f1.range(X_0(64,0)), s_4_4_4_f1.range(X_0(320,0))};
 
-		int i_X0_ARM_0[(2*ORDER+1)] = {s_4_4_4_b2.range(X_0(384,0)), s_1_4_4.range(95,64), s_2_4_4.range(95,64), s_3_4_4.range(95,64), s_4_4_4.range(95,64), s_5_4_4.range(95,64), s_6_4_4.range(95,64), s_7_4_4.range(95,64), s_8_4_4.range(95,64)};
+		int i_X0_ARM_1[(2*ORDER+1)] = {s_4_4_4_b2.range(X_0(576,1)), s_4_4_4_b1.range(X_0(64,1)), s_4_4_4_b1.range(X_0(320,1)), s_4_4_4_b1.range(X_0(576,1)),s_4_4_4.range(X_0(64,1)), s_4_4_4.range(X_0(320,1)), s_4_4_4.range(X_0(576,1)), s_4_4_4_f1.range(X_0(64,1)), s_4_4_4_f1.range(X_0(320,1))};
 
-		int i_X0_ARM_1[(2*ORDER+1)] = {s_4_4_4_b2.range(X_0(384,0)), s_1_4_4.range(127,96), s_2_4_4.range(127,96), s_3_4_4.range(127,96), s_4_4_4.range(127,96), s_5_4_4.range(127,96), s_6_4_4.range(127,96), s_7_4_4.range(127,96), s_8_4_4.range(127,96)};
+		int i_X0_ARM_2[(2*ORDER+1)] = {s_4_4_4_b2.range(X_0(576,2)), s_4_4_4_b1.range(X_0(64,2)), s_4_4_4_b1.range(X_0(320,2)), s_4_4_4_b1.range(X_0(576,2)),s_4_4_4.range(X_0(64,2)), s_4_4_4.range(X_0(320,2)), s_4_4_4.range(X_0(576,2)), s_4_4_4_f1.range(X_0(64,2)), s_4_4_4_f1.range(X_0(320,2))};
 
-		int i_X0_ARM_2[(2*ORDER+1)] = {s_4_4_4_b2.range(X_0(384,0)), s_1_4_4.range(159,128), s_2_4_4.range(159,128), s_3_4_4.range(159,128), s_4_4_4.range(159,128), s_5_4_4.range(159,128), s_6_4_4.range(159,128), s_7_4_4.range(159,128), s_8_4_4.range(159,128)};
+		int i_X0_ARM_3[(2*ORDER+1)] = {s_4_4_4_b2.range(X_0(576,3)), s_4_4_4_b1.range(X_0(64,3)), s_4_4_4_b1.range(X_0(320,3)), s_4_4_4_b1.range(X_0(576,3)),s_4_4_4.range(X_0(64,3)), s_4_4_4.range(X_0(320,3)), s_4_4_4.range(X_0(576,3)), s_4_4_4_f1.range(X_0(64,3)), s_4_4_4_f1.range(X_0(320,3))};
 
-		int i_X0_ARM_3[(2*ORDER+1)] = {s_0_4_4.range(191,160), s_1_4_4.range(191,160), s_2_4_4.range(191,160), s_3_4_4.range(191,160), s_4_4_4.range(191,160), s_5_4_4.range(191,160), s_6_4_4.range(191,160), s_7_4_4.range(191,160), s_8_4_4.range(191,160)};
+		int i_X0_ARM_4[(2*ORDER+1)] = {s_4_4_4_b2.range(X_0(576,4)), s_4_4_4_b1.range(X_0(64,4)), s_4_4_4_b1.range(X_0(320,4)), s_4_4_4_b1.range(X_0(576,4)),s_4_4_4.range(X_0(64,4)), s_4_4_4.range(X_0(320,4)), s_4_4_4.range(X_0(576,4)), s_4_4_4_f1.range(X_0(64,4)), s_4_4_4_f1.range(X_0(320,4))};
 
-		int i_X0_ARM_4[(2*ORDER+1)] = {s_0_4_4.range(223,192), s_1_4_4.range(223,192), s_2_4_4.range(223,192), s_3_4_4.range(223,192), s_4_4_4.range(223,192), s_5_4_4.range(223,192), s_6_4_4.range(223,192), s_7_4_4.range(223,192), s_8_4_4.range(223,192)};
-
-		int i_X0_ARM_5[(2*ORDER+1)] = {s_0_4_4.range(255,224), s_1_4_4.range(255,224), s_2_4_4.range(255,224), s_3_4_4.range(255,224), s_4_4_4.range(255,224), s_5_4_4.range(255,224), s_6_4_4.range(255,224), s_7_4_4.range(255,224), s_8_4_4.range(255,224)};
+		int i_X0_ARM_5[(2*ORDER+1)] = {s_4_4_4_b2.range(X_0(576,5)), s_4_4_4_b1.range(X_0(64,5)), s_4_4_4_b1.range(X_0(320,5)), s_4_4_4_b1.range(X_0(576,5)),s_4_4_4.range(X_0(64,5)), s_4_4_4.range(X_0(320,5)), s_4_4_4.range(X_0(576,5)), s_4_4_4_f1.range(X_0(64,5)), s_4_4_4_f1.range(X_0(320,5))};
 
 		float X0_ARM_0[2*ORDER+1], X0_ARM_1[2*ORDER+1], X0_ARM_2[2*ORDER+1], X0_ARM_3[2*ORDER+1], X0_ARM_4[2*ORDER+1], X0_ARM_5[2*ORDER+1];
 		for(int i = 0; i < 2*ORDER+1; i++){
@@ -296,117 +296,400 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer0, hls::stre
 			X0_ARM_5[i] = tmp.f;
 		}
 
-		// Y ARM
+		// X1_ARM
+		int i_X1_ARM_0[(2*ORDER+1)] = {s_4_4_4_b1.range(X_0(64,0)), s_4_4_4_b1.range(X_0(320,0)), s_4_4_4_b1.range(X_0(576,0)),s_4_4_4.range(X_0(64,0)), s_4_4_4.range(X_0(320,0)), s_4_4_4.range(X_0(576,0)), s_4_4_4_f1.range(X_0(64,0)), s_4_4_4_f1.range(X_0(320,0)),s_4_4_4_f1.range(X_0(576,0))};
 
-		int i_Y_ARM_0[2*ORDER+1] = {s_4_0_4.range(95,64), s_4_1_4.range(95,64), s_4_2_4.range(95,64), s_4_3_4.range(95,64), s_4_4_4.range(95,64), s_4_5_4.range(95,64), s_4_6_4.range(95,64), s_4_7_4.range(95,64), s_4_8_4.range(95,64)}; 
+		int i_X1_ARM_1[(2*ORDER+1)] = {s_4_4_4_b1.range(X_0(64,1)), s_4_4_4_b1.range(X_0(320,1)), s_4_4_4_b1.range(X_0(576,1)),s_4_4_4.range(X_0(64,1)), s_4_4_4.range(X_0(320,1)), s_4_4_4.range(X_0(576,1)), s_4_4_4_f1.range(X_0(64,1)), s_4_4_4_f1.range(X_0(320,1)),s_4_4_4_f1.range(X_0(576,1))};
 
-		int i_Y_ARM_1[2*ORDER+1] = {s_4_0_4.range(127,96), s_4_1_4.range(127,96), s_4_2_4.range(127,96), s_4_3_4.range(127,96), s_4_4_4.range(127,96), s_4_5_4.range(127,96), s_4_6_4.range(127,96), s_4_7_4.range(127,96), s_4_8_4.range(127,96)}; 
+		int i_X1_ARM_2[(2*ORDER+1)] = {s_4_4_4_b1.range(X_0(64,2)), s_4_4_4_b1.range(X_0(320,2)), s_4_4_4_b1.range(X_0(576,2)),s_4_4_4.range(X_0(64,2)), s_4_4_4.range(X_0(320,2)), s_4_4_4.range(X_0(576,2)), s_4_4_4_f1.range(X_0(64,2)), s_4_4_4_f1.range(X_0(320,2)),s_4_4_4_f1.range(X_0(576,2))};
 
-		int i_Y_ARM_2[2*ORDER+1] = {s_4_0_4.range(159,128), s_4_1_4.range(159,128), s_4_2_4.range(159,128), s_4_3_4.range(159,128), s_4_4_4.range(159,128), s_4_5_4.range(159,128), s_4_6_4.range(159,128), s_4_7_4.range(159,128), s_4_8_4.range(159,128)}; 
+		int i_X1_ARM_3[(2*ORDER+1)] = {s_4_4_4_b1.range(X_0(64,3)), s_4_4_4_b1.range(X_0(320,3)), s_4_4_4_b1.range(X_0(576,3)),s_4_4_4.range(X_0(64,3)), s_4_4_4.range(X_0(320,3)), s_4_4_4.range(X_0(576,3)), s_4_4_4_f1.range(X_0(64,3)), s_4_4_4_f1.range(X_0(320,3)),s_4_4_4_f1.range(X_0(576,3))};
 
-		int i_Y_ARM_3[2*ORDER+1] = {s_4_0_4.range(191,160), s_4_1_4.range(191,160), s_4_2_4.range(191,160), s_4_3_4.range(191,160), s_4_4_4.range(191,160), s_4_5_4.range(191,160), s_4_6_4.range(191,160), s_4_7_4.range(191,160), s_4_8_4.range(191,160)};
+		int i_X1_ARM_4[(2*ORDER+1)] = {s_4_4_4_b1.range(X_0(64,4)), s_4_4_4_b1.range(X_0(320,4)), s_4_4_4_b1.range(X_0(576,4)),s_4_4_4.range(X_0(64,4)), s_4_4_4.range(X_0(320,4)), s_4_4_4.range(X_0(576,4)), s_4_4_4_f1.range(X_0(64,4)), s_4_4_4_f1.range(X_0(320,4)),s_4_4_4_f1.range(X_0(576,4))};
 
-		int i_Y_ARM_4[2*ORDER+1] = {s_4_0_4.range(223,192), s_4_1_4.range(223,192), s_4_2_4.range(223,192), s_4_3_4.range(223,192), s_4_4_4.range(223,192), s_4_5_4.range(223,192), s_4_6_4.range(223,192), s_4_7_4.range(223,192), s_4_8_4.range(223,192)};
+		int i_X1_ARM_5[(2*ORDER+1)] = {s_4_4_4_b1.range(X_0(64,5)), s_4_4_4_b1.range(X_0(320,5)), s_4_4_4_b1.range(X_0(576,5)),s_4_4_4.range(X_0(64,5)), s_4_4_4.range(X_0(320,5)), s_4_4_4.range(X_0(576,5)), s_4_4_4_f1.range(X_0(64,5)), s_4_4_4_f1.range(X_0(320,5)),s_4_4_4_f1.range(X_0(576,5))};
 
-		int i_Y_ARM_5[2*ORDER+1] = {s_4_0_4.range(255,224), s_4_1_4.range(255,224), s_4_2_4.range(255,224), s_4_3_4.range(255,224), s_4_4_4.range(255,224), s_4_5_4.range(255,224), s_4_6_4.range(255,224), s_4_7_4.range(255,224), s_4_8_4.range(255,224)};
-
-		float Y_ARM_0[2*ORDER+1], Y_ARM_1[2*ORDER+1], Y_ARM_2[2*ORDER+1], Y_ARM_3[2*ORDER+1], Y_ARM_4[2*ORDER+1], Y_ARM_5[2*ORDER+1];
+		float X1_ARM_0[2*ORDER+1], X1_ARM_1[2*ORDER+1], X1_ARM_2[2*ORDER+1], X1_ARM_3[2*ORDER+1], X1_ARM_4[2*ORDER+1], X1_ARM_5[2*ORDER+1];
 		for(int i = 0; i < 2*ORDER+1; i++){
 			data_conv tmp;
-			tmp.i = i_Y_ARM_0[i];
-			Y_ARM_0[i] = tmp.f;
+			tmp.i = i_X1_ARM_0[i];
+			X1_ARM_0[i] = tmp.f;
 
-			tmp.i = i_Y_ARM_1[i];
-			Y_ARM_1[i] = tmp.f;
+			tmp.i = i_X1_ARM_1[i];
+			X1_ARM_1[i] = tmp.f;
 
-			tmp.i = i_Y_ARM_2[i];
-			Y_ARM_2[i] = tmp.f;
+			tmp.i = i_X1_ARM_2[i];
+			X1_ARM_2[i] = tmp.f;
 
-			tmp.i = i_Y_ARM_3[i];
-			Y_ARM_3[i] = tmp.f;
+			tmp.i = i_X1_ARM_3[i];
+			X1_ARM_3[i] = tmp.f;
 
-			tmp.i = i_Y_ARM_4[i];
-			Y_ARM_4[i] = tmp.f;
+			tmp.i = i_X1_ARM_4[i];
+			X1_ARM_4[i] = tmp.f;
 
-			tmp.i = i_Y_ARM_5[i];
-			Y_ARM_5[i] = tmp.f;
+			tmp.i = i_X1_ARM_5[i];
+			X1_ARM_5[i] = tmp.f;
 		}
 
-		// Z ARM
+		// X2_ARM
+		int i_X2_ARM_0[(2*ORDER+1)] = {s_4_4_4_b1.range(X_0(320,0)), s_4_4_4_b1.range(X_0(576,0)),s_4_4_4.range(X_0(64,0)), s_4_4_4.range(X_0(320,0)), s_4_4_4.range(X_0(576,0)), s_4_4_4_f1.range(X_0(64,0)), s_4_4_4_f1.range(X_0(320,0)),s_4_4_4_f1.range(X_0(576,0)), s_4_4_4_f2.range(X_0(64,0))};
 
-		int i_Z_ARM_0[2*ORDER+1] = {s_4_4_0.range(95,64), s_4_4_1.range(95,64), s_4_4_2.range(95,64), s_4_4_3.range(95,64), s_4_4_4.range(95,64), s_4_4_5.range(95,64), s_4_4_6.range(95,64), s_4_4_7.range(95,64), s_4_4_8.range(95,64)}; 
+		int i_X2_ARM_1[(2*ORDER+1)] = {s_4_4_4_b1.range(X_0(320,1)), s_4_4_4_b1.range(X_0(576,1)),s_4_4_4.range(X_0(64,1)), s_4_4_4.range(X_0(320,1)), s_4_4_4.range(X_0(576,1)), s_4_4_4_f1.range(X_0(64,1)), s_4_4_4_f1.range(X_0(320,1)),s_4_4_4_f1.range(X_0(576,1)), s_4_4_4_f2.range(X_0(64,0))};
 
-		int i_Z_ARM_1[2*ORDER+1] = {s_4_4_0.range(127,96), s_4_4_1.range(127,96), s_4_4_2.range(127,96), s_4_4_3.range(127,96), s_4_4_4.range(127,96), s_4_4_5.range(127,96), s_4_4_6.range(127,96), s_4_4_7.range(127,96), s_4_4_8.range(127,96)}; 
+		int i_X2_ARM_2[(2*ORDER+1)] = {s_4_4_4_b1.range(X_0(320,2)), s_4_4_4_b1.range(X_0(576,2)),s_4_4_4.range(X_0(64,2)), s_4_4_4.range(X_0(320,2)), s_4_4_4.range(X_0(576,2)), s_4_4_4_f1.range(X_0(64,2)), s_4_4_4_f1.range(X_0(320,2)),s_4_4_4_f1.range(X_0(576,2)), s_4_4_4_f2.range(X_0(64,0))};
 
-		int i_Z_ARM_2[2*ORDER+1] = {s_4_4_0.range(159,128), s_4_4_1.range(159,128), s_4_4_2.range(159,128), s_4_4_3.range(159,128), s_4_4_4.range(159,128), s_4_4_5.range(159,128), s_4_4_6.range(159,128), s_4_4_7.range(159,128), s_4_4_8.range(159,128)}; 
+		int i_X2_ARM_3[(2*ORDER+1)] = {s_4_4_4_b1.range(X_0(320,3)), s_4_4_4_b1.range(X_0(576,3)),s_4_4_4.range(X_0(64,3)), s_4_4_4.range(X_0(320,3)), s_4_4_4.range(X_0(576,3)), s_4_4_4_f1.range(X_0(64,3)), s_4_4_4_f1.range(X_0(320,3)),s_4_4_4_f1.range(X_0(576,3)), s_4_4_4_f2.range(X_0(64,0))};
 
-		int i_Z_ARM_3[2*ORDER+1] = {s_4_4_0.range(191,160), s_4_4_1.range(191,160), s_4_4_2.range(191,160), s_4_4_3.range(191,160), s_4_4_4.range(191,160), s_4_4_5.range(191,160), s_4_4_6.range(191,160), s_4_4_7.range(191,160), s_4_4_8.range(191,160)};
+		int i_X2_ARM_4[(2*ORDER+1)] = {s_4_4_4_b1.range(X_0(320,4)), s_4_4_4_b1.range(X_0(576,4)),s_4_4_4.range(X_0(64,4)), s_4_4_4.range(X_0(320,4)), s_4_4_4.range(X_0(576,4)), s_4_4_4_f1.range(X_0(64,4)), s_4_4_4_f1.range(X_0(320,4)),s_4_4_4_f1.range(X_0(576,4)), s_4_4_4_f2.range(X_0(64,0))};
 
-		int i_Z_ARM_4[2*ORDER+1] = {s_4_4_0.range(223,192), s_4_4_1.range(223,192), s_4_4_2.range(223,192), s_4_4_3.range(223,192), s_4_4_4.range(223,192), s_4_4_5.range(223,192), s_4_4_6.range(223,192), s_4_4_7.range(223,192), s_4_4_8.range(223,192)};
+		int i_X2_ARM_5[(2*ORDER+1)] = {s_4_4_4_b1.range(X_0(320,5)), s_4_4_4_b1.range(X_0(576,5)),s_4_4_4.range(X_0(64,5)), s_4_4_4.range(X_0(320,5)), s_4_4_4.range(X_0(576,5)), s_4_4_4_f1.range(X_0(64,5)), s_4_4_4_f1.range(X_0(320,5)),s_4_4_4_f1.range(X_0(576,5)), s_4_4_4_f2.range(X_0(64,0))};
 
-		int i_Z_ARM_5[2*ORDER+1] = {s_4_4_0.range(255,224), s_4_4_1.range(255,224), s_4_4_2.range(255,224), s_4_4_3.range(255,224), s_4_4_4.range(255,224), s_4_4_5.range(255,224), s_4_4_6.range(255,224), s_4_4_7.range(255,224), s_4_4_8.range(255,224)};
-
-		float Z_ARM_0[2*ORDER+1], Z_ARM_1[2*ORDER+1], Z_ARM_2[2*ORDER+1], Z_ARM_3[2*ORDER+1], Z_ARM_4[2*ORDER+1], Z_ARM_5[2*ORDER+1];
+		float X2_ARM_0[2*ORDER+1], X2_ARM_1[2*ORDER+1], X2_ARM_2[2*ORDER+1], X2_ARM_3[2*ORDER+1], X2_ARM_4[2*ORDER+1], X2_ARM_5[2*ORDER+1];
 		for(int i = 0; i < 2*ORDER+1; i++){
 			data_conv tmp;
-			tmp.i = i_Z_ARM_0[i];
-			Z_ARM_0[i] = tmp.f;
+			tmp.i = i_X2_ARM_0[i];
+			X2_ARM_0[i] = tmp.f;
 
-			tmp.i = i_Z_ARM_1[i];
-			Z_ARM_1[i] = tmp.f;
+			tmp.i = i_X2_ARM_1[i];
+			X2_ARM_1[i] = tmp.f;
 
-			tmp.i = i_Z_ARM_2[i];
-			Z_ARM_2[i] = tmp.f;
+			tmp.i = i_X2_ARM_2[i];
+			X2_ARM_2[i] = tmp.f;
 
-			tmp.i = i_Z_ARM_3[i];
-			Z_ARM_3[i] = tmp.f;
+			tmp.i = i_X2_ARM_3[i];
+			X2_ARM_3[i] = tmp.f;
 
-			tmp.i = i_Z_ARM_4[i];
-			Z_ARM_4[i] = tmp.f;
+			tmp.i = i_X2_ARM_4[i];
+			X2_ARM_4[i] = tmp.f;
 
-			tmp.i = i_Z_ARM_5[i];
-			Z_ARM_5[i] = tmp.f;
+			tmp.i = i_X2_ARM_5[i];
+			X2_ARM_5[i] = tmp.f;
+		}
+		#undef X_0
+
+		
+		#define Y_0(a,c) (a+32*(c+1) -1, a+32*c)
+		// Y0 ARM
+		int i_Y0_ARM_0[2*ORDER+1] = {s_4_0_4.range(Y_0(0,0)), s_4_1_4.range(Y_0(0,0)), s_4_2_4.range(Y_0(0,0)), s_4_3_4.range(Y_0(0,0)), s_4_4_4.range(Y_0(64,0)), s_4_5_4.range(Y_0(64,0)), s_4_6_4.range(Y_0(64,0)), s_4_7_4.range(Y_0(64,0)), s_4_8_4.range(Y_0(64,0))}; 
+
+		int i_Y0_ARM_1[2*ORDER+1] = {s_4_0_4.range(Y_0(0,1)), s_4_1_4.range(Y_0(0,1)), s_4_2_4.range(Y_0(0,1)), s_4_3_4.range(Y_0(0,1)), s_4_4_4.range(Y_0(64,1)), s_4_5_4.range(Y_0(64,1)), s_4_6_4.range(Y_0(64,1)), s_4_7_4.range(Y_0(64,1)), s_4_8_4.range(Y_0(64,1))}; 
+
+		int i_Y0_ARM_2[2*ORDER+1] = {s_4_0_4.range(Y_0(0,2)), s_4_1_4.range(Y_0(0,2)), s_4_2_4.range(Y_0(0,2)), s_4_3_4.range(Y_0(0,2)), s_4_4_4.range(Y_0(64,2)), s_4_5_4.range(Y_0(64,2)), s_4_6_4.range(Y_0(64,2)), s_4_7_4.range(Y_0(64,2)), s_4_8_4.range(Y_0(64,2))}; 
+
+		int i_Y0_ARM_3[2*ORDER+1] = {s_4_0_4.range(Y_0(0,3)), s_4_1_4.range(Y_0(0,3)), s_4_2_4.range(Y_0(0,3)), s_4_3_4.range(Y_0(0,3)), s_4_4_4.range(Y_0(64,3)), s_4_5_4.range(Y_0(64,3)), s_4_6_4.range(Y_0(64,3)), s_4_7_4.range(Y_0(64,3)), s_4_8_4.range(Y_0(64,3))};
+
+		int i_Y0_ARM_4[2*ORDER+1] = {s_4_0_4.range(Y_0(0,4)), s_4_1_4.range(Y_0(0,4)), s_4_2_4.range(Y_0(0,4)), s_4_3_4.range(Y_0(0,4)), s_4_4_4.range(Y_0(64,4)), s_4_5_4.range(Y_0(64,4)), s_4_6_4.range(Y_0(64,4)), s_4_7_4.range(Y_0(64,4)), s_4_8_4.range(Y_0(64,4))};
+
+		int i_Y0_ARM_5[2*ORDER+1] = {s_4_0_4.range(Y_0(0,5)), s_4_1_4.range(Y_0(0,5)), s_4_2_4.range(Y_0(0,5)), s_4_3_4.range(Y_0(0,5)), s_4_4_4.range(Y_0(64,5)), s_4_5_4.range(Y_0(64,5)), s_4_6_4.range(Y_0(64,5)), s_4_7_4.range(Y_0(64,5)), s_4_8_4.range(Y_0(64,5))};
+
+		float Y0_ARM_0[2*ORDER+1], Y0_ARM_1[2*ORDER+1], Y0_ARM_2[2*ORDER+1], Y0_ARM_3[2*ORDER+1], Y0_ARM_4[2*ORDER+1], Y0_ARM_5[2*ORDER+1];
+		for(int i = 0; i < 2*ORDER+1; i++){
+			data_conv tmp;
+			tmp.i = i_Y0_ARM_0[i];
+			Y0_ARM_0[i] = tmp.f;
+
+			tmp.i = i_Y0_ARM_1[i];
+			Y0_ARM_1[i] = tmp.f;
+
+			tmp.i = i_Y0_ARM_2[i];
+			Y0_ARM_2[i] = tmp.f;
+
+			tmp.i = i_Y0_ARM_3[i];
+			Y0_ARM_3[i] = tmp.f;
+
+			tmp.i = i_Y0_ARM_4[i];
+			Y0_ARM_4[i] = tmp.f;
+
+			tmp.i = i_Y0_ARM_5[i];
+			Y0_ARM_5[i] = tmp.f;
 		}
 
-		float mem_wr_k[PORT_WIDTH];
-		float mem_wr_k_dt[PORT_WIDTH];
-		float mem_wr_y_tmp[PORT_WIDTH];
-		float yy_final_arr[PORT_WIDTH];
-		float s_4_4_4_arr[PORT_WIDTH];
+		// Y1 ARM
+		int i_Y1_ARM_0[2*ORDER+1] = {s_4_0_4.range(Y_0(192,0)), s_4_1_4.range(Y_0(192,0)), s_4_2_4.range(Y_0(192,0)), s_4_3_4.range(Y_0(192,0)), s_4_4_4.range(Y_0(320,0)), s_4_5_4.range(Y_0(320,0)), s_4_6_4.range(Y_0(320,0)), s_4_7_4.range(Y_0(320,0)), s_4_8_4.range(Y_0(320,0))}; 
+
+		int i_Y1_ARM_1[2*ORDER+1] = {s_4_0_4.range(Y_0(192,1)), s_4_1_4.range(Y_0(192,1)), s_4_2_4.range(Y_0(192,1)), s_4_3_4.range(Y_0(192,1)), s_4_4_4.range(Y_0(320,1)), s_4_5_4.range(Y_0(320,1)), s_4_6_4.range(Y_0(320,1)), s_4_7_4.range(Y_0(320,1)), s_4_8_4.range(Y_0(320,1))}; 
+
+		int i_Y1_ARM_2[2*ORDER+1] = {s_4_0_4.range(Y_0(192,2)), s_4_1_4.range(Y_0(192,2)), s_4_2_4.range(Y_0(192,2)), s_4_3_4.range(Y_0(192,2)), s_4_4_4.range(Y_0(320,2)), s_4_5_4.range(Y_0(320,2)), s_4_6_4.range(Y_0(320,2)), s_4_7_4.range(Y_0(320,2)), s_4_8_4.range(Y_0(320,2))}; 
+
+		int i_Y1_ARM_3[2*ORDER+1] = {s_4_0_4.range(Y_0(192,3)), s_4_1_4.range(Y_0(192,3)), s_4_2_4.range(Y_0(192,3)), s_4_3_4.range(Y_0(192,3)), s_4_4_4.range(Y_0(320,3)), s_4_5_4.range(Y_0(320,3)), s_4_6_4.range(Y_0(320,3)), s_4_7_4.range(Y_0(320,3)), s_4_8_4.range(Y_0(320,3))};
+
+		int i_Y1_ARM_4[2*ORDER+1] = {s_4_0_4.range(Y_0(192,4)), s_4_1_4.range(Y_0(192,4)), s_4_2_4.range(Y_0(192,4)), s_4_3_4.range(Y_0(192,4)), s_4_4_4.range(Y_0(320,4)), s_4_5_4.range(Y_0(320,4)), s_4_6_4.range(Y_0(320,4)), s_4_7_4.range(Y_0(320,4)), s_4_8_4.range(Y_0(320,4))};
+
+		int i_Y1_ARM_5[2*ORDER+1] = {s_4_0_4.range(Y_0(192,5)), s_4_1_4.range(Y_0(192,5)), s_4_2_4.range(Y_0(192,5)), s_4_3_4.range(Y_0(192,5)), s_4_4_4.range(Y_0(320,5)), s_4_5_4.range(Y_0(320,5)), s_4_6_4.range(Y_0(320,5)), s_4_7_4.range(Y_0(320,5)), s_4_8_4.range(Y_0(320,5))};
+
+		float Y1_ARM_0[2*ORDER+1], Y1_ARM_1[2*ORDER+1], Y1_ARM_2[2*ORDER+1], Y1_ARM_3[2*ORDER+1], Y1_ARM_4[2*ORDER+1], Y1_ARM_5[2*ORDER+1];
+		for(int i = 0; i < 2*ORDER+1; i++){
+			data_conv tmp;
+			tmp.i = i_Y1_ARM_0[i];
+			Y1_ARM_0[i] = tmp.f;
+
+			tmp.i = i_Y1_ARM_1[i];
+			Y1_ARM_1[i] = tmp.f;
+
+			tmp.i = i_Y1_ARM_2[i];
+			Y1_ARM_2[i] = tmp.f;
+
+			tmp.i = i_Y1_ARM_3[i];
+			Y1_ARM_3[i] = tmp.f;
+
+			tmp.i = i_Y1_ARM_4[i];
+			Y1_ARM_4[i] = tmp.f;
+
+			tmp.i = i_Y1_ARM_5[i];
+			Y1_ARM_5[i] = tmp.f;
+		}
+
+		// Y2 ARM
+		int i_Y2_ARM_0[2*ORDER+1] = {s_4_0_4.range(Y_0(384,0)), s_4_1_4.range(Y_0(384,0)), s_4_2_4.range(Y_0(384,0)), s_4_3_4.range(Y_0(384,0)), s_4_4_4.range(Y_0(576,0)), s_4_5_4.range(Y_0(576,0)), s_4_6_4.range(Y_0(576,0)), s_4_7_4.range(Y_0(576,0)), s_4_8_4.range(Y_0(576,0))}; 
+
+		int i_Y2_ARM_1[2*ORDER+1] = {s_4_0_4.range(Y_0(384,1)), s_4_1_4.range(Y_0(384,1)), s_4_2_4.range(Y_0(384,1)), s_4_3_4.range(Y_0(384,1)), s_4_4_4.range(Y_0(576,1)), s_4_5_4.range(Y_0(576,1)), s_4_6_4.range(Y_0(576,1)), s_4_7_4.range(Y_0(576,1)), s_4_8_4.range(Y_0(576,1))}; 
+
+		int i_Y2_ARM_2[2*ORDER+1] = {s_4_0_4.range(Y_0(384,2)), s_4_1_4.range(Y_0(384,2)), s_4_2_4.range(Y_0(384,2)), s_4_3_4.range(Y_0(384,2)), s_4_4_4.range(Y_0(576,2)), s_4_5_4.range(Y_0(576,2)), s_4_6_4.range(Y_0(576,2)), s_4_7_4.range(Y_0(576,2)), s_4_8_4.range(Y_0(576,2))}; 
+
+		int i_Y2_ARM_3[2*ORDER+1] = {s_4_0_4.range(Y_0(384,3)), s_4_1_4.range(Y_0(384,3)), s_4_2_4.range(Y_0(384,3)), s_4_3_4.range(Y_0(384,3)), s_4_4_4.range(Y_0(576,3)), s_4_5_4.range(Y_0(576,3)), s_4_6_4.range(Y_0(576,3)), s_4_7_4.range(Y_0(576,3)), s_4_8_4.range(Y_0(576,3))};
+
+		int i_Y2_ARM_4[2*ORDER+1] = {s_4_0_4.range(Y_0(384,4)), s_4_1_4.range(Y_0(384,4)), s_4_2_4.range(Y_0(384,4)), s_4_3_4.range(Y_0(384,4)), s_4_4_4.range(Y_0(576,4)), s_4_5_4.range(Y_0(576,4)), s_4_6_4.range(Y_0(576,4)), s_4_7_4.range(Y_0(576,4)), s_4_8_4.range(Y_0(576,4))};
+
+		int i_Y2_ARM_5[2*ORDER+1] = {s_4_0_4.range(Y_0(384,5)), s_4_1_4.range(Y_0(384,5)), s_4_2_4.range(Y_0(384,5)), s_4_3_4.range(Y_0(384,5)), s_4_4_4.range(Y_0(576,5)), s_4_5_4.range(Y_0(576,5)), s_4_6_4.range(Y_0(576,5)), s_4_7_4.range(Y_0(576,5)), s_4_8_4.range(Y_0(576,5))};
+
+		float Y2_ARM_0[2*ORDER+1], Y2_ARM_1[2*ORDER+1], Y2_ARM_2[2*ORDER+1], Y2_ARM_3[2*ORDER+1], Y2_ARM_4[2*ORDER+1], Y2_ARM_5[2*ORDER+1];
+		for(int i = 0; i < 2*ORDER+1; i++){
+			data_conv tmp;
+			tmp.i = i_Y2_ARM_0[i];
+			Y2_ARM_0[i] = tmp.f;
+
+			tmp.i = i_Y2_ARM_1[i];
+			Y2_ARM_1[i] = tmp.f;
+
+			tmp.i = i_Y2_ARM_2[i];
+			Y2_ARM_2[i] = tmp.f;
+
+			tmp.i = i_Y2_ARM_3[i];
+			Y2_ARM_3[i] = tmp.f;
+
+			tmp.i = i_Y2_ARM_4[i];
+			Y2_ARM_4[i] = tmp.f;
+
+			tmp.i = i_Y2_ARM_5[i];
+			Y2_ARM_5[i] = tmp.f;
+		}
+		#undef Y_0
+
+		#define Z_0(a,c) (a+32*(c+1) -1, a+32*c)
+		// Z0 ARM
+		int i_Z0_ARM_0[2*ORDER+1] = {s_4_4_0.range(Z_0(0,0)), s_4_4_1.range(Z_0(0,0)), s_4_4_2.range(Z_0(0,0)), s_4_4_3.range(Z_0(0,0)), s_4_4_4.range(Z_0(64,0)), s_4_4_5.range(Z_0(64,0)), s_4_4_6.range(Z_0(64,0)), s_4_4_7.range(Z_0(64,0)), s_4_4_8.range(Z_0(64,0))}; 
+
+		int i_Z0_ARM_1[2*ORDER+1] = {s_4_4_0.range(Z_0(0,1)), s_4_4_1.range(Z_0(0,1)), s_4_4_2.range(Z_0(0,1)), s_4_4_3.range(Z_0(0,1)), s_4_4_4.range(Z_0(64,1)), s_4_4_5.range(Z_0(64,1)), s_4_4_6.range(Z_0(64,1)), s_4_4_7.range(Z_0(64,1)), s_4_4_8.range(Z_0(64,1))}; 
+
+		int i_Z0_ARM_2[2*ORDER+1] = {s_4_4_0.range(Z_0(0,2)), s_4_4_1.range(Z_0(0,2)), s_4_4_2.range(Z_0(0,2)), s_4_4_3.range(Z_0(0,2)), s_4_4_4.range(Z_0(64,2)), s_4_4_5.range(Z_0(64,2)), s_4_4_6.range(Z_0(64,2)), s_4_4_7.range(Z_0(64,2)), s_4_4_8.range(Z_0(64,2))}; 
+
+		int i_Z0_ARM_3[2*ORDER+1] = {s_4_4_0.range(Z_0(0,3)), s_4_4_1.range(Z_0(0,3)), s_4_4_2.range(Z_0(0,3)), s_4_4_3.range(Z_0(0,3)), s_4_4_4.range(Z_0(64,3)), s_4_4_5.range(Z_0(64,3)), s_4_4_6.range(Z_0(64,3)), s_4_4_7.range(Z_0(64,3)), s_4_4_8.range(Z_0(64,3))};
+
+		int i_Z0_ARM_4[2*ORDER+1] = {s_4_4_0.range(Z_0(0,4)), s_4_4_1.range(Z_0(0,4)), s_4_4_2.range(Z_0(0,4)), s_4_4_3.range(Z_0(0,4)), s_4_4_4.range(Z_0(64,4)), s_4_4_5.range(Z_0(64,4)), s_4_4_6.range(Z_0(64,4)), s_4_4_7.range(Z_0(64,4)), s_4_4_8.range(Z_0(64,4))};
+
+		int i_Z0_ARM_5[2*ORDER+1] = {s_4_4_0.range(Z_0(0,5)), s_4_4_1.range(Z_0(0,5)), s_4_4_2.range(Z_0(0,5)), s_4_4_3.range(Z_0(0,5)), s_4_4_4.range(Z_0(64,5)), s_4_4_5.range(Z_0(64,5)), s_4_4_6.range(Z_0(64,5)), s_4_4_7.range(Z_0(64,5)), s_4_4_8.range(Z_0(64,5))};
+
+		float Z0_ARM_0[2*ORDER+1], Z0_ARM_1[2*ORDER+1], Z0_ARM_2[2*ORDER+1], Z0_ARM_3[2*ORDER+1], Z0_ARM_4[2*ORDER+1], Z0_ARM_5[2*ORDER+1];
+		for(int i = 0; i < 2*ORDER+1; i++){
+			data_conv tmp;
+			tmp.i = i_Z0_ARM_0[i];
+			Z0_ARM_0[i] = tmp.f;
+
+			tmp.i = i_Z0_ARM_1[i];
+			Z0_ARM_1[i] = tmp.f;
+
+			tmp.i = i_Z0_ARM_2[i];
+			Z0_ARM_2[i] = tmp.f;
+
+			tmp.i = i_Z0_ARM_3[i];
+			Z0_ARM_3[i] = tmp.f;
+
+			tmp.i = i_Z0_ARM_4[i];
+			Z0_ARM_4[i] = tmp.f;
+
+			tmp.i = i_Z0_ARM_5[i];
+			Z0_ARM_5[i] = tmp.f;
+		}
+
+		// Z1 ARM
+		int i_Z1_ARM_0[2*ORDER+1] = {s_4_4_0.range(Z_0(192,0)), s_4_4_1.range(Z_0(192,0)), s_4_4_2.range(Z_0(192,0)), s_4_4_3.range(Z_0(192,0)), s_4_4_4.range(Z_0(320,0)), s_4_4_5.range(Z_0(320,0)), s_4_4_6.range(Z_0(320,0)), s_4_4_7.range(Z_0(320,0)), s_4_4_8.range(Z_0(320,0))}; 
+
+		int i_Z1_ARM_1[2*ORDER+1] = {s_4_4_0.range(Z_0(192,1)), s_4_4_1.range(Z_0(192,1)), s_4_4_2.range(Z_0(192,1)), s_4_4_3.range(Z_0(192,1)), s_4_4_4.range(Z_0(320,1)), s_4_4_5.range(Z_0(320,1)), s_4_4_6.range(Z_0(320,1)), s_4_4_7.range(Z_0(320,1)), s_4_4_8.range(Z_0(320,1))}; 
+
+		int i_Z1_ARM_2[2*ORDER+1] = {s_4_4_0.range(Z_0(192,2)), s_4_4_1.range(Z_0(192,2)), s_4_4_2.range(Z_0(192,2)), s_4_4_3.range(Z_0(192,2)), s_4_4_4.range(Z_0(320,2)), s_4_4_5.range(Z_0(320,2)), s_4_4_6.range(Z_0(320,2)), s_4_4_7.range(Z_0(320,2)), s_4_4_8.range(Z_0(320,2))}; 
+
+		int i_Z1_ARM_3[2*ORDER+1] = {s_4_4_0.range(Z_0(192,3)), s_4_4_1.range(Z_0(192,3)), s_4_4_2.range(Z_0(192,3)), s_4_4_3.range(Z_0(192,3)), s_4_4_4.range(Z_0(320,3)), s_4_4_5.range(Z_0(320,3)), s_4_4_6.range(Z_0(320,3)), s_4_4_7.range(Z_0(320,3)), s_4_4_8.range(Z_0(320,3))};
+
+		int i_Z1_ARM_4[2*ORDER+1] = {s_4_4_0.range(Z_0(192,4)), s_4_4_1.range(Z_0(192,4)), s_4_4_2.range(Z_0(192,4)), s_4_4_3.range(Z_0(192,4)), s_4_4_4.range(Z_0(320,4)), s_4_4_5.range(Z_0(320,4)), s_4_4_6.range(Z_0(320,4)), s_4_4_7.range(Z_0(320,4)), s_4_4_8.range(Z_0(320,4))};
+
+		int i_Z1_ARM_5[2*ORDER+1] = {s_4_4_0.range(Z_0(192,5)), s_4_4_1.range(Z_0(192,5)), s_4_4_2.range(Z_0(192,5)), s_4_4_3.range(Z_0(192,5)), s_4_4_4.range(Z_0(320,5)), s_4_4_5.range(Z_0(320,5)), s_4_4_6.range(Z_0(320,5)), s_4_4_7.range(Z_0(320,5)), s_4_4_8.range(Z_0(320,5))};
+
+		float Z1_ARM_0[2*ORDER+1], Z1_ARM_1[2*ORDER+1], Z1_ARM_2[2*ORDER+1], Z1_ARM_3[2*ORDER+1], Z1_ARM_4[2*ORDER+1], Z1_ARM_5[2*ORDER+1];
+		for(int i = 0; i < 2*ORDER+1; i++){
+			data_conv tmp;
+			tmp.i = i_Z1_ARM_0[i];
+			Z1_ARM_0[i] = tmp.f;
+
+			tmp.i = i_Z1_ARM_1[i];
+			Z1_ARM_1[i] = tmp.f;
+
+			tmp.i = i_Z1_ARM_2[i];
+			Z1_ARM_2[i] = tmp.f;
+
+			tmp.i = i_Z1_ARM_3[i];
+			Z1_ARM_3[i] = tmp.f;
+
+			tmp.i = i_Z1_ARM_4[i];
+			Z1_ARM_4[i] = tmp.f;
+
+			tmp.i = i_Z1_ARM_5[i];
+			Z1_ARM_5[i] = tmp.f;
+		}
+		// Z2 ARM
+		int i_Z2_ARM_0[2*ORDER+1] = {s_4_4_0.range(Z_0(384,0)), s_4_4_1.range(Z_0(384,0)), s_4_4_2.range(Z_0(384,0)), s_4_4_3.range(Z_0(384,0)), s_4_4_4.range(Z_0(576,0)), s_4_4_5.range(Z_0(576,0)), s_4_4_6.range(Z_0(576,0)), s_4_4_7.range(Z_0(576,0)), s_4_4_8.range(Z_0(576,0))}; 
+
+		int i_Z2_ARM_1[2*ORDER+1] = {s_4_4_0.range(Z_0(384,1)), s_4_4_1.range(Z_0(384,1)), s_4_4_2.range(Z_0(384,1)), s_4_4_3.range(Z_0(384,1)), s_4_4_4.range(Z_0(576,1)), s_4_4_5.range(Z_0(576,1)), s_4_4_6.range(Z_0(576,1)), s_4_4_7.range(Z_0(576,1)), s_4_4_8.range(Z_0(576,1))}; 
+
+		int i_Z2_ARM_2[2*ORDER+1] = {s_4_4_0.range(Z_0(384,2)), s_4_4_1.range(Z_0(384,2)), s_4_4_2.range(Z_0(384,2)), s_4_4_3.range(Z_0(384,2)), s_4_4_4.range(Z_0(576,2)), s_4_4_5.range(Z_0(576,2)), s_4_4_6.range(Z_0(576,2)), s_4_4_7.range(Z_0(576,2)), s_4_4_8.range(Z_0(576,2))}; 
+
+		int i_Z2_ARM_3[2*ORDER+1] = {s_4_4_0.range(Z_0(384,3)), s_4_4_1.range(Z_0(384,3)), s_4_4_2.range(Z_0(384,3)), s_4_4_3.range(Z_0(384,3)), s_4_4_4.range(Z_0(576,3)), s_4_4_5.range(Z_0(576,3)), s_4_4_6.range(Z_0(576,3)), s_4_4_7.range(Z_0(576,3)), s_4_4_8.range(Z_0(576,3))};
+
+		int i_Z2_ARM_4[2*ORDER+1] = {s_4_4_0.range(Z_0(384,4)), s_4_4_1.range(Z_0(384,4)), s_4_4_2.range(Z_0(384,4)), s_4_4_3.range(Z_0(384,4)), s_4_4_4.range(Z_0(576,4)), s_4_4_5.range(Z_0(576,4)), s_4_4_6.range(Z_0(576,4)), s_4_4_7.range(Z_0(576,4)), s_4_4_8.range(Z_0(576,4))};
+
+		int i_Z2_ARM_5[2*ORDER+1] = {s_4_4_0.range(Z_0(384,5)), s_4_4_1.range(Z_0(384,5)), s_4_4_2.range(Z_0(384,5)), s_4_4_3.range(Z_0(384,5)), s_4_4_4.range(Z_0(576,5)), s_4_4_5.range(Z_0(576,5)), s_4_4_6.range(Z_0(576,5)), s_4_4_7.range(Z_0(576,5)), s_4_4_8.range(Z_0(576,5))};
+
+		float Z2_ARM_0[2*ORDER+1], Z2_ARM_1[2*ORDER+1], Z2_ARM_2[2*ORDER+1], Z2_ARM_3[2*ORDER+1], Z2_ARM_4[2*ORDER+1], Z2_ARM_5[2*ORDER+1];
+		for(int i = 0; i < 2*ORDER+1; i++){
+			data_conv tmp;
+			tmp.i = i_Z2_ARM_0[i];
+			Z2_ARM_0[i] = tmp.f;
+
+			tmp.i = i_Z2_ARM_1[i];
+			Z2_ARM_1[i] = tmp.f;
+
+			tmp.i = i_Z2_ARM_2[i];
+			Z2_ARM_2[i] = tmp.f;
+
+			tmp.i = i_Z2_ARM_3[i];
+			Z2_ARM_3[i] = tmp.f;
+
+			tmp.i = i_Z2_ARM_4[i];
+			Z2_ARM_4[i] = tmp.f;
+
+			tmp.i = i_Z2_ARM_5[i];
+			Z2_ARM_5[i] = tmp.f;
+		}
+
+		float mem_wr_k0[PORT_WIDTH];
+		float mem_wr_k1[PORT_WIDTH];
+		float mem_wr_k2[PORT_WIDTH];
+
+		float mem_wr_k_dt0[PORT_WIDTH];
+		float mem_wr_k_dt1[PORT_WIDTH];
+		float mem_wr_k_dt2[PORT_WIDTH];
+
+		float mem_wr_y_tmp0[PORT_WIDTH];
+		float mem_wr_y_tmp1[PORT_WIDTH];
+		float mem_wr_y_tmp2[PORT_WIDTH];
+
+		float yy_final_arr0[PORT_WIDTH];
+		float yy_final_arr1[PORT_WIDTH];
+		float yy_final_arr2[PORT_WIDTH];
+
+
+		float s_4_4_4_arr0[PORT_WIDTH];
+		float s_4_4_4_arr1[PORT_WIDTH];
+		float s_4_4_4_arr2[PORT_WIDTH];
+
+		#define S_0(a,c) (a+32*(c+1) -1, a+32*c)
 		vec2s_4_4_4_arr: for(int k = 0; k < PORT_WIDTH; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			data_conv tmp;
-			tmp.i = s_4_4_4.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
-			s_4_4_4_arr[k] = tmp.f;
+			tmp.i = s_4_4_4.range(S_0(0,k));
+			s_4_4_4_arr0[k] = tmp.f;
+
+			tmp.i = s_4_4_4.range(S_0(256,k));
+			s_4_4_4_arr1[k] = tmp.f;
+
+			tmp.i = s_4_4_4.range(S_0(512,k));
+			s_4_4_4_arr2[k] = tmp.f;
 		}
 
+		// X-ARM
+		#pragma HLS ARRAY_PARTITION variable=X0_ARM_0 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X0_ARM_1 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X0_ARM_2 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X0_ARM_3 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X0_ARM_4 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X0_ARM_5 complete dim=1
+
+		#pragma HLS ARRAY_PARTITION variable=X1_ARM_0 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X1_ARM_1 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X1_ARM_2 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X1_ARM_3 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X1_ARM_4 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X1_ARM_5 complete dim=1
+
+		#pragma HLS ARRAY_PARTITION variable=X2_ARM_0 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X2_ARM_1 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X2_ARM_2 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X2_ARM_3 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X2_ARM_4 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=X2_ARM_5 complete dim=1
 
 
+		// Y-ARM
+		#pragma HLS ARRAY_PARTITION variable=Y0_ARM_0 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y0_ARM_1 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y0_ARM_2 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y0_ARM_3 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y0_ARM_4 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y0_ARM_5 complete dim=1
+
+		#pragma HLS ARRAY_PARTITION variable=Y1_ARM_0 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y1_ARM_1 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y1_ARM_2 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y1_ARM_3 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y1_ARM_4 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y1_ARM_5 complete dim=1
+
+		#pragma HLS ARRAY_PARTITION variable=Y2_ARM_0 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y2_ARM_1 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y2_ARM_2 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y2_ARM_3 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y2_ARM_4 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Y2_ARM_5 complete dim=1
 
 
-		#pragma HLS ARRAY_PARTITION variable=X_ARM_0 complete dim=1
-		#pragma HLS ARRAY_PARTITION variable=X_ARM_1 complete dim=1
-		#pragma HLS ARRAY_PARTITION variable=X_ARM_2 complete dim=1
-		#pragma HLS ARRAY_PARTITION variable=X_ARM_3 complete dim=1
-		#pragma HLS ARRAY_PARTITION variable=X_ARM_4 complete dim=1
-		#pragma HLS ARRAY_PARTITION variable=X_ARM_5 complete dim=1
+		// Z-ARM
+		#pragma HLS ARRAY_PARTITION variable=Z0_ARM_0 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z0_ARM_1 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z0_ARM_2 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z0_ARM_3 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z0_ARM_4 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z0_ARM_5 complete dim=1
 
-		#pragma HLS ARRAY_PARTITION variable=Y_ARM_0 complete dim=1
-		#pragma HLS ARRAY_PARTITION variable=Y_ARM_1 complete dim=1
-		#pragma HLS ARRAY_PARTITION variable=Y_ARM_2 complete dim=1
-		#pragma HLS ARRAY_PARTITION variable=Y_ARM_3 complete dim=1
-		#pragma HLS ARRAY_PARTITION variable=Y_ARM_4 complete dim=1
-		#pragma HLS ARRAY_PARTITION variable=Y_ARM_5 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z1_ARM_0 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z1_ARM_1 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z1_ARM_2 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z1_ARM_3 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z1_ARM_4 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z1_ARM_5 complete dim=1
 
-		#pragma HLS ARRAY_PARTITION variable=Z_ARM_0 complete dim=1
-		#pragma HLS ARRAY_PARTITION variable=Z_ARM_1 complete dim=1
-		#pragma HLS ARRAY_PARTITION variable=Z_ARM_2 complete dim=1
-		#pragma HLS ARRAY_PARTITION variable=Z_ARM_3 complete dim=1
-		#pragma HLS ARRAY_PARTITION variable=Z_ARM_4 complete dim=1
-		#pragma HLS ARRAY_PARTITION variable=Z_ARM_5 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z2_ARM_0 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z2_ARM_1 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z2_ARM_2 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z2_ARM_3 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z2_ARM_4 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=Z2_ARM_5 complete dim=1
 
-		#pragma HLS ARRAY_PARTITION variable=mem_wr complete dim=1
-		#pragma HLS ARRAY_PARTITION variable=s_4_4_4_arr complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=mem_wr_k0 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=mem_wr_k1 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=mem_wr_k2 complete dim=1
+
+		#pragma HLS ARRAY_PARTITION variable=s_4_4_4_arr0 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=s_4_4_4_arr1 complete dim=1
+		#pragma HLS ARRAY_PARTITION variable=s_4_4_4_arr2 complete dim=1
 
 
 
@@ -610,10 +893,27 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer0, hls::stre
 		array2vec: for(int k = 0; k < PORT_WIDTH; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			data_conv tmp;
-			bool change_cond = change_cond1 || change_cond2;
-			tmp.f = change_cond ? s_4_4_4_arr[k] : mem_wr_y_tmp[k];
-			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
+			bool change_cond = 1;//change_cond1 || change_cond2;
+			tmp.f = change_cond ? s_4_4_4_arr0[k] : mem_wr_y_tmp[k];
+			update0.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
+
+		array2vec: for(int k = 0; k < PORT_WIDTH; k++){
+			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
+			data_conv tmp;
+			bool change_cond = 1;//change_cond1 || change_cond2;
+			tmp.f = change_cond ? s_4_4_4_arr1[k] : mem_wr_y_tmp[k];
+			update1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
+		}
+
+		array2vec: for(int k = 0; k < PORT_WIDTH; k++){
+			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
+			data_conv tmp;
+			bool change_cond = 1;//change_cond1 || change_cond2;
+			tmp.f = change_cond ? s_4_4_4_arr2[k] : mem_wr_y_tmp[k];
+			update2.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
+		}
+
 
 		yy_final2vec: for(int k = 0; k < PORT_WIDTH; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
@@ -625,7 +925,9 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer0, hls::stre
 
 		bool cond_wr = (i >= ORDER) && ( i < grid_sizez + ORDER);
 		if(cond_wr ) {
-			wr_buffer <<  update_j;
+			wr_buffer0 <<  update0;
+			wr_buffer1 <<  update1;
+			wr_buffer2 <<  update2;
 //			yy <<  s_4_4_4;
 //			yy_final << yy_final_vec;
 		}
