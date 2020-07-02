@@ -186,12 +186,12 @@ void process_rtm_SLR2 (hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
 
 	axis2_fifo256(in, streamArray[0], gridsize_da);
 
-	derives_calc_ytep_k1( streamArray[0], streamArray[1], streamArray_yy[0], streamArray_yy_final[0], data_g);
-	derives_calc_ytep_k2( streamArray[1], streamArray_yy[0],streamArray_yy_final[0], streamArray[2], streamArray_yy[1],streamArray_yy_final[1], data_g);
-	derives_calc_ytep_k3( streamArray[2], streamArray_yy[1],streamArray_yy_final[1], streamArray[3], streamArray_yy[2],streamArray_yy_final[2], data_g);
-	derives_calc_ytep_k4( streamArray[3], streamArray_yy[2],streamArray_yy_final[2], streamArray[4],streamArray_yy[3],streamArray_yy_final[3], data_g);
+//	derives_calc_ytep_k1( streamArray[0], streamArray[1], streamArray_yy[0], streamArray_yy_final[0], data_g);
+//	derives_calc_ytep_k2( streamArray[1], streamArray_yy[0],streamArray_yy_final[0], streamArray[2], streamArray_yy[1],streamArray_yy_final[1], data_g);
+//	derives_calc_ytep_k3( streamArray[2], streamArray_yy[1],streamArray_yy_final[1], streamArray[3], streamArray_yy[2],streamArray_yy_final[2], data_g);
+//	derives_calc_ytep_k4( streamArray[3], streamArray_yy[2],streamArray_yy_final[2], streamArray[4],streamArray_yy[3],streamArray_yy_final[3], data_g);
 
-	fifo256_2axis(streamArray[4], out, gridsize_da);
+	fifo256_2axis(streamArray[0], out, gridsize_da);
 
 
 }

@@ -123,7 +123,7 @@ int main(int argc, char **argv)
   grid_d.act_sizez = logical_size_z + ORDER*2;
 
   // No vectorisation at the moment
-  grid_d.grid_size_x = grid_d.act_sizex;
+  grid_d.grid_size_x = grid_d.act_sizex % 3 == 0 ? grid_d.act_sizex : (grid_d.act_sizex/3 + 1)*3;
   grid_d.grid_size_y = grid_d.act_sizey;
   grid_d.grid_size_z = grid_d.act_sizez;
 
@@ -131,8 +131,11 @@ int main(int argc, char **argv)
   grid_d.data_size_bytes_dim1 = 1*grid_d.grid_size_x * grid_d.grid_size_y * grid_d.grid_size_z* sizeof(float) * batch;
   grid_d.data_size_bytes_dim6 = 6*grid_d.grid_size_x * grid_d.grid_size_y * grid_d.grid_size_z* sizeof(float) * batch;
   grid_d.data_size_bytes_dim8 = 8*grid_d.grid_size_x * grid_d.grid_size_y * grid_d.grid_size_z* sizeof(float) * batch;
+  int data_size_bytes_dim8_3 = grid_d.data_size_bytes_dim8/3;
   grid_d.dims = 8*grid_d.grid_size_x * grid_d.grid_size_y * grid_d.grid_size_z;
+  grid_d.batches = batch;
 
+  int xdim_aligned = grid_d.grid_size_x/3;
 
 
   // allocating storage for the grids on host
@@ -146,15 +149,22 @@ int main(int argc, char **argv)
   float * grid_k4                     = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim8);
 
   // storage for device transfers
-  // float * grid_rho_d    = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim1);
-  // float * grid_mu_d     = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim1);
   float * grid_yy_rho_mu_d     = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim8);
   float * grid_yy_rho_mu_temp_d  = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim8);
+
+  float * grid_yy_rho_mu_d0     = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim8/3);
+  float * grid_yy_rho_mu_temp_d0  = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim8/3);
+
+  float * grid_yy_rho_mu_d1     = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim8/3);
+  float * grid_yy_rho_mu_temp_d1  = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim8/3);
+
+  float * grid_yy_rho_mu_d2     = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim8/3);
+  float * grid_yy_rho_mu_temp_d2  = (float*)aligned_alloc(4096, grid_d.data_size_bytes_dim8/3);
 
   for(int i = 0; i < batch; i++){
 	  populate_rho_mu_yy(&grid_yy_rho_mu[grid_d.dims * i], grid_d);
   }
-  copy_grid(grid_yy_rho_mu, grid_yy_rho_mu_d, grid_d.data_size_bytes_dim8);
+  copy_grid_d(grid_yy_rho_mu, grid_yy_rho_mu_d0, grid_yy_rho_mu_d1, grid_yy_rho_mu_d2, grid_d);
   // stencil computation
 
   //OPENCL HOST CODE AREA START
@@ -185,8 +195,9 @@ int main(int argc, char **argv)
     auto end_p = std::chrono::high_resolution_clock::now();
 
     OCL_CHECK(err, cl::Kernel krnl_rtm_SLR0(program, "rtm_SLR0", &err));
-    OCL_CHECK(err, cl::Kernel krnl_rtm_SLR1(program, "rtm_SLR1", &err));
-    OCL_CHECK(err, cl::Kernel krnl_rtm_SLR2(program, "rtm_SLR2", &err));
+    OCL_CHECK(err, cl::Kernel Read_write0(program, "Read_write0", &err));
+    OCL_CHECK(err, cl::Kernel Read_write1(program, "Read_write1", &err));
+    OCL_CHECK(err, cl::Kernel Read_write2(program, "Read_write2", &err));
 
     std::chrono::duration<double> p_time = end_p - start_p;
     printf("time to program FPGA is : %f\n ", p_time.count());
@@ -195,49 +206,93 @@ int main(int argc, char **argv)
 
     //Allocate Buffer in Global Memory
     OCL_CHECK(err,
-              cl::Buffer buffer_input(context,
+              cl::Buffer buffer_input0(context,
                                       CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-                                      grid_d.data_size_bytes_dim8,
-                                      grid_yy_rho_mu_d,
+									  data_size_bytes_dim8_3,
+                                      grid_yy_rho_mu_d0,
                                       &err));
     OCL_CHECK(err,
-              cl::Buffer buffer_output(context,
+              cl::Buffer buffer_output0(context,
                                        CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-                                       grid_d.data_size_bytes_dim8,
-                                       grid_yy_rho_mu_temp_d,
+									   data_size_bytes_dim8_3,
+                                       grid_yy_rho_mu_temp_d0,
                                        &err));
+    OCL_CHECK(err,
+                  cl::Buffer buffer_input1(context,
+                                          CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
+										  data_size_bytes_dim8_3,
+                                          grid_yy_rho_mu_d1,
+                                          &err));
+	OCL_CHECK(err,
+			  cl::Buffer buffer_output1(context,
+									   CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
+									   data_size_bytes_dim8_3,
+									   grid_yy_rho_mu_temp_d1,
+									   &err));
+	OCL_CHECK(err,
+				  cl::Buffer buffer_input2(context,
+										  CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
+										  data_size_bytes_dim8_3,
+										  grid_yy_rho_mu_d2,
+										  &err));
+	OCL_CHECK(err,
+			  cl::Buffer buffer_output2(context,
+									   CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
+									   data_size_bytes_dim8_3,
+									   grid_yy_rho_mu_temp_d2,
+									   &err));
 
     //Set the Kernel Arguments
     int narg = 0;
-    OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, buffer_input));
-    OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, buffer_output));
     OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, grid_d.logical_size_x));
     OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, grid_d.logical_size_y));
     OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, grid_d.logical_size_z));
-    OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, grid_d.grid_size_x));
+    OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, grid_d.grid_size_x/3));
     OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, n_iter));
     OCL_CHECK(err, err = krnl_rtm_SLR0.setArg(narg++, batch));
 
     narg = 0;
-    OCL_CHECK(err, err = krnl_rtm_SLR1.setArg(narg++, grid_d.logical_size_x));
-    OCL_CHECK(err, err = krnl_rtm_SLR1.setArg(narg++, grid_d.logical_size_y));
-    OCL_CHECK(err, err = krnl_rtm_SLR1.setArg(narg++, grid_d.logical_size_z));
-    OCL_CHECK(err, err = krnl_rtm_SLR1.setArg(narg++, grid_d.grid_size_x));
-    OCL_CHECK(err, err = krnl_rtm_SLR1.setArg(narg++, n_iter));
-    OCL_CHECK(err, err = krnl_rtm_SLR1.setArg(narg++, batch));
+    OCL_CHECK(err, err = Read_write0.setArg(narg++, buffer_input0));
+    OCL_CHECK(err, err = Read_write0.setArg(narg++, buffer_output0));
+    OCL_CHECK(err, err = Read_write0.setArg(narg++, grid_d.logical_size_x));
+    OCL_CHECK(err, err = Read_write0.setArg(narg++, grid_d.logical_size_y));
+    OCL_CHECK(err, err = Read_write0.setArg(narg++, grid_d.logical_size_z));
+    OCL_CHECK(err, err = Read_write0.setArg(narg++, grid_d.grid_size_x/3));
+    OCL_CHECK(err, err = Read_write0.setArg(narg++, n_iter));
+    OCL_CHECK(err, err = Read_write0.setArg(narg++, batch));
 
     narg = 0;
-    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, grid_d.logical_size_x));
-    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, grid_d.logical_size_y));
-    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, grid_d.logical_size_z));
-    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, grid_d.grid_size_x));
-    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, n_iter));
-    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, batch));
+    OCL_CHECK(err, err = Read_write1.setArg(narg++, buffer_input1));
+    OCL_CHECK(err, err = Read_write1.setArg(narg++, buffer_output1));
+    OCL_CHECK(err, err = Read_write1.setArg(narg++, grid_d.logical_size_x));
+    OCL_CHECK(err, err = Read_write1.setArg(narg++, grid_d.logical_size_y));
+    OCL_CHECK(err, err = Read_write1.setArg(narg++, grid_d.logical_size_z));
+    OCL_CHECK(err, err = Read_write1.setArg(narg++, grid_d.grid_size_x/3));
+    OCL_CHECK(err, err = Read_write1.setArg(narg++, n_iter));
+    OCL_CHECK(err, err = Read_write1.setArg(narg++, batch));
+
+    narg = 0;
+    OCL_CHECK(err, err = Read_write2.setArg(narg++, buffer_input2));
+    OCL_CHECK(err, err = Read_write2.setArg(narg++, buffer_output2));
+    OCL_CHECK(err, err = Read_write2.setArg(narg++, grid_d.logical_size_x));
+    OCL_CHECK(err, err = Read_write2.setArg(narg++, grid_d.logical_size_y));
+    OCL_CHECK(err, err = Read_write2.setArg(narg++, grid_d.logical_size_z));
+    OCL_CHECK(err, err = Read_write2.setArg(narg++, grid_d.grid_size_x/3));
+    OCL_CHECK(err, err = Read_write2.setArg(narg++, n_iter));
+    OCL_CHECK(err, err = Read_write2.setArg(narg++, batch));
+//
+//    narg = 0;
+//    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, grid_d.logical_size_x));
+//    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, grid_d.logical_size_y));
+//    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, grid_d.logical_size_z));
+//    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, grid_d.grid_size_x/3));
+//    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, n_iter));
+//    OCL_CHECK(err, err = krnl_rtm_SLR2.setArg(narg++, batch));
 
 
     //Copy input data to device global memory
     OCL_CHECK(err,
-              err = q.enqueueMigrateMemObjects({buffer_input},
+              err = q.enqueueMigrateMemObjects({buffer_input0,buffer_input1,buffer_input2},
                                                0 /* 0 means from host*/));
     q.finish();
     usleep(100000);
@@ -247,51 +302,56 @@ int main(int argc, char **argv)
 
 
 	OCL_CHECK(err, err = q.enqueueTask(krnl_rtm_SLR0));
-	OCL_CHECK(err, err = q.enqueueTask(krnl_rtm_SLR1));
-	OCL_CHECK(err, err = q.enqueueTask(krnl_rtm_SLR2));
+	OCL_CHECK(err, err = q.enqueueTask(Read_write0));
+	OCL_CHECK(err, err = q.enqueueTask(Read_write1));
+	OCL_CHECK(err, err = q.enqueueTask(Read_write2));
 	q.finish();
 
     auto finish = std::chrono::high_resolution_clock::now();
     //Copy Result from Device Global Memory to Host Local Memory
     OCL_CHECK(err,
-              err = q.enqueueMigrateMemObjects({buffer_input},
+              err = q.enqueueMigrateMemObjects({buffer_input0, buffer_output0},
                                                CL_MIGRATE_MEM_OBJECT_HOST));
-    q.finish();
 
     OCL_CHECK(err,
-                 err = q.enqueueMigrateMemObjects({buffer_output},
-                                                  CL_MIGRATE_MEM_OBJECT_HOST));
+                  err = q.enqueueMigrateMemObjects({buffer_input1, buffer_output1},
+                                                   CL_MIGRATE_MEM_OBJECT_HOST));
 
+    OCL_CHECK(err,
+                      err = q.enqueueMigrateMemObjects({buffer_input2, buffer_output2},
+                                                       CL_MIGRATE_MEM_OBJECT_HOST));
     q.finish();
 
+    copy_grid_h(grid_yy_rho_mu_d, grid_yy_rho_mu_d0, grid_yy_rho_mu_d1,grid_yy_rho_mu_d2  , grid_d);
+    copy_grid_h(grid_yy_rho_mu_temp_d, grid_yy_rho_mu_temp_d0, grid_yy_rho_mu_temp_d1, grid_yy_rho_mu_temp_d2, grid_d);
 
 
    dump_rho_mu_yy(grid_yy_rho_mu_temp_d, grid_d, (char*)"rho_d.txt", (char*)"mu_d.txt", (char*)"yy_d.txt");
-   float dt = 0.1;
-   for(int i = 0; i < batch; i++){
-	   for(int itr = 0; itr < n_iter*6; itr++){
-		   fd3d_pml_kernel(&grid_yy_rho_mu[grid_d.dims * i], &grid_k1[grid_d.dims * i], grid_d);
-		   calc_ytemp_kernel(&grid_yy_rho_mu[grid_d.dims * i], &grid_k1[grid_d.dims * i], dt, &grid_yy_rho_mu_temp[grid_d.dims * i], 0.5, grid_d);
-
-
-	//
-		   fd3d_pml_kernel(&grid_yy_rho_mu_temp[grid_d.dims * i], &grid_k2[grid_d.dims * i], grid_d);
-		   calc_ytemp_kernel(&grid_yy_rho_mu[grid_d.dims * i], &grid_k2[grid_d.dims * i], dt, &grid_yy_rho_mu_temp[grid_d.dims * i], 0.5, grid_d);
-
-		   fd3d_pml_kernel(&grid_yy_rho_mu_temp[grid_d.dims * i], &grid_k3[grid_d.dims * i], grid_d);
-		   calc_ytemp_kernel(&grid_yy_rho_mu[grid_d.dims * i], &grid_k3[grid_d.dims * i], dt, &grid_yy_rho_mu_temp[grid_d.dims * i], 1.0, grid_d);
-	//
-	//
-	//
-	//
-		   fd3d_pml_kernel(&grid_yy_rho_mu_temp[grid_d.dims * i], &grid_k4[grid_d.dims * i], grid_d);
-		   final_update_kernel(&grid_yy_rho_mu[grid_d.dims * i], &grid_k1[grid_d.dims * i], &grid_k2[grid_d.dims * i], &grid_k3[grid_d.dims * i], &grid_k4[grid_d.dims * i], dt, grid_d);
-
-
-
-	//       fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_yy_rho_mu, grid_d);
-	   }
-   }
+//   float dt = 0.1;
+//   for(int i = 0; i < batch; i++){
+//	   for(int itr = 0; itr < n_iter*2; itr++){
+//		   fd3d_pml_kernel(&grid_yy_rho_mu[grid_d.dims * i], &grid_k1[grid_d.dims * i], grid_d);
+//		   calc_ytemp_kernel(&grid_yy_rho_mu[grid_d.dims * i], &grid_k1[grid_d.dims * i], dt, &grid_yy_rho_mu_temp[grid_d.dims * i], 0.5, grid_d);
+//
+//
+//	//
+////		   fd3d_pml_kernel(&grid_yy_rho_mu_temp[grid_d.dims * i], &grid_k2[grid_d.dims * i], grid_d);
+////		   calc_ytemp_kernel(&grid_yy_rho_mu[grid_d.dims * i], &grid_k2[grid_d.dims * i], dt, &grid_yy_rho_mu_temp[grid_d.dims * i], 0.5, grid_d);
+////
+////		   fd3d_pml_kernel(&grid_yy_rho_mu_temp[grid_d.dims * i], &grid_k3[grid_d.dims * i], grid_d);
+////		   calc_ytemp_kernel(&grid_yy_rho_mu[grid_d.dims * i], &grid_k3[grid_d.dims * i], dt, &grid_yy_rho_mu_temp[grid_d.dims * i], 1.0, grid_d);
+////	//
+////	//
+////	//
+////	//
+////		   fd3d_pml_kernel(&grid_yy_rho_mu_temp[grid_d.dims * i], &grid_k4[grid_d.dims * i], grid_d);
+////		   final_update_kernel(&grid_yy_rho_mu[grid_d.dims * i], &grid_k1[grid_d.dims * i], &grid_k2[grid_d.dims * i], &grid_k3[grid_d.dims * i], &grid_k4[grid_d.dims * i], dt, grid_d);
+//
+//
+//
+//	//       fd3d_pml_kernel(grid_yy_rho_mu_temp, grid_yy_rho_mu, grid_d);
+//	   }
+//   }
    dump_rho_mu_yy(grid_yy_rho_mu, grid_d, (char*)"rho.txt", (char*)"mu.txt", (char*)"yy.txt");
 
 	
@@ -301,7 +361,7 @@ int main(int argc, char **argv)
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
   double error = 0;
   for(int i = 0; i < batch; i++){
-	  error = square_error(&grid_yy_rho_mu[grid_d.dims * i], &grid_yy_rho_mu_d[grid_d.dims * i] , grid_d);
+	  error = square_error(&grid_yy_rho_mu[grid_d.dims * i], &grid_yy_rho_mu_temp_d[grid_d.dims * i] , grid_d);
 	  printf("batch:%d, Square error is  %f\n", batch, error);
   }
   float bandwidth = (grid_d.data_size_bytes_dim8/1000.0 * 4.0 * n_iter)/(elapsed.count() * 1000 * 1000);
@@ -326,5 +386,21 @@ int main(int argc, char **argv)
 //      }printf("\n");
 //    }printf("\n");
 //  }
+  free(grid_yy_rho_mu);
+  free(grid_yy_rho_mu_temp);
+  free(grid_k1);
+  free(grid_k2);
+  free(grid_k3);
+  free(grid_k4);
+
+  free(grid_yy_rho_mu_d);
+  free(grid_yy_rho_mu_temp_d);
+  free(grid_yy_rho_mu_d0);
+  free(grid_yy_rho_mu_temp_d0);
+  free(grid_yy_rho_mu_d1);
+  free(grid_yy_rho_mu_temp_d1);
+  free(grid_yy_rho_mu_d2);
+  free(grid_yy_rho_mu_temp_d2);
+
   return 0;
 }

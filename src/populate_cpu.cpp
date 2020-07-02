@@ -5,8 +5,21 @@
 #include "rtm.h"
 
 
-int copy_grid(float* grid_s, float* grid_d, int grid_size){
-    memcpy(grid_d, grid_s, grid_size);
+int copy_grid_d(float* grid_yy_rho_mu, float* grid_yy_rho_mu_d0, float* grid_yy_rho_mu_d1, float* grid_yy_rho_mu_d2, struct Grid_d grid_d){
+	for(int i = 0; i < 8*grid_d.grid_size_x/3 * grid_d.grid_size_y * grid_d.grid_size_z * grid_d.batches; i = i+8){
+		memcpy(&grid_yy_rho_mu_d0[i], &grid_yy_rho_mu[i*3],32);
+		memcpy(&grid_yy_rho_mu_d1[i], &grid_yy_rho_mu[i*3+8],32);
+		memcpy(&grid_yy_rho_mu_d2[i], &grid_yy_rho_mu[i*3+16],32);
+	}
+    return 0;
+}
+
+int copy_grid_h(float* grid_yy_rho_mu, float* grid_yy_rho_mu_d0, float* grid_yy_rho_mu_d1, float* grid_yy_rho_mu_d2, struct Grid_d grid_d){
+	for(int i = 0; i < 8*grid_d.grid_size_x/3 * grid_d.grid_size_y * grid_d.grid_size_z * grid_d.batches; i = i + 8){
+		memcpy(&grid_yy_rho_mu[i*3], &grid_yy_rho_mu_d0[i],32);
+		memcpy(&grid_yy_rho_mu[i*3+8], &grid_yy_rho_mu_d1[i],32);
+		memcpy(&grid_yy_rho_mu[i*3+16], &grid_yy_rho_mu_d2[i],32);
+	}
     return 0;
 }
 
@@ -31,7 +44,7 @@ int populate_rho_mu_yy(float* grid, struct Grid_d grid_d){
           grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 1] = 0.001f;
           grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + 2] = (1.0/3) * C * exp(-(x*x+y*y+z*z)/r0);
           for(int p = 3; p < 8; p++){
-            grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p] = 0.0;
+            grid[i * grid_d.grid_size_x * grid_d.grid_size_y * 8 + j * grid_d.grid_size_x * 8 + k*8 + p] = 0.1*p;
           }
         }
       }

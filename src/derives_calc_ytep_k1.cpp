@@ -625,8 +625,8 @@ static void derives_calc_ytep_k1( hls::stream<uint256_dt> &rd_buffer, hls::strea
 		bool cond_wr = (i >= ORDER) && ( i < grid_sizez + ORDER);
 		if(cond_wr ) {
 			wr_buffer <<  update_j;
-			yy <<  s_4_4_4;
-			yy_final << yy_final_vec;
+//			yy <<  s_4_4_4;
+//			yy_final << yy_final_vec;
 		}
 
 		// move the cell block

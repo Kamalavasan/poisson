@@ -19,6 +19,7 @@ struct Grid_d
 	int data_size_bytes_dim1;
 	int data_size_bytes_dim6;
 	int data_size_bytes_dim8;
+	int batches;
 
 };
 
@@ -28,7 +29,8 @@ int dump_rho_mu_yy(float* grid, struct Grid_d grid_d);
 int dump_rho_mu_yy(float* grid, struct Grid_d grid_d, char* n_rho, char* n_mu, char* n_yy);
 double square_error(float* current, float* next, struct Grid_d grid_d);
 
-int copy_grid(float* grid_s, float* grid_d, int grid_size);
+int copy_grid_d(float* grid_yy_rho_mu, float* grid_yy_rho_mu_d0, float* grid_yy_rho_mu_d1, float* grid_yy_rho_mu_d2, struct Grid_d grid_d);
+int copy_grid_h(float* grid_yy_rho_mu, float* grid_yy_rho_mu_d0, float* grid_yy_rho_mu_d1, float* grid_yy_rho_mu_d2, struct Grid_d grid_d);
 inline int caculate_index(struct Grid_d grid_d, int z, int y, int x, int pt);
 void fd3d_pml_kernel(float* yy, float* dyy, struct Grid_d grid_d);
 int final_update_kernel(float* rho_mu_yy, float* k_grid1, float* k_grid2, float* k_grid3, float* k_grid4, float dt, struct Grid_d grid_d);

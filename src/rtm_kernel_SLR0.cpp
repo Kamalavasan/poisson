@@ -7,7 +7,7 @@
 
 
 
-
+typedef ap_uint<768> uint768_dt;
 typedef ap_uint<512> uint512_dt;
 typedef ap_uint<256> uint256_dt;
 typedef ap_uint<192> uint192_dt;
@@ -67,6 +67,7 @@ struct data_G{
 	unsigned int gridsize_pr;
 	unsigned int plane_diff;
 	unsigned int plane_size;
+	unsigned int plane_size_3;
 	unsigned int line_diff;
 	unsigned short outer_loop_limit;
 };
@@ -75,51 +76,6 @@ struct data_G{
 #include "derives_calc_ytep_k2.cpp"
 #include "derives_calc_ytep_k3.cpp"
 #include "derives_calc_ytep_k4.cpp"
-
-
-static void read_row(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, const int gridsize_da){
-	unsigned int itr_limit = (gridsize_da >> 1);
-	for (int itr = 0; itr < itr_limit; itr++){
-		#pragma HLS PIPELINE II=1
-		#pragma HLS loop_tripcount min=min_grid_2 max=max_grid_2 avg=avg_grid_2
-		rd_buffer << arg0[itr];
-	}
-}
-
-
-static void stream_convert_512_256(hls::stream<uint512_dt> &in, hls::stream<uint256_dt> &out,  const int gridsize_da){
-	unsigned int itr_limit = (gridsize_da >> 1);
-	for (int itr = 0; itr < itr_limit; itr++){
-		#pragma HLS PIPELINE II=2
-		#pragma HLS loop_tripcount min=min_grid_2 max=max_grid_2 avg=avg_grid_2
-		uint512_dt tmp = in.read();
-		uint256_dt var_l = tmp.range(255,0);
-		uint256_dt var_h = tmp.range(511,256);;
-		out << var_l;
-		out << var_h;
-	}
-}
-
-static void stream_convert_256_512(hls::stream<uint256_dt> &in, hls::stream<uint512_dt> &out,const int gridsize_da){
-	unsigned int itr_limit = (gridsize_da >> 1);
-	for (int itr = 0; itr < itr_limit; itr++){
-		#pragma HLS PIPELINE II=2
-		#pragma HLS loop_tripcount min=min_grid_2 max=max_grid_2 avg=avg_grid_2
-		uint512_dt tmp;
-		tmp.range(255,0) = in.read();
-		tmp.range(511,256) = in.read();
-		out << tmp;
-	}
-}
-
-static void write_row( uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, const int gridsize_da){
-	unsigned int itr_limit = (gridsize_da >> 1);
-	for (int itr = 0; itr < itr_limit; itr++){
-		#pragma HLS loop_tripcount min=min_grid_2 max=max_grid_2 avg=avg_grid_2
-		#pragma HLS PIPELINE II=1
-		arg1[itr] =  wr_buffer.read();
-	}
-}
 
 
 static void axis2_fifo256(hls::stream <t_pkt> &in, hls::stream<uint256_dt> &out, const int gridsize_da){
@@ -142,22 +98,24 @@ static void fifo256_2axis(hls::stream <uint256_dt> &in, hls::stream<t_pkt> &out,
 	}
 }
 
-void process_rtm_SLR0 (uint512_dt*  arg0, uint512_dt*  arg1, hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
-		const int sizex, const int sizey, const int sizez, const int xdim_aigned, const int batch){
+void process_rtm_SLR0 ( hls::stream <t_pkt> &in0, hls::stream <t_pkt> &out0,
+						hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1,
+						hls::stream <t_pkt> &in2, hls::stream <t_pkt> &out2,
+					   const int sizex, const int sizey, const int sizez, const int xdim_aigned, const int batch){
 
 
-    static hls::stream<uint256_dt> streamArray[40 + 1];
-    static hls::stream<uint256_dt> streamArray_yy[40 + 1];
-    static hls::stream<uint256_dt> streamArray_yy_final[40 + 1];
-    static hls::stream<uint512_dt> rd_buffer;
-    static hls::stream<uint512_dt> wr_buffer;
+    static hls::stream<uint768_dt> streamArray[40 + 1];
+    static hls::stream<uint768_dt> streamArray_yy[40 + 1];
+    static hls::stream<uint768_dt> streamArray_yy_final[40 + 1];
+    static hls::stream<uint256_dt> rd_bufferArr[3];
+    static hls::stream<uint256_dt> wr_bufferArr[3];
 
     #pragma HLS STREAM variable = streamArray depth = 2
     #pragma HLS STREAM variable = streamArray_yy depth = 2
 	#pragma HLS STREAM variable = streamArray_yy_final depth = 2
 
-	#pragma HLS STREAM variable = rd_buffer depth = max_depth_8
-	#pragma HLS STREAM variable = wr_buffer depth = max_depth_8
+	#pragma HLS STREAM variable = rd_bufferArr depth = max_depth_8
+	#pragma HLS STREAM variable = wr_bufferArr depth = max_depth_8
 
     struct data_G data_g;
     data_g.sizex = sizex;
@@ -171,31 +129,37 @@ void process_rtm_SLR0 (uint512_dt*  arg0, uint512_dt*  arg1, hls::stream <t_pkt>
 
 	unsigned short grid_sizey_4 = (data_g.grid_sizey - 4);
 	data_g.plane_size = data_g.grid_sizex * data_g.grid_sizey;
+	data_g.plane_size_3 = xdim_aigned * data_g.grid_sizey;
 
 	data_g.plane_diff = data_g.grid_sizex * grid_sizey_4;
 	data_g.line_diff = data_g.grid_sizex - 4;
-	data_g.gridsize_pr = data_g.plane_size * (data_g.limit_z) * batch;
+	data_g.gridsize_pr = data_g.plane_size_3 * (data_g.limit_z) * batch;
 
-	unsigned int gridsize_da = data_g.plane_size * (data_g.grid_sizez)* batch;
+	unsigned int gridsize_da = data_g.plane_size_3 * (data_g.grid_sizez)* batch;
 
 
 	#pragma HLS dataflow
 
-	read_row(arg0, rd_buffer, gridsize_da);
-	stream_convert_512_256(rd_buffer, streamArray[0], gridsize_da);
+	axis2_fifo256(in0, rd_bufferArr[0], gridsize_da);
+	axis2_fifo256(in1, rd_bufferArr[1], gridsize_da);
+	axis2_fifo256(in2, rd_bufferArr[2], gridsize_da);
+
+//	stream_convert_1536_768(rd_bufferArr[0], rd_bufferArr[1], rd_bufferArr[2], streamArray[0], gridsize_da);
 
 
 
-	derives_calc_ytep_k1( streamArray[0], streamArray[1], streamArray_yy[0], streamArray_yy_final[0], data_g);
-	derives_calc_ytep_k2( streamArray[1], streamArray_yy[0],streamArray_yy_final[0], streamArray[2], streamArray_yy[1],streamArray_yy_final[1], data_g);
-	derives_calc_ytep_k3( streamArray[2], streamArray_yy[1],streamArray_yy_final[1], streamArray[3], streamArray_yy[2],streamArray_yy_final[2], data_g);
-	derives_calc_ytep_k4( streamArray[3], streamArray_yy[2],streamArray_yy_final[2], streamArray[4],streamArray_yy[3],streamArray_yy_final[3], data_g);
+//	derives_calc_ytep_k1( streamArray[0], streamArray[1], streamArray_yy[0], streamArray_yy_final[0], data_g);
+//	derives_calc_ytep_k2( streamArray[1], streamArray_yy[0],streamArray_yy_final[0], streamArray[2], streamArray_yy[1],streamArray_yy_final[1], data_g);
+//	derives_calc_ytep_k3( streamArray[2], streamArray_yy[1],streamArray_yy_final[1], streamArray[3], streamArray_yy[2],streamArray_yy_final[2], data_g);
+//	derives_calc_ytep_k4( streamArray[3], streamArray_yy[2],streamArray_yy_final[2], streamArray[4],streamArray_yy[3],streamArray_yy_final[3], data_g);
 
-	fifo256_2axis(streamArray[4], out, gridsize_da);
-	axis2_fifo256(in, streamArray[5], gridsize_da);
+//	fifo256_2axis(streamArray[1], out, gridsize_da);
+//	axis2_fifo256(in, streamArray[5], gridsize_da);
 
-	stream_convert_256_512(streamArray[5], wr_buffer, gridsize_da);
-	write_row(arg1, wr_buffer, gridsize_da);
+//	stream_convert_768_1536(streamArray[0], wr_bufferArr[0], wr_bufferArr[1], wr_bufferArr[2], gridsize_da);
+	fifo256_2axis(rd_bufferArr[0],out0, gridsize_da);
+	fifo256_2axis(rd_bufferArr[1],out1, gridsize_da);
+	fifo256_2axis(rd_bufferArr[2],out2, gridsize_da);
 
 
 }
@@ -207,21 +171,19 @@ void process_rtm_SLR0 (uint512_dt*  arg0, uint512_dt*  arg1, hls::stream <t_pkt>
 
 extern "C" {
 void rtm_SLR0(
-		uint512_dt*  arg0,
-		uint512_dt*  arg1,
 		const int sizex,
 		const int sizey,
 		const int sizez,
 		const int xdim_aligned,
 		const int count,
 		const int batch,
-		hls::stream <t_pkt> &in,
-		hls::stream <t_pkt> &out){
+		hls::stream <t_pkt> &in0,
+		hls::stream <t_pkt> &out0,
+		hls::stream <t_pkt> &in1,
+		hls::stream <t_pkt> &out1,
+		hls::stream <t_pkt> &in2,
+		hls::stream <t_pkt> &out2){
 
-	#pragma HLS INTERFACE depth=4096 m_axi port = arg0 offset = slave bundle = gmem0 max_read_burst_length=256 max_write_burst_length=256
-	#pragma HLS INTERFACE depth=4096 m_axi port = arg1 offset = slave bundle = gmem1 max_read_burst_length=256 max_write_burst_length=256
-	#pragma HLS INTERFACE s_axilite port = arg0 bundle = control
-	#pragma HLS INTERFACE s_axilite port = arg1 bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizex bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizey bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizez bundle = control
@@ -229,14 +191,18 @@ void rtm_SLR0(
 	#pragma HLS INTERFACE s_axilite port = count bundle = control
 	#pragma HLS INTERFACE s_axilite port = batch bundle = control
 	#pragma HLS INTERFACE s_axilite port = return bundle = control
-	#pragma HLS INTERFACE axis port = in register
-	#pragma HLS INTERFACE axis port = out register
+	#pragma HLS INTERFACE axis port = in0 register
+	#pragma HLS INTERFACE axis port = out0 register
+	#pragma HLS INTERFACE axis port = in1 register
+	#pragma HLS INTERFACE axis port = out1 register
+	#pragma HLS INTERFACE axis port = in2 register
+	#pragma HLS INTERFACE axis port = out2 register
 
 
-	for(int i =  0; i < count; i++){
+	for(int i =  0; i < 2*count; i++){
 	#pragma HLS loop_tripcount min=10 max=1000 avg=1000
-		process_rtm_SLR0(arg0, arg1, in, out, sizex, sizey, sizez, xdim_aligned, batch);
-		process_rtm_SLR0(arg1, arg0, in, out, sizex, sizey, sizez, xdim_aligned, batch);
+		process_rtm_SLR0(in0, out0, in1, out1, in2, out2, sizex, sizey, sizez, xdim_aligned, batch);
+//		process_rtm_SLR0(arg1, arg0, in, out, sizex, sizey, sizez, xdim_aligned, batch);
 	}
 
 }
