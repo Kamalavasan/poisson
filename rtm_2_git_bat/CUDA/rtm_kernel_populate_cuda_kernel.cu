@@ -99,7 +99,7 @@ ops_rtm_kernel_populate(const int dispx_p, const int dispy_p, const int dispz_p,
     rho(0, 0, 0) = 1000.0f;
     mu(0, 0, 0) = 0.001f;
 
-    yy(0, 0, 0, 0) = (1. / 3.) * C * exp(-(x * x + y * y + z * z) / r0);
+    yy(0, 0, 0, 0) = (1.0f / 3.0f) * C * exp(-(x * x + y * y + z * z) / r0);
   }
 }
 
