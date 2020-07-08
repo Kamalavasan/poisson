@@ -310,7 +310,7 @@ int main(int argc, char **argv) {
   }
 
   ops_timers(&ct0, &it1);
-  ops_print_dat_to_txtfile(yy, "yy.txt");
+  // ops_print_dat_to_txtfile(yy, "yy.txt");
 
   ops_timers(&ct1, &et1);
   ops_timing_output(stdout);

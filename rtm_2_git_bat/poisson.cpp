@@ -369,7 +369,7 @@ int main(int argc,  char **argv)
 //#endif
   // ops_execute();
   ops_timers(&ct0, &it1);
-   ops_print_dat_to_txtfile(yy, "yy.txt");
+   // ops_print_dat_to_txtfile(yy, "yy.txt");
 
   //ops_print_dat_to_txtfile(u[0], "poisson.dat");
   //ops_print_dat_to_txtfile(ref[0], "poisson.dat");

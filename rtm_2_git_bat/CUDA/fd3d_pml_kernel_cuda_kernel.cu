@@ -454,13 +454,13 @@ void ops_par_loop_fd3d_pml_kernel_execute(const char *name, ops_block block,
     ops_timers_core(&__c1, &__t1);
     OPS_instance::getOPSInstance()->OPS_kernels[1].mpi_time += __t1 - __t2;
     OPS_instance::getOPSInstance()->OPS_kernels[1].transfer +=
-        ops_compute_transfer(dim, start, end, &arg4);
+        ops_compute_transfer(dim, start, end, &arg4)*block->count;
     OPS_instance::getOPSInstance()->OPS_kernels[1].transfer +=
-        ops_compute_transfer(dim, start, end, &arg5);
+        ops_compute_transfer(dim, start, end, &arg5)*block->count;
     OPS_instance::getOPSInstance()->OPS_kernels[1].transfer +=
-        ops_compute_transfer(dim, start, end, &arg6);
+        ops_compute_transfer(dim, start, end, &arg6)*block->count;
     OPS_instance::getOPSInstance()->OPS_kernels[1].transfer +=
-        ops_compute_transfer(dim, start, end, &arg7);
+        ops_compute_transfer(dim, start, end, &arg7)*block->count;
   }
 }
 
