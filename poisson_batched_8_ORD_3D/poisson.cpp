@@ -72,6 +72,8 @@ int main(int argc, char **argv)
   int itertile = n_iter;
   int non_copy = 0;
 
+  int num_systems = 100;
+
   const char* pch;
   for ( int n = 1; n < argc; n++ ) {
     pch = strstr(argv[n], "-sizex=");
@@ -94,6 +96,10 @@ int main(int argc, char **argv)
     if(pch != NULL) {
       itertile = atoi ( argv[n] + 7 ); continue;
     }
+    pch = strstr(argv[n], "-batch=");
+    if(pch != NULL) {
+      num_systems = atoi ( argv[n] + 7 ); continue;
+    }
     pch = strstr(argv[n], "-non-copy");
     if(pch != NULL) {
       non_copy = 1; continue;
@@ -111,7 +117,7 @@ int main(int argc, char **argv)
   //declare blocks
   char buf[50];
   sprintf(buf,"block");
-  ops_block blocks = ops_decl_block(3,buf);
+  ops_block blocks = ops_decl_block_batch(3,"block", num_systems, OPS_BATCHED);
 
 
   //declare stencils
@@ -136,7 +142,7 @@ int main(int argc, char **argv)
 
   ops_stencil S3D_00_P10_M10_0P1_0M1 = ops_decl_stencil( 3, 27, s3D_00_P10_M10_0P1_0M1, "00:10:-10:01:0-1");
 
-  ops_reduction red_err = ops_decl_reduction_handle(sizeof(double), "double", "err");
+  ops_reduction red_err = ops_decl_reduction_handle_batch(sizeof(double), "double", "err", num_systems);
 
   //declare datasets
   int d_p[3] = {1,1,1}; //max halo depths for the dat in the possitive direction
@@ -193,6 +199,8 @@ int main(int argc, char **argv)
   ops_checkpointing_init("check.h5", 5.0, 0);
 	ops_diagnostic_output();
   /**-------------------------- Computations --------------------------**/
+
+  ops_par_loop_blocks_all(num_systems);
 
 
   double ct0, ct1, et0, et1;
