@@ -7,12 +7,12 @@ static int dims_poisson_kernel_error_h[3][4] = {0};
 // user function
 
 __global__ void ops_poisson_kernel_error(
-    double *__restrict u_p, double *__restrict ref_p, double *__restrict err_p,
+    float *__restrict u_p, float *__restrict ref_p, float *__restrict err_p,
     int bounds_0_l, int bounds_0_u, int bounds_1_l, int bounds_1_u,
     int bounds_2_l, int bounds_2_u, int bounds_3_l, int bounds_3_u) {
 
-  double err[1];
-  err[0] = ZERO_double;
+  float err[1];
+  err[0] = ZERO_float;
 
   int n_2 = bounds_2_l + blockDim.z * blockIdx.z + threadIdx.z;
   int n_3 = n_2 / (bounds_2_u - bounds_2_l);
@@ -24,24 +24,24 @@ __global__ void ops_poisson_kernel_error(
 
   if (n_0 < bounds_0_u && n_1 < bounds_1_u && n_2 < bounds_2_u &&
       n_3 < bounds_3_u) {
-    const ACC<double> u(dims_poisson_kernel_error[0][0],
-                        dims_poisson_kernel_error[0][1],
-                        dims_poisson_kernel_error[0][2],
-                        u_p + n_0 + n_1 * dims_poisson_kernel_error[0][0] +
-                            n_2 * dims_poisson_kernel_error[0][0] *
-                                dims_poisson_kernel_error[0][1] +
-                            n_3 * dims_poisson_kernel_error[0][0] *
-                                dims_poisson_kernel_error[0][1] *
-                                dims_poisson_kernel_error[0][2]);
-    const ACC<double> ref(dims_poisson_kernel_error[1][0],
-                          dims_poisson_kernel_error[1][1],
-                          dims_poisson_kernel_error[1][2],
-                          ref_p + n_0 + n_1 * dims_poisson_kernel_error[1][0] +
-                              n_2 * dims_poisson_kernel_error[1][0] *
-                                  dims_poisson_kernel_error[1][1] +
-                              n_3 * dims_poisson_kernel_error[1][0] *
-                                  dims_poisson_kernel_error[1][1] *
-                                  dims_poisson_kernel_error[1][2]);
+    const ACC<float> u(dims_poisson_kernel_error[0][0],
+                       dims_poisson_kernel_error[0][1],
+                       dims_poisson_kernel_error[0][2],
+                       u_p + n_0 + n_1 * dims_poisson_kernel_error[0][0] +
+                           n_2 * dims_poisson_kernel_error[0][0] *
+                               dims_poisson_kernel_error[0][1] +
+                           n_3 * dims_poisson_kernel_error[0][0] *
+                               dims_poisson_kernel_error[0][1] *
+                               dims_poisson_kernel_error[0][2]);
+    const ACC<float> ref(dims_poisson_kernel_error[1][0],
+                         dims_poisson_kernel_error[1][1],
+                         dims_poisson_kernel_error[1][2],
+                         ref_p + n_0 + n_1 * dims_poisson_kernel_error[1][0] +
+                             n_2 * dims_poisson_kernel_error[1][0] *
+                                 dims_poisson_kernel_error[1][1] +
+                             n_3 * dims_poisson_kernel_error[1][0] *
+                                 dims_poisson_kernel_error[1][1] *
+                                 dims_poisson_kernel_error[1][2]);
 
     *err = *err + (u(0, 0, 0) - ref(0, 0, 0)) * (u(0, 0, 0) - ref(0, 0, 0));
   }
@@ -174,23 +174,23 @@ void ops_par_loop_poisson_kernel_error_execute(
   }
 
   // set up initial pointers
-  double *__restrict__ u_p =
-      (double *)(args[0].data_d + args[0].dat->base_offset +
-                 blockidx_start * args[0].dat->batch_offset);
+  float *__restrict__ u_p =
+      (float *)(args[0].data_d + args[0].dat->base_offset +
+                blockidx_start * args[0].dat->batch_offset);
 
-  double *__restrict__ ref_p =
-      (double *)(args[1].data_d + args[1].dat->base_offset +
-                 blockidx_start * args[1].dat->batch_offset);
+  float *__restrict__ ref_p =
+      (float *)(args[1].data_d + args[1].dat->base_offset +
+                blockidx_start * args[1].dat->batch_offset);
 
 #ifdef OPS_MPI
-  double *__restrict__ p_a2 =
-      (double *)(((ops_reduction)args[2].data)->data +
-                 ((ops_reduction)args[2].data)->size * block->index +
-                 ((ops_reduction)args[2].data)->size * blockidx_start);
+  float *__restrict__ p_a2 =
+      (float *)(((ops_reduction)args[2].data)->data +
+                ((ops_reduction)args[2].data)->size * block->index +
+                ((ops_reduction)args[2].data)->size * blockidx_start);
 #else  // OPS_MPI
-  double *__restrict__ p_a2 =
-      (double *)(((ops_reduction)args[2].data)->data +
-                 ((ops_reduction)args[2].data)->size * blockidx_start);
+  float *__restrict__ p_a2 =
+      (float *)(((ops_reduction)args[2].data)->data +
+                ((ops_reduction)args[2].data)->size * blockidx_start);
 #endif // OPS_MPI
 
   int x_size = MAX(0, bounds_0_u - bounds_0_l);
@@ -214,8 +214,8 @@ void ops_par_loop_poisson_kernel_error_execute(
   int reduct_bytes = 0;
   int reduct_size = 0;
 
-  reduct_bytes += ROUND_UP(nblocks * 1 * sizeof(double));
-  reduct_size = MAX(reduct_size, sizeof(double) * 1);
+  reduct_bytes += ROUND_UP(nblocks * 1 * sizeof(float));
+  reduct_size = MAX(reduct_size, sizeof(float) * 1);
 
   reallocReductArrays(reduct_bytes);
   reduct_bytes = 0;
@@ -224,8 +224,8 @@ void ops_par_loop_poisson_kernel_error_execute(
   arg2.data_d = OPS_instance::getOPSInstance()->OPS_reduct_d + reduct_bytes;
   for (int b = 0; b < nblocks; b++)
     for (int d = 0; d < 1; d++)
-      ((double *)arg2.data)[d + b * 1] = ZERO_double;
-  reduct_bytes += ROUND_UP(nblocks * 1 * sizeof(double));
+      ((float *)arg2.data)[d + b * 1] = ZERO_float;
+  reduct_bytes += ROUND_UP(nblocks * 1 * sizeof(float));
 
   mvReductArraysToDevice(reduct_bytes);
 #ifndef OPS_LAZY
@@ -245,14 +245,14 @@ void ops_par_loop_poisson_kernel_error_execute(
                 OPS_instance::getOPSInstance()->OPS_block_size_y *
                 OPS_instance::getOPSInstance()->OPS_block_size_z;
 
-  nshared = MAX(nshared, sizeof(double) * 1);
+  nshared = MAX(nshared, sizeof(float) * 1);
 
   nshared = MAX(nshared * nthread, reduct_size * nthread);
 
   // call kernel wrapper function, passing in pointers to data
   if (x_size > 0 && y_size > 0 && z_size > 0)
     ops_poisson_kernel_error<<<grid, tblock, nshared>>>(
-        u_p, ref_p, (double *)arg2.data_d, bounds_0_l, bounds_0_u, bounds_1_l,
+        u_p, ref_p, (float *)arg2.data_d, bounds_0_l, bounds_0_u, bounds_1_l,
         bounds_1_u, bounds_2_l, bounds_2_u, bounds_3_l, bounds_3_u);
 
   cutilSafeCall(cudaGetLastError());
@@ -261,9 +261,9 @@ void ops_par_loop_poisson_kernel_error_execute(
   for (int b = 0; b < nblocks; b++) {
     for (int d = 0; d < 1; d++) {
 #ifdef OPS_BATCHED
-      p_a2[b * 1 + d] = p_a2[b * 1 + d] + ((double *)arg2.data)[d + b * 1];
+      p_a2[b * 1 + d] = p_a2[b * 1 + d] + ((float *)arg2.data)[d + b * 1];
 #else
-      p_a2[d] = p_a2[d] + ((double *)arg2.data)[d + b * 1];
+      p_a2[d] = p_a2[d] + ((float *)arg2.data)[d + b * 1];
 #endif
     }
   }

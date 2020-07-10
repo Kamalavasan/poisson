@@ -40,7 +40,7 @@
 #include <string.h>
 #include <math.h>
 
-double dx,dy,dz;
+float dx,dy,dz;
 
 
 // OPS header file
@@ -110,9 +110,9 @@ int main(int argc, char **argv)
   dx = 0.01;
   dy = 0.01;
   dz = 0.01;
-  ops_decl_const("dx",1,"double",&dx);
-  ops_decl_const("dy",1,"double",&dy);
-  ops_decl_const("dz",1,"double",&dz);
+  ops_decl_const("dx",1,"float",&dx);
+  ops_decl_const("dy",1,"float",&dy);
+  ops_decl_const("dz",1,"float",&dz);
 
   //declare blocks
   char buf[50];
@@ -142,14 +142,14 @@ int main(int argc, char **argv)
 
   ops_stencil S3D_00_P10_M10_0P1_0M1 = ops_decl_stencil( 3, 27, s3D_00_P10_M10_0P1_0M1, "00:10:-10:01:0-1");
 
-  ops_reduction red_err = ops_decl_reduction_handle_batch(sizeof(double), "double", "err", num_systems);
+  ops_reduction red_err = ops_decl_reduction_handle_batch(sizeof(float), "float", "err", num_systems);
 
   //declare datasets
   int d_p[3] = {1,1,1}; //max halo depths for the dat in the possitive direction
   int d_m[3] = {-1,-1, -1}; //max halo depths for the dat in the negative direction
   int base[3] = {0,0,0};
   int uniform_size[3] = {logical_size_x, logical_size_y, logical_size_z};
-  double* temp = NULL;
+  float* temp = NULL;
   int *sizes = (int*)malloc(3*sizeof(int));
   int *disps = (int*)malloc(3*sizeof(int));
 
@@ -159,25 +159,25 @@ int main(int argc, char **argv)
   int size[3] = {uniform_size[0], uniform_size[1], uniform_size[2]};
 
   sprintf(buf,"coordx %d,%d",0,0);
-  ops_dat coordx = ops_decl_dat(blocks, 1, size, base, d_m, d_p, temp, "double", buf);
+  ops_dat coordx = ops_decl_dat(blocks, 1, size, base, d_m, d_p, temp, "float", buf);
 
   sprintf(buf,"coordy %d,%d",0,0);
-  ops_dat coordy = ops_decl_dat(blocks, 1, size, base, d_m, d_p, temp, "double", buf);
+  ops_dat coordy = ops_decl_dat(blocks, 1, size, base, d_m, d_p, temp, "float", buf);
 
   sprintf(buf,"coordz %d,%d",0,0);
-  ops_dat coordz = ops_decl_dat(blocks, 1, size, base, d_m, d_p, temp, "double", buf);
+  ops_dat coordz = ops_decl_dat(blocks, 1, size, base, d_m, d_p, temp, "float", buf);
 
   sprintf(buf,"u %d,%d",0,0);
-  ops_dat u = ops_decl_dat(blocks, 1, size, base, d_m, d_p, temp, "double", buf);
+  ops_dat u = ops_decl_dat(blocks, 1, size, base, d_m, d_p, temp, "float", buf);
 
   sprintf(buf,"u2 %d,%d",0,0);
-  ops_dat u2 = ops_decl_dat(blocks, 1, size, base, d_m, d_p, temp, "double", buf);
+  ops_dat u2 = ops_decl_dat(blocks, 1, size, base, d_m, d_p, temp, "float", buf);
 
   sprintf(buf,"f %d,%d",0,0);
-  ops_dat f = ops_decl_dat(blocks, 1, size, base, d_m, d_p, temp, "double", buf);
+  ops_dat f = ops_decl_dat(blocks, 1, size, base, d_m, d_p, temp, "float", buf);
 
   sprintf(buf,"ref %d,%d",0,0);
-  ops_dat ref = ops_decl_dat(blocks, 1, size, base, d_m, d_p, temp, "double", buf);
+  ops_dat ref = ops_decl_dat(blocks, 1, size, base, d_m, d_p, temp, "float", buf);
 
   sizes[0]   = size[0];
   sizes[1]   = size[1];
@@ -217,13 +217,13 @@ int main(int argc, char **argv)
              ops_arg_gbl(&disps[0], 1, "int", OPS_READ),
              ops_arg_gbl(&disps[1], 1, "int", OPS_READ),
              ops_arg_idx(),
-             ops_arg_dat(u, 1, S3D_00, "double", OPS_WRITE),
-             ops_arg_dat(f, 1, S3D_00, "double", OPS_WRITE),
-             ops_arg_dat(ref, 1, S3D_00, "double", OPS_WRITE));
+             ops_arg_dat(u, 1, S3D_00, "float", OPS_WRITE),
+             ops_arg_dat(f, 1, S3D_00, "float", OPS_WRITE),
+             ops_arg_dat(ref, 1, S3D_00, "float", OPS_WRITE));
 
 		ops_par_loop(poisson_kernel_update, "poisson_kernel_update", blocks, 3, iter_range1,
-						ops_arg_dat(u, 1, S3D_00, "double", OPS_READ),
-						ops_arg_dat(u2, 1, S3D_00, "double", OPS_WRITE));
+						ops_arg_dat(u, 1, S3D_00, "float", OPS_READ),
+						ops_arg_dat(u2, 1, S3D_00, "float", OPS_WRITE));
 
 
 
@@ -235,7 +235,7 @@ int main(int argc, char **argv)
       //printf("iter_range[%d] = %d\n",k,iter_range[k]);
 
     ops_par_loop(poisson_kernel_initialguess, "poisson_kernel_initialguess", blocks, 3, iter_range2,
-             ops_arg_dat(u, 1, S3D_00, "double", OPS_WRITE));
+             ops_arg_dat(u, 1, S3D_00, "float", OPS_WRITE));
 
 
   double it0, it1;
@@ -246,19 +246,19 @@ int main(int argc, char **argv)
 
 
     ops_par_loop(poisson_kernel_stencil, "poisson_kernel_stencil", blocks, 3, iter_range2,
-             ops_arg_dat(u, 1, S3D_00_P10_M10_0P1_0M1, "double", OPS_READ),
-             ops_arg_dat(u2, 1, S3D_00, "double", OPS_WRITE));
+             ops_arg_dat(u, 1, S3D_00_P10_M10_0P1_0M1, "float", OPS_READ),
+             ops_arg_dat(u2, 1, S3D_00, "float", OPS_WRITE));
 
 
 		if (non_copy) {
 			ops_par_loop(poisson_kernel_stencil, "poisson_kernel_stencil", blocks, 3, iter_range2,
-					ops_arg_dat(u2, 1, S3D_00_P10_M10_0P1_0M1, "double", OPS_READ),
-					ops_arg_dat(u, 1, S3D_00, "double", OPS_WRITE));
+					ops_arg_dat(u2, 1, S3D_00_P10_M10_0P1_0M1, "float", OPS_READ),
+					ops_arg_dat(u, 1, S3D_00, "float", OPS_WRITE));
 
 		} else {
 			ops_par_loop(poisson_kernel_update, "poisson_kernel_update", blocks, 3, iter_range2,
-					ops_arg_dat(u2, 1, S3D_00, "double", OPS_READ),
-					ops_arg_dat(u , 1, S3D_00, "double", OPS_WRITE));
+					ops_arg_dat(u2, 1, S3D_00, "float", OPS_READ),
+					ops_arg_dat(u , 1, S3D_00, "float", OPS_WRITE));
 		}
 //    if (iter == 5) u[0] = ops_dat_copy(u[0]); //TESTING
   }
@@ -269,19 +269,19 @@ int main(int argc, char **argv)
   //ops_print_dat_to_txtfile(ref[0], "poisson.dat");
   //exit(0);
 
-  double err = 0.0;
+  float err = 0.0;
 
   ops_par_loop(poisson_kernel_error, "poisson_kernel_error", blocks, 3, iter_range2,
-           ops_arg_dat(u, 1, S3D_00, "double", OPS_READ),
-           ops_arg_dat(ref , 1, S3D_00, "double", OPS_READ),
-           ops_arg_reduce(red_err, 1, "double", OPS_INC));
+           ops_arg_dat(u, 1, S3D_00, "float", OPS_READ),
+           ops_arg_dat(ref , 1, S3D_00, "float", OPS_READ),
+           ops_arg_reduce(red_err, 1, "float", OPS_INC));
 
   ops_reduction_result(red_err,&err);
 
   ops_timers(&ct1, &et1);
   ops_timing_output(stdout);
   ops_printf("\nTotal Wall time %lf\n",et1-et0);
-  double err_diff=fabs((100.0*(err/20.727007094619303))-100.0);
+  float err_diff=fabs((100.0*(err/20.727007094619303))-100.0);
   ops_printf("Total error: %3.15g\n",err);
   ops_printf("Total error is within %3.15E %% of the expected error\n",err_diff);
 

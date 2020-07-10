@@ -7,8 +7,8 @@ static int dims_poisson_kernel_populate_h[6][4] = {0};
 // user function
 
 __global__ void ops_poisson_kernel_populate(
-    const int dispx_p, const int dispy_p, double *__restrict u_p,
-    double *__restrict f_p, double *__restrict ref_p, int blockidx_start,
+    const int dispx_p, const int dispy_p, float *__restrict u_p,
+    float *__restrict f_p, float *__restrict ref_p, int blockidx_start,
 #ifdef OPS_MPI
     int arg_idx0, int arg_idx1, int arg_idx2,
 #endif
@@ -47,36 +47,36 @@ __global__ void ops_poisson_kernel_populate(
 #endif
   if (n_0 < bounds_0_u && n_1 < bounds_1_u && n_2 < bounds_2_u &&
       n_3 < bounds_3_u) {
-    ACC<double> u(dims_poisson_kernel_populate[3][0],
-                  dims_poisson_kernel_populate[3][1],
-                  dims_poisson_kernel_populate[3][2],
-                  u_p + n_0 + n_1 * dims_poisson_kernel_populate[3][0] +
-                      n_2 * dims_poisson_kernel_populate[3][0] *
-                          dims_poisson_kernel_populate[3][1] +
-                      n_3 * dims_poisson_kernel_populate[3][0] *
-                          dims_poisson_kernel_populate[3][1] *
-                          dims_poisson_kernel_populate[3][2]);
-    ACC<double> f(dims_poisson_kernel_populate[4][0],
-                  dims_poisson_kernel_populate[4][1],
-                  dims_poisson_kernel_populate[4][2],
-                  f_p + n_0 + n_1 * dims_poisson_kernel_populate[4][0] +
-                      n_2 * dims_poisson_kernel_populate[4][0] *
-                          dims_poisson_kernel_populate[4][1] +
-                      n_3 * dims_poisson_kernel_populate[4][0] *
-                          dims_poisson_kernel_populate[4][1] *
-                          dims_poisson_kernel_populate[4][2]);
-    ACC<double> ref(dims_poisson_kernel_populate[5][0],
-                    dims_poisson_kernel_populate[5][1],
-                    dims_poisson_kernel_populate[5][2],
-                    ref_p + n_0 + n_1 * dims_poisson_kernel_populate[5][0] +
-                        n_2 * dims_poisson_kernel_populate[5][0] *
-                            dims_poisson_kernel_populate[5][1] +
-                        n_3 * dims_poisson_kernel_populate[5][0] *
-                            dims_poisson_kernel_populate[5][1] *
-                            dims_poisson_kernel_populate[5][2]);
+    ACC<float> u(dims_poisson_kernel_populate[3][0],
+                 dims_poisson_kernel_populate[3][1],
+                 dims_poisson_kernel_populate[3][2],
+                 u_p + n_0 + n_1 * dims_poisson_kernel_populate[3][0] +
+                     n_2 * dims_poisson_kernel_populate[3][0] *
+                         dims_poisson_kernel_populate[3][1] +
+                     n_3 * dims_poisson_kernel_populate[3][0] *
+                         dims_poisson_kernel_populate[3][1] *
+                         dims_poisson_kernel_populate[3][2]);
+    ACC<float> f(dims_poisson_kernel_populate[4][0],
+                 dims_poisson_kernel_populate[4][1],
+                 dims_poisson_kernel_populate[4][2],
+                 f_p + n_0 + n_1 * dims_poisson_kernel_populate[4][0] +
+                     n_2 * dims_poisson_kernel_populate[4][0] *
+                         dims_poisson_kernel_populate[4][1] +
+                     n_3 * dims_poisson_kernel_populate[4][0] *
+                         dims_poisson_kernel_populate[4][1] *
+                         dims_poisson_kernel_populate[4][2]);
+    ACC<float> ref(dims_poisson_kernel_populate[5][0],
+                   dims_poisson_kernel_populate[5][1],
+                   dims_poisson_kernel_populate[5][2],
+                   ref_p + n_0 + n_1 * dims_poisson_kernel_populate[5][0] +
+                       n_2 * dims_poisson_kernel_populate[5][0] *
+                           dims_poisson_kernel_populate[5][1] +
+                       n_3 * dims_poisson_kernel_populate[5][0] *
+                           dims_poisson_kernel_populate[5][1] *
+                           dims_poisson_kernel_populate[5][2]);
 
-    double x = dx * (double)(idx[0] + dispx[0]);
-    double y = dy * (double)(idx[1] + dispy[0]);
+    float x = dx * (float)(idx[0] + dispx[0]);
+    float y = dy * (float)(idx[1] + dispy[0]);
 
     u(0, 0, 0) = myfun(sin(M_PI * x), cos(2.0 * M_PI * y)) - 1.0;
     f(0, 0, 0) = -5.0 * M_PI * M_PI * sin(M_PI * x) * cos(2.0 * M_PI * y);
@@ -220,17 +220,17 @@ void ops_par_loop_poisson_kernel_populate_execute(
 
   int *__restrict__ dispy = (int *)args[1].data;
 
-  double *__restrict__ u_p =
-      (double *)(args[3].data_d + args[3].dat->base_offset +
-                 blockidx_start * args[3].dat->batch_offset);
+  float *__restrict__ u_p =
+      (float *)(args[3].data_d + args[3].dat->base_offset +
+                blockidx_start * args[3].dat->batch_offset);
 
-  double *__restrict__ f_p =
-      (double *)(args[4].data_d + args[4].dat->base_offset +
-                 blockidx_start * args[4].dat->batch_offset);
+  float *__restrict__ f_p =
+      (float *)(args[4].data_d + args[4].dat->base_offset +
+                blockidx_start * args[4].dat->batch_offset);
 
-  double *__restrict__ ref_p =
-      (double *)(args[5].data_d + args[5].dat->base_offset +
-                 blockidx_start * args[5].dat->batch_offset);
+  float *__restrict__ ref_p =
+      (float *)(args[5].data_d + args[5].dat->base_offset +
+                blockidx_start * args[5].dat->batch_offset);
 
   int x_size = MAX(0, bounds_0_u - bounds_0_l);
   int y_size = MAX(0, bounds_1_u - bounds_1_l);

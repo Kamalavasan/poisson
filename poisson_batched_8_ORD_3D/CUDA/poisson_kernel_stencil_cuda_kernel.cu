@@ -6,8 +6,8 @@ static int dims_poisson_kernel_stencil_h[2][4] = {0};
 
 // user function
 
-__global__ void ops_poisson_kernel_stencil(double *__restrict u_p,
-                                           double *__restrict u2_p,
+__global__ void ops_poisson_kernel_stencil(float *__restrict u_p,
+                                           float *__restrict u2_p,
                                            int bounds_0_l, int bounds_0_u,
                                            int bounds_1_l, int bounds_1_u,
                                            int bounds_2_l, int bounds_2_u,
@@ -23,26 +23,26 @@ __global__ void ops_poisson_kernel_stencil(double *__restrict u_p,
 
   if (n_0 < bounds_0_u && n_1 < bounds_1_u && n_2 < bounds_2_u &&
       n_3 < bounds_3_u) {
-    const ACC<double> u(dims_poisson_kernel_stencil[0][0],
-                        dims_poisson_kernel_stencil[0][1],
-                        dims_poisson_kernel_stencil[0][2],
-                        u_p + n_0 + n_1 * dims_poisson_kernel_stencil[0][0] +
-                            n_2 * dims_poisson_kernel_stencil[0][0] *
-                                dims_poisson_kernel_stencil[0][1] +
-                            n_3 * dims_poisson_kernel_stencil[0][0] *
-                                dims_poisson_kernel_stencil[0][1] *
-                                dims_poisson_kernel_stencil[0][2]);
-    ACC<double> u2(dims_poisson_kernel_stencil[1][0],
-                   dims_poisson_kernel_stencil[1][1],
-                   dims_poisson_kernel_stencil[1][2],
-                   u2_p + n_0 + n_1 * dims_poisson_kernel_stencil[1][0] +
-                       n_2 * dims_poisson_kernel_stencil[1][0] *
-                           dims_poisson_kernel_stencil[1][1] +
-                       n_3 * dims_poisson_kernel_stencil[1][0] *
-                           dims_poisson_kernel_stencil[1][1] *
-                           dims_poisson_kernel_stencil[1][2]);
+    const ACC<float> u(dims_poisson_kernel_stencil[0][0],
+                       dims_poisson_kernel_stencil[0][1],
+                       dims_poisson_kernel_stencil[0][2],
+                       u_p + n_0 + n_1 * dims_poisson_kernel_stencil[0][0] +
+                           n_2 * dims_poisson_kernel_stencil[0][0] *
+                               dims_poisson_kernel_stencil[0][1] +
+                           n_3 * dims_poisson_kernel_stencil[0][0] *
+                               dims_poisson_kernel_stencil[0][1] *
+                               dims_poisson_kernel_stencil[0][2]);
+    ACC<float> u2(dims_poisson_kernel_stencil[1][0],
+                  dims_poisson_kernel_stencil[1][1],
+                  dims_poisson_kernel_stencil[1][2],
+                  u2_p + n_0 + n_1 * dims_poisson_kernel_stencil[1][0] +
+                      n_2 * dims_poisson_kernel_stencil[1][0] *
+                          dims_poisson_kernel_stencil[1][1] +
+                      n_3 * dims_poisson_kernel_stencil[1][0] *
+                          dims_poisson_kernel_stencil[1][1] *
+                          dims_poisson_kernel_stencil[1][2]);
 
-    double x = 0, y = 0, z = 0;
+    float x = 0, y = 0, z = 0;
 
     x = u(-4, 0, 0) * 0.01f + u(-3, 0, 0) * 0.02f + u(-2, 0, 0) * 0.03f +
         u(-1, 0, 0) * 0.04f + u(0, 0, 0) * 0.05f + u(1, 0, 0) * 0.06f +
@@ -169,13 +169,13 @@ void ops_par_loop_poisson_kernel_stencil_execute(
   }
 
   // set up initial pointers
-  double *__restrict__ u_p =
-      (double *)(args[0].data_d + args[0].dat->base_offset +
-                 blockidx_start * args[0].dat->batch_offset);
+  float *__restrict__ u_p =
+      (float *)(args[0].data_d + args[0].dat->base_offset +
+                blockidx_start * args[0].dat->batch_offset);
 
-  double *__restrict__ u2_p =
-      (double *)(args[1].data_d + args[1].dat->base_offset +
-                 blockidx_start * args[1].dat->batch_offset);
+  float *__restrict__ u2_p =
+      (float *)(args[1].data_d + args[1].dat->base_offset +
+                blockidx_start * args[1].dat->batch_offset);
 
   int x_size = MAX(0, bounds_0_u - bounds_0_l);
   int y_size = MAX(0, bounds_1_u - bounds_1_l);

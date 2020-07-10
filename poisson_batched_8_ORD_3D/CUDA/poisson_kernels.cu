@@ -17,9 +17,9 @@
 #include "ops_mpi_core.h"
 #endif
 // global constants
-__constant__ double dx;
-__constant__ double dy;
-__constant__ double dz;
+__constant__ float dx;
+__constant__ float dy;
+__constant__ float dz;
 
 void ops_init_backend() {}
 
