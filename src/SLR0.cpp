@@ -6,6 +6,7 @@
 typedef ap_uint<512> uint512_dt;
 typedef ap_uint<256> uint256_dt;
 typedef ap_axiu<256,0,0,0> t_pkt;
+typedef ap_axiu<32,0,0,0> t_pkt_32;
 
 #define MAX_SIZE_X 8192
 #define MAX_DEPTH_16 (MAX_SIZE_X/16)
@@ -53,29 +54,26 @@ struct data_G{
 
 
 
-static void read_grid(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, const int xdim0_poisson_kernel_stencil, const int base0, int size1, int batches){
+static void read_tile(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, const int xdim0, const int offset, int tile_x, int size_y){
 	#pragma HLS dataflow
-	int end_index = (xdim0_poisson_kernel_stencil >> (SHIFT_BITS+1));
-	int end_row = size1+2;
-	int base_index = (base0 + ((0-1) * xdim0_poisson_kernel_stencil) -1) >> (SHIFT_BITS+1);
-
-
-	for (int itr = 0; itr < end_row * end_index*batches; itr++){
-		#pragma HLS PIPELINE II=1
-		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
-		rd_buffer << arg0[base_index + itr];
+	int end_index = (tile_x >> (SHIFT_BITS+1));
+	int end_row = size_y+2;
+	for(int i = 0; i < end_row; i++){
+		int base_index = (offset + xdim0*i) >> (SHIFT_BITS+1);
+		for (int j = 0; j < end_index; j++){
+			#pragma HLS PIPELINE II=1
+			rd_buffer << arg0[base_index + j];
+		}
 	}
 }
 
 
-static void stream_convert_512_256(hls::stream<uint512_dt> &in, hls::stream<uint256_dt> &out, const int xdim0_poisson_kernel_stencil, const int base0, int size1, int batches){
+static void stream_convert_512_256(hls::stream<uint512_dt> &in, hls::stream<uint256_dt> &out, const int tile_x, int size_y){
 	#pragma HLS dataflow
-	int end_index = (xdim0_poisson_kernel_stencil >> (SHIFT_BITS+1));
-	int end_row = size1+2;
-	int base_index = (base0 + ((0-1) * xdim0_poisson_kernel_stencil) -1) >> (SHIFT_BITS+1);
+	int end_index = (tile_x >> (SHIFT_BITS+1));
+	int end_row = size_y+2;
 
-
-	for (int itr = 0; itr < end_row * end_index*batches; itr++){
+	for (int itr = 0; itr < end_row * end_index; itr++){
 		#pragma HLS PIPELINE II=2
 		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
 		uint512_dt tmp = in.read();
@@ -86,13 +84,12 @@ static void stream_convert_512_256(hls::stream<uint512_dt> &in, hls::stream<uint
 	}
 }
 
-static void stream_convert_256_512(hls::stream<uint256_dt> &in, hls::stream<uint512_dt> &out, const int xdim0_poisson_kernel_stencil, const int base0, int size1, int batches){
+static void stream_convert_256_512(hls::stream<uint256_dt> &in, hls::stream<uint512_dt> &out, const int tile_x, int size_y){
 	#pragma HLS dataflow
-	int end_index = (xdim0_poisson_kernel_stencil >> (SHIFT_BITS+1));
-	int end_row = size1+2;
-	int base_index = (base0 + ((0-1) * xdim0_poisson_kernel_stencil) -1) >> (SHIFT_BITS+1);
+	int end_index = (tile_x >> (SHIFT_BITS+1));
+	int end_row = size_y+2;
 
-	for (int itr = 0; itr < end_row * end_index*batches; itr++){
+	for (int itr = 0; itr < end_row * end_index; itr++){
 		#pragma HLS PIPELINE II=2
 		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
 		uint512_dt tmp;
@@ -102,12 +99,12 @@ static void stream_convert_256_512(hls::stream<uint256_dt> &in, hls::stream<uint
 	}
 }
 
-static void axis2_fifo256(hls::stream <t_pkt> &in, hls::stream<uint256_dt> &out, const int xdim0_poisson_kernel_stencil, const int base0, int size1, int batches){
+static void axis2_fifo256(hls::stream <t_pkt> &in, hls::stream<uint256_dt> &out, const int tile_x, int size_y){
 	#pragma HLS dataflow
-	int end_index = (xdim0_poisson_kernel_stencil >> (SHIFT_BITS));
-	int end_row = size1+2;
+	int end_index = (tile_x >> (SHIFT_BITS));
+	int end_row = size_y+2;
 
-	for (int itr = 0; itr < end_row * end_index*batches; itr++){
+	for (int itr = 0; itr < end_row * end_index; itr++){
 		#pragma HLS PIPELINE II=1
 		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
 		t_pkt tmp = in.read();
@@ -115,10 +112,10 @@ static void axis2_fifo256(hls::stream <t_pkt> &in, hls::stream<uint256_dt> &out,
 	}
 }
 
-static void fifo256_2axis(hls::stream <uint256_dt> &in, hls::stream<t_pkt> &out, const int xdim0_poisson_kernel_stencil, const int base0, int size1, int batches){
+static void fifo256_2axis(hls::stream <uint256_dt> &in, hls::stream<t_pkt> &out, const int tile_x, int size_y){
 	#pragma HLS dataflow
-	int end_index = (xdim0_poisson_kernel_stencil >> (SHIFT_BITS));
-	int end_row = size1+2;
+	int end_index = (tile_x >> (SHIFT_BITS));
+	int end_row = size_y+2;
 
 	for (int itr = 0; itr < end_row * end_index*batches; itr++){
 		#pragma HLS PIPELINE II=1
@@ -129,7 +126,7 @@ static void fifo256_2axis(hls::stream <uint256_dt> &in, hls::stream<t_pkt> &out,
 	}
 }
 
-static void process_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint256_dt> &wr_buffer, const int size0, int size1,  const int xdim0_poisson_kernel_stencil, struct data_G data_g){
+static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint256_dt> &wr_buffer, const int size0, int size1,  const int xdim0_poisson_kernel_stencil, struct data_G data_g){
 //	#pragma HLS dataflow
 
 	short end_index = data_g.end_index;
@@ -335,22 +332,22 @@ static void process_grid( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 //	}
 }
 
-static void write_grid( uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, const int xdim1_poisson_kernel_stencil, const int base1, int size1, int batches){
+static void write_tile( uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, const int xdim0, const int offset, int tile_x, int size_y){
 	#pragma HLS dataflow
-	int end_index = (xdim1_poisson_kernel_stencil >> (SHIFT_BITS+1));
-	int base_index = (base1 + ((0-1) * xdim1_poisson_kernel_stencil) -1) >> (SHIFT_BITS+1);
-	int End_row = size1+2;
-	for (int itr = 0; itr < End_row * (end_index) * batches; itr++){
-		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
-		#pragma HLS PIPELINE II=1
-		arg1[base_index   + itr] =  wr_buffer.read();
+	int end_index = (tile_x >> (SHIFT_BITS+1));
+	int end_row = size_y+2;
+	for(int i = 0; i < end_row; i++){
+		int base_index = (offset + xdim0*i) >> (SHIFT_BITS+1);
+		for (int j = 0; j < end_index; j++){
+			#pragma HLS PIPELINE II=1
+			arg0[base_index + j] = wr_buffer.read();
+		}
 	}
 }
 
 
 void process_SLR0 (uint512_dt*  arg0, uint512_dt*  arg1, hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
-		const int xdim0_poisson_kernel_stencil, const int base0, const int xdim1_poisson_kernel_stencil,
-		const int base1, const int size0, int size1, const int batches){
+		const int xdim0, const int offset, const int tile_x, const int size_y){
 
 
     static hls::stream<uint256_dt> streamArray[40 + 1];
@@ -362,31 +359,33 @@ void process_SLR0 (uint512_dt*  arg0, uint512_dt*  arg1, hls::stream <t_pkt> &in
 	#pragma HLS STREAM variable = wr_buffer depth = max_depth_16
 
     struct data_G data_g;
-	data_g.end_index = (xdim0_poisson_kernel_stencil >> SHIFT_BITS);
-	data_g.end_row = size1+2;
-	data_g.outer_loop_limit = size1+3;
-	data_g.gridsize = (data_g.outer_loop_limit * data_g.end_index +1) * batches;
+	data_g.end_index = (tile_x >> SHIFT_BITS);
+	data_g.end_row = size_y+2;
+	data_g.outer_loop_limit = size_y+3;
+	data_g.gridsize = (data_g.outer_loop_limit * data_g.end_index +1);
 	data_g.endindex_minus1 = data_g.end_index -1;
 	data_g.endrow_plus1 = data_g.end_row + 1;
 	data_g.endrow_plus2 = data_g.end_row + 2;
 	data_g.endrow_minus1 = data_g.end_row - 1;
 
+	int size_x = tile_x - 2;
+
 
 	#pragma HLS dataflow
-	read_grid(arg0, rd_buffer, xdim0_poisson_kernel_stencil, base0, size1, batches);
-	stream_convert_512_256(rd_buffer, streamArray[0], xdim0_poisson_kernel_stencil, base0, size1, batches);
+	read_tile(arg0, rd_buffer, xdim0, offset, tile_x, size_y);
+	stream_convert_512_256(rd_buffer, streamArray[0], tile_x, size_y);
 
-	process_grid( streamArray[0], streamArray[1], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-	process_grid( streamArray[1], streamArray[2], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-	process_grid( streamArray[2], streamArray[3], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-	process_grid( streamArray[3], streamArray[4], size0, size1, xdim0_poisson_kernel_stencil, data_g);
+	process_tile( streamArray[0], streamArray[1], size_x, size_y, tile_x, data_g);
+	process_tile( streamArray[1], streamArray[2], size_x, size_y, tile_x, data_g);
+	process_tile( streamArray[2], streamArray[3], size_x, size_y, tile_x, data_g);
+	process_tile( streamArray[3], streamArray[4], size_x, size_y, tile_x, data_g);
 
-	process_grid( streamArray[4], streamArray[5], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-	process_grid( streamArray[5], streamArray[6], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-	process_grid( streamArray[6], streamArray[7], size0, size1, xdim0_poisson_kernel_stencil, data_g);
-	process_grid( streamArray[7], streamArray[8], size0, size1, xdim0_poisson_kernel_stencil, data_g);
+	process_tile( streamArray[4], streamArray[5], size_x, size_y, tile_x, data_g);
+	process_tile( streamArray[5], streamArray[6], size_x, size_y, tile_x, data_g);
+	process_tile( streamArray[6], streamArray[7], size_x, size_y, tile_x, data_g);
+	process_tile( streamArray[7], streamArray[8], size_x, size_y, tile_x, data_g);
 
-	process_grid( streamArray[8], streamArray[9], size0, size1, xdim0_poisson_kernel_stencil,   data_g);
+	process_tile( streamArray[8], streamArray[9], size_x, size_y, tile_x, data_g);
 //	process_grid( streamArray[9], streamArray[10], size0, size1, xdim0_poisson_kernel_stencil,  data_g);
 //	process_grid( streamArray[10], streamArray[11], size0, size1, xdim0_poisson_kernel_stencil, data_g);
 //	process_grid( streamArray[11], streamArray[12], size0, size1, xdim0_poisson_kernel_stencil, data_g);
@@ -401,11 +400,11 @@ void process_SLR0 (uint512_dt*  arg0, uint512_dt*  arg1, hls::stream <t_pkt> &in
 //	process_grid( streamArray[18], streamArray[19], size0, size1, xdim0_poisson_kernel_stencil, data_g);
 //	process_grid( streamArray[19], streamArray[20], size0, size1, xdim0_poisson_kernel_stencil, data_g);
 
-	fifo256_2axis(streamArray[9], out, xdim0_poisson_kernel_stencil, base0, size1, batches);
-	axis2_fifo256(in, streamArray[21], xdim0_poisson_kernel_stencil, base0, size1, batches);
+	fifo256_2axis(streamArray[9], out, tile_x, size_y);
+	axis2_fifo256(in, streamArray[21], tile_x, size_y);
 
-	stream_convert_256_512(streamArray[21], wr_buffer, xdim0_poisson_kernel_stencil, base0, size1, batches);
-	write_grid(arg1, wr_buffer, xdim1_poisson_kernel_stencil, base1, size1, batches);
+	stream_convert_256_512(streamArray[21], wr_buffer, tile_x, size_y);
+	write_tile(arg1, wr_buffer, xdim0, offset, tile_x, size_y);
 
 }
 
@@ -418,38 +417,55 @@ extern "C" {
 void stencil_SLR0(
 		uint512_dt*  arg0,
 		uint512_dt*  arg1,
-		const int base0,
-		const int base1,
-		const int size0,
-		const int size1,
-		const int xdim0_poisson_kernel_stencil,
-		const int xdim1_poisson_kernel_stencil,
+		const unsigned int* tile,
+		const int tile_count,
+		const int sizey,
+		const int xdim0,
 		const int count,
-		const int batches,
+
+		hls::stream <t_pkt_32> &tile_s_out,
 		hls::stream <t_pkt> &in,
 		hls::stream <t_pkt> &out){
 
 	#pragma HLS INTERFACE depth=4096 m_axi port = arg0 offset = slave bundle = gmem0 max_read_burst_length=256 max_write_burst_length=256
-	#pragma HLS INTERFACE depth=4096 m_axi port = arg1 offset = slave bundle = gmem1
+	#pragma HLS INTERFACE depth=4096 m_axi port = arg1 offset = slave bundle = gmem0
+	#pragma HLS INTERFACE depth=4096 m_axi port = tile offset = slave bundle = gmem1
 	#pragma HLS INTERFACE s_axilite port = arg0 bundle = control
 	#pragma HLS INTERFACE s_axilite port = arg1 bundle = control
+	#pragma HLS INTERFACE s_axilite port = tile bundle = control
+	#pragma HLS INTERFACE axis port = tile_s_out  register
 	#pragma HLS INTERFACE axis port = in  register
 	#pragma HLS INTERFACE axis port = out register
-	#pragma HLS INTERFACE s_axilite port = base0 bundle = control
-	#pragma HLS INTERFACE s_axilite port = base1 bundle = control
-	#pragma HLS INTERFACE s_axilite port = size0 bundle = control
-	#pragma HLS INTERFACE s_axilite port = size1 bundle = control
-	#pragma HLS INTERFACE s_axilite port = xdim0_poisson_kernel_stencil bundle = control
-	#pragma HLS INTERFACE s_axilite port = xdim1_poisson_kernel_stencil bundle = control
+
+	#pragma HLS INTERFACE s_axilite port = tile_count bundle = control
+	#pragma HLS INTERFACE s_axilite port = sizey bundle = control
+	#pragma HLS INTERFACE s_axilite port = xdim0 bundle = control
 	#pragma HLS INTERFACE s_axilite port = count bundle = control
-	#pragma HLS INTERFACE s_axilite port = batches bundle = control
 	#pragma HLS INTERFACE s_axilite port = return bundle = control
 
-
-	for(int i =  0; i < count; i++){
-		process_SLR0(arg0, arg1, in, out, xdim0_poisson_kernel_stencil, base0, xdim0_poisson_kernel_stencil, base0, size0, size1, batches);
-		process_SLR0(arg1, arg0, in, out, xdim0_poisson_kernel_stencil, base0, xdim0_poisson_kernel_stencil, base0, size0, size1, batches);
+	unsigned int tile_mem[256];
+	for(int j = 0; j < tile_count; j++){
+		#pragma HLS PIPELINE II=1
+		t_pkt_32 tmp_s;
+		unsigned int tmp;
+		tmp = tile[j];
+		tile_mem[j] = tmp;
+		tmp_s.data = tmp;
+		tile_s_out.write(tmp_s);
 	}
 
+	for(int i =  0; i < count; i++){
+		for(j = 0; j < tile_count; j++){
+			unsigned short offset = tile_mem[j] & 0xffff;
+			unsigned short tile_x = tile_mem[j] >> 16;
+			process_SLR0(arg0, arg1, in, out, xdim0, offset, tile_x, sizey);
+		}
+
+		for(j = 0; j < tile_count; j++){
+			unsigned short offset = tile_mem[j] & 0xffff;
+			unsigned short tile_x = tile_mem[j] >> 16;
+			process_SLR0(arg1, arg0, in, out, xdim0, offset, tile_x, sizey);
+		}
+	}
 }
 }

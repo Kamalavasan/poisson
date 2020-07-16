@@ -170,6 +170,8 @@ int main(int argc, char **argv)
 
   int grid_size_x = (act_sizex % 16) != 0 ? (act_sizex/16 +1) * 16 : act_sizex+2;
   int grid_size_y = act_sizey;
+
+  int tile_count = 2;
   
   int data_size_bytes = grid_size_x * grid_size_y * sizeof(float)*batches;
   float * grid_u1 = (float*)aligned_alloc(4096, data_size_bytes);
@@ -177,6 +179,9 @@ int main(int argc, char **argv)
 
   float * grid_u1_d = (float*)aligned_alloc(4096, data_size_bytes);
   float * grid_u2_d = (float*)aligned_alloc(4096, data_size_bytes);
+  unsigned int * tile = (unsigned int*)aligned_alloc(4096, 256);
+  tile[0] = 0 | (96 << 16);
+  tile[1] = 16 | (96 << 16);
 
   initialise_grid(grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
   copy_grid(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
@@ -227,47 +232,45 @@ int main(int argc, char **argv)
                                       &err));
     OCL_CHECK(err,
               cl::Buffer buffer_output(context,
-                                       CL_MEM_USE_HOST_PTR | CL_MEM_WRITE_ONLY,
+                                       CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
                                        data_size_bytes,
                                        grid_u2_d,
+                                       &err));
+
+    OCL_CHECK(err,
+              cl::Buffer buffer_tile(context,
+                                       CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+                                       256,
+                                       tile,
                                        &err));
 
     //Set the Kernel Arguments
     int narg = 0;
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_input));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_output));
-    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_x+1));
-    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_y+1));
-    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_x));
-    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_y));
-    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_x));
+    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_tile));
+
+    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, tile_count));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_y));
+    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_x));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, n_iter));
-    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, batches));
+
 
     narg = 0;
-	OCL_CHECK(err, err = krnl_slr1.setArg(narg++, grid_size_x+1));
-	OCL_CHECK(err, err = krnl_slr1.setArg(narg++, grid_size_y+1));
-	OCL_CHECK(err, err = krnl_slr1.setArg(narg++, logical_size_x));
-	OCL_CHECK(err, err = krnl_slr1.setArg(narg++, logical_size_y));
-	OCL_CHECK(err, err = krnl_slr1.setArg(narg++, grid_size_x));
-	OCL_CHECK(err, err = krnl_slr1.setArg(narg++, grid_size_y));
-	OCL_CHECK(err, err = krnl_slr1.setArg(narg++, n_iter));
-	OCL_CHECK(err, err = krnl_slr1.setArg(narg++, batches));
+    OCL_CHECK(err, err = krnl_slr1.setArg(narg++, tile_count));
+    OCL_CHECK(err, err = krnl_slr1.setArg(narg++, grid_size_y));
+    OCL_CHECK(err, err = krnl_slr1.setArg(narg++, grid_size_x));
+    OCL_CHECK(err, err = krnl_slr1.setArg(narg++, n_iter));
 
-	narg = 0;
-	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, grid_size_x+1));
-	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, grid_size_y+1));
-	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, logical_size_x));
-	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, logical_size_y));
-	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, grid_size_x));
-	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, grid_size_y));
-	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, n_iter));
-	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, batches));
+  	narg = 0;
+  	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, tile_count));
+  	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, grid_size_y));
+  	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, grid_size_x));
+  	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, n_iter));
 
     //Copy input data to device global memory
     OCL_CHECK(err,
-              err = q.enqueueMigrateMemObjects({buffer_input},
+              err = q.enqueueMigrateMemObjects({buffer_input, buffer_tile},
                                                0 /* 0 means from host*/));
 
     uint64_t wtime = 0;
