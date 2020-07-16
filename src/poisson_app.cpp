@@ -67,6 +67,11 @@ double square_error(float* current, float* next, int act_sizex, int act_sizey, i
 	  int offset = bat * grid_size_x* grid_size_y;
     for(int i = 0; i < act_sizey; i++){
       for(int j = 0; j < act_sizex; j++){
+    	float val1 = next[i*grid_size_x + j+offset];
+    	float val2 = current[i*grid_size_x + j+offset];
+    	if(fabs(val1 -val2)/(fabs(val1)+fabs(val2)) > 0.00001){
+    		printf("i:%d j:%d %f %f \n",i,j, val1,val2);
+    	}
         sum += next[i*grid_size_x + j+offset]*next[i*grid_size_x + j+offset] - current[i*grid_size_x + j+offset]*current[i*grid_size_x + j+offset];
       }
     }
@@ -251,20 +256,23 @@ int main(int argc, char **argv)
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_tile));
 
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, tile_count));
-    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_y));
+    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_x));
+    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_y));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_x));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, n_iter));
 
 
     narg = 0;
     OCL_CHECK(err, err = krnl_slr1.setArg(narg++, tile_count));
-    OCL_CHECK(err, err = krnl_slr1.setArg(narg++, grid_size_y));
+    OCL_CHECK(err, err = krnl_slr1.setArg(narg++, logical_size_x));
+    OCL_CHECK(err, err = krnl_slr1.setArg(narg++, logical_size_y));
     OCL_CHECK(err, err = krnl_slr1.setArg(narg++, grid_size_x));
     OCL_CHECK(err, err = krnl_slr1.setArg(narg++, n_iter));
 
   	narg = 0;
   	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, tile_count));
-  	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, grid_size_y));
+    OCL_CHECK(err, err = krnl_slr2.setArg(narg++, logical_size_x));
+    OCL_CHECK(err, err = krnl_slr2.setArg(narg++, logical_size_y));
   	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, grid_size_x));
   	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, n_iter));
 
@@ -288,7 +296,6 @@ int main(int argc, char **argv)
 
 
     auto finish = std::chrono::high_resolution_clock::now();
-    //Copy Result from Device Global Memory to Host Local Memory
     OCL_CHECK(err,
               err = q.enqueueMigrateMemObjects({buffer_input},
                                                CL_MIGRATE_MEM_OBJECT_HOST));
@@ -298,23 +305,27 @@ int main(int argc, char **argv)
                                                    CL_MIGRATE_MEM_OBJECT_HOST));
 
     q.finish();
-//    auto finish = std::chrono::high_resolution_clock::now();
 
-
-//  for(int itr = 0; itr < n_iter*27; itr++){
-//      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-//      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-//  }
+  for(int itr = 0; itr < n_iter*27; itr++){
+      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+  }
     
     std::chrono::duration<double> elapsed = finish - start;
 
-//  printf("Runtime on FPGA (profile) is %f seconds\n", wtime/1000000000.0);
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-//  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-//  float bandwidth_prof = (logical_size_x * logical_size_y * sizeof(float) * 4.0 * n_iter*1000000000)/(wtime * 1024 * 1024 * 1024);
+  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
   float bandwidth = (act_sizex * act_sizey * sizeof(float) * 4.0 * n_iter * batches)/(elapsed.count() * 1000 * 1000 * 1000);
-//  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
+  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
   printf("\nBandwidth is %f\n", bandwidth);
+
+
+
+
+
+
+
+
 //  printf("\nBandwidth prof is %f\n", bandwidth_prof);
 
 //  for(int i = 0; i < act_sizey; i++){

@@ -72,7 +72,7 @@ static void fifo256_2axis(hls::stream <uint256_dt> &in, hls::stream<t_pkt> &out,
 	int end_index = (tile_x >> (SHIFT_BITS));
 	int end_row = size_y+2;
 
-	for (int itr = 0; itr < end_row * end_index*batches; itr++){
+	for (int itr = 0; itr < end_row * end_index; itr++){
 		#pragma HLS PIPELINE II=1
 		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
 		t_pkt tmp;
@@ -81,7 +81,8 @@ static void fifo256_2axis(hls::stream <uint256_dt> &in, hls::stream<t_pkt> &out,
 	}
 }
 
-static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint256_dt> &wr_buffer, const int size0, int size1,  const int xdim0_poisson_kernel_stencil, struct data_G data_g){
+static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint256_dt> &wr_buffer,
+		const unsigned short size0, const unsigned short size1,  const unsigned short offset, struct data_G data_g){
 //	#pragma HLS dataflow
 
 	short end_index = data_g.end_index;
@@ -206,7 +207,7 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 
 			process: for(short q = 0; q < PORT_WIDTH; q++){
 				#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
-				short index = (j << SHIFT_BITS) + q;
+				unsigned short index = (j << SHIFT_BITS) + q + offset;
 				float r1_1 = row_arr1[q] * (-0.07f);
 				float r1_2 = row_arr1[q+1] * (-0.06f);
 				float r1_3 = row_arr1[q+2] * (-0.05f);
@@ -258,7 +259,7 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 //				#pragma HLS RESOURCE variable=result core=FAddSub_nodsp
 
 
-				bool change_cond = (index <= 0 || index > size0 || (i == 1) || (i == end_row));
+				bool change_cond = (index <= offset || index > size0 || (i == 1) || (i == end_row));
 				mem_wr[q] = change_cond ? row_arr2[q+1] : result;
 			}
 
@@ -291,7 +292,7 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 
 
 void process_SLR (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1, hls::stream <t_pkt> &in2, hls::stream <t_pkt> &out2,
-		const int xdim0, const int offset, const int tile_x, const int size_y){
+		const int xdim0, const unsigned short offset, const unsigned short tile_x, const unsigned short size_x, const unsigned short size_y){
 
 
     static hls::stream<uint256_dt> streamArray[40 + 1];
@@ -307,19 +308,17 @@ void process_SLR (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1, hls::stre
 	data_g.endrow_plus2 = data_g.end_row + 2;
 	data_g.endrow_minus1 = data_g.end_row - 1;
 
-	int size_x = tile_x - 2;
-
 
 
 	#pragma HLS dataflow
     axis2_fifo256(in1, streamArray[0], tile_x, size_y);
 
-    process_tile( streamArray[0], streamArray[1], size_x, size_y, tile_x, data_g);
-    process_tile( streamArray[1], streamArray[2], size_x, size_y, tile_x, data_g);
-    process_tile( streamArray[2], streamArray[3], size_x, size_y, tile_x, data_g);
-    process_tile( streamArray[3], streamArray[4], size_x, size_y, tile_x, data_g);
+    process_tile( streamArray[0], streamArray[1], size_x, size_y, offset, data_g);
+    process_tile( streamArray[1], streamArray[2], size_x, size_y, offset, data_g);
+    process_tile( streamArray[2], streamArray[3], size_x, size_y, offset, data_g);
+    process_tile( streamArray[3], streamArray[4], size_x, size_y, offset, data_g);
 //
-    process_tile( streamArray[4], streamArray[5], size_x, size_y, tile_x, data_g);
+    process_tile( streamArray[4], streamArray[5], size_x, size_y, offset, data_g);
 //    process_grid( streamArray[5], streamArray[6], size0, size1, xdim0_poisson_kernel_stencil, data_g);
 //    process_grid( streamArray[6], streamArray[7], size0, size1, xdim0_poisson_kernel_stencil, data_g);
 //    process_grid( streamArray[7], streamArray[8], size0, size1, xdim0_poisson_kernel_stencil, data_g);
@@ -332,10 +331,10 @@ void process_SLR (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1, hls::stre
 	fifo256_2axis(streamArray[5], out1, tile_x, size_y);
 	axis2_fifo256(in2, streamArray[40], tile_x, size_y);
 
-	process_tile( streamArray[40], streamArray[21], size_x, size_y, tile_x, data_g);
-	process_tile( streamArray[21], streamArray[22], size_x, size_y, tile_x, data_g);
-	process_tile( streamArray[22], streamArray[23], size_x, size_y, tile_x, data_g);
-	process_tile( streamArray[23], streamArray[24], size_x, size_y, tile_x, data_g);
+	process_tile( streamArray[40], streamArray[21], size_x, size_y, offset, data_g);
+	process_tile( streamArray[21], streamArray[22], size_x, size_y, offset, data_g);
+	process_tile( streamArray[22], streamArray[23], size_x, size_y, offset, data_g);
+	process_tile( streamArray[23], streamArray[24], size_x, size_y, offset, data_g);
 //
 //	process_grid( streamArray[24], streamArray[25], size0, size1, xdim0_poisson_kernel_stencil, data_g);
 //	process_grid( streamArray[25], streamArray[26], size0, size1, xdim0_poisson_kernel_stencil, data_g);
@@ -356,6 +355,7 @@ void process_SLR (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1, hls::stre
 extern "C" {
 void stencil_SLR1(
 		const int tile_count,
+		const int sizex,
 		const int sizey,
 		const int xdim0,
 		const int count,
@@ -378,6 +378,7 @@ void stencil_SLR1(
 
 	#pragma HLS INTERFACE s_axilite port = tile_count bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizey bundle = control
+	#pragma HLS INTERFACE s_axilite port = sizex bundle = control
 	#pragma HLS INTERFACE s_axilite port = xdim0 bundle = control
 	#pragma HLS INTERFACE s_axilite port = count bundle = control
 	#pragma HLS INTERFACE s_axilite port = return bundle = control
@@ -392,10 +393,10 @@ void stencil_SLR1(
 
 	for(int i =  0; i < 2*count ; i++){
 		#pragma HLS dataflow
-		for(j = 0; j < tile_count; j++){
+		for(int j = 0; j < tile_count; j++){
 			unsigned short offset = tile_mem[j] & 0xffff;
 			unsigned short tile_x = tile_mem[j] >> 16;
-			process_SLR( in1, out1,in2, out2, xdim0, offset, tile_x, sizey);
+			process_SLR( in1, out1,in2, out2, xdim0, offset, tile_x, sizex, sizey);
 		}
 	}
 
