@@ -138,6 +138,7 @@ int main(int argc, char **argv)
   int itertile = n_iter;
   int non_copy = 0;
   int batches = 1;
+  unsigned short tile_size = 256;
 
   const char* pch;
   for ( int n = 1; n < argc; n++ ) {
@@ -161,6 +162,10 @@ int main(int argc, char **argv)
 	if(pch != NULL) {
 	  batches = atoi ( argv[n] + 7 ); continue;
 	}
+	pch = strstr(argv[n], "-tileX=");
+	if(pch != NULL) {
+		tile_size = atoi ( argv[n] + 7 ); continue;
+	}
     pch = strstr(argv[n], "-non-copy");
     if(pch != NULL) {
       non_copy = 1; continue;
@@ -176,7 +181,10 @@ int main(int argc, char **argv)
   int grid_size_x = (act_sizex % 16) != 0 ? (act_sizex/16 +1) * 16 : act_sizex+2;
   int grid_size_y = act_sizey;
 
-  int tile_count = 2;
+  int tile_count = 8;
+
+  unsigned short effective_tile_size= tile_size - 64;
+  tile_count = grid_size_x % effective_tile_size != 0? grid_size_x / effective_tile_size + 1 : grid_size_x / effective_tile_size;
   
   int data_size_bytes = grid_size_x * grid_size_y * sizeof(float)*batches;
   float * grid_u1 = (float*)aligned_alloc(4096, data_size_bytes);
@@ -184,9 +192,33 @@ int main(int argc, char **argv)
 
   float * grid_u1_d = (float*)aligned_alloc(4096, data_size_bytes);
   float * grid_u2_d = (float*)aligned_alloc(4096, data_size_bytes);
-  unsigned int * tile = (unsigned int*)aligned_alloc(4096, 256);
-  tile[0] = 0 | (96 << 16);
-  tile[1] = 16 | (96 << 16);
+  unsigned int * tile = (unsigned int*)aligned_alloc(4096, 256*sizeof(unsigned int));
+  int tile_c;
+  for(int i = 0; i < tile_count; i++){
+	  tile_c = i+1;
+	  tile[i] = i* effective_tile_size  | (tile_size << 16);
+	  if(i* effective_tile_size + tile_size >= grid_size_x){
+		  tile[i] = i* effective_tile_size  | (grid_size_x - i* effective_tile_size) << 16;
+		  break;
+	  }
+  }
+  printf("tile count is %d\n", tile_c);
+//  tile[tile_count -1] = (tile_count -1) * effective_tile_size | ((grid_size_x - (tile_count -1) * effective_tile_size)  << 16);
+//  if(tile[tile_count -1] <= 32){
+//	  tile[tile_count -1]--;
+//  }
+
+  	tile_count = tile_c;
+
+//  tile[0] = 0   | (128 << 16);
+//  tile[1] = 64  | (128 << 16);
+//  tile[2] = 128 | (128 << 16);
+//  tile[3] = 192 | (128 << 16);
+//  tile[4] = 256 | (128 << 16);
+//  tile[5] = 320 | (128 << 16);
+//  tile[6] = 384 | (128 << 16);
+//  tile[7] = 448 | (64 << 16);
+//  tile[5] = 320 | (128 << 16);
 
   initialise_grid(grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
   copy_grid(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
@@ -245,7 +277,7 @@ int main(int argc, char **argv)
     OCL_CHECK(err,
               cl::Buffer buffer_tile(context,
                                        CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-                                       256,
+									   tile_count*sizeof(unsigned int),
                                        tile,
                                        &err));
 
@@ -342,6 +374,13 @@ int main(int argc, char **argv)
 //    }
 //    printf("\n");
 //  }
+
+
+  free(grid_u1);
+  free(grid_u2);
+  free(grid_u1_d);
+  free(grid_u2_d);
+  free(tile);
 
   return 0;
 }
