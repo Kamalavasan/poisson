@@ -63,19 +63,22 @@ int stencil_computation(float* current, float* next, int act_sizex, int act_size
 
 double square_error(float* current, float* next, int act_sizex, int act_sizey, int grid_size_x, int grid_size_y, int batches){
   double sum = 0; 
+  int count = 0;
   for(int bat = 0; bat < batches; bat++){
 	  int offset = bat * grid_size_x* grid_size_y;
     for(int i = 0; i < act_sizey; i++){
       for(int j = 0; j < act_sizex; j++){
     	float val1 = next[i*grid_size_x + j+offset];
     	float val2 = current[i*grid_size_x + j+offset];
-    	if(fabs(val1 -val2)/(fabs(val1)+fabs(val2)) > 0.00001){
+    	if(fabs(val1 -val2)/(fabs(val1)+fabs(val2)) > 0.00001 && (fabs(val1)+fabs(val2)) > 1.0e-5){
     		printf("i:%d j:%d %f %f \n",i,j, val1,val2);
+    		count++;
     	}
         sum += next[i*grid_size_x + j+offset]*next[i*grid_size_x + j+offset] - current[i*grid_size_x + j+offset]*current[i*grid_size_x + j+offset];
       }
     }
   }
+  printf("error count is %d\n", count);
     return sum;
 }
 
@@ -182,6 +185,8 @@ int main(int argc, char **argv)
   int grid_size_y = act_sizey;
 
   int tile_count = 8;
+  tile_size = tile_size % 16 == 0? tile_size : (tile_size/16 + 1) * 16;
+  tile_size = tile_size > 64 ? tile_size : 64;
 
   unsigned short effective_tile_size= tile_size - 64;
   tile_count = grid_size_x % effective_tile_size != 0? grid_size_x / effective_tile_size + 1 : grid_size_x / effective_tile_size;
@@ -192,15 +197,21 @@ int main(int argc, char **argv)
 
   float * grid_u1_d = (float*)aligned_alloc(4096, data_size_bytes);
   float * grid_u2_d = (float*)aligned_alloc(4096, data_size_bytes);
+  float * grid_u1_d_c = (float*)aligned_alloc(4096, data_size_bytes);
+  float * grid_u2_d_c = (float*)aligned_alloc(4096, data_size_bytes);
+
   unsigned int * tile = (unsigned int*)aligned_alloc(4096, 256*sizeof(unsigned int));
   int tile_c;
+  int toltal_sizex = 0;
   for(int i = 0; i < tile_count; i++){
 	  tile_c = i+1;
 	  tile[i] = i* effective_tile_size  | (tile_size << 16);
 	  if(i* effective_tile_size + tile_size >= grid_size_x){
 		  tile[i] = i* effective_tile_size  | (grid_size_x - i* effective_tile_size) << 16;
+		  toltal_sizex += (grid_size_x - i* effective_tile_size);
 		  break;
 	  }
+	  toltal_sizex += tile_size;
   }
   printf("tile count is %d\n", tile_c);
 //  tile[tile_count -1] = (tile_count -1) * effective_tile_size | ((grid_size_x - (tile_count -1) * effective_tile_size)  << 16);
@@ -273,6 +284,18 @@ int main(int argc, char **argv)
                                        data_size_bytes,
                                        grid_u2_d,
                                        &err));
+    OCL_CHECK(err,
+                  cl::Buffer buffer_input_c(context,
+                                          CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
+                                          data_size_bytes,
+                                          grid_u1_d_c,
+                                          &err));
+	OCL_CHECK(err,
+			  cl::Buffer buffer_output_c (context,
+									   CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
+									   data_size_bytes,
+									   grid_u2_d_c,
+									   &err));
 
     OCL_CHECK(err,
               cl::Buffer buffer_tile(context,
@@ -284,7 +307,15 @@ int main(int argc, char **argv)
     //Set the Kernel Arguments
     int narg = 0;
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_input));
+    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_input));
+//    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_input));
+//    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_input));
+
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_output));
+    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_output));
+//    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_output));
+//    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_output));
+
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_tile));
 
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, tile_count));
@@ -338,18 +369,19 @@ int main(int argc, char **argv)
 
     q.finish();
 
-  for(int itr = 0; itr < n_iter*27; itr++){
-      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-  }
+//  for(int itr = 0; itr < n_iter*3; itr++){
+//      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+//      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+//  }
     
     std::chrono::duration<double> elapsed = finish - start;
 
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-  float bandwidth = (act_sizex * act_sizey * sizeof(float) * 4.0 * n_iter * batches)/(elapsed.count() * 1000 * 1000 * 1000);
-  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
-  printf("\nBandwidth is %f\n", bandwidth);
+//  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+  float bandwidth = (act_sizex * act_sizey * sizeof(float) * 4.0 * n_iter * 3)/(elapsed.count() * 1000 * 1000 * 1000);
+  float logic_bandwidth = (toltal_sizex * act_sizey * sizeof(float) * 4.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
+//  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
+  printf("\nBandwidth is %f \t %f\n", bandwidth,logic_bandwidth);
 
 
 
