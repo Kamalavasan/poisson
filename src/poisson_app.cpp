@@ -175,6 +175,9 @@ int main(int argc, char **argv)
     }
   }
 
+  logical_size_y = logical_size_y % 2 == 1 ? logical_size_y + 1: logical_size_y;
+//  logical_size_y = (logical_size_y+2) % 4 != 0 ? ((logical_size_y+2)/4 + 1)*4 -2 : logical_size_y;
+
   printf("Grid: %dx%d in %dx%d blocks, %d iterations, %d tile height, %d batches\n",logical_size_x,logical_size_y,ngrid_x,ngrid_y,n_iter,itertile, batches);
 
   int act_sizex = logical_size_x + 2;
@@ -263,6 +266,7 @@ int main(int argc, char **argv)
     devices.resize(1);
     auto start_p = std::chrono::high_resolution_clock::now();
     OCL_CHECK(err, cl::Program program(context, devices, bins, NULL, &err));
+    OCL_CHECK(err, cl::Kernel krnl_Read_Write(program, "stencil_Read_Write", &err));
     OCL_CHECK(err, cl::Kernel krnl_slr0(program, "stencil_SLR0", &err));
     OCL_CHECK(err, cl::Kernel krnl_slr1(program, "stencil_SLR1", &err));
     OCL_CHECK(err, cl::Kernel krnl_slr2(program, "stencil_SLR2", &err));
@@ -284,18 +288,6 @@ int main(int argc, char **argv)
                                        data_size_bytes,
                                        grid_u2_d,
                                        &err));
-    OCL_CHECK(err,
-                  cl::Buffer buffer_input_c(context,
-                                          CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-                                          data_size_bytes,
-                                          grid_u1_d_c,
-                                          &err));
-	OCL_CHECK(err,
-			  cl::Buffer buffer_output_c (context,
-									   CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-									   data_size_bytes,
-									   grid_u2_d_c,
-									   &err));
 
     OCL_CHECK(err,
               cl::Buffer buffer_tile(context,
@@ -304,26 +296,27 @@ int main(int argc, char **argv)
                                        tile,
                                        &err));
 
+
+    int read_write_offset = data_size_bytes/64;
     //Set the Kernel Arguments
     int narg = 0;
-    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_input));
-    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_input));
-//    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_input));
-//    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_input));
+    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_input));
+    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_input));
+    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_output));
+    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_output));
+    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_tile));
+    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, tile_count));
+    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, logical_size_x));
+    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, logical_size_y));
+    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, grid_size_x));
+    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, n_iter));
 
-    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_output));
-    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_output));
-//    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_output));
-//    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_output));
-
-    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, buffer_tile));
-
+    narg = 0;
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, tile_count));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_x));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_y));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_x));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, n_iter));
-
 
     narg = 0;
     OCL_CHECK(err, err = krnl_slr1.setArg(narg++, tile_count));
@@ -352,6 +345,7 @@ int main(int argc, char **argv)
 
 
 	//Launch the Kernel
+    OCL_CHECK(err, err = q.enqueueTask(krnl_Read_Write));
 	OCL_CHECK(err, err = q.enqueueTask(krnl_slr0));
 	OCL_CHECK(err, err = q.enqueueTask(krnl_slr1));
 	OCL_CHECK(err, err = q.enqueueTask(krnl_slr2));
@@ -369,18 +363,18 @@ int main(int argc, char **argv)
 
     q.finish();
 
-//  for(int itr = 0; itr < n_iter*3; itr++){
-//      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-//      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-//  }
+  for(int itr = 0; itr < n_iter*27; itr++){
+      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+  }
     
     std::chrono::duration<double> elapsed = finish - start;
 
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-//  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-  float bandwidth = (act_sizex * act_sizey * sizeof(float) * 4.0 * n_iter * 3)/(elapsed.count() * 1000 * 1000 * 1000);
+  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+  float bandwidth = (act_sizex * act_sizey * sizeof(float) * 4.0 * n_iter * 27)/(elapsed.count() * 1000 * 1000 * 1000);
   float logic_bandwidth = (toltal_sizex * act_sizey * sizeof(float) * 4.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
-//  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
+  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
   printf("\nBandwidth is %f \t %f\n", bandwidth,logic_bandwidth);
 
 
