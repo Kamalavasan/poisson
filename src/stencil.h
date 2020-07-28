@@ -1,9 +1,16 @@
+#include <ap_int.h>
+#include <hls_stream.h>
+#include <ap_axi_sdata.h>
+#include <math.h>
+#include <stdio.h>
+
+
 typedef ap_uint<512> uint512_dt;
 typedef ap_uint<256> uint256_dt;
 typedef ap_axiu<256,0,0,0> t_pkt;
 typedef ap_axiu<32,0,0,0> t_pkt_32;
 
-#define MAX_SIZE_X 8192
+#define MAX_SIZE_X 256
 #define MAX_DEPTH_16 (MAX_SIZE_X/16)
 
 //user function
@@ -19,17 +26,21 @@ const int max_size_y = MAX_SIZE_X;
 const int min_size_y = 20;
 const int avg_size_y = MAX_SIZE_X;
 
-const int max_block_x = MAX_SIZE_X/16 + 1;
-const int min_block_x = 20/16 + 1;
-const int avg_block_x = MAX_SIZE_X/16 + 1;
+const int max_block_x = MAX_SIZE_X/8 + 1;
+const int min_block_x = 20/8 + 1;
+const int avg_block_x = MAX_SIZE_X/8 + 1;
 
-const int max_grid = max_block_x * max_size_y;
-const int min_grid = min_block_x * min_size_y;
-const int avg_grid = avg_block_x * avg_size_y;
+const int max_grid = max_block_x * max_size_y * max_size_y;
+const int min_grid = min_block_x * min_size_y * min_size_y;
+const int avg_grid = avg_block_x * avg_size_y * avg_size_y;
+
+const int max_grid_2 = (max_block_x * max_size_y * max_size_y)/2;
+const int min_grid_2 = (min_block_x * min_size_y * min_size_y)/2;
+const int avg_grid_2 = (avg_block_x * avg_size_y * avg_size_y)/2;
 
 const int port_width  = PORT_WIDTH;
-const int max_depth_16 = MAX_DEPTH_16;
-const int max_depth_8 = MAX_DEPTH_16*2;
+const int max_depth_16 = MAX_DEPTH_16 * 8;
+const int max_depth_8 = MAX_DEPTH_16 * 8;
 
 typedef union  {
    int i;
@@ -37,14 +48,16 @@ typedef union  {
 } data_conv;
 
 struct data_G{
-	unsigned short end_index;
-	unsigned short end_row;
-	unsigned int gridsize;
+	unsigned short sizex;
+	unsigned short sizey;
+	unsigned short sizez;
+	unsigned short xblocks;
+	unsigned short grid_sizey;
+	unsigned short grid_sizez;
+	unsigned short limit_z;
+	unsigned int gridsize_pr;
+	unsigned int plane_diff;
+	unsigned int line_diff;
 	unsigned short outer_loop_limit;
-	unsigned short endrow_plus2;
-	unsigned short endrow_plus1;
-	unsigned short endrow_minus1;
-	unsigned short endindex_minus1;
 };
-
 

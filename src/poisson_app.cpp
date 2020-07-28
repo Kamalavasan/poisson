@@ -43,74 +43,60 @@
 #include <chrono>
 #include "omp.h"
 
-int stencil_computation(float* current, float* next, int act_sizex, int act_sizey, int grid_size_x, int grid_size_y, int batches){
-	for(int bat = 0; bat < batches; bat++){
-		int offset = bat * grid_size_x* grid_size_y;
-		for(int i = 0; i < act_sizey; i++){
-		  for(int j = 0; j < act_sizex; j++){
-			if(i == 0 || j == 0 || i == act_sizey -1  || j==act_sizex-1){
-			  next[i*grid_size_x + j + offset] = current[i*grid_size_x + j + offset] ;
-			} else {
-			  next[i*grid_size_x + j + offset] = current[i*grid_size_x + j + offset]  * 0.5  + \
-										   (current[(i-1)*grid_size_x + j+ offset] + current[(i+1)*grid_size_x + j+offset]) * 0.125f  + \
-										   (current[i*grid_size_x + j+1+offset] + current[i*grid_size_x + j-1+offset]) * 0.125f ;
-			}
-		  }
-		}
-	}
+int stencil_computation(float* current, float* next, int act_sizex, int act_sizey, int act_sizez, int grid_size_x, int grid_size_y, int grid_size_z){
+    for(int i = 0; i < act_sizez; i++){
+      for(int j = 0; j < act_sizey; j++){
+        for(int k = 0; k < act_sizex; k++){
+          if(i == 0 || j == 0 || k ==0 || i == act_sizez -1  || j==act_sizey-1 || k == act_sizex -1){
+            next[i*grid_size_x*grid_size_y + j*grid_size_x + k] = current[i*grid_size_x*grid_size_y + j*grid_size_x + k] ;
+          } else {
+            next[i*grid_size_x*grid_size_y + j*grid_size_x + k] =     current[(i-1)*grid_size_x*grid_size_y + (j)*grid_size_x + (k)] * (0.01)  + \
+                                          current[(i+1)*grid_size_x*grid_size_y + (j)*grid_size_x + (k)] * (0.02)  + \
+                                          current[(i)*grid_size_x*grid_size_y + (j-1)*grid_size_x + (k)] * (0.03)  + \
+                                          current[(i)*grid_size_x*grid_size_y + (j+1)*grid_size_x + (k)] * (0.04)  + \
+                                          current[(i)*grid_size_x*grid_size_y + (j)*grid_size_x + (k-1)] * (0.05)  + \
+                                          current[(i)*grid_size_x*grid_size_y + (j)*grid_size_x + (k+1)] * (0.06)  + \
+                                          current[(i)*grid_size_x*grid_size_y + (j)*grid_size_x + (k)] * (0.79) ;
+          }
+        }
+      }
+    }
     return 0;
 }
 
-double square_error(float* current, float* next, int act_sizex, int act_sizey, int grid_size_x, int grid_size_y, int batches){
-  double sum = 0; 
-  int count = 0;
-  for(int bat = 0; bat < batches; bat++){
-	  int offset = bat * grid_size_x* grid_size_y;
-    for(int i = 0; i < act_sizey; i++){
-      for(int j = 0; j < act_sizex; j++){
-    	float val1 = next[i*grid_size_x + j+offset];
-    	float val2 = current[i*grid_size_x + j+offset];
-    	if(fabs(val1 -val2)/(fabs(val1)+fabs(val2)) > 0.00001 && (fabs(val1)+fabs(val2)) > 1.0e-5){
-    		printf("i:%d j:%d %f %f \n",i,j, val1,val2);
-    		count++;
-    	}
-        sum += next[i*grid_size_x + j+offset]*next[i*grid_size_x + j+offset] - current[i*grid_size_x + j+offset]*current[i*grid_size_x + j+offset];
+double square_error(float* current, float* next, int act_sizex, int act_sizey, int act_sizez, int grid_size_x, int grid_size_y, int grid_size_z){
+    double sum = 0;
+    for(int i = 0; i < act_sizez; i++){
+      for(int j = 0; j < act_sizey; j++){
+        for(int k = 0; k < act_sizex; k++){
+          float val1 = next[i*grid_size_x*grid_size_y + j*grid_size_x+k]*next[i*grid_size_x + j];
+          float val2 = current[i*grid_size_x*grid_size_y + j*grid_size_x+k]*next[i*grid_size_x + j];
+          sum +=  val1*val1 - val2*val2;
+        }
       }
     }
-  }
-  printf("error count is %d\n", count);
     return sum;
 }
 
-int copy_grid(float* grid_s, float* grid_d, int act_sizex, int act_sizey, int grid_size_x, int grid_size_y, int batches){
-    double sum = 0; 
-    for(int bat = 0; bat < batches; bat++){
-    	int offset = bat * grid_size_x* grid_size_y;
-		for(int i = 0; i < act_sizey; i++){
-		  for(int j = 0; j < act_sizex; j++){
-			grid_d[i*grid_size_x + j+offset] = grid_s[i*grid_size_x + j+offset];
-		  }
-		}
-    }
+int copy_grid(float* grid_s, float* grid_d, int grid_size){
+    memcpy(grid_d, grid_s, grid_size);
     return 0;
 }
 
 
-int initialise_grid(float* grid, int act_sizex, int act_sizey, int grid_size_x, int grid_size_y, int batches){
-	for(int bat = 0; bat < batches; bat++){
-	int offset = bat * grid_size_x* grid_size_y;
-	  for(int i = 0; i < act_sizey; i++){
-	  for(int j = 0; j < act_sizex; j++){
-//		  grid[i*grid_size_x + j+offset] = i+j;
-		  if(i == 0 || j == 0 || j == act_sizex -1  || i==act_sizey-1){
-			float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-			grid[i*grid_size_x + j+offset] = r;
-		  } else {
-			grid[i*grid_size_x + j+offset] = 0;
-		  }
-		}
-	  }
-	}
+int initialise_grid(float* grid, int act_sizex, int act_sizey, int act_sizez, int grid_size_x, int grid_size_y, int grid_size_z){
+  for(int i = 0; i < act_sizez; i++){
+    for(int j = 0; j < act_sizey; j++){
+      for(int k = 0; k < act_sizex; k++){
+        if(i == 0 || j == 0 || k == 0 || i == act_sizez -1  || j==act_sizey-1 || k == act_sizex-1 ){
+          float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+          grid[i*grid_size_x*grid_size_y + j * grid_size_x + k] = r;
+        } else {
+          grid[i*grid_size_x*grid_size_y + j * grid_size_x + k] = 0;
+        }
+      }
+    }
+  }
   return 0;
 }
 
@@ -135,6 +121,7 @@ int main(int argc, char **argv)
   //Mesh
   int logical_size_x = 20;
   int logical_size_y = 20;
+  int logical_size_z = 20;
   int ngrid_x = 1;
   int ngrid_y = 1;
   int n_iter = 10;
@@ -153,6 +140,10 @@ int main(int argc, char **argv)
     if(pch != NULL) {
       logical_size_y = atoi ( argv[n] + 7 ); continue;
     }
+    pch = strstr(argv[n], "-sizez=");
+	if(pch != NULL) {
+	  logical_size_z = atoi ( argv[n] + 7 ); continue;
+	}
     pch = strstr(argv[n], "-iters=");
     if(pch != NULL) {
       n_iter = atoi ( argv[n] + 7 ); continue;
@@ -182,19 +173,21 @@ int main(int argc, char **argv)
 
   int act_sizex = logical_size_x + 2;
   int act_sizey = logical_size_y + 2;
+  int act_sizez = logical_size_z + 2;
 
 
   int grid_size_x = (act_sizex % 16) != 0 ? (act_sizex/16 +1) * 16 : act_sizex;
   int grid_size_y = act_sizey;
+  int grid_size_z = act_sizez;
 
   int tile_count = 8;
   tile_size = tile_size % 16 == 0? tile_size : (tile_size/16 + 1) * 16;
-  tile_size = tile_size > 64 ? tile_size : 64;
+  tile_size = tile_size > 16 ? tile_size : 16;
 
-  unsigned short effective_tile_size= tile_size - 64;
+  unsigned short effective_tile_size= tile_size - 0;
   tile_count = grid_size_x % effective_tile_size != 0? grid_size_x / effective_tile_size + 1 : grid_size_x / effective_tile_size;
   
-  int data_size_bytes = grid_size_x * grid_size_y * sizeof(float)*batches;
+  int data_size_bytes = grid_size_x * grid_size_y * grid_size_z *sizeof(float)*batches;
   float * grid_u1 = (float*)aligned_alloc(4096, data_size_bytes);
   float * grid_u2 = (float*)aligned_alloc(4096, data_size_bytes);
 
@@ -232,8 +225,8 @@ int main(int argc, char **argv)
 //  tile[7] = 448 | (64 << 16);
 //  tile[5] = 320 | (128 << 16);
 
-  initialise_grid(grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-  copy_grid(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+  initialise_grid(grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
+  copy_grid(grid_u1, grid_u1_d, data_size_bytes);
   // stencil computation
 
 
@@ -306,6 +299,7 @@ int main(int argc, char **argv)
     OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, tile_count));
     OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, logical_size_x));
     OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, logical_size_y));
+    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, logical_size_z));
     OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, grid_size_x));
     OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, n_iter));
 
@@ -313,6 +307,7 @@ int main(int argc, char **argv)
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, tile_count));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_x));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_y));
+    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_z));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, grid_size_x));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, n_iter));
 
@@ -320,6 +315,7 @@ int main(int argc, char **argv)
     OCL_CHECK(err, err = krnl_slr1.setArg(narg++, tile_count));
     OCL_CHECK(err, err = krnl_slr1.setArg(narg++, logical_size_x));
     OCL_CHECK(err, err = krnl_slr1.setArg(narg++, logical_size_y));
+    OCL_CHECK(err, err = krnl_slr1.setArg(narg++, logical_size_z));
     OCL_CHECK(err, err = krnl_slr1.setArg(narg++, grid_size_x));
     OCL_CHECK(err, err = krnl_slr1.setArg(narg++, n_iter));
 
@@ -327,6 +323,7 @@ int main(int argc, char **argv)
   	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, tile_count));
     OCL_CHECK(err, err = krnl_slr2.setArg(narg++, logical_size_x));
     OCL_CHECK(err, err = krnl_slr2.setArg(narg++, logical_size_y));
+    OCL_CHECK(err, err = krnl_slr2.setArg(narg++, logical_size_z));
   	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, grid_size_x));
   	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, n_iter));
 
@@ -361,15 +358,15 @@ int main(int argc, char **argv)
 
     q.finish();
 
-  for(int itr = 0; itr < n_iter*60; itr++){
-      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
-      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+  for(int itr = 0; itr < n_iter*4; itr++){
+      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
+      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
   }
     
     std::chrono::duration<double> elapsed = finish - start;
 
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
+  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_x);
   float bandwidth = (act_sizex * act_sizey * sizeof(float) * 4.0 * n_iter * 27)/(elapsed.count() * 1000 * 1000 * 1000);
   float logic_bandwidth = (toltal_sizex * act_sizey * sizeof(float) * 4.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
   printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
