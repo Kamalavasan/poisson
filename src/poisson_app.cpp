@@ -48,12 +48,12 @@ int stencil_computation(float* current, float* next, int act_sizex, int act_size
 		int offset = bat * grid_size_x* grid_size_y;
 		for(int i = 0; i < act_sizey; i++){
 		  for(int j = 0; j < act_sizex; j++){
-			if(i == 0 || j == 0 || j == act_sizex -1  || i==act_sizey-1){
+			if(i == 0 || j == 0 || i == act_sizey -1  || j==act_sizex-1){
 			  next[i*grid_size_x + j + offset] = current[i*grid_size_x + j + offset] ;
 			} else {
-			  next[i*grid_size_x + j + offset] = current[(i-1)*grid_size_x + (j-1) + offset] * (-0.07) + current[(i)*grid_size_x + (j-1)+offset] * (-0.08) + current[(i+1)*grid_size_x + (j-1)+offset] * (-0.01) + \
-                                        current[(i-1)*grid_size_x + (j)+ offset] *   (-0.06) + current[(i)*grid_size_x + (j)+offset] *   (0.36)   + current[(i+1)*grid_size_x + (j)+offset]   * (-0.02) + \
-                                        current[(i-1)*grid_size_x + (j+1)+offset] * (-0.05) + current[(i)*grid_size_x + (j+1)+offset] * (-0.04) + current[(i+1)*grid_size_x + (j+1)+offset] * (-0.03) ;
+			  next[i*grid_size_x + j + offset] = current[i*grid_size_x + j + offset]  * 0.5  + \
+										   (current[(i-1)*grid_size_x + j+ offset] + current[(i+1)*grid_size_x + j+offset]) * 0.125f  + \
+										   (current[i*grid_size_x + j+1+offset] + current[i*grid_size_x + j-1+offset]) * 0.125f ;
 			}
 		  }
 		}
@@ -184,7 +184,7 @@ int main(int argc, char **argv)
   int act_sizey = logical_size_y + 2;
 
 
-  int grid_size_x = (act_sizex % 16) != 0 ? (act_sizex/16 +1) * 16 : act_sizex+2;
+  int grid_size_x = (act_sizex % 16) != 0 ? (act_sizex/16 +1) * 16 : act_sizex;
   int grid_size_y = act_sizey;
 
   int tile_count = 8;
@@ -200,8 +200,6 @@ int main(int argc, char **argv)
 
   float * grid_u1_d = (float*)aligned_alloc(4096, data_size_bytes);
   float * grid_u2_d = (float*)aligned_alloc(4096, data_size_bytes);
-  float * grid_u1_d_c = (float*)aligned_alloc(4096, data_size_bytes);
-  float * grid_u2_d_c = (float*)aligned_alloc(4096, data_size_bytes);
 
   unsigned int * tile = (unsigned int*)aligned_alloc(4096, 256*sizeof(unsigned int));
   int tile_c;
@@ -363,7 +361,7 @@ int main(int argc, char **argv)
 
     q.finish();
 
-  for(int itr = 0; itr < n_iter*27; itr++){
+  for(int itr = 0; itr < n_iter*60; itr++){
       stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
       stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, grid_size_x, grid_size_y, batches);
   }
