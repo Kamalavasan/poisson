@@ -32,6 +32,10 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 	unsigned short limit_z = data_g.limit_z;
 	unsigned short grid_sizey = data_g.grid_sizey;
 	unsigned short grid_sizez = data_g.grid_sizez;
+
+	unsigned short offset_x = data_g.offset_x;
+	unsigned short offset_y = data_g.offset_y;
+
 	unsigned int line_diff = data_g.line_diff;
 	unsigned int plane_diff = data_g.plane_diff;
 	unsigned int gridsize = data_g.gridsize_pr;
@@ -142,10 +146,10 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 		s_1_1_1_arr[PORT_WIDTH + 1] = tmp2_o2.f;
 
 
-
+		unsigned short y_index = j + offset_y;
 		process: for(short q = 0; q < PORT_WIDTH; q++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
-			short index = (k << SHIFT_BITS) + q;
+			short index = (k << SHIFT_BITS) + q + offset_x;
 			float r1_1_2 =  s_1_1_2_arr[q] * 0.02;
 			float r1_2_1 =  s_1_2_1_arr[q] * 0.04;
 			float r0_1_1 =  s_1_1_1_arr[q] * 0.05;
@@ -162,7 +166,7 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 			float r2=  f3 + r1_1_0;
 
 			float result  = r1 + r2;
-			bool change_cond = (index <= 0 || index > sizex || (i <= 1) || (i >= limit_z -1) || (j == 0) || (j == grid_sizey -1));
+			bool change_cond = (index <= offset_x || index > sizex || (i <= 1) || (i >= limit_z -1) || (j == 0) || (y_index == grid_sizey -1));
 			mem_wr[q] = change_cond ? s_1_1_1_arr[q+1] : result;
 		}
 

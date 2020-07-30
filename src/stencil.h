@@ -51,10 +51,16 @@ struct data_G{
 	unsigned short sizex;
 	unsigned short sizey;
 	unsigned short sizez;
+	unsigned short xdim;
 	unsigned short xblocks;
 	unsigned short grid_sizey;
 	unsigned short grid_sizez;
 	unsigned short limit_z;
+	unsigned short offset_x;
+	unsigned short tile_x;
+	unsigned short offset_y;
+	unsigned short tile_y;
+	unsigned int plane_size;
 	unsigned int gridsize_pr;
 	unsigned int plane_diff;
 	unsigned int line_diff;

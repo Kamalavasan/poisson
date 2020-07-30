@@ -19,18 +19,26 @@
 
 
 void process_SLR (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1, hls::stream <t_pkt> &in2, hls::stream <t_pkt> &out2,
-		const int xdim0, const unsigned short offset, const unsigned short tile_x,
+		const int xdim0, const unsigned short offset_x, const unsigned short tile_x,
+		unsigned short offset_y, unsigned short tile_y,
 		const unsigned short size_x, const unsigned short size_y, const unsigned short size_z){
 
     static hls::stream<uint256_dt> streamArray[40 + 1];
     #pragma HLS STREAM variable = streamArray depth = 2
 
     struct data_G data_g;
-    data_g.sizex = tile_x;
+    data_g.sizex = size_x;
     data_g.sizey = size_y;
     data_g.sizez = size_z;
-	data_g.xblocks = (xdim0 >> SHIFT_BITS);
-	data_g.grid_sizey = size_y+2;
+
+    data_g.offset_x = offset_x;
+    data_g.tile_x = tile_x;
+    data_g.offset_y = offset_y;
+    data_g.tile_y = tile_y;
+
+
+	data_g.xblocks = (tile_x >> SHIFT_BITS);
+	data_g.grid_sizey = tile_y;
 	data_g.grid_sizez = size_z+2;
 	data_g.limit_z = size_z+3;
 
@@ -80,7 +88,8 @@ void process_SLR (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1, hls::stre
 
 extern "C" {
 void stencil_SLR1(
-		const int tile_count,
+		const int tilex_count,
+		const int tiley_count,
 		const int sizex,
 		const int sizey,
 		const int sizez,
@@ -103,7 +112,8 @@ void stencil_SLR1(
 	#pragma HLS INTERFACE axis port = tile_s_in register
 	#pragma HLS INTERFACE axis port = tile_s_out register
 
-	#pragma HLS INTERFACE s_axilite port = tile_count bundle = control
+	#pragma HLS INTERFACE s_axilite port = tilex_count bundle = control
+	#pragma HLS INTERFACE s_axilite port = tiley_count bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizey bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizex bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizez bundle = control
@@ -111,20 +121,34 @@ void stencil_SLR1(
 	#pragma HLS INTERFACE s_axilite port = count bundle = control
 	#pragma HLS INTERFACE s_axilite port = return bundle = control
 
-	unsigned int tile_mem[256];
-	for(int j = 0; j < tile_count; j++){
+	unsigned int tile_memx[256];
+	unsigned int tile_memy[256];
+
+	for(int j = 0; j < tilex_count; j++){
 		t_pkt_32 tmp_s;
 		tmp_s = tile_s_in.read();
 		tile_s_out.write(tmp_s);
-		tile_mem[j] = tmp_s.data;
+		tile_memx[j] = tmp_s.data;
+	}
+
+	for(int j = 0; j < tiley_count; j++){
+		t_pkt_32 tmp_s;
+		tmp_s = tile_s_in.read();
+		tile_s_out.write(tmp_s);
+		tile_memy[j] = tmp_s.data;
 	}
 
 	for(unsigned short itr =  0; itr < 2*count ; itr++){
-		for(unsigned short j = 0; j < tile_count; j++){
+		for(unsigned short j = 0; j < tilex_count; j++){
 			#pragma HLS dataflow
-			unsigned short offset = tile_mem[j] & 0xffff;
-			unsigned short tile_x = tile_mem[j] >> 16;
-			process_SLR( in1, out1,in2,out2, xdim0, offset, tile_x, sizex, sizey, sizez);
+			unsigned short offset_x = tile_memx[j] & 0xffff;
+			unsigned short tile_x   = tile_memx[j] >> 16;
+
+			for(unsigned short k  = 0; k < tiley_count; k++){
+				unsigned short offset_y = tile_memy[j] & 0xffff;
+				unsigned short tile_y   = tile_memy[j] >> 16;
+				process_SLR( in1, out1, in2, out2, xdim0, offset_x, tile_x, offset_y, tile_y, sizex, sizey, sizez);
+			}
 		}
 	}
 
