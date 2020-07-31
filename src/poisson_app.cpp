@@ -177,7 +177,7 @@ int main(int argc, char **argv)
     }
   }
 
-//  logical_size_y = logical_size_y % 2 == 1 ? logical_size_y + 1: logical_size_y;
+  logical_size_y = logical_size_y % 2 == 1 ? logical_size_y + 1: logical_size_y;
 //  logical_size_y = (logical_size_y+2) % 4 != 0 ? ((logical_size_y+2)/4 + 1)*4 -2 : logical_size_y;
 
   printf("Grid: %dx%d in %dx%d blocks, %d iterations, %d tile height, %d batches\n",logical_size_x,logical_size_y,ngrid_x,ngrid_y,n_iter,itertile, batches);

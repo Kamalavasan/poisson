@@ -5,7 +5,7 @@
 #include "../src/stencil.h"
 #include <stdio.h>
 
-static void read_tile(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, struct data_G data_g){
+static void read_tile(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, struct data_G data_g, unsigned short start){
 	unsigned short tile_x = data_g.tile_x;
 	unsigned short offset_x = data_g.offset_x;
 	unsigned short tile_y = data_g.tile_y;
@@ -18,7 +18,7 @@ static void read_tile(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, str
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
 
 	for(unsigned short k = 0; k < end_z; k++){
-		for(unsigned short i = 0; i < tile_y; i = i+1){
+		for(unsigned short i = start; i < tile_y; i = i+2){
 			unsigned int plane_offset = k* plane_size;
 			unsigned int row_offset = xblocks * (offset_y + i);
 			unsigned int offset_x_b = offset_x >> (SHIFT_BITS+1);
@@ -32,31 +32,31 @@ static void read_tile(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, str
 	}
 }
 
+
+
 static void combine_tile(hls::stream<uint512_dt> &rd_buffer0, hls::stream<uint512_dt> &rd_buffer1, hls::stream<uint512_dt> &rd_buffer2, hls::stream<uint512_dt> &rd_buffer3,
-		hls::stream<uint512_dt> &combined_buffer, const int xdim0, const int offset, int tile_x, int size_y){
+		hls::stream<uint512_dt> &combined_buffer, struct data_G data_g){
+
+	unsigned short tile_x = data_g.tile_x;
+	unsigned short tile_y = data_g.tile_y;
+	unsigned short end_z = data_g.grid_sizez;
+
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
-	unsigned short  end_row = size_y+2;
-	for(unsigned short i = 0; i < end_row; i = i+2){
-		for (unsigned short j = 0; j < end_index; j++){
-			#pragma HLS PIPELINE II=1
-			combined_buffer << rd_buffer0.read();
-		}
 
-		for (unsigned short j = 0; j < end_index; j++){
-			#pragma HLS PIPELINE II=1
-			combined_buffer << rd_buffer1.read();
-		}
+	for(unsigned short k = 0; k < end_z; k++){
+		for(unsigned short i = 0; i < tile_y; i = i+2){
+			for (unsigned short j = 0; j < end_index; j++){
+				#pragma HLS PIPELINE II=1
+				combined_buffer << rd_buffer0.read();
+			}
 
-//		for (unsigned short j = 0; j < end_index; j++){
-//			#pragma HLS PIPELINE II=1
-//			combined_buffer << rd_buffer2.read();
-//		}
-//
-//		for (unsigned short j = 0; j < end_index; j++){
-//			#pragma HLS PIPELINE II=1
-//			combined_buffer << rd_buffer3.read();
-//		}
+			for (unsigned short j = 0; j < end_index; j++){
+				#pragma HLS PIPELINE II=1
+				combined_buffer << rd_buffer1.read();
+			}
+		}
 	}
+
 }
 
 
@@ -139,37 +139,39 @@ static void fifo256_2axis(hls::stream <uint256_dt> &in, hls::stream<t_pkt> &out,
 
 
 static void separate_tile(hls::stream<uint512_dt> &in_buffer, hls::stream<uint512_dt> &wr_buffer0, hls::stream<uint512_dt> &wr_buffer1, hls::stream<uint512_dt> &wr_buffer2,
-		hls::stream<uint512_dt> &wr_buffer3, const int xdim0, const int offset, int tile_x, int size_y){
-	unsigned short full_size = (tile_x >> (SHIFT_BITS+1));
-	unsigned short adjust = offset == 0 ? 0 : 2;
-	unsigned short end_index = full_size-adjust;
-	unsigned short end_row = size_y + 2;
-	for(unsigned short i = 0; i < end_row; i = i+2){
-		for (unsigned short j = 0; j < end_index; j++){
-			#pragma HLS PIPELINE II=1
-			wr_buffer0 << in_buffer.read();
-		}
+		hls::stream<uint512_dt> &wr_buffer3, struct data_G data_g){
 
-		for (unsigned short j = 0; j < end_index; j++){
-			#pragma HLS PIPELINE II=1
-			wr_buffer1 << in_buffer.read();
+	unsigned short offset_x = data_g.offset_x;
+	unsigned short offset_y = data_g.offset_y;
+
+	unsigned short adjust_x = (offset_x == 0?  0 : 16);
+	unsigned short adjust_x_b = (offset_x == 0?  0 : 1);
+	unsigned short adjust_y = (offset_y == 0?  0 : 4);
+
+	unsigned short tile_x = data_g.tile_x - adjust_x;
+	unsigned short tile_y = data_g.tile_y - adjust_y;
+
+	unsigned short end_z = data_g.grid_sizez;
+	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
+
+	for(unsigned short k = 0; k < end_z; k++){
+		for(unsigned short i = 0; i < tile_y; i = i+2){
+			for (unsigned short j = 0; j < end_index; j++){
+				#pragma HLS PIPELINE II=1
+				wr_buffer0 << in_buffer.read();
+			}
+
+			for (unsigned short j = 0; j < end_index; j++){
+				#pragma HLS PIPELINE II=1
+				wr_buffer1 << in_buffer.read();
+			}
 		}
-//
-//		for (unsigned short j = 0; j < end_index; j++){
-//			#pragma HLS PIPELINE II=1
-//			wr_buffer2 << in_buffer.read();
-//		}
-//
-//		for (unsigned short j = 0; j < end_index; j++){
-//			#pragma HLS PIPELINE II=1
-//			wr_buffer3 << in_buffer.read();
-//		}
 	}
 }
 
 
 
-static void write_tile(uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, struct data_G data_g){
+static void write_tile(uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, struct data_G data_g, unsigned short start){
 	unsigned short offset_x = data_g.offset_x;
 	unsigned short offset_y = data_g.offset_y;
 
@@ -188,7 +190,7 @@ static void write_tile(uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, st
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
 
 	for(unsigned short k = 0; k < end_z; k++){
-		for(unsigned short i = 0; i < tile_y; i = i+1){
+		for(unsigned short i = start; i < tile_y; i = i+2){
 			unsigned int plane_offset = k* plane_size;
 			unsigned int row_offset = xblocks * (offset_y + i + adjust_y);
 			unsigned int offset_x_b = offset_x >> (SHIFT_BITS+1);
@@ -244,22 +246,19 @@ static void process_ReadWrite (uint512_dt*  arg0_0, uint512_dt*  arg0_1,
 
 
 	#pragma HLS dataflow
+	read_tile(arg0_0, rd_bufferArr[0], data_g, 0);
+	read_tile(arg0_1, rd_bufferArr[1], data_g, 1);
 
-
-//	read_tile(arg0_0, rd_bufferArr[0], xdim0, offset, tile_x, size_y, 0);
-//	read_tile(arg0_1, rd_bufferArr[1], xdim0, offset, tile_x, size_y, 1);
-//
-//
-//	combine_tile(rd_bufferArr[0], rd_bufferArr[1], rd_bufferArr[2], rd_bufferArr[3], streamArray_512[0], xdim0, offset, tile_x, size_y);
-//	stream_convert_512_256(streamArray_512[0], streamArray[0], tile_x, size_y);
-	read_tile(arg0_0, rd_bufferArr[0], data_g);
-	stream_convert_512_256(rd_bufferArr[0], streamArray[0], data_g);
+	combine_tile(rd_bufferArr[0], rd_bufferArr[1], rd_bufferArr[2], rd_bufferArr[3], streamArray_512[0], data_g);
+	stream_convert_512_256(streamArray_512[0], streamArray[0], data_g);
 
 	fifo256_2axis(streamArray[0], out, totol_iter);
 	axis2_fifo256(in, streamArray[31], totol_iter);
 
-	stream_convert_256_512(streamArray[31],wr_bufferArr[0], data_g);
-	write_tile(arg1_0, wr_bufferArr[0], data_g);
+	stream_convert_256_512(streamArray[31],streamArray_512[1], data_g);
+	separate_tile(streamArray_512[1], wr_bufferArr[0], wr_bufferArr[1], wr_bufferArr[2], wr_bufferArr[3], data_g);
+	write_tile(arg1_0, wr_bufferArr[0], data_g, 0);
+	write_tile(arg1_1, wr_bufferArr[1], data_g, 1);
 
 
 
