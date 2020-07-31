@@ -177,7 +177,7 @@ int main(int argc, char **argv)
     }
   }
 
-  logical_size_y = logical_size_y % 2 == 1 ? logical_size_y + 1: logical_size_y;
+//  logical_size_y = logical_size_y % 2 == 1 ? logical_size_y + 1: logical_size_y;
 //  logical_size_y = (logical_size_y+2) % 4 != 0 ? ((logical_size_y+2)/4 + 1)*4 -2 : logical_size_y;
 
   printf("Grid: %dx%d in %dx%d blocks, %d iterations, %d tile height, %d batches\n",logical_size_x,logical_size_y,ngrid_x,ngrid_y,n_iter,itertile, batches);
@@ -191,15 +191,10 @@ int main(int argc, char **argv)
   int grid_size_y = act_sizey;
   int grid_size_z = act_sizez;
 
-  int tilex_count = 1;
-  int tiley_count = 1;
 
-//  tile_size = tile_size % 16 == 0? tile_size : (tile_size/16 + 1) * 16;
-//  tile_size = tile_size > 16 ? tile_size : 16;
+
 
 //  unsigned short effective_tile_size= tile_size - 0;
-  int tile_count = tilex_count + tiley_count; //grid_size_x % effective_tile_size != 0? grid_size_x / effective_tile_size + 1 : grid_size_x / effective_tile_size;
-  
   int data_size_bytes = grid_size_x * grid_size_y * grid_size_z *sizeof(float)*batches;
   float * grid_u1 = (float*)aligned_alloc(4096, data_size_bytes);
   float * grid_u2 = (float*)aligned_alloc(4096, data_size_bytes);
@@ -207,21 +202,64 @@ int main(int argc, char **argv)
   float * grid_u1_d = (float*)aligned_alloc(4096, data_size_bytes);
   float * grid_u2_d = (float*)aligned_alloc(4096, data_size_bytes);
 
-  unsigned int * tile = (unsigned int*)aligned_alloc(4096, (tile_count)*sizeof(unsigned int));
-  tile[0] = 0 | (tilex_size << 16);
-  tile[1] = 0 | (tiley_size << 16);
-//  int tile_c;
-//  int toltal_sizex = 0;
-//  for(int i = 0; i < tile_count; i++){
-//	  tile_c = i+1;
-//	  tile[i] = i* effective_tile_size  | (tile_size << 16);
-//	  if(i* effective_tile_size + tile_size >= grid_size_x){
-//		  tile[i] = i* effective_tile_size  | (grid_size_x - i* effective_tile_size) << 16;
-//		  toltal_sizex += (grid_size_x - i* effective_tile_size);
-//		  break;
-//	  }
-//	  toltal_sizex += tile_size;
-//  }
+
+
+  // Tiling
+  const int tile_max_count = 256;
+  unsigned int * tile = (unsigned int*)aligned_alloc(4096, (tile_max_count)*sizeof(unsigned int));
+
+
+  tilex_size = tilex_size % 16 == 0? tilex_size : (tilex_size/16 + 1) * 16;
+  tilex_size = tilex_size > 32 ? tilex_size : 32;
+
+
+  tile[0] = 0  |  (tilex_size << 16);
+  tile[1] = 32 |  (48 << 16);
+//  tile[2] = 32 | (tilex_size << 16);
+//  tile[3] = 48 | (tilex_size << 16);
+  tile[2] = 0 |  (tiley_size << 16);
+
+
+  // tiling on x dimension
+  int tilex_c;
+  int toltal_sizex = 0;
+  int effective_tilex_size = tilex_size - 32;
+  for(int i = 0; i < tile_max_count; i++){
+	  tilex_c = i+1;
+	  tile[i] = i* effective_tilex_size  | (tilex_size << 16);
+	  if(i* effective_tilex_size + tilex_size >= grid_size_x){
+		  tile[i] = i* effective_tilex_size  | (grid_size_x - i* effective_tilex_size) << 16;
+		  toltal_sizex += (grid_size_x - i* effective_tilex_size);
+		  break;
+	  }
+	  toltal_sizex += tilex_size;
+  }
+
+  int tilex_count = tilex_c;
+  printf("Grid_size_y is %d\n", grid_size_y);
+
+  // tiling on y dimension
+  tiley_size = (tiley_size < 9 ? 9 : tiley_size);
+  int tiley_c;
+  int toltal_sizey = 0;
+  int effective_tiley_size = tiley_size - 8;
+  for(int i = 0; i < tile_max_count; i++){
+	  tiley_c = i+1;
+	  tile[i+tilex_count] = i* effective_tiley_size  | (tiley_size << 16);
+	  if(i* effective_tiley_size + tiley_size >= grid_size_y){
+		  tile[i+tilex_count] = i* effective_tiley_size  | (grid_size_y - i* effective_tiley_size) << 16;
+		  toltal_sizey += (grid_size_y - i* effective_tiley_size + 1);
+		  break;
+	  }
+	  toltal_sizey += tiley_size;
+  }
+
+  int tiley_count = tiley_c;
+
+//
+  int tile_count = tilex_count + tiley_count;
+
+
 //  printf("tile count is %d\n", tile_c);
 //  tile[tile_count -1] = (tile_count -1) * effective_tile_size | ((grid_size_x - (tile_count -1) * effective_tile_size)  << 16);
 //  if(tile[tile_count -1] <= 32){
@@ -377,7 +415,7 @@ int main(int argc, char **argv)
 
     q.finish();
 
-  for(int itr = 0; itr < n_iter*4; itr++){
+  for(int itr = 0; itr < n_iter*1; itr++){
       stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
       stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
   }

@@ -32,6 +32,7 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 	unsigned short limit_z = data_g.limit_z;
 	unsigned short grid_sizey = data_g.grid_sizey;
 	unsigned short grid_sizez = data_g.grid_sizez;
+	unsigned short tile_y = data_g.tile_y;
 
 	unsigned short offset_x = data_g.offset_x;
 	unsigned short offset_y = data_g.offset_y;
@@ -80,7 +81,7 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 			j++;
 		}
 
-		if(j == grid_sizey){
+		if(j == tile_y){
 			j = 0;
 			i++;
 		}
@@ -166,7 +167,7 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 			float r2=  f3 + r1_1_0;
 
 			float result  = r1 + r2;
-			bool change_cond = (index <= offset_x || index > sizex || (i <= 1) || (i >= limit_z -1) || (j == 0) || (y_index == grid_sizey -1));
+			bool change_cond = (index <= offset_x || index > sizex || (i <= 1) || (i >= limit_z -1) || (y_index <= 0) || (y_index >= grid_sizey -1));
 			mem_wr[q] = change_cond ? s_1_1_1_arr[q+1] : result;
 		}
 

@@ -38,24 +38,25 @@ void process_SLR (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1, hls::stre
 
 
 	data_g.xblocks = (tile_x >> SHIFT_BITS);
-	data_g.grid_sizey = tile_y;
+	data_g.grid_sizey = size_y + 2;
 	data_g.grid_sizez = size_z+2;
 	data_g.limit_z = size_z+3;
 
-	unsigned short grid_sizey_1 = (data_g.grid_sizey - 1);
-	unsigned int plane_size = data_g.xblocks * data_g.grid_sizey;
+	unsigned short tiley_1 = (data_g.tile_y - 1);
+	unsigned int plane_size = data_g.xblocks * data_g.tile_y;
 
-	data_g.plane_diff = data_g.xblocks * grid_sizey_1;
+	data_g.plane_diff = data_g.xblocks * tiley_1;
 	data_g.line_diff = data_g.xblocks - 1;
 	data_g.gridsize_pr = plane_size * (data_g.limit_z);
 
 	unsigned int gridsize_da = plane_size * (data_g.grid_sizez);
 
 
+
 	#pragma HLS dataflow
     axis2_fifo256(in1, streamArray[0], gridsize_da);
 
-    process_tile( streamArray[0], streamArray[1], data_g);
+//    process_tile( streamArray[0], streamArray[1], data_g);
 //    process_tile( streamArray[1], streamArray[2], size_x, size_y, offset, data_g);
 //    process_tile( streamArray[2], streamArray[3], size_x, size_y, offset, data_g);
 //    process_tile( streamArray[3], streamArray[4], size_x, size_y, offset, data_g);
@@ -67,10 +68,10 @@ void process_SLR (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1, hls::stre
 //    process_tile( streamArray[9], streamArray[10], size_x, size_y, offset, data_g);
 
 
-	fifo256_2axis(streamArray[1], out1, gridsize_da);
+	fifo256_2axis(streamArray[0], out1, gridsize_da);
 	axis2_fifo256(in2, streamArray[40], gridsize_da);
 
-	process_tile( streamArray[40], streamArray[21], data_g);
+//	process_tile( streamArray[40], streamArray[21], data_g);
 //	process_tile( streamArray[21], streamArray[22], size_x, size_y, offset, data_g);
 //	process_tile( streamArray[22], streamArray[23], size_x, size_y, offset, data_g);
 //	process_tile( streamArray[23], streamArray[24], size_x, size_y, offset, data_g);
@@ -81,7 +82,7 @@ void process_SLR (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1, hls::stre
 //	process_tile( streamArray[28], streamArray[29], size_x, size_y, offset, data_g);
 //	process_tile( streamArray[29], streamArray[30], size_x, size_y, offset, data_g);
 
-	fifo256_2axis(streamArray[21], out2, gridsize_da);
+	fifo256_2axis(streamArray[40], out2, gridsize_da);
 
 
 }
@@ -145,8 +146,8 @@ void stencil_SLR1(
 			unsigned short tile_x   = tile_memx[j] >> 16;
 
 			for(unsigned short k  = 0; k < tiley_count; k++){
-				unsigned short offset_y = tile_memy[j] & 0xffff;
-				unsigned short tile_y   = tile_memy[j] >> 16;
+				unsigned short offset_y = tile_memy[k] & 0xffff;
+				unsigned short tile_y   = tile_memy[k] >> 16;
 				process_SLR( in1, out1, in2, out2, xdim0, offset_x, tile_x, offset_y, tile_y, sizex, sizey, sizez);
 			}
 		}

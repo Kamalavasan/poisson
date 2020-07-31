@@ -173,8 +173,9 @@ static void write_tile(uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, st
 	unsigned short offset_x = data_g.offset_x;
 	unsigned short offset_y = data_g.offset_y;
 
-	unsigned short adjust_x = (offset_x == 0?  0 : 8);
-	unsigned short adjust_y = (offset_y == 0?  0 : 8);
+	unsigned short adjust_x = (offset_x == 0?  0 : 16);
+	unsigned short adjust_x_b = (offset_x == 0?  0 : 1);
+	unsigned short adjust_y = (offset_y == 0?  0 : 4);
 
 	unsigned short tile_x = data_g.tile_x - adjust_x;
 	unsigned short tile_y = data_g.tile_y - adjust_y;
@@ -189,13 +190,13 @@ static void write_tile(uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, st
 	for(unsigned short k = 0; k < end_z; k++){
 		for(unsigned short i = 0; i < tile_y; i = i+1){
 			unsigned int plane_offset = k* plane_size;
-			unsigned int row_offset = xblocks * (offset_y + i);
+			unsigned int row_offset = xblocks * (offset_y + i + adjust_y);
 			unsigned int offset_x_b = offset_x >> (SHIFT_BITS+1);
 			unsigned int total_offset = plane_offset + row_offset + offset_x_b;
 			unsigned int base_index = total_offset;
 			for (unsigned short j = 0; j < end_index; j++){
 				#pragma HLS PIPELINE II=1
-				arg1[base_index + j] = wr_buffer.read();
+				arg1[base_index + adjust_x_b + j] = wr_buffer.read();
 			}
 		}
 	}

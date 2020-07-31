@@ -27,14 +27,14 @@ static void process_SLR (hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
 
 
 	data_g.xblocks = (tile_x >> SHIFT_BITS);
-	data_g.grid_sizey = tile_y;
+	data_g.grid_sizey = size_y + 2;
 	data_g.grid_sizez = size_z+2;
 	data_g.limit_z = size_z+3;
 
-	unsigned short grid_sizey_1 = (data_g.grid_sizey - 1);
-	unsigned int plane_size = data_g.xblocks * data_g.grid_sizey;
+	unsigned short tiley_1 = (data_g.tile_y - 1);
+	unsigned int plane_size = data_g.xblocks * data_g.tile_y;
 
-	data_g.plane_diff = data_g.xblocks * grid_sizey_1;
+	data_g.plane_diff = data_g.xblocks * tiley_1;
 	data_g.line_diff = data_g.xblocks - 1;
 	data_g.gridsize_pr = plane_size * (data_g.limit_z);
 
@@ -131,10 +131,9 @@ void stencil_SLR0(
 			#pragma HLS dataflow
 			unsigned short offset_x = tile_memx[j] & 0xffff;
 			unsigned short tile_x   = tile_memx[j] >> 16;
-
 			for(unsigned short k  = 0; k < tiley_count; k++){
-				unsigned short offset_y = tile_memy[j] & 0xffff;
-				unsigned short tile_y   = tile_memy[j] >> 16;
+				unsigned short offset_y = tile_memy[k] & 0xffff;
+				unsigned short tile_y   = tile_memy[k] >> 16;
 				process_SLR( in, out, xdim0, offset_x, tile_x, offset_y, tile_y, sizex, sizey, sizez);
 			}
 		}
