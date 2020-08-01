@@ -84,7 +84,7 @@ double square_error(float* current, float* next, int act_sizex, int act_sizey, i
     return sum;
 }
 
-int copy_grid(float* grid_s, float* grid_d, int grid_size){
+int copy_grid(float* grid_s, float* grid_d, unsigned int grid_size){
     memcpy(grid_d, grid_s, grid_size);
     return 0;
 }
@@ -295,7 +295,6 @@ int main(int argc, char **argv)
   initialise_grid(grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
   printf("\n before copy grid\n");
   copy_grid(grid_u1, grid_u1_d, data_size_bytes);
-  return 0;
   // stencil computation
 
 
@@ -362,6 +361,10 @@ int main(int argc, char **argv)
     int narg = 0;
     OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_input));
     OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_input));
+    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_input));
+    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_input));
+    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_output));
+    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_output));
     OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_output));
     OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_output));
     OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_tile));
@@ -431,18 +434,18 @@ int main(int argc, char **argv)
 
     q.finish();
 
-//  for(int itr = 0; itr < n_iter*1; itr++){
-//      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
-//      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
-//  }
+  for(int itr = 0; itr < n_iter*1; itr++){
+      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
+      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
+  }
     
     std::chrono::duration<double> elapsed = finish - start;
 
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-//  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_x);
+  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_x);
   float bandwidth = (act_sizex * act_sizey * act_sizez * sizeof(float) * 4.0 * n_iter * 4)/(elapsed.count() * 1000 * 1000 * 1000);
   float logic_bandwidth = (total_plane_size * act_sizez * sizeof(float) * 4.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
-//  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
+  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
   printf("\nBandwidth is %f %f\n", bandwidth, logic_bandwidth);
 
 
