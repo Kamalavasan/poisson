@@ -90,16 +90,17 @@ int copy_grid(float* grid_s, float* grid_d, int grid_size){
 }
 
 
-int initialise_grid(float* grid, int act_sizex, int act_sizey, int act_sizez, int grid_size_x, int grid_size_y, int grid_size_z){
-  for(int i = 0; i < act_sizez; i++){
-    for(int j = 0; j < act_sizey; j++){
-      for(int k = 0; k < act_sizex; k++){
-//        if(i == 0 || j == 0 || k == 0 || i == act_sizez -1  || j==act_sizey-1 || k == act_sizex-1 ){
+int initialise_grid(float* grid, unsigned int act_sizex, unsigned int act_sizey, unsigned int act_sizez, unsigned int grid_size_x, unsigned int grid_size_y, unsigned int grid_size_z){
+  for(unsigned int i = 0; i < act_sizez; i++){
+    for(unsigned int j = 0; j < act_sizey; j++){
+      for(unsigned int k = 0; k < act_sizex; k++){
+    	  unsigned int index = i*grid_size_x*grid_size_y + j * grid_size_x + k;
+        if(i == 0 || j == 0 || k == 0 || i == act_sizez -1  || j==act_sizey-1 || k == act_sizex-1 ){
           float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-          grid[i*grid_size_x*grid_size_y + j * grid_size_x + k] = r;
-//        } else {
-//          grid[i*grid_size_x*grid_size_y + j * grid_size_x + k] = 0;
-//        }
+          grid[index] = r;
+        } else {
+          grid[index] = 0;
+        }
       }
     }
   }
@@ -195,14 +196,16 @@ int main(int argc, char **argv)
 
 
 //  unsigned short effective_tile_size= tile_size - 0;
-  int data_size_bytes = grid_size_x * grid_size_y * grid_size_z *sizeof(float)*batches;
+  unsigned int data_size_bytes = grid_size_x * grid_size_y * grid_size_z *sizeof(float)*batches;
   float * grid_u1 = (float*)aligned_alloc(4096, data_size_bytes);
   float * grid_u2 = (float*)aligned_alloc(4096, data_size_bytes);
 
   float * grid_u1_d = (float*)aligned_alloc(4096, data_size_bytes);
   float * grid_u2_d = (float*)aligned_alloc(4096, data_size_bytes);
-
-
+  if(grid_u1 == NULL || grid_u2 == NULL || grid_u1_d == NULL || grid_u2_d == NULL){
+	  printf("Error in allocating memory\n");
+	  return -1;
+  }
 
   // Tiling
   const int tile_max_count = 256;
@@ -259,6 +262,14 @@ int main(int argc, char **argv)
 //
   int tile_count = tilex_count + tiley_count;
 
+  int total_plane_size = 0;
+  for(int i = 0; i < tiley_count; i++){
+	  for(int j = 0; j < tilex_count; j++){
+		  total_plane_size += (tile[j] >> 16) * (tile[i+tilex_count] >> 16);
+	  }
+  }
+
+
 
 //  printf("tile count is %d\n", tile_c);
 //  tile[tile_count -1] = (tile_count -1) * effective_tile_size | ((grid_size_x - (tile_count -1) * effective_tile_size)  << 16);
@@ -278,8 +289,13 @@ int main(int argc, char **argv)
 //  tile[7] = 448 | (64 << 16);
 //  tile[5] = 320 | (128 << 16);
 
+  printf("\n before initialise grid\n");
+  fflush(stdout);
+
   initialise_grid(grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
+  printf("\n before copy grid\n");
   copy_grid(grid_u1, grid_u1_d, data_size_bytes);
+  return 0;
   // stencil computation
 
 
@@ -415,19 +431,19 @@ int main(int argc, char **argv)
 
     q.finish();
 
-  for(int itr = 0; itr < n_iter*1; itr++){
-      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
-      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
-  }
+//  for(int itr = 0; itr < n_iter*1; itr++){
+//      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
+//      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
+//  }
     
     std::chrono::duration<double> elapsed = finish - start;
 
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_x);
-  float bandwidth = (act_sizex * act_sizey * sizeof(float) * 4.0 * n_iter * 27)/(elapsed.count() * 1000 * 1000 * 1000);
-//  float logic_bandwidth = (toltal_sizex * act_sizey * sizeof(float) * 4.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
-  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
-  printf("\nBandwidth is %f\n", bandwidth);
+//  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_x);
+  float bandwidth = (act_sizex * act_sizey * act_sizez * sizeof(float) * 4.0 * n_iter * 4)/(elapsed.count() * 1000 * 1000 * 1000);
+  float logic_bandwidth = (total_plane_size * act_sizez * sizeof(float) * 4.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
+//  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
+  printf("\nBandwidth is %f %f\n", bandwidth, logic_bandwidth);
 
 
 

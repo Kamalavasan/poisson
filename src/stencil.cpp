@@ -56,37 +56,56 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 	#pragma HLS ARRAY_PARTITION variable=s_1_1_0_arr complete dim=1
 	#pragma HLS ARRAY_PARTITION variable=mem_wr complete dim=1
 
-	uint256_dt window_1[8192];
-	uint256_dt window_2[256];
-	uint256_dt window_3[256];
-	uint256_dt window_4[8192];
+	uint256_dt window_1[MAX_DEPTH_P_8];
+	uint256_dt window_2[MAX_DEPTH_8];
+	uint256_dt window_3[MAX_DEPTH_8];
+	uint256_dt window_4[MAX_DEPTH_P_8];
 
-	#pragma HLS RESOURCE variable=window_1 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_2 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_3 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_4 core=XPM_MEMORY uram latency=1
+	#pragma HLS RESOURCE variable=window_1 core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_2 core=RAM_1P_BRAM latency=2
+	#pragma HLS RESOURCE variable=window_3 core=RAM_1P_BRAM latency=2
+	#pragma HLS RESOURCE variable=window_4 core=XPM_MEMORY uram latency=2
 
 	uint256_dt s_1_1_2, s_1_2_1, s_1_1_1, s_1_1_1_b, s_1_1_1_f, s_1_0_1, s_1_1_0;
 	uint256_dt update_j;
 
 
 	unsigned short i = 0, j = 0, k = 0;
+	unsigned short i_dum = 0, j_dum = 0, k_dum = 0;
 	unsigned short j_p = 0, j_l = 0;
 	for(unsigned int itr = 0; itr < gridsize; itr++) {
 		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
 		#pragma HLS PIPELINE II=1
+		bool cond_k = (k == xblocks - 1);
+		bool cond_j = (j == tile_y - 1);
 
-		if(k == xblocks){
-			k = 0;
-			j++;
+		if(cond_k){
+			k_dum = 0;
 		}
 
-		if(j == tile_y){
-			j = 0;
-			i++;
+		if(cond_k && cond_j){
+			j_dum = 0;
+		} else if(cond_k){
+			j_dum = j +  1;
 		}
 
+		if(cond_k && cond_j){
+			i_dum = i + 1;
+		}
 
+//		if(k == xblocks){
+//			k = 0;
+//			j++;
+//		}
+//
+//		if(j == tile_y){
+//			j = 0;
+//			i++;
+//		}
+
+		k = k_dum;
+		j = j_dum;
+		i = i_dum;
 
 //		printf("i, j ,k is %d, %d, %d, itr %d gridsize %d\n", i,j,k,itr, gridsize);
 
@@ -151,13 +170,13 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 		process: for(short q = 0; q < PORT_WIDTH; q++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			short index = (k << SHIFT_BITS) + q + offset_x;
-			float r1_1_2 =  s_1_1_2_arr[q] * 0.02;
-			float r1_2_1 =  s_1_2_1_arr[q] * 0.04;
-			float r0_1_1 =  s_1_1_1_arr[q] * 0.05;
-			float r1_1_1 =  s_1_1_1_arr[q+1] * 0.79;
-			float r2_1_1 =  s_1_1_1_arr[q+2] * 0.06;
-			float r1_0_1 =  s_1_0_1_arr[q] * 0.03;
-			float r1_1_0 =  s_1_1_0_arr[q] * 0.01;
+			float r1_1_2 =  s_1_1_2_arr[q] * 0.02f;
+			float r1_2_1 =  s_1_2_1_arr[q] * 0.04f;
+			float r0_1_1 =  s_1_1_1_arr[q] * 0.05f;
+			float r1_1_1 =  s_1_1_1_arr[q+1] * 0.79f;
+			float r2_1_1 =  s_1_1_1_arr[q+2] * 0.06f;
+			float r1_0_1 =  s_1_0_1_arr[q] * 0.03f;
+			float r1_1_0 =  s_1_1_0_arr[q] * 0.01f;
 
 			float f1 = r1_1_2 + r1_2_1;
 			float f2 = r0_1_1 + r1_1_1;
@@ -184,6 +203,6 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 		}
 
 		// move the cell block
-		k++;
+		k_dum++;
 	}
 }

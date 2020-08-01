@@ -17,18 +17,26 @@ static void read_tile(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, str
 
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
 
-	for(unsigned short k = 0; k < end_z; k++){
-		for(unsigned short i = start; i < tile_y; i = i+2){
-			unsigned int plane_offset = k* plane_size;
-			unsigned int row_offset = xblocks * (offset_y + i);
-			unsigned int offset_x_b = offset_x >> (SHIFT_BITS+1);
-			unsigned int total_offset = plane_offset + row_offset + offset_x_b;
-			unsigned int base_index = total_offset;
-			for (unsigned short j = 0; j < end_index; j++){
-				#pragma HLS PIPELINE II=1
-				rd_buffer << arg0[base_index + j];
-			}
+	unsigned int total_out_itr = end_z * ((tile_y+1-start) >> 1);
+	unsigned int k = 0,  i = start;
+	for(unsigned int itr = 0; itr < total_out_itr; itr++){
+		bool cond_i = i >= tile_y;
+		if(cond_i){
+			k++;
+			i = start;
 		}
+		unsigned int plane_offset = k* plane_size;
+		unsigned int row_offset = xblocks * (offset_y + i);
+		unsigned int offset_x_b = offset_x >> (SHIFT_BITS+1);
+		unsigned int total_offset = plane_offset + row_offset + offset_x_b;
+		unsigned int base_index = total_offset;
+		for (unsigned short j = 0; j < end_index; j++){
+			#pragma HLS PIPELINE II=1
+			rd_buffer << arg0[base_index + j];
+		}
+
+		i = i + 2;
+
 	}
 }
 
@@ -100,7 +108,7 @@ static void stream_convert_256_512(hls::stream<uint256_dt> &in, hls::stream<uint
 	for(unsigned short k = 0; k < end_z; k++){
 		for(unsigned short i = 0; i < tile_y; i = i+1){
 			for (unsigned short j = 0; j < end_index; j++){
-				#pragma HLS PIPELINE II=1
+				#pragma HLS PIPELINE II=2
 				uint512_dt tmp;
 				tmp.range(255,0) = in.read();
 				tmp.range(511,256) = in.read();
@@ -189,18 +197,29 @@ static void write_tile(uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, st
 
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
 
-	for(unsigned short k = 0; k < end_z; k++){
-		for(unsigned short i = start; i < tile_y; i = i+2){
-			unsigned int plane_offset = k* plane_size;
-			unsigned int row_offset = xblocks * (offset_y + i + adjust_y);
-			unsigned int offset_x_b = offset_x >> (SHIFT_BITS+1);
-			unsigned int total_offset = plane_offset + row_offset + offset_x_b;
-			unsigned int base_index = total_offset;
-			for (unsigned short j = 0; j < end_index; j++){
-				#pragma HLS PIPELINE II=1
-				arg1[base_index + adjust_x_b + j] = wr_buffer.read();
-			}
+
+
+
+	unsigned int total_out_itr = end_z * ((tile_y+1-start) >> 1);
+	unsigned int k = 0,  i = start;
+	for(unsigned int itr = 0; itr < total_out_itr; itr++){
+		bool cond_i = i >= tile_y;
+		if(cond_i){
+			k++;
+			i = start;
 		}
+		unsigned int plane_offset = k* plane_size;
+		unsigned int row_offset = xblocks * (offset_y + i + adjust_y);
+		unsigned int offset_x_b = offset_x >> (SHIFT_BITS+1);
+		unsigned int total_offset = plane_offset + row_offset + offset_x_b;
+		unsigned int base_index = total_offset;
+		for (unsigned short j = 0; j < end_index; j++){
+			#pragma HLS PIPELINE II=1
+			arg1[base_index + adjust_x_b + j] = wr_buffer.read();
+		}
+
+		i = i + 2;
+
 	}
 }
 
@@ -281,18 +300,20 @@ static void process_ReadWrite_dataflow (uint512_dt*  arg0_0, uint512_dt*  arg0_1
 				   unsigned int tile_memy[], unsigned short tiley_count,
 				   const unsigned short size_x, const unsigned short size_y, const unsigned short size_z){
 
-	for(int i = 0; i < tilex_count; i++){
-			#pragma HLS dataflow
-			unsigned short offset_x = tile_memx[i] & 0xffff;
-			unsigned short tile_x   = tile_memx[i] >> 16;
-			for(int j = 0; j < tiley_count; j++){
-				unsigned short offset_y = tile_memy[j] & 0xffff;
-				unsigned short tile_y   = tile_memy[j] >> 16;
-				printf("xdim0: %d, tile_x: %d offset_x:%d tile_y:%d offset_y:%d\n",xdim0, tile_x, offset_x,  tile_y, offset_y);
-				process_ReadWrite(arg0_0, arg0_1, arg1_0, arg1_1, in, out, xdim0, offset_x, tile_x, offset_y, tile_y, size_x, size_y, size_z);
-			}
+	unsigned int toltal_itr = tilex_count*tiley_count;
+	unsigned short i = 0, j = 0;
+	for(unsigned int itr = 0; itr < toltal_itr; itr++){
+		if(j == tiley_count){
+			j = 0;
+			i++;
 		}
-
+		unsigned short offset_x = tile_memx[i] & 0xffff;
+		unsigned short tile_x   = tile_memx[i] >> 16;
+		unsigned short offset_y = tile_memy[j] & 0xffff;
+		unsigned short tile_y   = tile_memy[j] >> 16;
+		process_ReadWrite(arg0_0, arg0_1, arg1_0, arg1_1, in, out, xdim0, offset_x, tile_x, offset_y, tile_y, size_x, size_y, size_z);
+		j++;
+	}
 }
 
 //-DHOST_CODE_OPT -DLOCAL_BUF_OPT -DDF_OPT -DFP_OPT
