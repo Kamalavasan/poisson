@@ -268,7 +268,7 @@ int main(int argc, char **argv)
 		  total_plane_size += (tile[j] >> 16) * (tile[i+tilex_count] >> 16);
 	  }
   }
-
+  printf("tilex_count:%d tiley_count:%d tilez_count:%d\n", tilex_count, tiley_count, tiley_count*tilex_count);
 
 
 //  printf("tile count is %d\n", tile_c);
@@ -434,18 +434,18 @@ int main(int argc, char **argv)
 
     q.finish();
 
-  for(int itr = 0; itr < n_iter*1; itr++){
-      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
-      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
-  }
+//  for(int itr = 0; itr < n_iter*1; itr++){
+//      stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
+//      stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
+//  }
     
     std::chrono::duration<double> elapsed = finish - start;
 
   printf("Runtime on FPGA is %f seconds\n", elapsed.count());
-  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_x);
+//  double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_x);
   float bandwidth = (act_sizex * act_sizey * act_sizez * sizeof(float) * 4.0 * n_iter * 4)/(elapsed.count() * 1000 * 1000 * 1000);
   float logic_bandwidth = (total_plane_size * act_sizez * sizeof(float) * 4.0 * n_iter)/(elapsed.count() * 1000 * 1000 * 1000);
-  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
+//  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
   printf("\nBandwidth is %f %f\n", bandwidth, logic_bandwidth);
 
 

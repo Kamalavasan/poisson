@@ -57,8 +57,8 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 	#pragma HLS ARRAY_PARTITION variable=mem_wr complete dim=1
 
 	uint256_dt window_1[MAX_DEPTH_P_8];
-	uint256_dt window_2[MAX_DEPTH_8];
-	uint256_dt window_3[MAX_DEPTH_8];
+	uint256_dt window_2[MAX_DEPTH_8*4];
+	uint256_dt window_3[MAX_DEPTH_8*4];
 	uint256_dt window_4[MAX_DEPTH_P_8];
 
 	#pragma HLS RESOURCE variable=window_1 core=XPM_MEMORY uram latency=2
