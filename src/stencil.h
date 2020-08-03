@@ -66,6 +66,7 @@ struct data_G{
 	unsigned int gridsize_pr;
 	unsigned int plane_diff;
 	unsigned int line_diff;
+	unsigned int total_itr;
 	unsigned short outer_loop_limit;
 };
 

@@ -16,26 +16,30 @@ static void read_tile(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, str
 	unsigned int plane_size = data_g.plane_size;
 
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
-
-	unsigned int total_out_itr = end_z * ((tile_y+3-start) >> 2);
+	unsigned short tiley_4 = ((tile_y+3-start) >> 2);
+	unsigned int total_out_itr = end_z * tiley_4;
 	unsigned int k = 0,  i = start;
 	for(unsigned int itr = 0; itr < total_out_itr; itr++){
+	#pragma HLS loop_tripcount min=1000 max=1500 avg=1200
 		bool cond_i = i >= tile_y;
 		if(cond_i){
 			k++;
 			i = start;
 		}
 		unsigned int plane_offset = k* plane_size;
-		unsigned int row_offset = xblocks * (offset_y + i);
+		unsigned short tot_y_offset = (offset_y + i);
+		unsigned int row_offset = xblocks * tot_y_offset;
 		unsigned int offset_x_b = offset_x >> (SHIFT_BITS+1);
 		unsigned int total_offset = plane_offset + row_offset + offset_x_b;
 		unsigned int base_index = total_offset;
+		i = i + 4;
 		for (unsigned short j = 0; j < end_index; j++){
+			#pragma HLS loop_tripcount min=10 max=20 avg=15
 			#pragma HLS PIPELINE II=1
 			rd_buffer << arg0[base_index + j];
 		}
 
-		i = i + 4;
+
 
 	}
 }
@@ -52,8 +56,10 @@ static void combine_tile(hls::stream<uint512_dt> &rd_buffer0, hls::stream<uint51
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
 
 	unsigned int total_itr = end_z * ((tile_y+3) >> 2);
-	unsigned short i  =0;
+	unsigned short tiley_4 = ((tile_y+3) >> 2);
+	unsigned short i = 0;
 	for(unsigned int itr = 0; itr < total_itr; itr++){
+		#pragma HLS loop_tripcount min=1000 max=1500 avg=1200
 		if(i >= tile_y){
 			i = 0;
 		}
@@ -63,9 +69,9 @@ static void combine_tile(hls::stream<uint512_dt> &rd_buffer0, hls::stream<uint51
 		bool cond_3 = (i+3) < tile_y;
 
 		i = i + 4;
-
 		for (unsigned short j = 0; j < end_index; j++){
 			#pragma HLS PIPELINE II=1
+			#pragma HLS loop_tripcount min=10 max=20 avg=15
 			if(cond_0){
 				combined_buffer << rd_buffer0.read();
 			}
@@ -73,6 +79,7 @@ static void combine_tile(hls::stream<uint512_dt> &rd_buffer0, hls::stream<uint51
 
 		for (unsigned short j = 0; j < end_index; j++){
 			#pragma HLS PIPELINE II=1
+			#pragma HLS loop_tripcount min=10 max=20 avg=15
 			if(cond_1){
 				combined_buffer << rd_buffer1.read();
 			}
@@ -80,6 +87,7 @@ static void combine_tile(hls::stream<uint512_dt> &rd_buffer0, hls::stream<uint51
 
 		for (unsigned short j = 0; j < end_index; j++){
 			#pragma HLS PIPELINE II=1
+			#pragma HLS loop_tripcount min=10 max=20 avg=15
 			if(cond_2){
 				combined_buffer << rd_buffer2.read();
 			}
@@ -87,6 +95,7 @@ static void combine_tile(hls::stream<uint512_dt> &rd_buffer0, hls::stream<uint51
 
 		for (unsigned short j = 0; j < end_index; j++){
 			#pragma HLS PIPELINE II=1
+			#pragma HLS loop_tripcount min=10 max=20 avg=15
 			if(cond_3){
 				combined_buffer << rd_buffer3.read();
 			}
@@ -109,8 +118,11 @@ static void stream_convert_512_256(hls::stream<uint512_dt> &in, hls::stream<uint
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
 
 	for(unsigned short k = 0; k < end_z; k++){
+		#pragma HLS loop_tripcount min=1000 max=2000 avg=1500
 		for(unsigned short i = 0; i < tile_y; i = i+1){
+			#pragma HLS loop_tripcount min=10 max=20 avg=15
 			for (unsigned short j = 0; j < end_index; j++){
+				#pragma HLS loop_tripcount min=10 max=20 avg=15
 				#pragma HLS PIPELINE II=2
 				uint512_dt tmp = in.read();
 				uint256_dt var_l = tmp.range(255,0);
@@ -135,8 +147,11 @@ static void stream_convert_256_512(hls::stream<uint256_dt> &in, hls::stream<uint
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
 
 	for(unsigned short k = 0; k < end_z; k++){
+		#pragma HLS loop_tripcount min=1000 max=2000 avg=1500
 		for(unsigned short i = 0; i < tile_y; i = i+1){
+			#pragma HLS loop_tripcount min=10 max=20 avg=15
 			for (unsigned short j = 0; j < end_index; j++){
+				#pragma HLS loop_tripcount min=10 max=20 avg=15
 				#pragma HLS PIPELINE II=2
 				uint512_dt tmp;
 				tmp.range(255,0) = in.read();
@@ -254,25 +269,30 @@ static void write_tile(uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, st
 
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
 
-	unsigned int total_out_itr = end_z * ((tile_y+3-start) >> 2);
+	unsigned short tiley_4 = ((tile_y+3-start) >> 2);
+	unsigned int total_out_itr = end_z * tiley_4;
 	unsigned int k = 0,  i = start;
 	for(unsigned int itr = 0; itr < total_out_itr; itr++){
+		#pragma HLS loop_tripcount min=1000 max=1500 avg=1200
 		bool cond_i = i >= tile_y;
 		if(cond_i){
 			k++;
 			i = start;
 		}
 		unsigned int plane_offset = k* plane_size;
-		unsigned int row_offset = xblocks * (offset_y + i + adjust_y);
+		unsigned short tot_y_offset = (offset_y + i + adjust_y);
+		unsigned int row_offset = xblocks * tot_y_offset;
 		unsigned int offset_x_b = offset_x >> (SHIFT_BITS+1);
 		unsigned int total_offset = plane_offset + row_offset + offset_x_b;
 		unsigned int base_index = total_offset;
+		i = i + 4;
 		for (unsigned short j = 0; j < end_index; j++){
 			#pragma HLS PIPELINE II=1
+			#pragma HLS loop_tripcount min=10 max=20 avg=15
 			arg1[base_index + adjust_x_b + j] = wr_buffer.read();
 		}
 
-		i = i + 4;
+
 
 	}
 }
