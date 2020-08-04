@@ -213,6 +213,7 @@ int main(int argc, char **argv)
 
 
   tilex_size = tilex_size % 16 == 0? tilex_size : (tilex_size/16 + 1) * 16;
+  tiley_size = (tiley_size % 4 == 0? tiley_size : (tiley_size/4 + 1)*4);
   tilex_size = tilex_size > 32 ? tilex_size : 32;
 
 
@@ -250,7 +251,7 @@ int main(int argc, char **argv)
 	  tiley_c = i+1;
 	  tile[i+tilex_count] = i* effective_tiley_size  | (tiley_size << 16);
 	  if(i* effective_tiley_size + tiley_size >= grid_size_y){
-		  tile[i+tilex_count] = i* effective_tiley_size  | (grid_size_y - i* effective_tiley_size) << 16;
+		  tile[i+tilex_count] = grid_size_y - tiley_size  | tiley_size << 16;
 		  toltal_sizey += (grid_size_y - i* effective_tiley_size + 1);
 		  break;
 	  }

@@ -5,7 +5,11 @@
 #include "../src/stencil.h"
 #include <stdio.h>
 
-static void read_tile(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, struct data_G data_g, unsigned short start){
+static void read_tile(uint512_dt*  arg0, uint512_dt*  arg1, uint512_dt*  arg2, uint512_dt*  arg3,
+		hls::stream<uint512_dt> &rd_buffer0, hls::stream<uint512_dt> &rd_buffer1,
+		hls::stream<uint512_dt> &rd_buffer2, hls::stream<uint512_dt> &rd_buffer3,
+		struct data_G data_g, unsigned short start){
+
 	unsigned short tile_x = data_g.tile_x;
 	unsigned short offset_x = data_g.offset_x;
 	unsigned short tile_y = data_g.tile_y;
@@ -26,17 +30,34 @@ static void read_tile(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, str
 			k++;
 			i = start;
 		}
+
 		unsigned int plane_offset = k* plane_size;
-		unsigned short tot_y_offset = (offset_y + i);
-		unsigned int row_offset = xblocks * tot_y_offset;
 		unsigned int offset_x_b = offset_x >> (SHIFT_BITS+1);
-		unsigned int total_offset = plane_offset + row_offset + offset_x_b;
-		unsigned int base_index = total_offset;
+
+		unsigned short tot_y_offset0 = (offset_y + i);
+		unsigned int row_offset0 = xblocks * tot_y_offset0;
+		unsigned int base_index0 = plane_offset + row_offset0 + offset_x_b;
+
+		unsigned short tot_y_offset1 = (offset_y + i + 1);
+		unsigned int row_offset1 = xblocks * tot_y_offset1;
+		unsigned int base_index1 = plane_offset + row_offset1 + offset_x_b;
+
+		unsigned short tot_y_offset2 = (offset_y + i + 2);
+		unsigned int row_offset2 = xblocks * tot_y_offset2;
+		unsigned int base_index2 = plane_offset + row_offset2 + offset_x_b;
+
+		unsigned short tot_y_offset3 = (offset_y + i + 3);
+		unsigned int row_offset3 = xblocks * tot_y_offset3;
+		unsigned int base_index3 = plane_offset + row_offset3 + offset_x_b;
+
 		i = i + 4;
 		for (unsigned short j = 0; j < end_index; j++){
 			#pragma HLS loop_tripcount min=10 max=20 avg=15
 			#pragma HLS PIPELINE II=1
-			rd_buffer << arg0[base_index + j];
+			rd_buffer0 << arg0[base_index0 + j];
+			rd_buffer1 << arg1[base_index1 + j];
+			rd_buffer2 << arg2[base_index2 + j];
+			rd_buffer3 << arg3[base_index3 + j];
 		}
 
 
@@ -251,7 +272,10 @@ static void separate_tile(hls::stream<uint512_dt> &in_buffer, hls::stream<uint51
 
 
 
-static void write_tile(uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, struct data_G data_g, unsigned short start){
+static void write_tile(uint512_dt*  arg0, uint512_dt*  arg1, uint512_dt*  arg2, uint512_dt*  arg3,
+		hls::stream<uint512_dt> &wr_buffer0,  hls::stream<uint512_dt> &wr_buffer1,
+		 hls::stream<uint512_dt> &wr_buffer2,  hls::stream<uint512_dt> &wr_buffer3,
+		 struct data_G data_g, unsigned short start){
 	unsigned short offset_x = data_g.offset_x;
 	unsigned short offset_y = data_g.offset_y;
 
@@ -280,16 +304,32 @@ static void write_tile(uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, st
 			i = start;
 		}
 		unsigned int plane_offset = k* plane_size;
-		unsigned short tot_y_offset = (offset_y + i + adjust_y);
-		unsigned int row_offset = xblocks * tot_y_offset;
 		unsigned int offset_x_b = offset_x >> (SHIFT_BITS+1);
-		unsigned int total_offset = plane_offset + row_offset + offset_x_b;
-		unsigned int base_index = total_offset;
+
+		unsigned short tot_y_offset0 = (offset_y + i + adjust_y);
+		unsigned int row_offset0 = xblocks * tot_y_offset0;
+		unsigned int base_index0 = plane_offset + row_offset0 + offset_x_b;
+
+		unsigned short tot_y_offset1 = (offset_y + i + adjust_y + 1);
+		unsigned int row_offset1 = xblocks * tot_y_offset1;
+		unsigned int base_index1 = plane_offset + row_offset1 + offset_x_b;
+
+		unsigned short tot_y_offset2 = (offset_y + i + adjust_y+ 2);
+		unsigned int row_offset2 = xblocks * tot_y_offset2;
+		unsigned int base_index2 = plane_offset + row_offset2 + offset_x_b;
+
+		unsigned short tot_y_offset3 = (offset_y + i + adjust_y+ 3);
+		unsigned int row_offset3 = xblocks * tot_y_offset3;
+		unsigned int base_index3 = plane_offset + row_offset3 + offset_x_b;
+
 		i = i + 4;
 		for (unsigned short j = 0; j < end_index; j++){
 			#pragma HLS PIPELINE II=1
 			#pragma HLS loop_tripcount min=10 max=20 avg=15
-			arg1[base_index + adjust_x_b + j] = wr_buffer.read();
+			arg0[base_index0 + adjust_x_b + j] = wr_buffer0.read();
+			arg1[base_index1 + adjust_x_b + j] = wr_buffer1.read();
+			arg2[base_index2 + adjust_x_b + j] = wr_buffer2.read();
+			arg3[base_index3 + adjust_x_b + j] = wr_buffer3.read();
 		}
 
 
@@ -297,7 +337,7 @@ static void write_tile(uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, st
 	}
 }
 
-static void process_ReadWrite (uint512_dt*  arg0_0, uint512_dt*  arg0_1, uint512_dt*  arg0_2, uint512_dt*  arg0_3,
+static void process_ReadWrite (uint512_dt*  arg0_0,  uint512_dt*  arg0_1, uint512_dt*  arg0_2, uint512_dt*  arg0_3,
 				   uint512_dt*  arg1_0,  uint512_dt*  arg1_1, uint512_dt*  arg1_2,  uint512_dt*  arg1_3,
 				   hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
 				   const int xdim0, const unsigned short offset_x, const unsigned short tile_x,
@@ -339,10 +379,10 @@ static void process_ReadWrite (uint512_dt*  arg0_0, uint512_dt*  arg0_1, uint512
 
 
 	#pragma HLS dataflow
-	read_tile(arg0_0, rd_bufferArr[0], data_g, 0);
-	read_tile(arg0_1, rd_bufferArr[1], data_g, 1);
-	read_tile(arg0_2, rd_bufferArr[2], data_g, 2);
-	read_tile(arg0_3, rd_bufferArr[3], data_g, 3);
+	read_tile(arg0_0, arg0_1, arg0_2, arg0_3, rd_bufferArr[0], rd_bufferArr[1], rd_bufferArr[2], rd_bufferArr[3], data_g, 0);
+//	read_tile(arg0_1, rd_bufferArr[1], data_g, 1);
+//	read_tile(arg0_2, rd_bufferArr[2], data_g, 2);
+//	read_tile(arg0_3, rd_bufferArr[3], data_g, 3);
 
 	combine_tile(rd_bufferArr[0], rd_bufferArr[1], rd_bufferArr[2], rd_bufferArr[3], streamArray_512[0], data_g);
 	stream_convert_512_256(streamArray_512[0], streamArray[0], data_g);
@@ -352,10 +392,10 @@ static void process_ReadWrite (uint512_dt*  arg0_0, uint512_dt*  arg0_1, uint512
 
 	stream_convert_256_512(streamArray[31],streamArray_512[1], data_g);
 	separate_tile(streamArray_512[1], wr_bufferArr[0], wr_bufferArr[1], wr_bufferArr[2], wr_bufferArr[3], data_g);
-	write_tile(arg1_0, wr_bufferArr[0], data_g, 0);
-	write_tile(arg1_1, wr_bufferArr[1], data_g, 1);
-	write_tile(arg1_2, wr_bufferArr[2], data_g, 2);
-	write_tile(arg1_3, wr_bufferArr[3], data_g, 3);
+	write_tile(arg1_0, arg1_1, arg1_2, arg1_3, wr_bufferArr[0], wr_bufferArr[1], wr_bufferArr[2], wr_bufferArr[3], data_g, 0);
+//	write_tile(arg1_1, wr_bufferArr[1], data_g, 1);
+//	write_tile(arg1_2, wr_bufferArr[2], data_g, 2);
+//	write_tile(arg1_3, wr_bufferArr[3], data_g, 3);
 
 
 //	stream_convert_256_512(streamArray[31], streamArray_512[1], tile_x, size_y, offset);
@@ -371,7 +411,7 @@ static void process_ReadWrite (uint512_dt*  arg0_0, uint512_dt*  arg0_1, uint512
 
 
 static void process_ReadWrite_dataflow (uint512_dt*  arg0_0, uint512_dt*  arg0_1, uint512_dt*  arg0_2, uint512_dt*  arg0_3,
-				   uint512_dt*  arg1_0,  uint512_dt*  arg1_1, uint512_dt*  arg1_2,  uint512_dt*  arg1_3,
+				   uint512_dt*  arg1_0,   uint512_dt*  arg1_1, uint512_dt*  arg1_2,  uint512_dt*  arg1_3,
 				   hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
 				   const int xdim0, unsigned int tile_memx[], unsigned short tilex_count ,
 				   unsigned int tile_memy[], unsigned short tiley_count,
@@ -408,6 +448,7 @@ void stencil_Read_Write(
 		uint512_dt*  arg1_2,
 		uint512_dt*  arg1_3,
 
+
 		const unsigned int* tile,
 		const int tilex_count,
 		const int tiley_count,
@@ -421,10 +462,12 @@ void stencil_Read_Write(
 		hls::stream <t_pkt> &in,
 		hls::stream <t_pkt> &out){
 
-	#pragma HLS INTERFACE depth=4096 m_axi port = arg0_0 offset = slave bundle = gmem0 max_read_burst_length=64 max_write_burst_length=64 //num_read_outstanding=2 num_write_outstanding=2
+	#pragma HLS INTERFACE depth=4096 m_axi port = arg0_0 offset = slave bundle = gmem0 max_read_burst_length=64 max_write_burst_length=64 //num_read_outstanding=4 num_write_outstanding=4
 	#pragma HLS INTERFACE depth=4096 m_axi port = arg0_1 offset = slave bundle = gmem1 max_read_burst_length=64 max_write_burst_length=64 //num_read_outstanding=2 num_write_outstanding=2
 	#pragma HLS INTERFACE depth=4096 m_axi port = arg0_2 offset = slave bundle = gmem2 max_read_burst_length=64 max_write_burst_length=64
 	#pragma HLS INTERFACE depth=4096 m_axi port = arg0_3 offset = slave bundle = gmem3 max_read_burst_length=64 max_write_burst_length=64
+
+
 
 	#pragma HLS INTERFACE depth=4096 m_axi port = arg1_0 offset = slave bundle = gmem0
 	#pragma HLS INTERFACE depth=4096 m_axi port = arg1_1 offset = slave bundle = gmem1
