@@ -192,7 +192,7 @@ int main(int argc, char **argv)
   logical_size_y = logical_size_y % 2 == 1 ? logical_size_y + 1: logical_size_y;
 //  logical_size_y = (logical_size_y+2) % 4 != 0 ? ((logical_size_y+2)/4 + 1)*4 -2 : logical_size_y;
 
-  logical_size_x = 16382;
+//  logical_size_x = 16382;
   printf("Grid: %dx%d in %dx%d blocks, %d iterations, %d tile height, %d batches\n",logical_size_x,logical_size_y,ngrid_x,ngrid_y,n_iter,itertile, batches);
 
   int act_sizex = logical_size_x + 2;
@@ -238,19 +238,21 @@ int main(int argc, char **argv)
   int tilex_c;
   int toltal_sizex = 0;
   int effective_tilex_size = tilex_size;// - 64;
-//  for(int i = 0; i < tile_max_count; i++){
-//	  tilex_c = i+1;
-//	  tile[i] = i* effective_tilex_size  | (tilex_size << 16);
-//	  if(i* effective_tilex_size + tilex_size >= grid_size_x){
-//		  tile[i] = (grid_size_x-tilex_size) | tilex_size << 16;
-//		  toltal_sizex += tilex_size;
-//		  break;
-//	  }
-//	  toltal_sizex += tilex_size;
-//  }
-  offset_x = offset_x % 16 != 0 ? (offset_x/16 + 1)* 16: offset_x;
-  tilex_c = 1;
-  tile[0] = offset_x | (tilex_size << 16);
+  for(int i = 0; i < tile_max_count; i++){
+	  tilex_c = i+1;
+	  tile[i] = i* effective_tilex_size  | (tilex_size << 16);
+	  if(i* effective_tilex_size + tilex_size >= grid_size_x){
+		  tile[i] = (grid_size_x-tilex_size) | tilex_size << 16;
+		  toltal_sizex += tilex_size;
+		  break;
+	  }
+	  toltal_sizex += tilex_size;
+  }
+
+
+//  offset_x = offset_x % 16 != 0 ? (offset_x/16 + 1)* 16: offset_x;
+//  tilex_c = 1;
+//  tile[0] = offset_x | (tilex_size << 16);
 
 
 
@@ -264,20 +266,20 @@ int main(int argc, char **argv)
   int effective_tiley_size = tiley_size;// - 48;
 
 
-  tiley_c = 1;
-  tile[0+tilex_count] = 0* effective_tiley_size  | (tiley_size << 16);
+//  tiley_c = 1;
+//  tile[0+tilex_count] = 0* effective_tiley_size  | (tiley_size << 16);
 
-//
-//  for(int i = 0; i < tile_max_count; i++){
-//	  tiley_c = i+1;
-//	  tile[i+tilex_count] = i* effective_tiley_size  | (tiley_size << 16);
-//	  if(i* effective_tiley_size + tiley_size >= grid_size_y){
-//		  tile[i+tilex_count] = (grid_size_y - tiley_size)  | tiley_size << 16;
-//		  toltal_sizey += tiley_size;
-//		  break;
-//	  }
-//	  toltal_sizey += tiley_size;
-//  }
+
+  for(int i = 0; i < tile_max_count; i++){
+	  tiley_c = i+1;
+	  tile[i+tilex_count] = i* effective_tiley_size  | (tiley_size << 16);
+	  if(i* effective_tiley_size + tiley_size >= grid_size_y){
+		  tile[i+tilex_count] = (grid_size_y - tiley_size)  | tiley_size << 16;
+		  toltal_sizey += tiley_size;
+		  break;
+	  }
+	  toltal_sizey += tiley_size;
+  }
 
   int tiley_count = tiley_c;
 
@@ -410,48 +412,65 @@ int main(int argc, char **argv)
 
 
 
+    cl::Event event;
+	OCL_CHECK(err, err = q.enqueueTask(krnl_Read_Write, NULL, &event));
+	OCL_CHECK(err, err=event.wait());
+	endns = OCL_CHECK(err, event.getProfilingInfo<CL_PROFILING_COMMAND_END>(&err));
+	startns = OCL_CHECK(err, event.getProfilingInfo<CL_PROFILING_COMMAND_START>(&err));
+	nsduration = endns - startns;
+	double k_time = nsduration/(1000000000.0);
+	q.finish();
 
 
 
-    FILE* fptr = fopen("Bandwidth_4K_cross.csv", "w");
 
 
-    fprintf(fptr, "Transfer Size(Bytes), Stride(Bytes), Number of Transfers,  Total_Bandwidth(GB/s)\n");
-	//Launch the Kernel
-    for(int i = 32; i <= 16384; i = i*2 ){
-		for(unsigned short tilex = 32; tilex <= 512 && tilex <= i; tilex = tilex + 16){
-			offset_x = ceil((1024 - tilex/2)/16)*16;
-			tile[0] = offset_x | (tilex << 16);
-			tile[0+tilex_count] = 0* effective_tiley_size  | (tiley_size << 16);
-			OCL_CHECK(err,
-					  err = q.enqueueMigrateMemObjects({buffer_tile},
-													   0 /* 0 means from host*/));
-			q.finish();
-			cl::Event event;
-			OCL_CHECK(err, err = krnl_Read_Write.setArg(11, i-2));
-			OCL_CHECK(err, err = krnl_Read_Write.setArg(14, i));
-			OCL_CHECK(err, err = q.enqueueTask(krnl_Read_Write, NULL, &event));
-			OCL_CHECK(err, err=event.wait());
-			endns = OCL_CHECK(err, event.getProfilingInfo<CL_PROFILING_COMMAND_END>(&err));
-			startns = OCL_CHECK(err, event.getProfilingInfo<CL_PROFILING_COMMAND_START>(&err));
-			nsduration = endns - startns;
-			q.finish();
-		//	OCL_CHECK(err, err = q.enqueueTask(krnl_slr0));
-		//	OCL_CHECK(err, err = q.enqueueTask(krnl_slr1));
-		//	OCL_CHECK(err, err = q.enqueueTask(krnl_slr2));
 
-			double k_time = nsduration/(1000000000.0);
-			total_plane_sizeR = tilex * tiley_size;
-			float logic_bandwidthR = (total_plane_sizeR * act_sizez * sizeof(float) * 2.0 * n_iter)/(k_time * 1000.0 * 1000 * 1000);
-			fprintf(fptr, "%d, %d, %d, %f\n", tilex*4, i*4, tiley_size*act_sizez*n_iter*4, 2*logic_bandwidthR);
-			printf("tilex:%d i:%d\n", tilex,i);
-		}
-		fprintf(fptr, ",,,\n");
-		fprintf(fptr, ",,,\n");
-    }
-
-
-    fclose(fptr);
+//
+//    char fine_name[100];
+//    for(unsigned short shift =0; shift <= 0; shift += 16){
+//    	sprintf(fine_name, "4K_cross_1RW_%d.csv", 4*4);
+//    	FILE* fptr = fopen(fine_name, "w");
+//
+//
+//		fprintf(fptr, "Transfer Size(Bytes), Stride(Bytes), Number of Transfers,  Total_Bandwidth(GB/s)\n");
+//		//Launch the Kernel
+//		for(int i = 32; i <= 16384; i = i*2 ){
+//			for(unsigned short tilex = 32; tilex <= 4096 && tilex <= i; tilex = tilex + 16){
+//				offset_x = ((1024-16)/16)*16;
+//				tile[0] = offset_x | (tilex << 16);
+//				tile[0+tilex_count] = 0* effective_tiley_size  | (tiley_size << 16);
+//				OCL_CHECK(err,
+//						  err = q.enqueueMigrateMemObjects({buffer_tile},
+//														   0 /* 0 means from host*/));
+//				q.finish();
+//				cl::Event event;
+//				OCL_CHECK(err, err = krnl_Read_Write.setArg(11, i-2));
+//				OCL_CHECK(err, err = krnl_Read_Write.setArg(14, i));
+//				OCL_CHECK(err, err = q.enqueueTask(krnl_Read_Write, NULL, &event));
+//				OCL_CHECK(err, err=event.wait());
+//				endns = OCL_CHECK(err, event.getProfilingInfo<CL_PROFILING_COMMAND_END>(&err));
+//				startns = OCL_CHECK(err, event.getProfilingInfo<CL_PROFILING_COMMAND_START>(&err));
+//				nsduration = endns - startns;
+//				q.finish();
+//			//	OCL_CHECK(err, err = q.enqueueTask(krnl_slr0));
+//			//	OCL_CHECK(err, err = q.enqueueTask(krnl_slr1));
+//			//	OCL_CHECK(err, err = q.enqueueTask(krnl_slr2));
+//
+//				double k_time = nsduration/(1000000000.0);
+//				total_plane_sizeR = tilex * tiley_size;
+//				float logic_bandwidthR = (total_plane_sizeR * act_sizez * sizeof(float) * 2.0 * n_iter)/(k_time * 1000.0 * 1000 * 1000);
+//				fprintf(fptr, "%d, %d, %d, %f\n", tilex*4, i*4, tiley_size*act_sizez*n_iter*4, 2*logic_bandwidthR);
+//				printf("tilex:%d i:%d\n", tilex,i);
+//				printf("%d, %d, %d, %f\n", tilex*4, i*4, tiley_size*act_sizez*n_iter*4, 2*logic_bandwidthR);
+//			}
+//			fprintf(fptr, ",,,\n");
+//			fprintf(fptr, ",,,\n");
+//		}
+//
+//
+//		fclose(fptr);
+//	}
 
 
     auto finish = std::chrono::high_resolution_clock::now();
@@ -474,16 +493,16 @@ int main(int argc, char **argv)
 
 
 
-//  printf("Profiling time is %f\n", k_time);
+  printf("Profiling time is %f\n", k_time);
 
-//  printf("Runtime on FPGA is %f seconds\n", k_time);
-////  double error = square_error(grid_u1, grid_u2_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_x);
-//  float bandwidth = (act_sizex * act_sizey * act_sizez * sizeof(float) * 4.0 * n_iter * 4)/(k_time * 1000.0 * 1000 * 1000);
-//  float logic_bandwidthR = (total_plane_sizeR * act_sizez * sizeof(float) * 2.0 * n_iter)/(k_time * 1000.0 * 1000 * 1000);
-//  float logic_bandwidthW = (total_plane_sizeW * act_sizez * sizeof(float) * 2.0 * n_iter)/(k_time * 1000.0 * 1000 * 1000);
-////  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
-//  printf("grid_size_x:%d grid_size_y:%d grid_size_z:%d, offset_x:%d\n",grid_size_x,grid_size_y,grid_size_z, offset_x);
-//  printf("\nBandwidth is %f %f %f %f\n", bandwidth, logic_bandwidthR, logic_bandwidthW, 2*logic_bandwidthW);
+  printf("Runtime on FPGA is %f seconds\n", k_time);
+  double error = square_error(grid_u1, grid_u2_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_x);
+  float bandwidth = (act_sizex * act_sizey * act_sizez * sizeof(float) * 4.0 * n_iter)/(k_time * 1000.0 * 1000 * 1000);
+  float logic_bandwidthR = (total_plane_sizeR * act_sizez * sizeof(float) * 2.0 * n_iter)/(k_time * 1000.0 * 1000 * 1000);
+  float logic_bandwidthW = (total_plane_sizeW * act_sizez * sizeof(float) * 2.0 * n_iter)/(k_time * 1000.0 * 1000 * 1000);
+  printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
+  printf("grid_size_x:%d grid_size_y:%d grid_size_z:%d, offset_x:%d\n",grid_size_x,grid_size_y,grid_size_z, offset_x);
+  printf("\nBandwidth is %f %f %f %f\n", bandwidth, logic_bandwidthR, logic_bandwidthW, 2*logic_bandwidthW);
 
 
 
