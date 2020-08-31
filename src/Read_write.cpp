@@ -20,7 +20,7 @@ static void read_to_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer0,
 	unsigned int plane_size = data_g.plane_size;
 
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
-	unsigned short tiley_4 = tile_y; //((tile_y+3-start) >> 0);
+	unsigned short tiley_4 = ((tile_y+1-start) >> 1);
 	unsigned int total_out_itr = end_z * tiley_4;
 	unsigned int k = 0,  i = start;
 	for(unsigned int itr = 0; itr < total_out_itr; itr++){
@@ -38,7 +38,7 @@ static void read_to_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer0,
 		unsigned int row_offset0 = xblocks * tot_y_offset0;
 		unsigned int base_index0 = plane_offset + row_offset0 + offset_x_b;
 
-		i = i + 1;
+		i = i + 2;
 		for (unsigned short j = 0; j < end_index; j++){
 			#pragma HLS loop_tripcount min=10 max=20 avg=15
 			#pragma HLS PIPELINE II=1
@@ -61,7 +61,7 @@ static void write_from_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffe
 	unsigned int plane_size = data_g.plane_size;
 
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
-	unsigned short tiley_4 = tile_y;//((tile_y+3-start) >> 0);
+	unsigned short tiley_4 = ((tile_y+1-start) >> 1);
 	unsigned int total_out_itr = end_z * tiley_4;
 	unsigned int k = 0,  i = start;
 	for(unsigned int itr = 0; itr < total_out_itr; itr++){
@@ -79,7 +79,7 @@ static void write_from_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffe
 		unsigned int row_offset0 = xblocks * tot_y_offset0;
 		unsigned int base_index0 = plane_offset + row_offset0 + offset_x_b;
 
-		i = i + 1;
+		i = i + 2;
 		for (unsigned short j = 0; j < end_index; j++){
 			#pragma HLS loop_tripcount min=10 max=20 avg=15
 			#pragma HLS PIPELINE II=1
@@ -154,8 +154,8 @@ static void process_ReadWrite (uint512_dt*  arg0_0,  uint512_dt*  arg0_1, uint51
 	read_to_fifo(arg0_0, rd_bufferArr[0], data_g, 0);
 	write_from_fifo(arg1_0, rd_bufferArr[0], data_g, 0);
 
-//	read_to_fifo(arg0_1, rd_bufferArr[1], data_g, 1);
-//	write_from_fifo(arg1_1, rd_bufferArr[1], data_g, 1);
+	read_to_fifo(arg0_1, rd_bufferArr[1], data_g, 1);
+	write_from_fifo(arg1_1, rd_bufferArr[1], data_g, 1);
 //
 //	read_to_fifo(arg0_2, rd_bufferArr[2], data_g, 2);
 //	write_from_fifo(arg1_2, rd_bufferArr[2], data_g, 2);
