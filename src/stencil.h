@@ -4,7 +4,7 @@
 #include <math.h>
 #include <stdio.h>
 
-
+//--vivado.prop run.impl_1.STEPS.vpl.update_bd.TCL.PRE=/home/kkvasan/vitis_ws/ddr4_tiled_RW/small_RW/src/stencil_axi.tcl
 typedef ap_uint<512> uint512_dt;
 typedef ap_uint<256> uint256_dt;
 typedef ap_axiu<256,0,0,0> t_pkt;
