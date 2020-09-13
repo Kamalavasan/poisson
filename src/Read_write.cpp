@@ -54,22 +54,30 @@ static void combine_tile(hls::stream<uint512_dt> &rd_buffer0, hls::stream<uint51
 	unsigned short end_z = data_g.grid_sizez;
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
 
-	unsigned int total_itr = end_z * ((tile_y) >> 1);
+	unsigned int total_itr0 = end_z * ((tile_y) >> 1);
+	unsigned int total_itr = (total_itr0 * end_index) << 1;
 	unsigned short i = 0;
+	bool flag = 0;
 	for(unsigned int itr = 0; itr < total_itr; itr++){
 		#pragma HLS loop_tripcount min=1000 max=1500 avg=1200
-		for (unsigned short j = 0; j < end_index; j++){
-			#pragma HLS PIPELINE II=1
-			#pragma HLS loop_tripcount min=10 max=20 avg=15
+		#pragma HLS PIPELINE II=1
+		if(i >= (end_index << 1)){
+			i = 0;
+		}
+
+		if(i < end_index){
+			flag = 0;
+		} else {
+			flag = 1;
+		}
+
+		if(flag){
+			combined_buffer << rd_buffer1.read();
+		} else {
 			combined_buffer << rd_buffer0.read();
 		}
 
-		for (unsigned short j = 0; j < end_index; j++){
-			#pragma HLS PIPELINE II=1
-			#pragma HLS loop_tripcount min=10 max=20 avg=15
-			combined_buffer << rd_buffer1.read();
-
-		}
+		i++;
 	}
 
 }
@@ -125,8 +133,8 @@ static void stream_convert_256_512(hls::stream<uint256_dt> &in, hls::stream<uint
 				uint512_dt tmp;
 				tmp.range(255,0) = in.read();
 				tmp.range(511,256) = in.read();
-				bool condx = j > 0 || offset_x == 0;
-				bool condy = i >= 4 || offset_y == 0;
+				bool condx = j >= 2 || offset_x == 0;
+				bool condy = i >= 24 || offset_y == 0;
 				bool cond_x_y = condx && condy;
 				if(cond_x_y){
 					out << tmp;
@@ -164,9 +172,9 @@ static void separate_tile(hls::stream<uint512_dt> &in_buffer, hls::stream<uint51
 	unsigned short offset_x = data_g.offset_x;
 	unsigned short offset_y = data_g.offset_y;
 
-	unsigned short adjust_x = (offset_x == 0?  0 : 16);
-	unsigned short adjust_x_b = (offset_x == 0?  0 : 1);
-	unsigned short adjust_y = (offset_y == 0?  0 : 4);
+	unsigned short adjust_x = (offset_x == 0?  0 : 32);
+	unsigned short adjust_x_b = (offset_x == 0?  0 : 2);
+	unsigned short adjust_y = (offset_y == 0?  0 : 24);
 
 	unsigned short tile_x = data_g.tile_x - adjust_x;
 	unsigned short tile_y = data_g.tile_y - adjust_y;
@@ -174,20 +182,30 @@ static void separate_tile(hls::stream<uint512_dt> &in_buffer, hls::stream<uint51
 	unsigned short end_z = data_g.grid_sizez;
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
 
-	unsigned int total_itr = end_z * ((tile_y) >> 1);
-	unsigned short i  =0;
+	unsigned int total_itr0 = end_z * ((tile_y) >> 1);
+	unsigned int total_itr = (total_itr0 * end_index) << 1;
+	unsigned short i = 0;
+	bool flag = 0;
 	for(unsigned int itr = 0; itr < total_itr; itr++){
-
-		for (unsigned short j = 0; j < end_index; j++){
-			#pragma HLS PIPELINE II=1
-			wr_buffer0 << in_buffer.read();
-
+		#pragma HLS loop_tripcount min=1000 max=1500 avg=1200
+		#pragma HLS PIPELINE II=1
+		if(i >= (end_index << 1)){
+			i = 0;
 		}
 
-		for (unsigned short j = 0; j < end_index; j++){
-			#pragma HLS PIPELINE II=1
+		if(i < end_index){
+			flag = 0;
+		} else {
+			flag = 1;
+		}
+
+		if(flag){
 			wr_buffer1 << in_buffer.read();
+		} else {
+			wr_buffer0 << in_buffer.read();
 		}
+
+		i++;
 	}
 }
 
@@ -197,9 +215,9 @@ static void write_tile(uint512_dt*  arg0, hls::stream<uint512_dt> &wr_buffer0, s
 	unsigned short offset_x = data_g.offset_x;
 
 
-	unsigned short adjust_x = (offset_x == 0?  0 : 16);
-	unsigned short adjust_x_b = (offset_x == 0?  0 : 1);
-	unsigned short adjust_y = (data_g.offset_y == 0?  0 : 4);
+	unsigned short adjust_x = (offset_x == 0?  0 : 32);
+	unsigned short adjust_x_b = (offset_x == 0?  0 : 2);
+	unsigned short adjust_y = (data_g.offset_y == 0?  0 : 24);
 
 	unsigned short tile_x = data_g.tile_x - adjust_x;
 	unsigned short end_z = data_g.grid_sizez;
@@ -308,6 +326,7 @@ static void process_ReadWrite_dataflow (uint512_dt*  arg0_0, uint512_dt*  arg1_0
 	unsigned int toltal_itr = tilex_count*tiley_count;
 	unsigned short i = 0, j = 0;
 	for(unsigned int itr = 0; itr < toltal_itr; itr++){
+//		printf("Itr:%d\n", itr);
 		if(j == tiley_count){
 			j = 0;
 			i++;

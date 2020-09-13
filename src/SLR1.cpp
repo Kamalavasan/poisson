@@ -56,33 +56,20 @@ void process_SLR (hls::stream <t_pkt> &in1, hls::stream <t_pkt> &out1, hls::stre
 	#pragma HLS dataflow
     axis2_fifo256(in1, streamArray[0], gridsize_da);
 
-//    process_tile( streamArray[0], streamArray[1], data_g);
-//    process_tile( streamArray[1], streamArray[2], size_x, size_y, offset, data_g);
-//    process_tile( streamArray[2], streamArray[3], size_x, size_y, offset, data_g);
-//    process_tile( streamArray[3], streamArray[4], size_x, size_y, offset, data_g);
-//    process_tile( streamArray[4], streamArray[5], size_x, size_y, offset, data_g);
-//    process_tile( streamArray[5], streamArray[6], size_x, size_y, offset, data_g);
-//    process_tile( streamArray[6], streamArray[7], size_x, size_y, offset, data_g);
-//    process_tile( streamArray[7], streamArray[8], size_x, size_y, offset, data_g);
-//    process_tile( streamArray[8], streamArray[9], size_x, size_y, offset, data_g);
-//    process_tile( streamArray[9], streamArray[10], size_x, size_y, offset, data_g);
+    process_tile( streamArray[0], streamArray[1], data_g);
+    process_tile( streamArray[1], streamArray[2], data_g);
+    process_tile( streamArray[2], streamArray[3], data_g);
+    process_tile( streamArray[3], streamArray[4], data_g);
 
-
-	fifo256_2axis(streamArray[0], out1, gridsize_da);
+	fifo256_2axis(streamArray[4], out1, gridsize_da);
 	axis2_fifo256(in2, streamArray[40], gridsize_da);
 
-//	process_tile( streamArray[40], streamArray[21], data_g);
-//	process_tile( streamArray[21], streamArray[22], size_x, size_y, offset, data_g);
-//	process_tile( streamArray[22], streamArray[23], size_x, size_y, offset, data_g);
-//	process_tile( streamArray[23], streamArray[24], size_x, size_y, offset, data_g);
-//	process_tile( streamArray[24], streamArray[25], size_x, size_y, offset, data_g);
-//	process_tile( streamArray[25], streamArray[26], size_x, size_y, offset, data_g);
-//	process_tile( streamArray[26], streamArray[27], size_x, size_y, offset, data_g);
-//	process_tile( streamArray[27], streamArray[28], size_x, size_y, offset, data_g);
-//	process_tile( streamArray[28], streamArray[29], size_x, size_y, offset, data_g);
-//	process_tile( streamArray[29], streamArray[30], size_x, size_y, offset, data_g);
+	process_tile( streamArray[40], streamArray[5], data_g);
+	process_tile( streamArray[5], streamArray[6], data_g);
+	process_tile( streamArray[6], streamArray[7], data_g);
+	process_tile( streamArray[7], streamArray[8], data_g);
 
-	fifo256_2axis(streamArray[40], out2, gridsize_da);
+	fifo256_2axis(streamArray[8], out2, gridsize_da);
 
 
 }

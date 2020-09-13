@@ -258,13 +258,13 @@ int main(int argc, char **argv)
   // tiling on x dimension
   int tilex_c;
   int toltal_sizex = 0;
-  int effective_tilex_size = tilex_size - 32;
+  int effective_tilex_size = tilex_size - 64;
   for(int i = 0; i < tile_max_count; i++){
 	  tilex_c = i+1;
 	  tile[i] = i* effective_tilex_size  | (tilex_size << 16);
 	  if(i* effective_tilex_size + tilex_size >= grid_size_x){
-		  tile[i] = i* effective_tilex_size  | (grid_size_x - i* effective_tilex_size) << 16;
-		  toltal_sizex += (grid_size_x - i* effective_tilex_size);
+		  tile[i] = (grid_size_x - tilex_size)  | tilex_size << 16;
+		  toltal_sizex += tilex_size;
 		  break;
 	  }
 	  toltal_sizex += tilex_size;
@@ -277,7 +277,7 @@ int main(int argc, char **argv)
   tiley_size = (tiley_size < 9 ? 9 : tiley_size);
   int tiley_c;
   int toltal_sizey = 0;
-  int effective_tiley_size = tiley_size - 8;
+  int effective_tiley_size = tiley_size - 48;
   for(int i = 0; i < tile_max_count; i++){
 	  tiley_c = i+1;
 	  tile[i+tilex_count] = i* effective_tiley_size  | (tiley_size << 16);
@@ -434,7 +434,7 @@ int main(int argc, char **argv)
 
     merge_grid(grid_u1_d2, grid_u1_d,  act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
 
-  for(int itr = 0; itr < n_iter*1; itr++){
+  for(int itr = 0; itr < n_iter*24; itr++){
       stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
       stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
   }

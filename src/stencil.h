@@ -10,7 +10,7 @@ typedef ap_uint<256> uint256_dt;
 typedef ap_axiu<256,0,0,0> t_pkt;
 typedef ap_axiu<32,0,0,0> t_pkt_32;
 
-#define MAX_SIZE_X 520
+#define MAX_SIZE_X 320
 #define MAX_DEPTH_16 (MAX_SIZE_X/16)
 #define MAX_DEPTH_8 (MAX_SIZE_X/8)
 #define MAX_DEPTH_P_8 (MAX_SIZE_X/8) * MAX_SIZE_X
