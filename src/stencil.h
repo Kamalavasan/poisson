@@ -6,11 +6,12 @@
 
 //--vivado.prop run.impl_1.STEPS.vpl.update_bd.TCL.PRE=/home/kkvasan/vitis_ws/ddr4_tiled_RW/small_RW/src/stencil_axi.tcl
 typedef ap_uint<512> uint512_dt;
+typedef ap_uint<1024> uint1024_dt;
 typedef ap_uint<256> uint256_dt;
 typedef ap_axiu<256,0,0,0> t_pkt;
 typedef ap_axiu<32,0,0,0> t_pkt_32;
 
-#define MAX_SIZE_X 2048
+#define MAX_SIZE_X 128
 #define MAX_DEPTH_16 (MAX_SIZE_X/16)
 #define MAX_DEPTH_8 (MAX_SIZE_X/8)
 #define MAX_DEPTH_P_8 (MAX_SIZE_X/8) * MAX_SIZE_X
