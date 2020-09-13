@@ -187,7 +187,7 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 
 			float result  = r1 + r2;
 			bool change_cond = (index <= offset_x || index > sizex || (i <= 1) || (i >= limit_z -1) || (y_index <= 0) || (y_index >= grid_sizey -1));
-			mem_wr[q] = change_cond ? s_1_1_1_arr[q+1] : result;
+			mem_wr[q] =  change_cond ? s_1_1_1_arr[q+1] : result;
 		}
 
 		array2vec: for(int k = 0; k < PORT_WIDTH; k++){
