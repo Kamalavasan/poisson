@@ -313,7 +313,7 @@ int main(int argc, char **argv)
   tiley_size = (tiley_size < 9 ? 9 : tiley_size);
   int tiley_c;
   int toltal_sizey = 0;
-  int effective_tiley_size = tiley_size;// - 48;
+  int effective_tiley_size = tiley_size-6;
 
 
 

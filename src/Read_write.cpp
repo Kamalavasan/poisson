@@ -84,7 +84,8 @@ static void write_from_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffe
 
 	unsigned short end_z = data_g.grid_sizez;
 	unsigned short offset_y = (data_g.offset_y);
-	unsigned short tile_y = (data_g.tile_y);
+	unsigned short adjust_y = data_g.offset_y != 0 ? 3 : 0;
+	unsigned short tile_y = (data_g.tile_y - adjust_y);
 
 	unsigned short xblocks = (data_g.xblocks >> 3);
 	unsigned short tile_x = (data_g.tile_x >> 3);
@@ -101,7 +102,7 @@ static void write_from_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffe
 		unsigned int plane_offset = k* plane_size;
 		unsigned int offset_x_b = offset_x >> (SHIFT_BITS+1);
 
-		unsigned short tot_y_offset0 = (offset_y + i);
+		unsigned short tot_y_offset0 = (offset_y + i+adjust_y);
 		unsigned int row_offset0 = xblocks * tot_y_offset0;
 		unsigned int base_index0 = plane_offset + row_offset0 + offset_x_b;
 		unsigned char adjust = ((data_g.offset_x >> (SHIFT_BITS+2)) == 3) ? 1 : 0;
@@ -219,6 +220,7 @@ static void stream_convert_256_512(hls::stream<uint256_dt> &in0, hls::stream<uin
 		hls::stream<uint256_dt> &in7, hls::stream<uint512_dt> &out7,
 		struct data_G data_g){
 	unsigned short end_z = data_g.grid_sizez;
+	unsigned short adjust_y = data_g.offset_y != 0 ? 3 : 0;
 	unsigned short tile_y = (data_g.tile_y);
 	unsigned short tile_x = (data_g.tile_x >> 3);
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
@@ -227,9 +229,21 @@ static void stream_convert_256_512(hls::stream<uint256_dt> &in0, hls::stream<uin
 
 	bool adjust_c = ((data_g.offset_x >> (SHIFT_BITS+2)) == 3);
 
+	int i = 0, j = 0;
 	for(unsigned int itr = 0; itr < total_itr; itr++){
 		#pragma HLS loop_tripcount min=1000 max=1500 avg=1200
 		#pragma HLS PIPELINE II=2
+
+		if(i == end_index){
+			i = 0;
+			j++;
+		}
+
+		if(j == tile_y){
+			j = 0;
+		}
+		i++;
+
 		uint512_dt Tmp0, Tmp1, Tmp2, Tmp3, Tmp4, Tmp5, Tmp6, Tmp7;
 		uint512_dt tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
 
@@ -284,7 +298,7 @@ static void stream_convert_256_512(hls::stream<uint256_dt> &in0, hls::stream<uin
 
 		out4 << tmp4;
 		out5 << tmp5;
-		if(~adjust_c || itr > 0){
+		if(~adjust_c || (j > adjust_y && i > 0)){
 			out6 << tmp6;
 		}
 		out7 << tmp7;
