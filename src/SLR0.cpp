@@ -141,7 +141,6 @@ void stencil_SLR0(
 		process_SLR( in, out, xdim0, offset_x, tile_x, offset_y, tile_y, sizex, sizey, sizez);
 
 
-
 	}
 
 }

@@ -338,7 +338,8 @@ int main(int argc, char **argv)
     devices.resize(1);
     auto start_p = std::chrono::high_resolution_clock::now();
     OCL_CHECK(err, cl::Program program(context, devices, bins, NULL, &err));
-    OCL_CHECK(err, cl::Kernel krnl_Read_Write(program, "stencil_Read_Write", &err));
+    OCL_CHECK(err, cl::Kernel krnl_Read_Write_SLR0(program, "stencil_Read_Write_SLR0", &err));
+    OCL_CHECK(err, cl::Kernel krnl_Read_Write_SLR1(program, "stencil_Read_Write_SLR1", &err));
     OCL_CHECK(err, cl::Kernel krnl_slr0(program, "stencil_SLR0", &err));
     OCL_CHECK(err, cl::Kernel krnl_slr1(program, "stencil_SLR1", &err));
     OCL_CHECK(err, cl::Kernel krnl_slr2(program, "stencil_SLR2", &err));
@@ -353,25 +354,36 @@ int main(int argc, char **argv)
     OCL_CHECK(err, cl::Buffer buffer_input1(context,  CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, data_size_bytes_div2, grid_u1_d2[1], &err));
     OCL_CHECK(err, cl::Buffer buffer_output1(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, data_size_bytes_div2, grid_u2_d2[1], &err));
 
-    OCL_CHECK(err, cl::Buffer buffer_tile(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, tile_count*sizeof(unsigned int), tile, &err));
+    OCL_CHECK(err, cl::Buffer buffer_tile0(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, tile_count*sizeof(unsigned int), tile, &err));
+    OCL_CHECK(err, cl::Buffer buffer_tile1(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, tile_count*sizeof(unsigned int), tile, &err));
 
 
 
     int read_write_offset = data_size_bytes/64;
     //Set the Kernel Arguments
     int narg = 0;
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_input0));
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_output0));
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_input1));
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_output1));
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_tile));
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, tilex_count));
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, tiley_count));
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, logical_size_x));
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, logical_size_y));
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, logical_size_z));
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, grid_size_x));
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, n_iter));
+    OCL_CHECK(err, err = krnl_Read_Write_SLR0.setArg(narg++, buffer_input0));
+    OCL_CHECK(err, err = krnl_Read_Write_SLR0.setArg(narg++, buffer_output0));
+    OCL_CHECK(err, err = krnl_Read_Write_SLR0.setArg(narg++, buffer_tile0));
+    OCL_CHECK(err, err = krnl_Read_Write_SLR0.setArg(narg++, tilex_count));
+    OCL_CHECK(err, err = krnl_Read_Write_SLR0.setArg(narg++, tiley_count));
+    OCL_CHECK(err, err = krnl_Read_Write_SLR0.setArg(narg++, logical_size_x));
+    OCL_CHECK(err, err = krnl_Read_Write_SLR0.setArg(narg++, logical_size_y));
+    OCL_CHECK(err, err = krnl_Read_Write_SLR0.setArg(narg++, logical_size_z));
+    OCL_CHECK(err, err = krnl_Read_Write_SLR0.setArg(narg++, grid_size_x));
+    OCL_CHECK(err, err = krnl_Read_Write_SLR0.setArg(narg++, n_iter));
+
+    narg = 0;
+	OCL_CHECK(err, err = krnl_Read_Write_SLR1.setArg(narg++, buffer_input1));
+	OCL_CHECK(err, err = krnl_Read_Write_SLR1.setArg(narg++, buffer_output1));
+	OCL_CHECK(err, err = krnl_Read_Write_SLR1.setArg(narg++, buffer_tile1));
+	OCL_CHECK(err, err = krnl_Read_Write_SLR1.setArg(narg++, tilex_count));
+	OCL_CHECK(err, err = krnl_Read_Write_SLR1.setArg(narg++, tiley_count));
+	OCL_CHECK(err, err = krnl_Read_Write_SLR1.setArg(narg++, logical_size_x));
+	OCL_CHECK(err, err = krnl_Read_Write_SLR1.setArg(narg++, logical_size_y));
+	OCL_CHECK(err, err = krnl_Read_Write_SLR1.setArg(narg++, logical_size_z));
+	OCL_CHECK(err, err = krnl_Read_Write_SLR1.setArg(narg++, grid_size_x));
+	OCL_CHECK(err, err = krnl_Read_Write_SLR1.setArg(narg++, n_iter));
 
     narg = 0;
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, tilex_count));
@@ -404,7 +416,7 @@ int main(int argc, char **argv)
 
     //Copy input data to device global memory
     OCL_CHECK(err,
-              err = q.enqueueMigrateMemObjects({buffer_input0, buffer_input1, buffer_tile},
+              err = q.enqueueMigrateMemObjects({buffer_input0, buffer_input1, buffer_tile0, buffer_tile1},
                                                0 /* 0 means from host*/));
 
     uint64_t wtime = 0;
@@ -415,7 +427,8 @@ int main(int argc, char **argv)
 
 
 	//Launch the Kernel
-    OCL_CHECK(err, err = q.enqueueTask(krnl_Read_Write));
+    OCL_CHECK(err, err = q.enqueueTask(krnl_Read_Write_SLR0));
+    OCL_CHECK(err, err = q.enqueueTask(krnl_Read_Write_SLR1));
 	OCL_CHECK(err, err = q.enqueueTask(krnl_slr0));
 	OCL_CHECK(err, err = q.enqueueTask(krnl_slr1));
 	OCL_CHECK(err, err = q.enqueueTask(krnl_slr2));
