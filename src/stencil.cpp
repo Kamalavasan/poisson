@@ -1,31 +1,35 @@
-static void axis2_fifo256(hls::stream <t_pkt> &in, hls::stream<uint256_dt> &out, unsigned int total_itr){
-//	unsigned short end_index = (tile_x >> (SHIFT_BITS));
-//	unsigned short end_row = size_y+2;
-//	unsigned int tot_itr = end_row * end_index;
+static void axis2_fifo2048(hls::stream <t_pkt_1024> &in0, hls::stream <t_pkt_1024> &in1,
+		hls::stream<uint1024_dt> &out0, hls::stream<uint1024_dt> &out1, unsigned int total_itr){
+
 	for (unsigned int itr = 0; itr < total_itr; itr++){
 		#pragma HLS PIPELINE II=1
 		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
-		t_pkt tmp = in.read();
-		out << tmp.data;
+		t_pkt_1024 tmp0 = in0.read();
+		t_pkt_1024 tmp1 = in1.read();
+
+		out0 << tmp0.data;
+		out1 << tmp1.data;
 	}
 }
 
-static void fifo256_2axis(hls::stream <uint256_dt> &in, hls::stream<t_pkt> &out, unsigned int total_itr){
-//	unsigned short end_index = (tile_x >> (SHIFT_BITS));
-//	unsigned short end_row = size_y+2;
-//	unsigned int tot_itr = end_row * end_index;
+static void fifo2048_2axis(hls::stream <uint1024_dt> &in0, hls::stream <uint1024_dt> &in1,
+		hls::stream<t_pkt_1024> &out0, hls::stream<t_pkt_1024> &out1, unsigned int total_itr){
+
 	for (unsigned int itr = 0; itr < total_itr; itr++){
 		#pragma HLS PIPELINE II=1
 		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
-		t_pkt tmp;
-		tmp.data = in.read();
-		out.write(tmp);
+		t_pkt_1024 tmp0, tmp1;
+		tmp0.data = in0.read();
+		tmp1.data = in1.read();
+		out0.write(tmp0);
+		out1.write(tmp1);
 	}
 }
 
 
-static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint256_dt> &wr_buffer, struct data_G data_g){
-	unsigned short xblocks = data_g.xblocks;
+static void process_tile( hls::stream<uint1024_dt> &rd_buffer0, hls::stream<uint1024_dt> &rd_buffer1,
+		hls::stream<uint1024_dt> &wr_buffer0, hls::stream<uint1024_dt> &wr_buffer1, struct data_G data_g){
+	unsigned short xblocks = (data_g.xblocks);
 	unsigned short sizex = data_g.sizex;
 	unsigned short sizey = data_g.sizey;
 	unsigned short sizez = data_g.sizez;
@@ -56,18 +60,33 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 	#pragma HLS ARRAY_PARTITION variable=s_1_1_0_arr complete dim=1
 	#pragma HLS ARRAY_PARTITION variable=mem_wr complete dim=1
 
-	uint256_dt window_1[MAX_DEPTH_P_8];
-	uint256_dt window_2[MAX_DEPTH_8*4];
-	uint256_dt window_3[MAX_DEPTH_8*4];
-	uint256_dt window_4[MAX_DEPTH_P_8];
+	uint1024_dt window_1_l[MAX_DEPTH_P];
+	uint1024_dt window_2_l[MAX_DEPTH_L*2];
+	uint1024_dt window_3_l[MAX_DEPTH_L*2];
+	uint1024_dt window_4_l[MAX_DEPTH_P];
 
-	#pragma HLS RESOURCE variable=window_1 core=XPM_MEMORY uram latency=2
-	#pragma HLS RESOURCE variable=window_2 core=RAM_1P_BRAM latency=2
-	#pragma HLS RESOURCE variable=window_3 core=RAM_1P_BRAM latency=2
-	#pragma HLS RESOURCE variable=window_4 core=XPM_MEMORY uram latency=2
+	uint1024_dt window_1_u[MAX_DEPTH_P];
+	uint1024_dt window_2_u[MAX_DEPTH_L*2];
+	uint1024_dt window_3_u[MAX_DEPTH_L*2];
+	uint1024_dt window_4_u[MAX_DEPTH_P];
 
-	uint256_dt s_1_1_2, s_1_2_1, s_1_1_1, s_1_1_1_b, s_1_1_1_f, s_1_0_1, s_1_1_0;
-	uint256_dt update_j;
+	#pragma HLS RESOURCE variable=window_1_l core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_2_l core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_3_l core=XPM_MEMORY uram latency=2
+//	#pragma HLS RESOURCE variable=window_2_l core=RAM_1P_BRAM latency=2
+//	#pragma HLS RESOURCE variable=window_3_l core=RAM_1P_BRAM latency=2
+	#pragma HLS RESOURCE variable=window_4_l core=XPM_MEMORY uram latency=2
+
+	#pragma HLS RESOURCE variable=window_1_u core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_2_u core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_3_u core=XPM_MEMORY uram latency=2
+//	#pragma HLS RESOURCE variable=window_2_u core=RAM_1P_BRAM latency=2
+//	#pragma HLS RESOURCE variable=window_3_u core=RAM_1P_BRAM latency=2
+	#pragma HLS RESOURCE variable=window_4_u core=XPM_MEMORY uram latency=2
+
+	uint1024_dt s_1_1_2_l, s_1_2_1_l, s_1_1_1_l, s_1_1_1_l_b, s_1_1_1_l_f, s_1_0_1_l, s_1_1_0_l;
+	uint1024_dt s_1_1_2_u, s_1_2_1_u, s_1_1_1_u, s_1_1_1_u_b, s_1_1_1_u_f, s_1_0_1_u, s_1_1_0_u;
+	uint1024_dt update_j_l, update_j_u;
 
 
 	unsigned short i = 0, j = 0, k = 0;
@@ -93,43 +112,43 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 			i_dum = i + 1;
 		}
 
-//		if(k == xblocks){
-//			k = 0;
-//			j++;
-//		}
-//
-//		if(j == tile_y){
-//			j = 0;
-//			i++;
-//		}
 
 		k = k_dum;
 		j = j_dum;
 		i = i_dum;
 
-//		printf("i, j ,k is %d, %d, %d, itr %d gridsize %d\n", i,j,k,itr, gridsize);
 
+		s_1_1_0_l = window_4_l[j_p];
+		s_1_1_0_u = window_4_u[j_p];
 
-		s_1_1_0 = window_4[j_p];
+		s_1_0_1_l = window_3_l[j_l];
+		window_4_l[j_p] = s_1_0_1_l;
+		s_1_0_1_u = window_3_u[j_l];
+		window_4_u[j_p] = s_1_0_1_u;
 
-		s_1_0_1 = window_3[j_l];
-		window_4[j_p] = s_1_0_1;
+		s_1_1_1_l_b = s_1_1_1_l;
+		window_3_l[j_l] = s_1_1_1_l_b;
+		s_1_1_1_u_b = s_1_1_1_u;
+		window_3_u[j_l] = s_1_1_1_u_b;
 
-		s_1_1_1_b = s_1_1_1;
-		window_3[j_l] = s_1_1_1_b;
+		s_1_1_1_l = s_1_1_1_l_f;
+		s_1_1_1_l_f = window_2_l[j_l];
+		s_1_1_1_u = s_1_1_1_u_f;
+		s_1_1_1_u_f = window_2_u[j_l];
 
-		s_1_1_1 = s_1_1_1_f;
-		s_1_1_1_f = window_2[j_l]; 	// read
-
-		s_1_2_1 = window_1[j_p];   // read
-		window_2[j_l] = s_1_2_1;	//set
+		s_1_2_1_l = window_1_l[j_p];
+		window_2_l[j_l] = s_1_2_1_l;
+		s_1_2_1_u = window_1_u[j_p];
+		window_2_u[j_l] = s_1_2_1_u;
 
 
 		bool cond_tmp1 = (i < grid_sizez);
 		if(cond_tmp1){
-			s_1_1_2 = rd_buffer.read(); // set
+			s_1_1_2_l = rd_buffer0.read(); // set
+			s_1_1_2_u = rd_buffer1.read(); // set
 		}
-		window_1[j_p] = s_1_1_2; // set
+		window_1_l[j_p] = s_1_1_2_l; // set
+		window_1_u[j_p] = s_1_1_2_u; // set
 
 
 
@@ -143,33 +162,49 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 			j_l = 0;
 		}
 
-		vec2arr: for(int k = 0; k < PORT_WIDTH; k++){
+		vec2arr: for(int k = 0; k < PORT_WIDTH/2; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
-			data_conv s_1_1_2_u, s_1_2_1_u, s_1_1_1_u, s_1_0_1_u, s_1_1_0_u;
-			s_1_1_2_u.i = s_1_1_2.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
-			s_1_2_1_u.i = s_1_2_1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
-			s_1_1_1_u.i = s_1_1_1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
-			s_1_0_1_u.i = s_1_0_1.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
-			s_1_1_0_u.i = s_1_1_0.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			data_conv s_1_1_2_u_conv, s_1_2_1_u_conv, s_1_1_1_u_conv, s_1_0_1_u_conv, s_1_1_0_u_conv;
+			data_conv s_1_1_2_l_conv, s_1_2_1_l_conv, s_1_1_1_l_conv, s_1_0_1_l_conv, s_1_1_0_l_conv;
 
-			s_1_1_2_arr[k]   =  s_1_1_2_u.f;
-			s_1_2_1_arr[k]   =  s_1_2_1_u.f;
-			s_1_1_1_arr[k+1] =  s_1_1_1_u.f;
-			s_1_0_1_arr[k]   =  s_1_0_1_u.f;
-			s_1_1_0_arr[k]   =  s_1_1_0_u.f;
+			s_1_1_2_u_conv.i = s_1_1_2_u.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			s_1_2_1_u_conv.i = s_1_2_1_u.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			s_1_1_1_u_conv.i = s_1_1_1_u.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			s_1_0_1_u_conv.i = s_1_0_1_u.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			s_1_1_0_u_conv.i = s_1_1_0_u.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+
+			s_1_1_2_arr[k+PORT_WIDTH/2]   =  s_1_1_2_u_conv.f;
+			s_1_2_1_arr[k+PORT_WIDTH/2]   =  s_1_2_1_u_conv.f;
+			s_1_1_1_arr[k+1+PORT_WIDTH/2] =  s_1_1_1_u_conv.f;
+			s_1_0_1_arr[k+PORT_WIDTH/2]   =  s_1_0_1_u_conv.f;
+			s_1_1_0_arr[k+PORT_WIDTH/2]   =  s_1_1_0_u_conv.f;
+
+			s_1_1_2_l_conv.i = s_1_1_2_l.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			s_1_2_1_l_conv.i = s_1_2_1_l.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			s_1_1_1_l_conv.i = s_1_1_1_l.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			s_1_0_1_l_conv.i = s_1_0_1_l.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+			s_1_1_0_l_conv.i = s_1_1_0_l.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE);
+
+			s_1_1_2_arr[k]   =  s_1_1_2_l_conv.f;
+			s_1_2_1_arr[k]   =  s_1_2_1_l_conv.f;
+			s_1_1_1_arr[k+1] =  s_1_1_1_l_conv.f;
+			s_1_0_1_arr[k]   =  s_1_0_1_l_conv.f;
+			s_1_1_0_arr[k]   =  s_1_1_0_l_conv.f;
 
 		}
 		data_conv tmp1_o1, tmp2_o2;
-		tmp1_o1.i = s_1_1_1_b.range(DATATYPE_SIZE * (PORT_WIDTH) - 1, (PORT_WIDTH-1) * DATATYPE_SIZE);
-		tmp2_o2.i = s_1_1_1_f.range(DATATYPE_SIZE * (0 + 1) - 1, 0 * DATATYPE_SIZE);
+		tmp1_o1.i = s_1_1_1_u_b.range(DATATYPE_SIZE * (PORT_WIDTH/2) - 1, (PORT_WIDTH/2-1) * DATATYPE_SIZE);
+		tmp2_o2.i = s_1_1_1_l_f.range(DATATYPE_SIZE * (0 + 1) - 1, 0 * DATATYPE_SIZE);
+
+
 		s_1_1_1_arr[0] = tmp1_o1.f;
 		s_1_1_1_arr[PORT_WIDTH + 1] = tmp2_o2.f;
 
 
 		unsigned short y_index = j + offset_y;
-		process: for(short q = 0; q < PORT_WIDTH; q++){
+		process_l: for(short q = 0; q < PORT_WIDTH; q++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
-			short index = (k << SHIFT_BITS) + q + offset_x;
+			short index = (k << (SHIFT_BITS+3)) + q + offset_x;
 			float r1_1_2 =  s_1_1_2_arr[q] * 0.02f;
 			float r1_2_1 =  s_1_2_1_arr[q] * 0.04f;
 			float r0_1_1 =  s_1_1_1_arr[q] * 0.05f;
@@ -190,16 +225,21 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 			mem_wr[q] =  change_cond ? s_1_1_1_arr[q+1] : result;
 		}
 
-		array2vec: for(int k = 0; k < PORT_WIDTH; k++){
+
+
+		array2vec: for(int k = 0; k < PORT_WIDTH/2; k++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
-			data_conv tmp;
-			tmp.f = mem_wr[k];
-			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
+			data_conv tmp_l, tmp_u;
+			tmp_l.f = mem_wr[k];
+			update_j_l.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp_l.i;
+			tmp_u.f = mem_wr[k+PORT_WIDTH/2];
+			update_j_u.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp_u.i;
 		}
 
 		bool cond_wr = (i >= 1) && ( i <= limit_z);
 		if(cond_wr ) {
-			wr_buffer << update_j;
+			wr_buffer0 << update_j_l;
+			wr_buffer1 << update_j_u;
 		}
 
 		// move the cell block

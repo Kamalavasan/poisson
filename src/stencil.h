@@ -10,14 +10,15 @@ typedef ap_uint<1024> uint1024_dt;
 typedef ap_uint<256> uint256_dt;
 typedef ap_axiu<256,0,0,0> t_pkt;
 typedef ap_axiu<32,0,0,0> t_pkt_32;
+typedef ap_axiu<1024,0,0,0> t_pkt_1024;
 
-#define MAX_SIZE_X 128
+#define MAX_SIZE_X 640
 #define MAX_DEPTH_16 (MAX_SIZE_X/16)
-#define MAX_DEPTH_8 (MAX_SIZE_X/8)
-#define MAX_DEPTH_P_8 (MAX_SIZE_X/8) * MAX_SIZE_X
+#define MAX_DEPTH_L (MAX_SIZE_X/64)
+#define MAX_DEPTH_P (MAX_SIZE_X/64) * MAX_SIZE_X
 
 //user function
-#define PORT_WIDTH 8
+#define PORT_WIDTH 64
 #define SHIFT_BITS 3
 #define DATATYPE_SIZE 32
 //#define BEAT_SHIFT_BITS 10
@@ -42,8 +43,8 @@ const int min_grid_2 = (min_block_x * min_size_y * min_size_y)/2;
 const int avg_grid_2 = (avg_block_x * avg_size_y * avg_size_y)/2;
 
 const int port_width  = PORT_WIDTH;
-const int max_depth_16 = MAX_DEPTH_16 * 4;
-const int max_depth_8 = MAX_DEPTH_8 * 4;
+const int max_depth_16 = MAX_DEPTH_L * 4;
+const int max_depth_8 = MAX_DEPTH_L * 4;
 
 typedef union  {
    int i;
