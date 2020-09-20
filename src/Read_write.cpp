@@ -293,7 +293,7 @@ static void stream_convert_256_512(hls::stream<uint256_dt> &in0, hls::stream<uin
 			default :{ tmp0 = Tmp0; tmp1 = Tmp1; tmp2=Tmp2; tmp3=Tmp3; tmp4=Tmp4; tmp5=Tmp5; tmp6=Tmp6; tmp7=Tmp7; break;}
 		}
 
-		if(cond_y){
+//		if(cond_y){
 			out0 << tmp0;
 			out1 << tmp1;
 			out2 << tmp2;
@@ -302,7 +302,7 @@ static void stream_convert_256_512(hls::stream<uint256_dt> &in0, hls::stream<uin
 			out5 << tmp5;
 			out6 << tmp6;
 			out7 << tmp7;
-		}
+//		}
 
 	}
 }
@@ -539,7 +539,7 @@ static void process_ReadWrite (uint512_dt*  arg0_0, uint512_dt*  arg1_0,
 	data_g.offset_y = offset_y;
 	data_g.tile_y = tile_y;
 
-	data_g.plane_size = data_g.xblocks * (data_g.grid_sizey + 2);
+	data_g.plane_size = data_g.xblocks * (data_g.grid_sizey);
 
 	unsigned int tile_plane_size = (data_g.tile_x >> (SHIFT_BITS+3)) * data_g.tile_y;
 	unsigned int totol_iter = tile_plane_size * data_g.grid_sizez;
@@ -614,18 +614,18 @@ static void process_ReadWrite_dataflow (uint512_dt*  arg0_0, uint512_dt*  arg1_0
 	unsigned int toltal_itr = tilex_count*tiley_count;
 	unsigned short i = 0, j = 0;
 	for(unsigned int itr = 0; itr < toltal_itr; itr++){
-		if(j == tiley_count){
+		if(j == tilex_count){
 			j = 0;
 			i++;
 		}
-		unsigned short offset_x = tile_memx[i] & 0xffff;
-		unsigned short tile_x   = tile_memx[i] >> 16;
-		unsigned short offset_y = tile_memy[j] & 0xffff;
-		unsigned short tile_y   = tile_memy[j] >> 16;
+		unsigned short offset_x = tile_memx[j] & 0xffff;
+		unsigned short tile_x   = tile_memx[j] >> 16;
+		unsigned short offset_y = tile_memy[i] & 0xffff;
+		unsigned short tile_y   = tile_memy[i] >> 16;
 		j++;
 
 
-		printf("Itr:%d offset_x:%d offset_y:%d\n", itr, offset_x, offset_y);
+		printf("Read Write: Itr:%d offset_x:%d offset_y:%d\n", itr, offset_x, offset_y);
 		process_ReadWrite(arg0_0, arg1_0, arg0_1, arg1_1, arg0_2, arg1_2, arg0_3, arg1_3,
 				arg0_4, arg1_4, arg0_5, arg1_5, arg0_6, arg1_6, arg0_7, arg1_7,
 				inl, inu, outl, outu,

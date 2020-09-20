@@ -255,7 +255,7 @@ int main(int argc, char **argv)
   int act_sizex_32 = (act_sizex% 32 != 0 ? (act_sizex/32 + 1)* 32 : act_sizex);
   int grid_size_x = (act_sizex % 128) != 0 ? (act_sizex/128 +1) * 128 : act_sizex;
   grid_size_x = grid_size_x + 128;
-  int grid_size_y = act_sizey+2;
+  int grid_size_y = act_sizey;
   int grid_size_z = act_sizez;
 
 
@@ -331,8 +331,8 @@ int main(int argc, char **argv)
   for(int i = 0; i < tile_max_count; i++){
 	  tiley_c = i+1;
 	  tile[i+tilex_count] = i* effective_tiley_size  | (tiley_size << 16);
-	  if(i* effective_tiley_size + tiley_size >= act_sizey){
-		  tile[i+tilex_count] = (act_sizey - tiley_size)  | tiley_size << 16;
+	  if(i* effective_tiley_size + tiley_size >= grid_size_y){
+		  tile[i+tilex_count] = (grid_size_y - tiley_size)  | tiley_size << 16;
 		  toltal_sizey += tiley_size;
 		  break;
 	  }

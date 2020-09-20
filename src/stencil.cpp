@@ -101,6 +101,7 @@ static void process_tile( hls::stream<uint1024_dt> &rd_buffer0, hls::stream<uint
 		if(cond_k){
 			k_dum = 0;
 		}
+		// fix me: will fail for xblocks = 1
 
 		if(cond_k && cond_j){
 			j_dum = 0;
