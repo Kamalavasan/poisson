@@ -27,8 +27,75 @@ static void fifo2048_2axis(hls::stream <uint1024_dt> &in0, hls::stream <uint1024
 }
 
 
-static void process_tile( hls::stream<uint1024_dt> &rd_buffer0, hls::stream<uint1024_dt> &rd_buffer1,
-		hls::stream<uint1024_dt> &wr_buffer0, hls::stream<uint1024_dt> &wr_buffer1, struct data_G data_g){
+static void axis2_fifo256_8(hls::stream <t_pkt_1024> &in0, hls::stream <t_pkt_1024> &in1,
+		hls::stream<uint256_dt> &out0_0, hls::stream<uint256_dt> &out1_0,
+		hls::stream<uint256_dt> &out0_1, hls::stream<uint256_dt> &out1_1,
+		hls::stream<uint256_dt> &out0_2, hls::stream<uint256_dt> &out1_2,
+		hls::stream<uint256_dt> &out0_3, hls::stream<uint256_dt> &out1_3,
+		unsigned int total_itr){
+
+	for (unsigned int itr = 0; itr < total_itr; itr++){
+		#pragma HLS PIPELINE II=1
+		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
+		t_pkt_1024 tmp0 = in0.read();
+		t_pkt_1024 tmp1 = in1.read();
+
+		uint1024_dt l_data = tmp0.data;
+		uint1024_dt u_data = tmp1.data;
+
+		out0_0 << l_data.range(255,0);
+		out0_1 << l_data.range(511,256);
+		out0_2 << l_data.range(767,512);
+		out0_3 << l_data.range(1023,768);
+
+		out1_0 << u_data.range(255,0);
+		out1_1 << u_data.range(511,256);
+		out1_2 << u_data.range(767,512);
+		out1_3 << u_data.range(1023,768);
+
+	}
+}
+
+static void fifo256_8_2axis(hls::stream <uint256_dt> &in0_0, hls::stream <uint256_dt> &in1_0,
+		hls::stream <uint256_dt> &in0_1, hls::stream <uint256_dt> &in1_1,
+		hls::stream <uint256_dt> &in0_2, hls::stream <uint256_dt> &in1_2,
+		hls::stream <uint256_dt> &in0_3, hls::stream <uint256_dt> &in1_3,
+		hls::stream<t_pkt_1024> &out0, hls::stream<t_pkt_1024> &out1, unsigned int total_itr){
+
+	for (unsigned int itr = 0; itr < total_itr; itr++){
+		#pragma HLS PIPELINE II=1
+		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
+		t_pkt_1024 tmp0, tmp1;
+		uint1024_dt l_data, u_data;
+		l_data.range(255,0) = in0_0.read();
+		l_data.range(511,256) = in0_1.read();
+		l_data.range(767,512) = in0_2.read();
+		l_data.range(1023,768) = in0_3.read();
+
+		u_data.range(255,0) = in1_0.read();
+		u_data.range(511,256) = in1_1.read();
+		u_data.range(767,512) = in1_2.read();
+		u_data.range(1023,768) = in1_3.read();
+
+
+		tmp0.data = l_data;
+		tmp1.data = u_data;
+		out0.write(tmp0);
+		out1.write(tmp1);
+	}
+}
+
+static void process_tile( hls::stream<uint256_dt> &rd_buffer0_0, hls::stream<uint256_dt> &rd_buffer1_0,
+		 hls::stream<uint256_dt> &rd_buffer0_1, hls::stream<uint256_dt> &rd_buffer1_1,
+		 hls::stream<uint256_dt> &rd_buffer0_2, hls::stream<uint256_dt> &rd_buffer1_2,
+		 hls::stream<uint256_dt> &rd_buffer0_3, hls::stream<uint256_dt> &rd_buffer1_3,
+
+		hls::stream<uint256_dt> &wr_buffer0_0, hls::stream<uint256_dt> &wr_buffer1_0,
+		hls::stream<uint256_dt> &wr_buffer0_1, hls::stream<uint256_dt> &wr_buffer1_1,
+		hls::stream<uint256_dt> &wr_buffer0_2, hls::stream<uint256_dt> &wr_buffer1_2,
+		hls::stream<uint256_dt> &wr_buffer0_3, hls::stream<uint256_dt> &wr_buffer1_3,
+		struct data_G data_g){
+
 	unsigned short xblocks = (data_g.xblocks);
 	unsigned short sizex = data_g.sizex;
 	unsigned short sizey = data_g.sizey;
@@ -145,8 +212,20 @@ static void process_tile( hls::stream<uint1024_dt> &rd_buffer0, hls::stream<uint
 
 		bool cond_tmp1 = (i < grid_sizez);
 		if(cond_tmp1){
-			s_1_1_2_l = rd_buffer0.read(); // set
-			s_1_1_2_u = rd_buffer1.read(); // set
+			uint1024_dt tmp0, tmp1;
+			tmp0.range(255,0) = rd_buffer0_0.read();
+			tmp0.range(511,256) = rd_buffer0_1.read();
+			tmp0.range(767,512) = rd_buffer0_2.read();
+			tmp0.range(1023,768) = rd_buffer0_3.read();
+
+			tmp1.range(255,0) = rd_buffer1_0.read();
+			tmp1.range(511,256) = rd_buffer1_1.read();
+			tmp1.range(767,512) = rd_buffer1_2.read();
+			tmp1.range(1023,768) = rd_buffer1_3.read();
+
+
+			s_1_1_2_l = tmp0; // set
+			s_1_1_2_u = tmp1; // set
 		}
 		window_1_l[j_p] = s_1_1_2_l; // set
 		window_1_u[j_p] = s_1_1_2_u; // set
@@ -239,8 +318,16 @@ static void process_tile( hls::stream<uint1024_dt> &rd_buffer0, hls::stream<uint
 
 		bool cond_wr = (i >= 1) && ( i <= limit_z);
 		if(cond_wr ) {
-			wr_buffer0 << update_j_l;
-			wr_buffer1 << update_j_u;
+			wr_buffer0_0 << update_j_l.range(255,0);
+			wr_buffer0_1 << update_j_l.range(511,256);
+			wr_buffer0_2 << update_j_l.range(767,512);
+			wr_buffer0_3 << update_j_l.range(1023,768);
+
+			wr_buffer1_0 << update_j_u.range(255,0);
+			wr_buffer1_1 << update_j_u.range(511,256);
+			wr_buffer1_2 << update_j_u.range(767,512);
+			wr_buffer1_3 << update_j_u.range(1023,768);
+
 		}
 
 		// move the cell block

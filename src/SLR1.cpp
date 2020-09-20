@@ -24,11 +24,15 @@ void process_SLR (hls::stream <t_pkt_1024> &in1l, hls::stream <t_pkt_1024> &in1u
 		unsigned short offset_y, unsigned short tile_y,
 		const unsigned short size_x, const unsigned short size_y, const unsigned short size_z){
 
-    static hls::stream<uint1024_dt> streamArrayl[40 + 1];
-    static hls::stream<uint1024_dt> streamArrayu[40 + 1];
+    static hls::stream<uint256_dt> streamC_4_256_0[8];
+    static hls::stream<uint256_dt> streamC_4_256_1[8];
+    static hls::stream<uint256_dt> streamC_4_256_2[8];
+    static hls::stream<uint256_dt> streamC_4_256_3[8];
 
-    #pragma HLS STREAM variable = streamArrayl depth = 2
-	#pragma HLS STREAM variable = streamArrayu depth = 2
+	#pragma HLS STREAM variable = streamC_4_256_0 depth = 2
+	#pragma HLS STREAM variable = streamC_4_256_1 depth = 2
+	#pragma HLS STREAM variable = streamC_4_256_2 depth = 2
+	#pragma HLS STREAM variable = streamC_4_256_3 depth = 2
 
     struct data_G data_g;
     data_g.sizex = size_x;
@@ -58,11 +62,27 @@ void process_SLR (hls::stream <t_pkt_1024> &in1l, hls::stream <t_pkt_1024> &in1u
 
 
 	#pragma HLS dataflow
-    axis2_fifo2048(in1l, in1u, streamArrayl[0], streamArrayu[0], gridsize_da);
+    axis2_fifo256_8(in1l, in1u,streamC_4_256_0[0], streamC_4_256_0[1],
+			streamC_4_256_1[0], streamC_4_256_1[1],
+			streamC_4_256_2[0], streamC_4_256_2[1],
+			streamC_4_256_3[0], streamC_4_256_3[1], gridsize_da);
 //    process_tile( streamArrayl[0], streamArrayu[0], streamArrayl[1],  streamArrayu[1], data_g);
-	fifo2048_2axis(streamArrayl[0], streamArrayu[0], out1l, out1u, gridsize_da);
-	axis2_fifo2048(in2l, in2u, streamArrayl[2], streamArrayu[2], gridsize_da);
-	fifo2048_2axis(streamArrayl[2], streamArrayu[2] ,out2l, out2u, gridsize_da);
+
+
+	fifo256_8_2axis(streamC_4_256_0[0], streamC_4_256_0[1],
+			streamC_4_256_1[0], streamC_4_256_1[1],
+			streamC_4_256_2[0], streamC_4_256_2[1],
+			streamC_4_256_3[0], streamC_4_256_3[1], out1l, out1u, gridsize_da);
+
+	axis2_fifo256_8(in2l, in2u,streamC_4_256_0[2], streamC_4_256_0[3],
+			streamC_4_256_1[2], streamC_4_256_1[3],
+			streamC_4_256_2[2], streamC_4_256_2[3],
+			streamC_4_256_3[2], streamC_4_256_3[3], gridsize_da);
+
+	fifo256_8_2axis(streamC_4_256_0[2], streamC_4_256_0[3],
+			streamC_4_256_1[2], streamC_4_256_1[3],
+			streamC_4_256_2[2], streamC_4_256_2[3],
+			streamC_4_256_3[2], streamC_4_256_3[3], out2l, out2u, gridsize_da);
 }
 
 extern "C" {
@@ -149,7 +169,6 @@ void stencil_SLR1(
 		unsigned short tile_x   = tile_memx[k] >> 16;
 		unsigned short offset_y = tile_memy[j] & 0xffff;
 		unsigned short tile_y   = tile_memy[j] >> 16;
-		printf("SLR1: Itr:%d offset_x:%d offset_y:%d\n", itr, offset_x, offset_y);
 
 		j = j_dum;
 		k = k_dum;

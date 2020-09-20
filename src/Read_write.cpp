@@ -109,7 +109,6 @@ static void write_from_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffe
 
 	unsigned short offset_128 = data_g.offset_x & 127;
 	unsigned char fset = (offset_x != 0) ? 1 : 0;
-	printf("fset is %d\n", fset);
 	unsigned char adjust[8];
 	#pragma HLS ARRAY_PARTITION variable=adjust complete dim=1
 	switch(offset_128){
@@ -217,14 +216,14 @@ static void stream_convert_512_256(hls::stream<uint512_dt> &in0, hls::stream<uin
 
 }
 
-static void stream_convert_256_512(hls::stream<uint256_dt> &in0, hls::stream<uint512_dt> &out0,
-		hls::stream<uint256_dt> &in1, hls::stream<uint512_dt> &out1,
-		hls::stream<uint256_dt> &in2, hls::stream<uint512_dt> &out2,
-		hls::stream<uint256_dt> &in3, hls::stream<uint512_dt> &out3,
-		hls::stream<uint256_dt> &in4, hls::stream<uint512_dt> &out4,
-		hls::stream<uint256_dt> &in5, hls::stream<uint512_dt> &out5,
-		hls::stream<uint256_dt> &in6, hls::stream<uint512_dt> &out6,
-		hls::stream<uint256_dt> &in7, hls::stream<uint512_dt> &out7,
+static void stream_convert_256_512(hls::stream<uint256_dt> &in0, hls::stream<uint256_dt> &out0_0, hls::stream<uint256_dt> &out0_1,
+		hls::stream<uint256_dt> &in1, hls::stream<uint256_dt> &out1_0, hls::stream<uint256_dt> &out1_1,
+		hls::stream<uint256_dt> &in2, hls::stream<uint256_dt> &out2_0, hls::stream<uint256_dt> &out2_1,
+		hls::stream<uint256_dt> &in3, hls::stream<uint256_dt> &out3_0, hls::stream<uint256_dt> &out3_1,
+		hls::stream<uint256_dt> &in4, hls::stream<uint256_dt> &out4_0, hls::stream<uint256_dt> &out4_1,
+		hls::stream<uint256_dt> &in5, hls::stream<uint256_dt> &out5_0, hls::stream<uint256_dt> &out5_1,
+		hls::stream<uint256_dt> &in6, hls::stream<uint256_dt> &out6_0, hls::stream<uint256_dt> &out6_1,
+		hls::stream<uint256_dt> &in7, hls::stream<uint256_dt> &out7_0, hls::stream<uint256_dt> &out7_1,
 		struct data_G data_g){
 	unsigned short end_z = data_g.grid_sizez;
 	unsigned short tile_y = (data_g.tile_y);
@@ -293,28 +292,36 @@ static void stream_convert_256_512(hls::stream<uint256_dt> &in0, hls::stream<uin
 			default :{ tmp0 = Tmp0; tmp1 = Tmp1; tmp2=Tmp2; tmp3=Tmp3; tmp4=Tmp4; tmp5=Tmp5; tmp6=Tmp6; tmp7=Tmp7; break;}
 		}
 
-//		if(cond_y){
-			out0 << tmp0;
-			out1 << tmp1;
-			out2 << tmp2;
-			out3 << tmp3;
-			out4 << tmp4;
-			out5 << tmp5;
-			out6 << tmp6;
-			out7 << tmp7;
-//		}
+		out0_0 << tmp0.range(255,0);
+		out1_0 << tmp1.range(255,0);
+		out2_0 << tmp2.range(255,0);
+		out3_0 << tmp3.range(255,0);
+		out4_0 << tmp4.range(255,0);
+		out5_0 << tmp5.range(255,0);
+		out6_0 << tmp6.range(255,0);
+		out7_0 << tmp7.range(255,0);
+
+		out0_1 << tmp0.range(511,256);
+		out1_1 << tmp1.range(511,256);
+		out2_1 << tmp2.range(511,256);
+		out3_1 << tmp3.range(511,256);
+		out4_1 << tmp4.range(511,256);
+		out5_1 << tmp5.range(511,256);
+		out6_1 << tmp6.range(511,256);
+		out7_1 << tmp7.range(511,256);
+
 
 	}
 }
 
-static void skipAndInsert(hls::stream<uint512_dt> &in0, hls::stream<uint512_dt> &out0,
-		hls::stream<uint512_dt> &in1, hls::stream<uint512_dt> &out1,
-		hls::stream<uint512_dt> &in2, hls::stream<uint512_dt> &out2,
-		hls::stream<uint512_dt> &in3, hls::stream<uint512_dt> &out3,
-		hls::stream<uint512_dt> &in4, hls::stream<uint512_dt> &out4,
-		hls::stream<uint512_dt> &in5, hls::stream<uint512_dt> &out5,
-		hls::stream<uint512_dt> &in6, hls::stream<uint512_dt> &out6,
-		hls::stream<uint512_dt> &in7, hls::stream<uint512_dt> &out7,
+static void skipAndInsert(hls::stream<uint256_dt> &in0_0, hls::stream<uint256_dt> &in0_1, hls::stream<uint512_dt> &out0,
+		hls::stream<uint256_dt> &in1_0, hls::stream<uint256_dt> &in1_1, hls::stream<uint512_dt> &out1,
+		hls::stream<uint256_dt> &in2_0, hls::stream<uint256_dt> &in2_1, hls::stream<uint512_dt> &out2,
+		hls::stream<uint256_dt> &in3_0, hls::stream<uint256_dt> &in3_1, hls::stream<uint512_dt> &out3,
+		hls::stream<uint256_dt> &in4_0, hls::stream<uint256_dt> &in4_1, hls::stream<uint512_dt> &out4,
+		hls::stream<uint256_dt> &in5_0, hls::stream<uint256_dt> &in5_1, hls::stream<uint512_dt> &out5,
+		hls::stream<uint256_dt> &in6_0, hls::stream<uint256_dt> &in6_1, hls::stream<uint512_dt> &out6,
+		hls::stream<uint256_dt> &in7_0, hls::stream<uint256_dt> &in7_1, hls::stream<uint512_dt> &out7,
 		struct data_G data_g){
 
 	unsigned short end_z = data_g.grid_sizez;
@@ -363,24 +370,26 @@ static void skipAndInsert(hls::stream<uint512_dt> &in0, hls::stream<uint512_dt> 
 		uint512_dt tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
 
 		if(i < end_index){
-			Tmp0 = in0.read();
-			Tmp1 = in1.read();
-			Tmp2 = in2.read();
-			Tmp3 = in3.read();
-			Tmp4 = in4.read();
-			Tmp5 = in5.read();
-			Tmp6 = in6.read();
-			Tmp7 = in7.read();
+			Tmp0.range(255,0) = in0_0.read();
+			Tmp1.range(255,0) = in1_0.read();
+			Tmp2.range(255,0) = in2_0.read();
+			Tmp3.range(255,0) = in3_0.read();
+			Tmp4.range(255,0) = in4_0.read();
+			Tmp5.range(255,0) = in5_0.read();
+			Tmp6.range(255,0) = in6_0.read();
+			Tmp7.range(255,0) = in7_0.read();
+
+			Tmp0.range(511,256) = in0_1.read();
+			Tmp1.range(511,256) = in1_1.read();
+			Tmp2.range(511,256) = in2_1.read();
+			Tmp3.range(511,256) = in3_1.read();
+			Tmp4.range(511,256) = in4_1.read();
+			Tmp5.range(511,256) = in5_1.read();
+			Tmp6.range(511,256) = in6_1.read();
+			Tmp7.range(511,256) = in7_1.read();
 		}
 
 		tmp0 = Tmp0; tmp1 = Tmp1; tmp2=Tmp2; tmp3=Tmp3; tmp4=Tmp4; tmp5=Tmp5; tmp6=Tmp6; tmp7=Tmp7;
-//		switch(offset_128){
-//			case 0:  { tmp0 = Tmp0; tmp1 = Tmp1; tmp2=Tmp2; tmp3=Tmp3; tmp4=Tmp4; tmp5=Tmp5; tmp6=Tmp6; tmp7=Tmp7; break;}
-//			case 32: { tmp0 = Tmp6; tmp1 = Tmp7; tmp2=Tmp0; tmp3=Tmp1; tmp4=Tmp2; tmp5=Tmp3; tmp6=Tmp4; tmp7=Tmp5; break;}
-//			case 64: { tmp0 = Tmp4; tmp1 = Tmp5; tmp2=Tmp6; tmp3=Tmp7; tmp4=Tmp0; tmp5=Tmp1; tmp6=Tmp2; tmp7=Tmp3; break;}
-//			case 96: { tmp0 = Tmp2; tmp1 = Tmp3; tmp2=Tmp4; tmp3=Tmp5; tmp4=Tmp6; tmp5=Tmp7; tmp6=Tmp0; tmp7=Tmp1; break;}
-//			default :{ tmp0 = Tmp0; tmp1 = Tmp1; tmp2=Tmp2; tmp3=Tmp3; tmp4=Tmp4; tmp5=Tmp5; tmp6=Tmp6; tmp7=Tmp7; break;}
-//		}
 
 		bool cond0 = (cond_y && ((i+adjust[0]) >= 0)  &&  ((i+adjust[0]) < end_index) );
 		bool cond1 = (cond_y && ((i+adjust[1]) >= 0)  &&  ((i+adjust[1]) < end_index) );
@@ -410,7 +419,13 @@ static void stream_convert_256_2048(hls::stream<uint256_dt> &in0, hls::stream<ui
 		hls::stream<uint256_dt> &in2, hls::stream<uint256_dt> &in3,
 		hls::stream<uint256_dt> &in4, hls::stream<uint256_dt> &in5,
 		hls::stream<uint256_dt> &in6, hls::stream<uint256_dt> &in7,
-		hls::stream<uint1024_dt> &out0, hls::stream<uint1024_dt> &out1, struct data_G data_g){
+
+		hls::stream<uint256_dt> &out0_0, hls::stream<uint256_dt> &out1_0,
+		hls::stream<uint256_dt> &out0_1, hls::stream<uint256_dt> &out1_1,
+		hls::stream<uint256_dt> &out0_2, hls::stream<uint256_dt> &out1_2,
+		hls::stream<uint256_dt> &out0_3, hls::stream<uint256_dt> &out1_3,
+		struct data_G data_g){
+
 	unsigned short end_z = data_g.grid_sizez;
 	unsigned short tile_y = (data_g.tile_y);
 	unsigned short tile_x = (data_g.tile_x >> 4); // 16*4 = 128bytes
@@ -422,34 +437,34 @@ static void stream_convert_256_2048(hls::stream<uint256_dt> &in0, hls::stream<ui
 		#pragma HLS loop_tripcount min=1000 max=1500 avg=1200
 		#pragma HLS PIPELINE II=2
 		uint1024_dt tmp0, tmp1, tmp2, tmp3;
-		tmp0.range(255,0)    = in0.read();
-		tmp0.range(511,256)  = in0.read();
-		tmp0.range(767,512)  = in1.read();
-		tmp0.range(1023,768) = in1.read();
+		out0_0  << in0.read();
+		out0_1  << in0.read();
+		out0_2  << in1.read();
+		out0_3  << in1.read();
 
-		tmp1.range(255,0)    = in2.read();
-		tmp1.range(511,256)  = in2.read();
-		tmp1.range(767,512)  = in3.read();
-		tmp1.range(1023,768) = in3.read();
+		out1_0  << in2.read();
+		out1_1  << in2.read();
+		out1_2  << in3.read();
+		out1_3  << in3.read();
 
-		tmp2.range(255,0)    = in4.read();
-		tmp2.range(511,256)  = in4.read();
-		tmp2.range(767,512)  = in5.read();
-		tmp2.range(1023,768) = in5.read();
+		out0_0  << in4.read();
+		out0_1  << in4.read();
+		out0_2  << in5.read();
+		out0_3  << in5.read();
 
-		tmp3.range(255,0)    = in6.read();
-		tmp3.range(511,256)  = in6.read();
-		tmp3.range(767,512)  = in7.read();
-		tmp3.range(1023,768) = in7.read();
+		out1_0  << in6.read();
+		out1_1  << in6.read();
+		out1_2  << in7.read();
+		out1_3  << in7.read();
 
-		out0 << tmp0;
-		out1 << tmp1;
-		out0 << tmp2;
-		out1 << tmp3;
 	}
 }
 
-static void stream_convert_2048_256(hls::stream<uint1024_dt> &in0, hls::stream<uint1024_dt> &in1,
+static void stream_convert_2048_256(hls::stream<uint256_dt> &in0_0, hls::stream<uint256_dt> &in1_0,
+		hls::stream<uint256_dt> &in0_1, hls::stream<uint256_dt> &in1_1,
+		hls::stream<uint256_dt> &in0_2, hls::stream<uint256_dt> &in1_2,
+		hls::stream<uint256_dt> &in0_3, hls::stream<uint256_dt> &in1_3,
+
 		hls::stream<uint256_dt> &out0, hls::stream<uint256_dt> &out1,
 		hls::stream<uint256_dt> &out2, hls::stream<uint256_dt> &out3,
 		hls::stream<uint256_dt> &out4, hls::stream<uint256_dt> &out5,
@@ -464,31 +479,25 @@ static void stream_convert_2048_256(hls::stream<uint1024_dt> &in0, hls::stream<u
 	for(unsigned int itr = 0; itr < total_itr; itr++){
 		#pragma HLS loop_tripcount min=1000 max=1500 avg=1200
 		#pragma HLS PIPELINE II=2
-		uint1024_dt tmp0, tmp1, tmp2, tmp3;
-		tmp0 = in0.read();
-		tmp1 = in1.read();
-		tmp2 = in0.read();
-		tmp3 = in1.read();
+		out0 << in0_0.read();
+		out0 << in0_1.read();
+		out1 << in0_2.read();
+		out1 << in0_3.read();
 
-		out0 << tmp0.range(255,0);
-		out0 << tmp0.range(511,256);
-		out1 << tmp0.range(767,512);
-		out1 << tmp0.range(1023,768);
+		out2 << in1_0.read();
+		out2 << in1_1.read();
+		out3 << in1_2.read();
+		out3 << in1_3.read();
 
-		out2 << tmp1.range(255,0);
-		out2 << tmp1.range(511,256);
-		out3 << tmp1.range(767,512);
-		out3 << tmp1.range(1023,768);
+		out4 << in0_0.read();
+		out4 << in0_1.read();
+		out5 << in0_2.read();
+		out5 << in0_3.read();
 
-		out4 << tmp2.range(255,0);
-		out4 << tmp2.range(511,256);
-		out5 << tmp2.range(767,512);
-		out5 << tmp2.range(1023,768);
-
-		out6 << tmp3.range(255,0);
-		out6 << tmp3.range(511,256);
-		out7 << tmp3.range(767,512);
-		out7 << tmp3.range(1023,768);
+		out6 << in1_0.read();
+		out6 << in1_1.read();
+		out7 << in1_2.read();
+		out7 << in1_3.read();
 
 	}
 }
@@ -511,9 +520,18 @@ static void process_ReadWrite (uint512_dt*  arg0_0, uint512_dt*  arg1_0,
 
     static hls::stream<uint256_dt> streamArrayrd[8];
     static hls::stream<uint256_dt> streamArraywr[8];
+
     static hls::stream<uint512_dt> rd_bufferArr[8];
     static hls::stream<uint512_dt> wr_bufferArr[8];
-    static hls::stream<uint512_dt> skip_bufferArr[8];
+
+    static hls::stream<uint256_dt> skip_bufferArrL[8];
+    static hls::stream<uint256_dt> skip_bufferArrU[8];
+
+    static hls::stream<uint256_dt> streamC_4_256_0[8];
+    static hls::stream<uint256_dt> streamC_4_256_1[8];
+    static hls::stream<uint256_dt> streamC_4_256_2[8];
+    static hls::stream<uint256_dt> streamC_4_256_3[8];
+
     static hls::stream<uint1024_dt> streamArray_1024[4];
 
     #pragma HLS STREAM variable = streamArrayrd depth = 2
@@ -521,7 +539,13 @@ static void process_ReadWrite (uint512_dt*  arg0_0, uint512_dt*  arg1_0,
 	#pragma HLS STREAM variable = streamArray_1024 depth = 64
 	#pragma HLS STREAM variable = rd_bufferArr depth = 64  //max_depth_16
 	#pragma HLS STREAM variable = wr_bufferArr depth = 64  // max_depth_16
-	#pragma HLS STREAM variable = skip_bufferArr depth = 64
+	#pragma HLS STREAM variable = skip_bufferArrL depth = 2
+	#pragma HLS STREAM variable = skip_bufferArrU depth = 2
+
+	#pragma HLS STREAM variable = streamC_4_256_0 depth = 2
+	#pragma HLS STREAM variable = streamC_4_256_1 depth = 2
+	#pragma HLS STREAM variable = streamC_4_256_2 depth = 2
+	#pragma HLS STREAM variable = streamC_4_256_3 depth = 2
 
 
     struct data_G data_g;
@@ -562,28 +586,44 @@ static void process_ReadWrite (uint512_dt*  arg0_0, uint512_dt*  arg1_0,
 
 	stream_convert_256_2048(streamArrayrd[0], streamArrayrd[1], streamArrayrd[2], streamArrayrd[3],
 			streamArrayrd[4], streamArrayrd[5], streamArrayrd[6], streamArrayrd[7],
-			streamArray_1024[0], streamArray_1024[1], data_g);
+			streamC_4_256_0[0], streamC_4_256_0[1],
+			streamC_4_256_1[0], streamC_4_256_1[1],
+			streamC_4_256_2[0], streamC_4_256_2[1],
+			streamC_4_256_3[0], streamC_4_256_3[1],
+			data_g);
 
 	// going out
-	fifo2048_2axis(streamArray_1024[0], streamArray_1024[1], outl, outu, totol_iter);
-	axis2_fifo2048(inl, inu, streamArray_1024[2], streamArray_1024[3], totol_iter);
+	fifo256_8_2axis(streamC_4_256_0[0], streamC_4_256_0[1],
+			streamC_4_256_1[0], streamC_4_256_1[1],
+			streamC_4_256_2[0], streamC_4_256_2[1],
+			streamC_4_256_3[0], streamC_4_256_3[1],
+			outl, outu, totol_iter);
+
+	axis2_fifo256_8(inl, inu, streamC_4_256_0[2], streamC_4_256_0[3],
+			streamC_4_256_1[2], streamC_4_256_1[3],
+			streamC_4_256_2[2], streamC_4_256_2[3],
+			streamC_4_256_3[2], streamC_4_256_3[3],
+			totol_iter);
 
 	// coming in
 
-	stream_convert_2048_256(streamArray_1024[2], streamArray_1024[3],
+	stream_convert_2048_256(streamC_4_256_0[2], streamC_4_256_0[3],
+			streamC_4_256_1[2], streamC_4_256_1[3],
+			streamC_4_256_2[2], streamC_4_256_2[3],
+			streamC_4_256_3[2], streamC_4_256_3[3],
 			streamArraywr[0], streamArraywr[1], streamArraywr[2], streamArraywr[3],
 			streamArraywr[4], streamArraywr[5], streamArraywr[6], streamArraywr[7], data_g);
 
-	stream_convert_256_512(streamArraywr[0], skip_bufferArr[0], streamArraywr[1], skip_bufferArr[1],
-			streamArraywr[2], skip_bufferArr[2], streamArraywr[3], skip_bufferArr[3],
-			streamArraywr[4], skip_bufferArr[4], streamArraywr[5], skip_bufferArr[5],
-			streamArraywr[6], skip_bufferArr[6], streamArraywr[7], skip_bufferArr[7],
+	stream_convert_256_512(streamArraywr[0], skip_bufferArrL[0], skip_bufferArrU[0], streamArraywr[1], skip_bufferArrL[1], skip_bufferArrU[1],
+			streamArraywr[2], skip_bufferArrL[2], skip_bufferArrU[2], streamArraywr[3], skip_bufferArrL[3], skip_bufferArrU[3],
+			streamArraywr[4], skip_bufferArrL[4], skip_bufferArrU[4], streamArraywr[5], skip_bufferArrL[5], skip_bufferArrU[5],
+			streamArraywr[6], skip_bufferArrL[6], skip_bufferArrU[6], streamArraywr[7], skip_bufferArrL[7], skip_bufferArrU[7],
 			data_g);
 
-	skipAndInsert(skip_bufferArr[0], wr_bufferArr[0], skip_bufferArr[1], wr_bufferArr[1],
-			skip_bufferArr[2], wr_bufferArr[2], skip_bufferArr[3], wr_bufferArr[3],
-			skip_bufferArr[4], wr_bufferArr[4], skip_bufferArr[5], wr_bufferArr[5],
-			skip_bufferArr[6], wr_bufferArr[6], skip_bufferArr[7], wr_bufferArr[7],
+	skipAndInsert( skip_bufferArrL[0], skip_bufferArrU[0], wr_bufferArr[0], skip_bufferArrL[1], skip_bufferArrU[1], wr_bufferArr[1],
+			 skip_bufferArrL[2], skip_bufferArrU[2], wr_bufferArr[2],  skip_bufferArrL[3], skip_bufferArrU[3], wr_bufferArr[3],
+			 skip_bufferArrL[4], skip_bufferArrU[4], wr_bufferArr[4], skip_bufferArrL[5], skip_bufferArrU[5], wr_bufferArr[5],
+			 skip_bufferArrL[6], skip_bufferArrU[6], wr_bufferArr[6],  skip_bufferArrL[7], skip_bufferArrU[7], wr_bufferArr[7],
 			data_g);
 
 
@@ -625,7 +665,6 @@ static void process_ReadWrite_dataflow (uint512_dt*  arg0_0, uint512_dt*  arg1_0
 		j++;
 
 
-		printf("Read Write: Itr:%d offset_x:%d offset_y:%d\n", itr, offset_x, offset_y);
 		process_ReadWrite(arg0_0, arg1_0, arg0_1, arg1_1, arg0_2, arg1_2, arg0_3, arg1_3,
 				arg0_4, arg1_4, arg0_5, arg1_5, arg0_6, arg1_6, arg0_7, arg1_7,
 				inl, inu, outl, outu,
