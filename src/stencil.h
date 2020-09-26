@@ -12,7 +12,7 @@ typedef ap_axiu<256,0,0,0> t_pkt;
 typedef ap_axiu<32,0,0,0> t_pkt_32;
 typedef ap_axiu<1024,0,0,0> t_pkt_1024;
 
-#define MAX_SIZE_X 640
+#define MAX_SIZE_X 768
 #define MAX_DEPTH_16 (MAX_SIZE_X/16)
 #define MAX_DEPTH_L (MAX_SIZE_X/64)
 #define MAX_DEPTH_P (MAX_SIZE_X/64) * MAX_SIZE_X

@@ -590,7 +590,7 @@ int main(int argc, char **argv)
     merge_grid(grid_u1_d8, grid_u1_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
     merge_grid(grid_u2_d8, grid_u2_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
 
-  for(int itr = 0; itr < 1*n_iter; itr++){
+  for(int itr = 0; itr < 3*n_iter; itr++){
       stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
       stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
   }

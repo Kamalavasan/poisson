@@ -62,20 +62,20 @@ void process_SLR (hls::stream <t_pkt_1024> &inl, hls::stream <t_pkt_1024> &inu, 
 			streamC_4_256_2[0], streamC_4_256_2[1],
 			streamC_4_256_3[0], streamC_4_256_3[1], gridsize_da);
 
-//	process_tile( streamC_4_256_0[0], streamC_4_256_0[1],
-//			streamC_4_256_1[0], streamC_4_256_1[1],
-//			streamC_4_256_2[0], streamC_4_256_2[1],
-//			streamC_4_256_3[0], streamC_4_256_3[1],
-//
-//			streamC_4_256_0[2], streamC_4_256_0[3],
-//			streamC_4_256_1[2], streamC_4_256_1[3],
-//			streamC_4_256_2[2], streamC_4_256_2[3],
-//			streamC_4_256_3[2], streamC_4_256_3[3], data_g);
-
-	fifo256_8_2axis(streamC_4_256_0[0], streamC_4_256_0[1],
+	process_tile( streamC_4_256_0[0], streamC_4_256_0[1],
 			streamC_4_256_1[0], streamC_4_256_1[1],
 			streamC_4_256_2[0], streamC_4_256_2[1],
-			streamC_4_256_3[0], streamC_4_256_3[1], outl, outu, gridsize_da);
+			streamC_4_256_3[0], streamC_4_256_3[1],
+
+			streamC_4_256_0[2], streamC_4_256_0[3],
+			streamC_4_256_1[2], streamC_4_256_1[3],
+			streamC_4_256_2[2], streamC_4_256_2[3],
+			streamC_4_256_3[2], streamC_4_256_3[3], data_g);
+
+	fifo256_8_2axis(streamC_4_256_0[2], streamC_4_256_0[3],
+			streamC_4_256_1[2], streamC_4_256_1[3],
+			streamC_4_256_2[2], streamC_4_256_2[3],
+			streamC_4_256_3[2], streamC_4_256_3[3], outl, outu, gridsize_da);
 }
 
 extern "C" {

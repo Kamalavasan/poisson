@@ -1,30 +1,44 @@
-static void axis2_fifo2048(hls::stream <t_pkt_1024> &in0, hls::stream <t_pkt_1024> &in1,
-		hls::stream<uint1024_dt> &out0, hls::stream<uint1024_dt> &out1, unsigned int total_itr){
-
-	for (unsigned int itr = 0; itr < total_itr; itr++){
-		#pragma HLS PIPELINE II=1
-		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
-		t_pkt_1024 tmp0 = in0.read();
-		t_pkt_1024 tmp1 = in1.read();
-
-		out0 << tmp0.data;
-		out1 << tmp1.data;
-	}
+template <typename T>
+static T register_it(T x){
+	#pragma HLS inline off
+	T tmp = x;
+	return tmp;
 }
 
-static void fifo2048_2axis(hls::stream <uint1024_dt> &in0, hls::stream <uint1024_dt> &in1,
-		hls::stream<t_pkt_1024> &out0, hls::stream<t_pkt_1024> &out1, unsigned int total_itr){
-
-	for (unsigned int itr = 0; itr < total_itr; itr++){
-		#pragma HLS PIPELINE II=1
-		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
-		t_pkt_1024 tmp0, tmp1;
-		tmp0.data = in0.read();
-		tmp1.data = in1.read();
-		out0.write(tmp0);
-		out1.write(tmp1);
-	}
-}
+//static void axis2_fifo2048(hls::stream <t_pkt_1024> &in0, hls::stream <t_pkt_1024> &in1,
+//		hls::stream<uint1024_dt> &out0, hls::stream<uint1024_dt> &out1, unsigned int total_itr){
+//
+//	for (unsigned int itr = 0; itr < total_itr; itr++){
+//		#pragma HLS PIPELINE II=1
+//		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
+//		t_pkt_1024 tmp0 = in0.read();
+//		t_pkt_1024 tmp1 = in1.read();
+//
+//		uint1024_dt tmp0_d = register_it <uint1024_dt> (tmp0.data);
+//		uint1024_dt tmp1_d = register_it <uint1024_dt> (tmp1.data);
+//
+//		out0 << tmp0_d;
+//		out1 << tmp1_d;
+//	}
+//}
+//
+//static void fifo2048_2axis(hls::stream <uint1024_dt> &in0, hls::stream <uint1024_dt> &in1,
+//		hls::stream<t_pkt_1024> &out0, hls::stream<t_pkt_1024> &out1, unsigned int total_itr){
+//
+//	for (unsigned int itr = 0; itr < total_itr; itr++){
+//		#pragma HLS PIPELINE II=1
+//		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
+//		t_pkt_1024 tmp0, tmp1;
+//
+//		uint1024_dt tmp0_d = register_it <uint1024_dt> (in0.read());
+//		uint1024_dt tmp1_d = register_it <uint1024_dt> (in1.read());
+//
+//		tmp0.data = tmp0_d;
+//		tmp1.data = tmp1_d;
+//		out0.write(tmp0);
+//		out1.write(tmp1);
+//	}
+//}
 
 
 static void axis2_fifo256_8(hls::stream <t_pkt_1024> &in0, hls::stream <t_pkt_1024> &in1,
@@ -40,8 +54,8 @@ static void axis2_fifo256_8(hls::stream <t_pkt_1024> &in0, hls::stream <t_pkt_10
 		t_pkt_1024 tmp0 = in0.read();
 		t_pkt_1024 tmp1 = in1.read();
 
-		uint1024_dt l_data = tmp0.data;
-		uint1024_dt u_data = tmp1.data;
+		uint1024_dt l_data = register_it <uint1024_dt> (tmp0.data);
+		uint1024_dt u_data = register_it <uint1024_dt> (tmp1.data);
 
 		out0_0 << l_data.range(255,0);
 		out0_1 << l_data.range(511,256);
@@ -78,8 +92,8 @@ static void fifo256_8_2axis(hls::stream <uint256_dt> &in0_0, hls::stream <uint25
 		u_data.range(1023,768) = in1_3.read();
 
 
-		tmp0.data = l_data;
-		tmp1.data = u_data;
+		tmp0.data = register_it <uint1024_dt>(l_data);
+		tmp1.data = register_it <uint1024_dt>(u_data);
 		out0.write(tmp0);
 		out1.write(tmp1);
 	}
@@ -138,17 +152,13 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer0_0, hls::stream<uin
 	uint1024_dt window_4_u[MAX_DEPTH_P];
 
 	#pragma HLS RESOURCE variable=window_1_l core=XPM_MEMORY uram latency=2
-	#pragma HLS RESOURCE variable=window_2_l core=XPM_MEMORY uram latency=2
-	#pragma HLS RESOURCE variable=window_3_l core=XPM_MEMORY uram latency=2
-//	#pragma HLS RESOURCE variable=window_2_l core=RAM_1P_BRAM latency=2
-//	#pragma HLS RESOURCE variable=window_3_l core=RAM_1P_BRAM latency=2
+	#pragma HLS RESOURCE variable=window_2_l core=RAM_1P_BRAM latency=2
+	#pragma HLS RESOURCE variable=window_3_l core=RAM_1P_BRAM latency=2
 	#pragma HLS RESOURCE variable=window_4_l core=XPM_MEMORY uram latency=2
 
 	#pragma HLS RESOURCE variable=window_1_u core=XPM_MEMORY uram latency=2
-	#pragma HLS RESOURCE variable=window_2_u core=XPM_MEMORY uram latency=2
-	#pragma HLS RESOURCE variable=window_3_u core=XPM_MEMORY uram latency=2
-//	#pragma HLS RESOURCE variable=window_2_u core=RAM_1P_BRAM latency=2
-//	#pragma HLS RESOURCE variable=window_3_u core=RAM_1P_BRAM latency=2
+	#pragma HLS RESOURCE variable=window_2_u core=RAM_1P_BRAM latency=2
+	#pragma HLS RESOURCE variable=window_3_u core=RAM_1P_BRAM latency=2
 	#pragma HLS RESOURCE variable=window_4_u core=XPM_MEMORY uram latency=2
 
 	uint1024_dt s_1_1_2_l, s_1_2_1_l, s_1_1_1_l, s_1_1_1_l_b, s_1_1_1_l_f, s_1_0_1_l, s_1_1_0_l;
@@ -210,7 +220,7 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer0_0, hls::stream<uin
 		window_2_u[j_l] = s_1_2_1_u;
 
 
-		bool cond_tmp1 = (i < grid_sizez);
+		bool cond_tmp1 = register_it <bool>((i < grid_sizez));
 		if(cond_tmp1){
 			uint1024_dt tmp0, tmp1;
 			tmp0.range(255,0) = rd_buffer0_0.read();
@@ -224,8 +234,8 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer0_0, hls::stream<uin
 			tmp1.range(1023,768) = rd_buffer1_3.read();
 
 
-			s_1_1_2_l = tmp0; // set
-			s_1_1_2_u = tmp1; // set
+			s_1_1_2_l = register_it <uint1024_dt>(tmp0); // set
+			s_1_1_2_u = register_it <uint1024_dt>(tmp1); // set
 		}
 		window_1_l[j_p] = s_1_1_2_l; // set
 		window_1_u[j_p] = s_1_1_2_u; // set
@@ -316,7 +326,7 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer0_0, hls::stream<uin
 			update_j_u.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp_u.i;
 		}
 
-		bool cond_wr = (i >= 1) && ( i <= limit_z);
+		bool cond_wr = register_it <bool> ((i >= 1) && ( i <= limit_z));
 		if(cond_wr ) {
 			wr_buffer0_0 << update_j_l.range(255,0);
 			wr_buffer0_1 << update_j_l.range(511,256);

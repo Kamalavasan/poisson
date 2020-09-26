@@ -10,11 +10,7 @@
 #define TILE_X (256/16)
 #define TILE_Y 256
 
-static unsigned short register_it(unsigned short x){
-	#pragma HLS inline off
-	unsigned short tmp = x;
-	return tmp;
-}
+
 
 
 static void read_to_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer0,
@@ -48,12 +44,17 @@ static void read_to_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer0,
 	}
 
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
-	unsigned int total_itr = end_z * tile_y;
+	unsigned int total_itr = register_it <unsigned int>(end_z * tile_y);
 
+	unsigned short i = 0, k = 0;
 	for(unsigned int itr = 0; itr < total_itr; itr++){
 		#pragma HLS loop_tripcount min=1000 max=1500 avg=1200
-		unsigned short k = itr / tile_y;
-		unsigned short i = itr % tile_y;
+//		unsigned short k = itr / tile_y;
+//		unsigned short i = itr % tile_y;
+		if(i == tile_y){
+			i = 0;
+			k++;
+		}
 
 		unsigned short k1 = register_it(k);
 		unsigned int plane_offset = k* plane_size;
@@ -63,6 +64,8 @@ static void read_to_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer0,
 		unsigned int row_offset0 = xblocks * tot_y_offset0;
 		unsigned int base_index0 = row_offset0 + offset_x_b;
 		unsigned int base_index = base_index0 + plane_offset;
+
+		i++;
 
 		for(unsigned short j = 0; j < end_index; j++){
 			#pragma HLS loop_tripcount min=8 max=32 avg=16
@@ -105,7 +108,7 @@ static void write_from_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffe
 	unsigned short xblocksP = 1;
 
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
-	unsigned int total_itr = end_z * tile_y;
+	unsigned int total_itr = register_it <unsigned int>(end_z * tile_y);
 
 	unsigned short offset_128 = data_g.offset_x & 127;
 	unsigned char fset = (offset_x != 0) ? 1 : 0;
@@ -119,16 +122,23 @@ static void write_from_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffe
 		default : {adjust[0] = 0; adjust[1] = 0; adjust[2] = 0; adjust[3] = 0; adjust[4] = 0; adjust[5] = 0; adjust[6] = 0; adjust[7] = 0; break;}
 	}
 
+	unsigned short i = 0, k = 0;
 	for(unsigned int itr = 0; itr < total_itr; itr++){
 		#pragma HLS loop_tripcount min=1000 max=1500 avg=1200
-		unsigned short k = itr / tile_y;
-		unsigned short i = itr % tile_y;
+//		unsigned short k = itr / tile_y;
+//		unsigned short i = itr % tile_y;
+		if(i == tile_y){
+			i = 0;
+			k++;
+		}
 		unsigned int plane_offset = k* plane_size;
 		unsigned int offset_x_b = offset_x >> (SHIFT_BITS+1);
 
 		unsigned short tot_y_offset0 = (offset_y + i+adjust_y);
 		unsigned int row_offset0 = xblocks * tot_y_offset0;
 		unsigned int base_index0 = plane_offset + row_offset0 + offset_x_b;
+
+		i++;
 
 //		#pragma HLS DATAFLOW
 		for(unsigned short j = 0; j < end_index; j++){
@@ -162,7 +172,7 @@ static void stream_convert_512_256(hls::stream<uint512_dt> &in0, hls::stream<uin
 	unsigned short tile_x = (data_g.tile_x >> 3);
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
 	unsigned int total_itr0 = end_z * tile_y;
-	unsigned int total_itr = total_itr0 * end_index;
+	unsigned int total_itr = register_it <unsigned int>(total_itr0 * end_index);
 	bool adjust_x = (data_g.offset_x != 0) ? 1 : 0;
 	unsigned short offset_128 = data_g.offset_x & 127;
 
@@ -230,7 +240,7 @@ static void stream_convert_256_512(hls::stream<uint256_dt> &in0, hls::stream<uin
 	unsigned short tile_x = (data_g.tile_x >> 3);
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
 	unsigned int total_itr0 = end_z * tile_y;
-	unsigned int total_itr = total_itr0 * end_index;
+	unsigned int total_itr = register_it <unsigned int>(total_itr0 * end_index);
 
 	bool adjust_x = (data_g.offset_x != 0) ? 1 : 0;
 	bool adjust_y = (data_g.offset_y != 0 ? 1 : 0);
@@ -330,7 +340,7 @@ static void skipAndInsert(hls::stream<uint256_dt> &in0_0, hls::stream<uint256_dt
 	unsigned short end_index = (tile_x >> (SHIFT_BITS+1));
 	unsigned short end_indexp1 = end_index + 1;
 	unsigned int total_itr0 = end_z * tile_y;
-	unsigned int total_itr = total_itr0 * (end_indexp1);
+	unsigned int total_itr = register_it <unsigned int>(total_itr0 * (end_indexp1));
 
 	bool nz_offsetx = (data_g.offset_x != 0) ? 1 : 0;
 	char fset  = (data_g.offset_x != 0) ? -1 : 0;
@@ -474,7 +484,7 @@ static void stream_convert_2048_256(hls::stream<uint256_dt> &in0_0, hls::stream<
 	unsigned short tile_x = (data_g.tile_x >> 4);  // 16*4 =128 bytes
 	unsigned short end_index = (tile_x >> (SHIFT_BITS));
 	unsigned int total_itr0 = end_z * tile_y;
-	unsigned int total_itr = total_itr0 * end_index;
+	unsigned int total_itr = register_it <unsigned int>(total_itr0 * end_index);
 
 	for(unsigned int itr = 0; itr < total_itr; itr++){
 		#pragma HLS loop_tripcount min=1000 max=1500 avg=1200
