@@ -8,6 +8,8 @@
 typedef ap_uint<512> uint512_dt;
 typedef ap_uint<1024> uint1024_dt;
 typedef ap_uint<256> uint256_dt;
+typedef ap_uint<576> uint576_dt;
+typedef ap_uint<288> uint288_dt;
 typedef ap_axiu<256,0,0,0> t_pkt;
 typedef ap_axiu<32,0,0,0> t_pkt_32;
 typedef ap_axiu<1024,0,0,0> t_pkt_1024;
@@ -18,7 +20,7 @@ typedef ap_axiu<1024,0,0,0> t_pkt_1024;
 #define MAX_DEPTH_P (MAX_SIZE_X/64) * MAX_SIZE_X
 
 //user function
-#define PORT_WIDTH 64
+#define PORT_WIDTH 18
 #define SHIFT_BITS 3
 #define DATATYPE_SIZE 32
 //#define BEAT_SHIFT_BITS 10

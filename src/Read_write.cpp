@@ -17,10 +17,13 @@ static void read_to_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer0,
 		uint512_dt*  arg1, hls::stream<uint512_dt> &rd_buffer1,
 		uint512_dt*  arg2, hls::stream<uint512_dt> &rd_buffer2,
 		uint512_dt*  arg3, hls::stream<uint512_dt> &rd_buffer3,
-		uint512_dt*  arg4, hls::stream<uint512_dt> &rd_buffer4,
-		uint512_dt*  arg5, hls::stream<uint512_dt> &rd_buffer5,
-		uint512_dt*  arg6, hls::stream<uint512_dt> &rd_buffer6,
-		uint512_dt*  arg7, hls::stream<uint512_dt> &rd_buffer7,
+
+
+//		uint512_dt*  arg4, hls::stream<uint512_dt> &rd_buffer4,
+//		uint512_dt*  arg5, hls::stream<uint512_dt> &rd_buffer5,
+//		uint512_dt*  arg6, hls::stream<uint512_dt> &rd_buffer6,
+//		uint512_dt*  arg7, hls::stream<uint512_dt> &rd_buffer7,
+		unsigned char offset_a,
 		struct data_G data_g){
 
 	unsigned short end_z = data_g.grid_sizez;
@@ -49,8 +52,6 @@ static void read_to_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer0,
 	unsigned short i = 0, k = 0;
 	for(unsigned int itr = 0; itr < total_itr; itr++){
 		#pragma HLS loop_tripcount min=1000 max=1500 avg=1200
-//		unsigned short k = itr / tile_y;
-//		unsigned short i = itr % tile_y;
 		if(i == tile_y){
 			i = 0;
 			k++;
@@ -70,15 +71,15 @@ static void read_to_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer0,
 		for(unsigned short j = 0; j < end_index; j++){
 			#pragma HLS loop_tripcount min=8 max=32 avg=16
 			#pragma HLS PIPELINE II=1
-			rd_buffer0 << arg0[base_index + j + adjust[0]];
-			rd_buffer1 << arg1[base_index + j + adjust[1]];
-			rd_buffer2 << arg2[base_index + j + adjust[2]];
-			rd_buffer3 << arg3[base_index + j + adjust[3]];
+			rd_buffer0 << arg0[base_index + j + adjust[0+offset_a]];
+			rd_buffer1 << arg1[base_index + j + adjust[1+offset_a]];
+			rd_buffer2 << arg2[base_index + j + adjust[2+offset_a]];
+			rd_buffer3 << arg3[base_index + j + adjust[3+offset_a]];
 
-			rd_buffer4 << arg4[base_index + j + adjust[4]];
-			rd_buffer5 << arg5[base_index + j + adjust[5]];
-			rd_buffer6 << arg6[base_index + j + adjust[6]];
-			rd_buffer7 << arg7[base_index + j + adjust[7]];
+//			rd_buffer4 << arg4[base_index + j + adjust[4]];
+//			rd_buffer5 << arg5[base_index + j + adjust[5]];
+//			rd_buffer6 << arg6[base_index + j + adjust[6]];
+//			rd_buffer7 << arg7[base_index + j + adjust[7]];
 
 		}
 
@@ -90,10 +91,11 @@ static void write_from_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffe
 		uint512_dt*  arg1, hls::stream<uint512_dt> &rd_buffer1,
 		uint512_dt*  arg2, hls::stream<uint512_dt> &rd_buffer2,
 		uint512_dt*  arg3, hls::stream<uint512_dt> &rd_buffer3,
-		uint512_dt*  arg4, hls::stream<uint512_dt> &rd_buffer4,
-		uint512_dt*  arg5, hls::stream<uint512_dt> &rd_buffer5,
-		uint512_dt*  arg6, hls::stream<uint512_dt> &rd_buffer6,
-		uint512_dt*  arg7, hls::stream<uint512_dt> &rd_buffer7,
+//		uint512_dt*  arg4, hls::stream<uint512_dt> &rd_buffer4,
+//		uint512_dt*  arg5, hls::stream<uint512_dt> &rd_buffer5,
+//		uint512_dt*  arg6, hls::stream<uint512_dt> &rd_buffer6,
+//		uint512_dt*  arg7, hls::stream<uint512_dt> &rd_buffer7,
+		unsigned char offset_a,
 		struct data_G data_g){
 
 	unsigned short end_z = data_g.grid_sizez;
@@ -144,14 +146,14 @@ static void write_from_fifo(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffe
 		for(unsigned short j = 0; j < end_index; j++){
 			#pragma HLS PIPELINE II=1
 			#pragma HLS loop_tripcount min=8 max=32 avg=16
-			arg0[base_index0 + j +adjust[0]] = rd_buffer0.read();
-			arg1[base_index0 + j +adjust[1]] = rd_buffer1.read();
-			arg2[base_index0 + j +adjust[2]] = rd_buffer2.read();
-			arg3[base_index0 + j +adjust[3]] = rd_buffer3.read();
-			arg4[base_index0 + j +adjust[4]] = rd_buffer4.read();
-			arg5[base_index0 + j +adjust[5]] = rd_buffer5.read();
-			arg6[base_index0 + j +adjust[6]] = rd_buffer6.read();
-			arg7[base_index0 + j +adjust[7]] = rd_buffer7.read();
+			arg0[base_index0 + j +adjust[0+offset_a]] = rd_buffer0.read();
+			arg1[base_index0 + j +adjust[1+offset_a]] = rd_buffer1.read();
+			arg2[base_index0 + j +adjust[2+offset_a]] = rd_buffer2.read();
+			arg3[base_index0 + j +adjust[3+offset_a]] = rd_buffer3.read();
+//			arg4[base_index0 + j +adjust[4]] = rd_buffer4.read();
+//			arg5[base_index0 + j +adjust[5]] = rd_buffer5.read();
+//			arg6[base_index0 + j +adjust[6]] = rd_buffer6.read();
+//			arg7[base_index0 + j +adjust[7]] = rd_buffer7.read();
 		}
 
 	}
@@ -583,8 +585,13 @@ static void process_ReadWrite (uint512_dt*  arg0_0, uint512_dt*  arg1_0,
 
 	read_to_fifo(arg0_0, rd_bufferArr[0], arg0_1, rd_bufferArr[1],
 			arg0_2, rd_bufferArr[2], arg0_3, rd_bufferArr[3],
-			arg0_4, rd_bufferArr[4], arg0_5, rd_bufferArr[5],
-			arg0_6, rd_bufferArr[6], arg0_7, rd_bufferArr[7], data_g);
+			/*arg0_4, rd_bufferArr[4], arg0_5, rd_bufferArr[5],
+			arg0_6, rd_bufferArr[6], arg0_7, rd_bufferArr[7],*/ 0, data_g);
+
+	read_to_fifo(/*arg0_0, rd_bufferArr[0], arg0_1, rd_bufferArr[1],
+				arg0_2, rd_bufferArr[2], arg0_3, rd_bufferArr[3],*/
+				arg0_4, rd_bufferArr[4], arg0_5, rd_bufferArr[5],
+				arg0_6, rd_bufferArr[6], arg0_7, rd_bufferArr[7],4, data_g);
 
 
 
@@ -639,8 +646,13 @@ static void process_ReadWrite (uint512_dt*  arg0_0, uint512_dt*  arg1_0,
 
 	write_from_fifo(arg1_0, wr_bufferArr[0], arg1_1, wr_bufferArr[1],
 			arg1_2, wr_bufferArr[2], arg1_3, wr_bufferArr[3],
-			arg1_4, wr_bufferArr[4], arg1_5, wr_bufferArr[5],
-			arg1_6, wr_bufferArr[6], arg1_7, wr_bufferArr[7],data_g);
+			/*arg1_4, wr_bufferArr[4], arg1_5, wr_bufferArr[5],
+			arg1_6, wr_bufferArr[6], arg1_7, wr_bufferArr[7],*/ 0, data_g);
+
+	write_from_fifo(/*arg1_0, wr_bufferArr[0], arg1_1, wr_bufferArr[1],
+				arg1_2, wr_bufferArr[2], arg1_3, wr_bufferArr[3],*/
+				arg1_4, wr_bufferArr[4], arg1_5, wr_bufferArr[5],
+				arg1_6, wr_bufferArr[6], arg1_7, wr_bufferArr[7], 4, data_g);
 
 }
 
