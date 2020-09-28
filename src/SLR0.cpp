@@ -59,6 +59,10 @@ static void process_SLR (hls::stream <t_pkt_1024> &inl, hls::stream <t_pkt_1024>
 	unsigned int gridsize_da = plane_size * (data_g.grid_sizez);
 
 	#pragma HLS dataflow
+//	axis2_fifo256_8(inl, inu,streamC_4_256_0[0], streamC_4_256_0[1],
+//						streamC_4_256_1[0], streamC_4_256_1[1],
+//						streamC_4_256_2[0], streamC_4_256_2[1],
+//						streamC_4_256_3[0], streamC_4_256_3[1], gridsize_da);
     axis2_fifo288_8(inl, inu,streamC_4_288_0[0], streamC_4_288_0[1],
 			streamC_4_288_1[0], streamC_4_288_1[1],
 			streamC_4_288_2[0], streamC_4_288_2[1],

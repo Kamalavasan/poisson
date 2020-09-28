@@ -46,7 +46,7 @@ static void axis2_fifo288_8(hls::stream <t_pkt_1024> &in0, hls::stream <t_pkt_10
 	uint1024_dt l_dataf, u_dataf, l_data, u_data, l_datab, u_datab;
 	unsigned int tolt_itr_n = register_it <unsigned int >(total_itr+1);
 	for (unsigned int itr = 0; itr < total_itr+1; itr++){
-		#pragma HLS PIPELINE II=2
+		#pragma HLS PIPELINE II=1
 		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
 
 		t_pkt_1024 tmp0, tmp1;
