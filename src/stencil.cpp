@@ -1,3 +1,11 @@
+template <typename T>
+static T register_it(T x){
+	#pragma HLS inline off
+	T tmp = x;
+	return tmp;
+}
+
+
 static void axis2_fifo256(hls::stream <t_pkt> &in, hls::stream<uint256_dt> &out, unsigned int total_itr){
 //	unsigned short end_index = (tile_x >> (SHIFT_BITS));
 //	unsigned short end_row = size_y+2;
@@ -40,6 +48,8 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 	unsigned int line_diff = data_g.line_diff;
 	unsigned int plane_diff = data_g.plane_diff;
 	unsigned int gridsize = data_g.gridsize_pr;
+
+	unsigned short batches = data_g.batches;
 
 	float s_1_1_2_arr[PORT_WIDTH];
 	float s_1_2_1_arr[PORT_WIDTH];
@@ -84,6 +94,10 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 		if(j == tile_y){
 			j = 0;
 			i++;
+		}
+
+		if(i == limit_z){
+			i = 0;
 		}
 
 

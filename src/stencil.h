@@ -66,5 +66,6 @@ struct data_G{
 	unsigned int line_diff;
 	unsigned short outer_loop_limit;
 	unsigned int total_itr;
+	unsigned short batches;
 };
 

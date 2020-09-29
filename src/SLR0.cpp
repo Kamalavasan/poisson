@@ -7,7 +7,7 @@
 
 
 static void process_SLR (hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
-				   const int xdim0, const unsigned short size_x, const unsigned short size_y, const unsigned short size_z){
+				   const int xdim0, const unsigned short size_x, const unsigned short size_y, const unsigned short size_z, unsigned short batches){
 
 
     static hls::stream<uint256_dt> streamArray[40 + 1];
@@ -19,10 +19,11 @@ static void process_SLR (hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
     data_g.sizez = size_z;
 
     data_g.offset_x = 0;
-    data_g.tile_x = size_x+2;
+    data_g.tile_x = xdim0;
     data_g.offset_y = 0;
     data_g.tile_y = size_y+2;
 
+    data_g.batches = batches;
 
 	data_g.xblocks = (data_g.tile_x >> SHIFT_BITS);
 	data_g.grid_sizey = size_y + 2;
@@ -34,9 +35,9 @@ static void process_SLR (hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
 
 	data_g.plane_diff = data_g.xblocks * tiley_1;
 	data_g.line_diff = data_g.xblocks - 1;
-	data_g.gridsize_pr = plane_size * (data_g.limit_z);
+	data_g.gridsize_pr = plane_size * register_it<unsigned int>(data_g.limit_z*batches);
 
-	unsigned int gridsize_da = plane_size * (data_g.grid_sizez);
+	unsigned int gridsize_da = register_it<unsigned int>(plane_size * (data_g.grid_sizez)) * batches;
 
 	#pragma HLS dataflow
     axis2_fifo256(in, streamArray[0], gridsize_da);
@@ -78,6 +79,7 @@ void stencil_SLR0(
 		const int sizey,
 		const int sizez,
 		const int xdim0,
+		const int batches,
 		const int count,
 		hls::stream <t_pkt> &in,
 		hls::stream <t_pkt> &out){
@@ -90,6 +92,7 @@ void stencil_SLR0(
 	#pragma HLS INTERFACE s_axilite port = sizey bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizez bundle = control
 	#pragma HLS INTERFACE s_axilite port = xdim0 bundle = control
+	#pragma HLS INTERFACE s_axilite port = batches bundle = control
 	#pragma HLS INTERFACE s_axilite port = count bundle = control
 	#pragma HLS INTERFACE s_axilite port = return bundle = control
 
@@ -99,7 +102,7 @@ void stencil_SLR0(
 
 
 	for(unsigned short itr =  0; itr < 2*count ; itr++){
-		process_SLR( in, out, xdim0, sizex, sizey, sizez);
+		process_SLR( in, out, xdim0, sizex, sizey, sizez, batches);
 	}
 }
 }

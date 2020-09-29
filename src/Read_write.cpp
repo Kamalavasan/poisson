@@ -4,6 +4,7 @@
 #include <math.h>
 #include "../src/stencil.h"
 #include <stdio.h>
+#include "../src/stencil.cpp"
 
 static void read_tile(uint512_dt*  arg0, hls::stream<uint512_dt> &rd_buffer, struct data_G data_g){
 
@@ -41,27 +42,27 @@ static void stream_convert_256_512(hls::stream<uint256_dt> &in, hls::stream<uint
 	}
 }
 
-static void axis2_fifo256(hls::stream <t_pkt> &in, hls::stream<uint256_dt> &out, unsigned int tot_itr){
+//static void axis2_fifo256(hls::stream <t_pkt> &in, hls::stream<uint256_dt> &out, unsigned int tot_itr){
+//
+//	for (int itr = 0; itr < tot_itr; itr++){
+//		#pragma HLS PIPELINE II=1
+//		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
+//		t_pkt tmp = in.read();
+//		out << tmp.data;
+//	}
+//}
 
-	for (int itr = 0; itr < tot_itr; itr++){
-		#pragma HLS PIPELINE II=1
-		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
-		t_pkt tmp = in.read();
-		out << tmp.data;
-	}
-}
-
-static void fifo256_2axis(hls::stream <uint256_dt> &in, hls::stream<t_pkt> &out, unsigned int tot_itr){
-
-	for (int itr = 0; itr < tot_itr; itr++){
-		#pragma HLS PIPELINE II=1
-		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
-		t_pkt tmp;
-		tmp.data = in.read();
-		out.write(tmp);
-	}
-}
-
+//static void fifo256_2axis(hls::stream <uint256_dt> &in, hls::stream<t_pkt> &out, unsigned int tot_itr){
+//
+//	for (int itr = 0; itr < tot_itr; itr++){
+//		#pragma HLS PIPELINE II=1
+//		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
+//		t_pkt tmp;
+//		tmp.data = in.read();
+//		out.write(tmp);
+//	}
+//}
+//
 
 static void write_tile(uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, struct data_G data_g){
 	unsigned int total_itr = data_g.total_itr;
@@ -73,7 +74,7 @@ static void write_tile(uint512_dt*  arg1, hls::stream<uint512_dt> &wr_buffer, st
 
 static void process_ReadWrite (uint512_dt*  arg0_0, uint512_dt*  arg1_0,
 				   hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
-				   const int xdim0, const unsigned short size_x, const unsigned short size_y, const unsigned short size_z){
+				   const int xdim0, const unsigned short size_x, const unsigned short size_y, const unsigned short size_z, const unsigned short batches){
 
 
     static hls::stream<uint256_dt> streamArray[40 + 1];
@@ -99,14 +100,14 @@ static void process_ReadWrite (uint512_dt*  arg0_0, uint512_dt*  arg1_0,
 	data_g.limit_z = size_z+3;
 
 	data_g.offset_x = 0;
-	data_g.tile_x = size_x+2;
+	data_g.tile_x = xdim0;
 	data_g.offset_y = 0;
 	data_g.tile_y = size_y+2;
 
 	data_g.plane_size = data_g.xblocks * data_g.grid_sizey;
 
 	unsigned int tile_plane_size = (data_g.tile_x >> SHIFT_BITS) * data_g.tile_y;
-	unsigned int totol_iter = tile_plane_size * data_g.grid_sizez;
+	unsigned int totol_iter = register_it<unsigned int>(tile_plane_size * data_g.grid_sizez) * batches;
 
 	data_g.total_itr = (totol_iter >> 1);
 
@@ -128,10 +129,10 @@ static void process_ReadWrite (uint512_dt*  arg0_0, uint512_dt*  arg1_0,
 
 static void process_ReadWrite_dataflow (uint512_dt*  arg0_0, uint512_dt*  arg1_0,
 				   hls::stream <t_pkt> &in, hls::stream <t_pkt> &out,
-				   const int xdim0, const unsigned short size_x, const unsigned short size_y, const unsigned short size_z){
+				   const int xdim0, const unsigned short size_x, const unsigned short size_y, const unsigned short size_z, const unsigned short batches){
 
 		#pragma HLS dataflow
-		process_ReadWrite(arg0_0, arg1_0, in, out, xdim0, size_x, size_y, size_z);
+		process_ReadWrite(arg0_0, arg1_0, in, out, xdim0, size_x, size_y, size_z, batches);
 
 
 }
@@ -144,10 +145,12 @@ void stencil_Read_Write(
 		uint512_dt*  arg0_0,
 		uint512_dt*  arg1_0,
 
+
 		const int sizex,
 		const int sizey,
 		const int sizez,
 		const int xdim0,
+		const int batches,
 		const int count,
 
 		hls::stream <t_pkt> &in,
@@ -164,6 +167,7 @@ void stencil_Read_Write(
 	#pragma HLS INTERFACE axis port = in  register
 	#pragma HLS INTERFACE axis port = out register
 
+	#pragma HLS INTERFACE s_axilite port = batches bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizex bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizey bundle = control
 	#pragma HLS INTERFACE s_axilite port = sizez bundle = control
@@ -174,8 +178,8 @@ void stencil_Read_Write(
 
 
 	for(int i =  0; i < count; i++){
-		process_ReadWrite_dataflow(arg0_0, arg1_0, in, out, xdim0, sizex, sizey, sizez);
-		process_ReadWrite_dataflow(arg1_0, arg0_0, in, out, xdim0, sizex, sizey, sizez);
+		process_ReadWrite_dataflow(arg0_0, arg1_0, in, out, xdim0, sizex, sizey, sizez, batches);
+		process_ReadWrite_dataflow(arg1_0, arg0_0, in, out, xdim0, sizex, sizey, sizez, batches);
 	}
 }
 }
