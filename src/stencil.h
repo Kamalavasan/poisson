@@ -65,5 +65,6 @@ struct data_G{
 	unsigned int plane_diff;
 	unsigned int line_diff;
 	unsigned short outer_loop_limit;
+	unsigned int total_itr;
 };
 

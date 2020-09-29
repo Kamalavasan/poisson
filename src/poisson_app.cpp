@@ -204,79 +204,9 @@ int main(int argc, char **argv)
 
 
 
-  // Tiling
-  const int tile_max_count = 256;
-  unsigned int * tile = (unsigned int*)aligned_alloc(4096, (tile_max_count)*sizeof(unsigned int));
 
 
-  tilex_size = tilex_size % 16 == 0? tilex_size : (tilex_size/16 + 1) * 16;
-  tilex_size = tilex_size > 32 ? tilex_size : 32;
 
-
-  tile[0] = 0  |  (tilex_size << 16);
-  tile[1] = 32 |  (48 << 16);
-//  tile[2] = 32 | (tilex_size << 16);
-//  tile[3] = 48 | (tilex_size << 16);
-  tile[2] = 0 |  (tiley_size << 16);
-
-
-  // tiling on x dimension
-  int tilex_c;
-  int toltal_sizex = 0;
-  int effective_tilex_size = tilex_size - 32;
-  for(int i = 0; i < tile_max_count; i++){
-	  tilex_c = i+1;
-	  tile[i] = i* effective_tilex_size  | (tilex_size << 16);
-	  if(i* effective_tilex_size + tilex_size >= grid_size_x){
-		  tile[i] = i* effective_tilex_size  | (grid_size_x - i* effective_tilex_size) << 16;
-		  toltal_sizex += (grid_size_x - i* effective_tilex_size);
-		  break;
-	  }
-	  toltal_sizex += tilex_size;
-  }
-
-  int tilex_count = tilex_c;
-  printf("Grid_size_y is %d\n", grid_size_y);
-
-  // tiling on y dimension
-  tiley_size = (tiley_size < 9 ? 9 : tiley_size);
-  int tiley_c;
-  int toltal_sizey = 0;
-  int effective_tiley_size = tiley_size - 8;
-  for(int i = 0; i < tile_max_count; i++){
-	  tiley_c = i+1;
-	  tile[i+tilex_count] = i* effective_tiley_size  | (tiley_size << 16);
-	  if(i* effective_tiley_size + tiley_size >= grid_size_y){
-		  tile[i+tilex_count] = i* effective_tiley_size  | (grid_size_y - i* effective_tiley_size) << 16;
-		  toltal_sizey += (grid_size_y - i* effective_tiley_size + 1);
-		  break;
-	  }
-	  toltal_sizey += tiley_size;
-  }
-
-  int tiley_count = tiley_c;
-
-//
-  int tile_count = tilex_count + tiley_count;
-
-
-//  printf("tile count is %d\n", tile_c);
-//  tile[tile_count -1] = (tile_count -1) * effective_tile_size | ((grid_size_x - (tile_count -1) * effective_tile_size)  << 16);
-//  if(tile[tile_count -1] <= 32){
-//	  tile[tile_count -1]--;
-//  }
-
-//  	tile_count = tile_c;
-
-//  tile[0] = 0   | (128 << 16);
-//  tile[1] = 64  | (128 << 16);
-//  tile[2] = 128 | (128 << 16);
-//  tile[3] = 192 | (128 << 16);
-//  tile[4] = 256 | (128 << 16);
-//  tile[5] = 320 | (128 << 16);
-//  tile[6] = 384 | (128 << 16);
-//  tile[7] = 448 | (64 << 16);
-//  tile[5] = 320 | (128 << 16);
 
   initialise_grid(grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
   copy_grid(grid_u1, grid_u1_d, data_size_bytes);
@@ -333,24 +263,12 @@ int main(int argc, char **argv)
                                        grid_u2_d,
                                        &err));
 
-    OCL_CHECK(err,
-              cl::Buffer buffer_tile(context,
-                                       CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-									   tile_count*sizeof(unsigned int),
-                                       tile,
-                                       &err));
 
 
-    int read_write_offset = data_size_bytes/64;
     //Set the Kernel Arguments
     int narg = 0;
     OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_input));
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_input));
     OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_output));
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_output));
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, buffer_tile));
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, tilex_count));
-    OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, tiley_count));
     OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, logical_size_x));
     OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, logical_size_y));
     OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, logical_size_z));
@@ -358,8 +276,6 @@ int main(int argc, char **argv)
     OCL_CHECK(err, err = krnl_Read_Write.setArg(narg++, n_iter));
 
     narg = 0;
-    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, tilex_count));
-    OCL_CHECK(err, err = krnl_slr0.setArg(narg++, tiley_count));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_x));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_y));
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, logical_size_z));
@@ -367,8 +283,6 @@ int main(int argc, char **argv)
     OCL_CHECK(err, err = krnl_slr0.setArg(narg++, n_iter));
 
     narg = 0;
-    OCL_CHECK(err, err = krnl_slr1.setArg(narg++, tilex_count));
-    OCL_CHECK(err, err = krnl_slr1.setArg(narg++, tiley_count));
     OCL_CHECK(err, err = krnl_slr1.setArg(narg++, logical_size_x));
     OCL_CHECK(err, err = krnl_slr1.setArg(narg++, logical_size_y));
     OCL_CHECK(err, err = krnl_slr1.setArg(narg++, logical_size_z));
@@ -376,8 +290,6 @@ int main(int argc, char **argv)
     OCL_CHECK(err, err = krnl_slr1.setArg(narg++, n_iter));
 
   	narg = 0;
-  	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, tilex_count));
-  	OCL_CHECK(err, err = krnl_slr2.setArg(narg++, tiley_count));
     OCL_CHECK(err, err = krnl_slr2.setArg(narg++, logical_size_x));
     OCL_CHECK(err, err = krnl_slr2.setArg(narg++, logical_size_y));
     OCL_CHECK(err, err = krnl_slr2.setArg(narg++, logical_size_z));
@@ -386,7 +298,7 @@ int main(int argc, char **argv)
 
     //Copy input data to device global memory
     OCL_CHECK(err,
-              err = q.enqueueMigrateMemObjects({buffer_input, buffer_tile},
+              err = q.enqueueMigrateMemObjects({buffer_input},
                                                0 /* 0 means from host*/));
 
     uint64_t wtime = 0;
@@ -436,29 +348,13 @@ int main(int argc, char **argv)
 
 
 
-//  printf("\nBandwidth prof is %f\n", bandwidth_prof);
 
-//  for(int i = 0; i < act_sizey; i++){
-//    for(int j = 0; j < act_sizex; j++){
-//        printf("%f ", grid_u1_d[i*grid_size_x + j]);
-//    }
-//    printf("\n");
-//  }
-//
-//  printf("\ngolden\n\n");
-//  for(int i = 0; i < act_sizey; i++){
-//    for(int j = 0; j < act_sizex; j++){
-//        printf("%f ", grid_u1[i*grid_size_x + j]);
-//    }
-//    printf("\n");
-//  }
 
 
   free(grid_u1);
   free(grid_u2);
   free(grid_u1_d);
   free(grid_u2_d);
-  free(tile);
 
   return 0;
 }
