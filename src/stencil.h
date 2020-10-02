@@ -71,6 +71,8 @@ struct data_G{
 	unsigned int plane_diff;
 	unsigned int line_diff;
 	unsigned int total_itr;
+	unsigned int total_itr_R;
+	unsigned int total_itr_W;
 	unsigned short outer_loop_limit;
 };
 

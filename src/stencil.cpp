@@ -352,7 +352,7 @@ static void process_tile( hls::stream<uint288_dt> &rd_buffer0_0, hls::stream<uin
 
 
 		unsigned short y_index = j + offset_y;
-		process_l: for(short q = 0; q < PORT_WIDTH; q++){
+		process_l: for(short q = 1; q < PORT_WIDTH-1; q++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			short index = (k << (SHIFT_BITS+3)) + q + offset_x + offset_v;
 			float r1_1_2 =  s_1_1_2_arr[q] * 0.02f;
@@ -371,7 +371,7 @@ static void process_tile( hls::stream<uint288_dt> &rd_buffer0_0, hls::stream<uin
 			float r2=  f3 + r1_1_0;
 
 			float result  =  r1 + r2;
-			bool change_cond = (index <= offset_x || index > sizex || (i <= 1) || (i >= limit_z -1) || (y_index <= 0) || (y_index >= grid_sizey -1));
+			bool change_cond = register_it <bool>(index <= offset_x || index > sizex || (i <= 1) || (i >= limit_z -1) || (y_index <= 0) || (y_index >= grid_sizey -1));
 			mem_wr[q] =  change_cond ? s_1_1_1_arr[q+1] : result;
 		}
 
