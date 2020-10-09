@@ -69,19 +69,19 @@ static void process_SLR (hls::stream <t_pkt_1024> &inl, hls::stream <t_pkt_1024>
 			streamC_4_288_3[0], streamC_4_288_3[1], gridsize_da);
 
 
-    process_tile( streamC_4_288_0[0], streamC_4_288_0[1],
+    process_tile_SLR0( streamC_4_288_0[0], streamC_4_288_0[1],
 			streamC_4_256_0[0], streamC_4_256_0[1],
 			-1, data_g);
 
-    process_tile( streamC_4_288_1[0], streamC_4_288_1[1],
+    process_tile_SLR0( streamC_4_288_1[0], streamC_4_288_1[1],
 			streamC_4_256_1[0], streamC_4_256_1[1],
 			15, data_g);
 
-    process_tile( streamC_4_288_2[0], streamC_4_288_2[1],
+    process_tile_SLR0( streamC_4_288_2[0], streamC_4_288_2[1],
 			streamC_4_256_2[0], streamC_4_256_2[1],
 			31, data_g);
 
-    process_tile( streamC_4_288_3[0], streamC_4_288_3[1],
+    process_tile_SLR0( streamC_4_288_3[0], streamC_4_288_3[1],
 			streamC_4_256_3[0], streamC_4_256_3[1],
 			47, data_g);
 
@@ -155,10 +155,13 @@ void stencil_SLR0(
 	unsigned int total_count = (count << 1) * tilex_count*tiley_count;
 	unsigned short j = 0, k = 0;
 	unsigned short j_dum = 0, k_dum = 0;
+	unsigned char tilex_count_s = tilex_count;
+	unsigned char tiley_count_s = tiley_count;
+	unsigned char tile_count = tilex_count_s * tiley_count_s;
 	for(unsigned int itr= 0;  itr < total_count; itr++){
-
 		bool cond_k = (k == tilex_count - 1);
 		bool cond_j = (j == tiley_count - 1);
+
 		if(cond_k){
 			k_dum = 0;
 		} else {
@@ -175,7 +178,6 @@ void stencil_SLR0(
 		unsigned short tile_x   = tile_memx[k] >> 16;
 		unsigned short offset_y = tile_memy[j] & 0xffff;
 		unsigned short tile_y   = tile_memy[j] >> 16;
-
 
 		j = j_dum;
 		k = k_dum;

@@ -301,8 +301,11 @@ int main(int argc, char **argv)
 	  tilex_c = i+1;
 	  tile[i] = i* effective_tilex_size  | (tilex_size << 16);
 	  if(i* effective_tilex_size + tilex_size >= act_sizex_32){
-		  tile[i] = (act_sizex_32-tilex_size) | tilex_size << 16;
-		  toltal_sizex += tilex_size;
+		  int lastx_size = act_sizex_32 - i* effective_tilex_size;
+		  lastx_size = lastx_size % 128 == 0 ? lastx_size : (lastx_size/128 +1)*128;
+		  int offset_x = act_sizex_32-lastx_size > 0 ? act_sizex_32-lastx_size : 0;
+		  tile[i] = offset_x | lastx_size << 16;
+		  toltal_sizex += lastx_size;
 		  break;
 	  }
 	  toltal_sizex += tilex_size;
@@ -313,10 +316,6 @@ int main(int argc, char **argv)
 
 
   int tilex_count = tilex_c;
-//  tile[0] = 0 | tilex_size << 16;
-//  tile[1] = 0 | tilex_size << 16;
-//  tile[0] = (act_sizex-tilex_size) | tilex_size << 16;
-//  tile[1] = (act_sizex-tilex_size) | tilex_size << 16;
   printf("Grid_size_y is %d\n", grid_size_y);
 
   // tiling on y dimension
@@ -332,8 +331,9 @@ int main(int argc, char **argv)
 	  tiley_c = i+1;
 	  tile[i+tilex_count] = i* effective_tiley_size  | (tiley_size << 16);
 	  if(i* effective_tiley_size + tiley_size >= grid_size_y){
-		  tile[i+tilex_count] = (grid_size_y - tiley_size)  | tiley_size << 16;
-		  toltal_sizey += tiley_size;
+		  int lasty_size = grid_size_y - i* effective_tiley_size;
+		  tile[i+tilex_count] = (grid_size_y - lasty_size)  | lasty_size << 16;
+		  toltal_sizey += lasty_size;
 		  break;
 	  }
 	  toltal_sizey += tiley_size;
@@ -346,6 +346,7 @@ int main(int argc, char **argv)
   int total_plane_sizeR = 0, total_plane_sizeW = 0, total_plane_size;
   for(int i = 0; i < tiley_count; i++){
 	  for(int j = 0; j < tilex_count; j++){
+//		  printf("Tilex:%d TileY:%d\n", (tile[j] >> 16), (tile[i+tilex_count] >> 16));
 		  total_plane_sizeR += (tile[j] >> 16) * (tile[i+tilex_count] >> 16);
 		  total_plane_sizeW += ((tile[j] >> 16)) * ((tile[i+tilex_count] >> 16));
 	  }
@@ -603,9 +604,9 @@ int main(int argc, char **argv)
 
   printf("Runtime on FPGA is %f seconds\n", k_time);
   double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_x);
-  float bandwidth = (act_sizex * act_sizey * act_sizez * sizeof(float) * 4.0 * n_iter)/(k_time * 1000.0 * 1000 * 1000);
-  float logic_bandwidthR = (total_plane_sizeR * act_sizez * sizeof(float) * 2.0 * n_iter)/(k_time * 1000.0 * 1000 * 1000);
-  float logic_bandwidthW = (total_plane_sizeW * act_sizez * sizeof(float) * 2.0 * n_iter)/(k_time * 1000.0 * 1000 * 1000);
+  float bandwidth = (logical_size_x * logical_size_y * logical_size_z * sizeof(float) * 4.0 * n_iter*3)/(k_time * 1000.0 * 1000 * 1000);
+  float logic_bandwidthR = (total_plane_sizeR * act_sizez * sizeof(float) * 2.0 * n_iter*3)/(k_time * 1000.0 * 1000 * 1000);
+  float logic_bandwidthW = (total_plane_sizeW * act_sizez * sizeof(float) * 2.0 * n_iter*3)/(k_time * 1000.0 * 1000 * 1000);
   printf("\nMean Square error is  %f\n\n", error/(logical_size_x * logical_size_y));
   printf("grid_size_x:%d grid_size_y:%d grid_size_z:%d, offset_x:%d\n",grid_size_x,grid_size_y,grid_size_z, offset_x);
   printf("\nBandwidth is %f %f %f %f\n", bandwidth, logic_bandwidthR, logic_bandwidthW, 2*logic_bandwidthW);

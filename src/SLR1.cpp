@@ -182,10 +182,13 @@ void stencil_SLR1(
 	unsigned int total_count = (count << 1) * tilex_count*tiley_count;
 	unsigned short j = 0, k = 0;
 	unsigned short j_dum = 0, k_dum = 0;
+	unsigned char tilex_count_s = tilex_count;
+	unsigned char tiley_count_s = tiley_count;
+	unsigned char tile_count = tilex_count_s * tiley_count_s;
 	for(unsigned int itr= 0;  itr < total_count; itr++){
-
 		bool cond_k = (k == tilex_count - 1);
 		bool cond_j = (j == tiley_count - 1);
+
 		if(cond_k){
 			k_dum = 0;
 		} else {
@@ -198,7 +201,6 @@ void stencil_SLR1(
 			j_dum = j + 1;
 		}
 
-
 		unsigned short offset_x = tile_memx[k] & 0xffff;
 		unsigned short tile_x   = tile_memx[k] >> 16;
 		unsigned short offset_y = tile_memy[j] & 0xffff;
@@ -206,7 +208,6 @@ void stencil_SLR1(
 
 		j = j_dum;
 		k = k_dum;
-
 		process_SLR( in1l, in1u, out1l, out1u, in2l, in2u, out2l, out2u, xdim0, offset_x, tile_x, offset_y, tile_y, sizex, sizey, sizez);
 	}
 
