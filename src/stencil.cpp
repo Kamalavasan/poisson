@@ -50,6 +50,7 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 	unsigned int gridsize = data_g.gridsize_pr;
 
 	unsigned short batches = data_g.batches;
+	unsigned int limit_read = data_g.gridsize_da;
 
 	float s_1_1_2_arr[PORT_WIDTH];
 	float s_1_2_1_arr[PORT_WIDTH];
@@ -66,15 +67,15 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 	#pragma HLS ARRAY_PARTITION variable=s_1_1_0_arr complete dim=1
 	#pragma HLS ARRAY_PARTITION variable=mem_wr complete dim=1
 
-	uint256_dt window_1[8192];
-	uint256_dt window_2[256];
-	uint256_dt window_3[256];
-	uint256_dt window_4[8192];
+	uint256_dt window_1[max_depth_xy];
+	uint256_dt window_2[max_depth_8];
+	uint256_dt window_3[max_depth_8];
+	uint256_dt window_4[max_depth_xy];
 
-	#pragma HLS RESOURCE variable=window_1 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_2 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_3 core=XPM_MEMORY uram latency=1
-	#pragma HLS RESOURCE variable=window_4 core=XPM_MEMORY uram latency=1
+	#pragma HLS RESOURCE variable=window_1 core=XPM_MEMORY uram latency=2
+	#pragma HLS RESOURCE variable=window_2 core=RAM_1P_BRAM latency=2
+	#pragma HLS RESOURCE variable=window_3 core=RAM_1P_BRAM latency=2
+	#pragma HLS RESOURCE variable=window_4 core=XPM_MEMORY uram latency=2
 
 	uint256_dt s_1_1_2, s_1_2_1, s_1_1_1, s_1_1_1_b, s_1_1_1_f, s_1_0_1, s_1_1_0;
 	uint256_dt update_j;
@@ -85,24 +86,26 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 	for(unsigned int itr = 0; itr < gridsize; itr++) {
 		#pragma HLS loop_tripcount min=min_grid max=max_grid avg=avg_grid
 		#pragma HLS PIPELINE II=1
+		bool cond_x = (k == xblocks);
+		bool cond_y = (j == tile_y -1);
+		bool cond_z = (i == limit_z - 1);
 
 		if(k == xblocks){
 			k = 0;
+		}
+
+		if(cond_y && cond_x){
+			j = 0;
+		}else if(cond_x){
 			j++;
 		}
 
-		if(j == tile_y){
-			j = 0;
+		if(cond_x && cond_y && cond_z){
+			i = 1;
+		} else if(cond_y && cond_x){
 			i++;
 		}
 
-		if(i == limit_z){
-			i = 0;
-		}
-
-
-
-//		printf("i, j ,k is %d, %d, %d, itr %d gridsize %d\n", i,j,k,itr, gridsize);
 
 
 		s_1_1_0 = window_4[j_p];
@@ -120,7 +123,7 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 		window_2[j_l] = s_1_2_1;	//set
 
 
-		bool cond_tmp1 = (i < grid_sizez);
+		bool cond_tmp1 = (itr < limit_read);
 		if(cond_tmp1){
 			s_1_1_2 = rd_buffer.read(); // set
 		}
@@ -165,23 +168,27 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 		process: for(short q = 0; q < PORT_WIDTH; q++){
 			#pragma HLS loop_tripcount min=port_width max=port_width avg=port_width
 			short index = (k << SHIFT_BITS) + q + offset_x;
-			float r1_1_2 =  s_1_1_2_arr[q] * 0.02;
-			float r1_2_1 =  s_1_2_1_arr[q] * 0.04;
-			float r0_1_1 =  s_1_1_1_arr[q] * 0.05;
-			float r1_1_1 =  s_1_1_1_arr[q+1] * 0.79;
-			float r2_1_1 =  s_1_1_1_arr[q+2] * 0.06;
-			float r1_0_1 =  s_1_0_1_arr[q] * 0.03;
-			float r1_1_0 =  s_1_1_0_arr[q] * 0.01;
+			float r1_1_2 =  s_1_1_2_arr[q] * (0.02f);
+			float r1_2_1 =  s_1_2_1_arr[q] * (0.04f);
+			float r0_1_1 =  s_1_1_1_arr[q] * (0.05f);
+			float r1_1_1 =  s_1_1_1_arr[q+1] * (0.79f);
+			float r2_1_1 =  s_1_1_1_arr[q+2] * (0.06f);
+			float r1_0_1 =  s_1_0_1_arr[q] * (0.03f);
+			float r1_1_0 =  s_1_1_0_arr[q] * (0.01f);
 
 			float f1 = r1_1_2 + r1_2_1;
 			float f2 = r0_1_1 + r1_1_1;
 			float f3 = r2_1_1 + r1_0_1;
 
+			#pragma HLS RESOURCE variable=f1 core=FAddSub_nodsp
+			#pragma HLS RESOURCE variable=f2 core=FAddSub_nodsp
+//			#pragma HLS RESOURCE variable=f3 core=FAddSub_nodsp
+
 			float r1 = f1 + f2;
 			float r2=  f3 + r1_1_0;
 
 			float result  = r1 + r2;
-			bool change_cond = (index <= offset_x || index > sizex || (i <= 1) || (i >= limit_z -1) || (y_index <= 0) || (y_index >= grid_sizey -1));
+			bool change_cond = register_it <bool>(index <= offset_x || index > sizex || (i <= 1) || (i >= limit_z -1) || (y_index <= 0) || (y_index >= grid_sizey -1));
 			mem_wr[q] = change_cond ? s_1_1_1_arr[q+1] : result;
 		}
 
@@ -192,7 +199,7 @@ static void process_tile( hls::stream<uint256_dt> &rd_buffer, hls::stream<uint25
 			update_j.range(DATATYPE_SIZE * (k + 1) - 1, k * DATATYPE_SIZE) = tmp.i;
 		}
 
-		bool cond_wr = (i >= 1) && ( i <= limit_z);
+		bool cond_wr = (i >= 1) && ( i < limit_z);
 		if(cond_wr ) {
 			wr_buffer << update_j;
 		}

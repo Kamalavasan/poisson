@@ -156,7 +156,7 @@ void stencil_Read_Write(
 		hls::stream <t_pkt> &in,
 		hls::stream <t_pkt> &out){
 
-	#pragma HLS INTERFACE depth=4096 m_axi port = arg0_0 offset = slave bundle = gmem0 max_read_burst_length=64 max_write_burst_length=64 num_read_outstanding=2 num_write_outstanding=2
+	#pragma HLS INTERFACE depth=4096 m_axi port = arg0_0 offset = slave bundle = gmem0 max_read_burst_length=64 max_write_burst_length=64 num_read_outstanding=4 num_write_outstanding=4 latency=64
 	#pragma HLS INTERFACE depth=4096 m_axi port = arg1_0 offset = slave bundle = gmem0
 
 
@@ -176,8 +176,8 @@ void stencil_Read_Write(
 	#pragma HLS INTERFACE s_axilite port = return bundle = control
 
 
-
-	for(int i =  0; i < count; i++){
+	unsigned short count_s = count;
+	for(unsigned short i =  0; i < count_s; i++){
 		process_ReadWrite_dataflow(arg0_0, arg1_0, in, out, xdim0, sizex, sizey, sizez, batches);
 		process_ReadWrite_dataflow(arg1_0, arg0_0, in, out, xdim0, sizex, sizey, sizez, batches);
 	}

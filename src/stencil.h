@@ -10,7 +10,7 @@ typedef ap_uint<256> uint256_dt;
 typedef ap_axiu<256,0,0,0> t_pkt;
 typedef ap_axiu<32,0,0,0> t_pkt_32;
 
-#define MAX_SIZE_X 256
+#define MAX_SIZE_X 304
 #define MAX_DEPTH_16 (MAX_SIZE_X/16)
 
 //user function
@@ -39,8 +39,9 @@ const int min_grid_2 = (min_block_x * min_size_y * min_size_y)/2;
 const int avg_grid_2 = (avg_block_x * avg_size_y * avg_size_y)/2;
 
 const int port_width  = PORT_WIDTH;
-const int max_depth_16 = MAX_DEPTH_16 * 8;
-const int max_depth_8 = MAX_DEPTH_16 * 8;
+const int max_depth_16 = MAX_DEPTH_16 * 4;
+const int max_depth_8 = MAX_DEPTH_16 * 4;
+const int max_depth_xy = max_block_x * MAX_SIZE_X;
 
 typedef union  {
    int i;
@@ -62,6 +63,7 @@ struct data_G{
 	unsigned short tile_y;
 	unsigned int plane_size;
 	unsigned int gridsize_pr;
+	unsigned int gridsize_da;
 	unsigned int plane_diff;
 	unsigned int line_diff;
 	unsigned short outer_loop_limit;
