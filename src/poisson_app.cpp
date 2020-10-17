@@ -601,8 +601,9 @@ int main(int argc, char **argv)
 
 
   printf("Profiling time is %f\n", k_time);
-
-  printf("Runtime on FPGA is %f seconds\n", k_time);
+  float predicted_time = (toltal_sizex/64.0)* toltal_sizey * (grid_size_z + 3)*n_iter*2/(229000000);
+  printf("predicted Runtime on FPGA is %f seconds\n", predicted_time);
+  printf("Actual Runtime on FPGA is %f seconds\n", k_time);
   double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_x);
   float bandwidth = (logical_size_x * logical_size_y * logical_size_z * sizeof(float) * 4.0 * n_iter*3)/(k_time * 1000.0 * 1000 * 1000);
   float logic_bandwidthR = (total_plane_sizeR * act_sizez * sizeof(float) * 2.0 * n_iter*3)/(k_time * 1000.0 * 1000 * 1000);

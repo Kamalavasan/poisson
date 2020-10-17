@@ -721,7 +721,6 @@ static void process_ReadWrite_dataflow (uint512_dt*  arg0_0, uint512_dt*  arg1_0
 		unsigned short tile_y   = tile_memy[i] >> 16;
 
 		j++;
-		#pragma HLS DATAFLOW
 		process_ReadWrite(arg0_0, arg1_0, arg0_1, arg1_1, arg0_2, arg1_2, arg0_3, arg1_3,
 				arg0_4, arg1_4, arg0_5, arg1_5, arg0_6, arg1_6, arg0_7, arg1_7,
 				inl, inu, outl, outu,
