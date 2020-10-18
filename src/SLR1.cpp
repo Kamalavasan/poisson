@@ -18,8 +18,8 @@
 
 
 
-void process_SLR (hls::stream <t_pkt_1024> &in1l, hls::stream <t_pkt_1024> &in1u, hls::stream <t_pkt_1024> &out1l, hls::stream <t_pkt_1024> &out1u,
-		hls::stream <t_pkt_1024> &in2l, hls::stream <t_pkt_1024> &in2u, hls::stream <t_pkt_1024> &out2l, hls::stream <t_pkt_1024> &out2u,
+void process_SLR (hls::stream <t_pkt_1024> &in1l, hls::stream <t_pkt> &in1u, hls::stream <t_pkt_1024> &out1l, hls::stream <t_pkt> &out1u,
+		hls::stream <t_pkt_1024> &in2l, hls::stream <t_pkt> &in2u, hls::stream <t_pkt_1024> &out2l, hls::stream <t_pkt> &out2u,
 		const int xdim0, const unsigned short offset_x, const unsigned short tile_x,
 		unsigned short offset_y, unsigned short tile_y,
 		const unsigned short size_x, const unsigned short size_y, const unsigned short size_z){
@@ -29,20 +29,14 @@ void process_SLR (hls::stream <t_pkt_1024> &in1l, hls::stream <t_pkt_1024> &in1u
     static hls::stream<uint256_dt> streamC_4_256_2[8];
     static hls::stream<uint256_dt> streamC_4_256_3[8];
 
-    static hls::stream<uint288_dt> streamC_4_288_0[8];
-    static hls::stream<uint288_dt> streamC_4_288_1[8];
-    static hls::stream<uint288_dt> streamC_4_288_2[8];
-    static hls::stream<uint288_dt> streamC_4_288_3[8];
+
 
 	#pragma HLS STREAM variable = streamC_4_256_0 depth = 2
 	#pragma HLS STREAM variable = streamC_4_256_1 depth = 2
 	#pragma HLS STREAM variable = streamC_4_256_2 depth = 2
 	#pragma HLS STREAM variable = streamC_4_256_3 depth = 2
 
-	#pragma HLS STREAM variable = streamC_4_288_0 depth = 2
-	#pragma HLS STREAM variable = streamC_4_288_1 depth = 2
-	#pragma HLS STREAM variable = streamC_4_288_2 depth = 2
-	#pragma HLS STREAM variable = streamC_4_288_3 depth = 2
+
 
     struct data_G data_g;
     data_g.sizex = size_x;
@@ -55,7 +49,7 @@ void process_SLR (hls::stream <t_pkt_1024> &in1l, hls::stream <t_pkt_1024> &in1u
     data_g.tile_y = tile_y;
 
 
-	data_g.xblocks = (tile_x >> (SHIFT_BITS+3));
+	data_g.xblocks = (tile_x >> (SHIFT_BITS))/5;
 	data_g.grid_sizey = size_y + 2;
 	data_g.grid_sizez = size_z+2;
 	data_g.limit_z = size_z+3;
@@ -67,56 +61,30 @@ void process_SLR (hls::stream <t_pkt_1024> &in1l, hls::stream <t_pkt_1024> &in1u
 	data_g.line_diff = data_g.xblocks - 1;
 	data_g.gridsize_pr = plane_size * (data_g.limit_z);
 
-	unsigned int gridsize_da = plane_size * (data_g.grid_sizez);
+	unsigned int gridsize_da = (plane_size) * (data_g.grid_sizez);
 
 
 
 	#pragma HLS dataflow
 
-//	axis2_fifo256_8(in1l, in1u,streamC_4_256_0[0], streamC_4_256_0[1],
-//				streamC_4_256_1[0], streamC_4_256_1[1],
-//				streamC_4_256_2[0], streamC_4_256_2[1],
-//				streamC_4_256_3[0], streamC_4_256_3[1], gridsize_da);
 
+    axis2_fifo256_5(in1l, in1u,streamC_4_256_0[0], streamC_4_256_0[1], streamC_4_256_0[2], streamC_4_256_0[3], streamC_4_256_0[4], gridsize_da);
 
-    axis2_fifo288_8(in1l, in1u,streamC_4_288_0[0], streamC_4_288_0[1],
-			streamC_4_288_1[0], streamC_4_288_1[1],
-			streamC_4_288_2[0], streamC_4_288_2[1],
-			streamC_4_288_3[0], streamC_4_288_3[1], gridsize_da);
-
-
-    process_tile( streamC_4_288_0[0], streamC_4_288_0[1],
-			streamC_4_256_0[0], streamC_4_256_0[1],
-			-1, data_g);
-
-    process_tile( streamC_4_288_1[0], streamC_4_288_1[1],
-			streamC_4_256_1[0], streamC_4_256_1[1],
-			15, data_g);
-
-    process_tile( streamC_4_288_2[0], streamC_4_288_2[1],
-			streamC_4_256_2[0], streamC_4_256_2[1],
-			31, data_g);
-
-    process_tile( streamC_4_288_3[0], streamC_4_288_3[1],
-			streamC_4_256_3[0], streamC_4_256_3[1],
-			47, data_g);
+    process_tile(streamC_4_256_0[0], streamC_4_256_0[1], streamC_4_256_0[2], streamC_4_256_0[3], streamC_4_256_0[4],
+       		streamC_4_256_1[0], streamC_4_256_1[1], streamC_4_256_1[2], streamC_4_256_1[3], streamC_4_256_1[4],
+   			0, data_g);
 
 
 
-	fifo256_8_2axis1(streamC_4_256_0[0], streamC_4_256_0[1],
-			streamC_4_256_1[0], streamC_4_256_1[1],
-			streamC_4_256_2[0], streamC_4_256_2[1],
-			streamC_4_256_3[0], streamC_4_256_3[1], out1l, out1u, gridsize_da);
+    fifo256_5_2axis(streamC_4_256_1[0], streamC_4_256_1[1], streamC_4_256_1[2], streamC_4_256_1[3], streamC_4_256_1[4], out1l, out1u, gridsize_da);
 
-	axis2_fifo256_8(in2l, in2u,streamC_4_256_0[4], streamC_4_256_0[5],
-			streamC_4_256_1[4], streamC_4_256_1[5],
-			streamC_4_256_2[4], streamC_4_256_2[5],
-			streamC_4_256_3[4], streamC_4_256_3[5], gridsize_da);
+	axis2_fifo256_5(in2l, in2u,streamC_4_256_2[0], streamC_4_256_2[1], streamC_4_256_2[2], streamC_4_256_2[3], streamC_4_256_2[4],gridsize_da);
 
-	fifo256_8_2axis(streamC_4_256_0[4], streamC_4_256_0[5],
-			streamC_4_256_1[4], streamC_4_256_1[5],
-			streamC_4_256_2[4], streamC_4_256_2[5],
-			streamC_4_256_3[4], streamC_4_256_3[5], out2l, out2u, gridsize_da);
+	process_tile(streamC_4_256_2[0], streamC_4_256_2[1], streamC_4_256_2[2], streamC_4_256_2[3], streamC_4_256_2[4],
+	           		streamC_4_256_3[0], streamC_4_256_3[1], streamC_4_256_3[2], streamC_4_256_3[3], streamC_4_256_3[4],
+	       			0, data_g);
+
+	fifo256_5_2axis(streamC_4_256_3[0], streamC_4_256_3[1], streamC_4_256_3[2], streamC_4_256_3[3], streamC_4_256_3[4], out2l, out2u, gridsize_da);
 }
 
 extern "C" {
@@ -133,13 +101,13 @@ void stencil_SLR1(
 		hls::stream <t_pkt_32> &tile_s_out,
 
 		hls::stream <t_pkt_1024> &in1l,
-		hls::stream <t_pkt_1024> &in1u,
+		hls::stream <t_pkt> &in1u,
 		hls::stream <t_pkt_1024> &out1l,
-		hls::stream <t_pkt_1024> &out1u,
+		hls::stream <t_pkt> &out1u,
 		hls::stream <t_pkt_1024> &in2l,
-		hls::stream <t_pkt_1024> &in2u,
+		hls::stream <t_pkt> &in2u,
 		hls::stream <t_pkt_1024> &out2l,
-		hls::stream <t_pkt_1024> &out2u
+		hls::stream <t_pkt> &out2u
 		){
 
 	#pragma HLS INTERFACE axis port = in1l register

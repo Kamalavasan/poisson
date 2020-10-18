@@ -120,18 +120,16 @@ int initialise_grid(float* grid, unsigned int act_sizex, unsigned int act_sizey,
 int split_grid(float* grid, float** grid8, unsigned int act_sizex, unsigned int act_sizey, unsigned int act_sizez, unsigned int grid_size_x, unsigned int grid_size_y, unsigned int grid_size_z){
   for(unsigned int i = 0; i < act_sizez; i++){
     for(unsigned int j = 0; j < act_sizey; j++){
-      for(unsigned int k = 0; k < grid_size_x/128; k++){
-    	  unsigned int index = i*grid_size_x*grid_size_y + j * grid_size_x + k*128;
-    	  unsigned int index8 = i*grid_size_x/8*grid_size_y + j * grid_size_x/8 + k*16;
+      for(unsigned int k = 0; k < grid_size_x/80; k++){
+    	  unsigned int index = i*grid_size_x*grid_size_y + j * grid_size_x + k*80;
+    	  unsigned int index8 = i*grid_size_x/5*grid_size_y + j * grid_size_x/5 + k*16;
     	  memcpy(&grid8[0][index8], &grid[index], 64);
     	  memcpy(&grid8[1][index8], &grid[index+16], 64);
     	  memcpy(&grid8[2][index8], &grid[index+32], 64);
     	  memcpy(&grid8[3][index8], &grid[index+48], 64);
 
     	  memcpy(&grid8[4][index8], &grid[index+64], 64);
-    	  memcpy(&grid8[5][index8], &grid[index+80], 64);
-    	  memcpy(&grid8[6][index8], &grid[index+96], 64);
-    	  memcpy(&grid8[7][index8], &grid[index+112], 64);
+
 
       }
     }
@@ -144,18 +142,15 @@ int split_grid(float* grid, float** grid8, unsigned int act_sizex, unsigned int 
 int merge_grid(float** grid8, float* grid, unsigned int act_sizex, unsigned int act_sizey, unsigned int act_sizez, unsigned int grid_size_x, unsigned int grid_size_y, unsigned int grid_size_z){
   for(unsigned int i = 0; i < act_sizez; i++){
     for(unsigned int j = 0; j < act_sizey; j++){
-      for(unsigned int k = 0; k < grid_size_x/128; k++){
-    	  unsigned int index = i*grid_size_x*grid_size_y + j * grid_size_x + k*128;
-    	  unsigned int index8 = i*grid_size_x/8*grid_size_y + j * grid_size_x/8 + k*16;
+      for(unsigned int k = 0; k < grid_size_x/80; k++){
+    	  unsigned int index = i*grid_size_x*grid_size_y + j * grid_size_x + k*80;
+    	  unsigned int index8 = i*grid_size_x/5*grid_size_y + j * grid_size_x/5 + k*16;
     	  memcpy(&grid[index], &grid8[0][index8], 64);
     	  memcpy(&grid[index+16], &grid8[1][index8], 64);
     	  memcpy(&grid[index+32], &grid8[2][index8], 64);
     	  memcpy(&grid[index+48], &grid8[3][index8], 64);
 
     	  memcpy(&grid[index+64], &grid8[4][index8], 64);
-    	  memcpy(&grid[index+80], &grid8[5][index8], 64);
-    	  memcpy(&grid[index+96], &grid8[6][index8], 64);
-    	  memcpy(&grid[index+112], &grid8[7][index8], 64);
       }
     }
   }
@@ -250,20 +245,22 @@ int main(int argc, char **argv)
   int act_sizez = logical_size_z + 2;
 
 
-  tilex_size = tilex_size % 128 == 0? tilex_size : (tilex_size/128 + 1) * 128;
+  tilex_size = tilex_size % 80 == 0? tilex_size : (tilex_size/80 + 1) * 80;
 
-  int act_sizex_32 = (act_sizex% 32 != 0 ? (act_sizex/32 + 1)* 32 : act_sizex);
-  int grid_size_x = (act_sizex % 128) != 0 ? (act_sizex/128 +1) * 128 : act_sizex;
-  grid_size_x = grid_size_x + 128;
+  int act_sizex_16 = (act_sizex% 16 != 0 ? (act_sizex/16 + 1)* 16 : act_sizex);
+  int grid_size_x = (act_sizex % 80) != 0 ? (act_sizex/80 +1) * 80 : act_sizex;
+  grid_size_x = grid_size_x + 80;
   int grid_size_y = act_sizey;
   int grid_size_z = act_sizez;
+
+//  printf("grid_size_x:%d grid_size_y:%d grid_size_z:%d tilex_size:%d tiley_size:%d\n", )
 
 
 
 
 //  unsigned short effective_tile_size= tile_size - 0;
   unsigned int data_size_bytes = grid_size_x * (grid_size_y) * grid_size_z *sizeof(float)*batches;
-  unsigned int data_size_bytes_div8 = data_size_bytes/8;
+  unsigned int data_size_bytes_div8 = data_size_bytes/5;
   float * grid_u1 = (float*)aligned_alloc(4096, data_size_bytes);
   float * grid_u2 = (float*)aligned_alloc(4096, data_size_bytes);
 
@@ -300,10 +297,10 @@ int main(int argc, char **argv)
   for(int i = 0; i < tile_max_count; i++){
 	  tilex_c = i+1;
 	  tile[i] = i* effective_tilex_size  | (tilex_size << 16);
-	  if(i* effective_tilex_size + tilex_size >= act_sizex_32){
-		  int lastx_size = act_sizex_32 - i* effective_tilex_size;
-		  lastx_size = lastx_size % 128 == 0 ? lastx_size : (lastx_size/128 +1)*128;
-		  int offset_x = act_sizex_32-lastx_size > 0 ? act_sizex_32-lastx_size : 0;
+	  if(i* effective_tilex_size + tilex_size >= act_sizex_16){
+		  int lastx_size = act_sizex_16 - i* effective_tilex_size;
+		  lastx_size = lastx_size % 80 == 0 ? lastx_size : (lastx_size/80 +1)*80;
+		  int offset_x = act_sizex_16-lastx_size > 0 ? act_sizex_16-lastx_size : 0;
 		  tile[i] = offset_x | lastx_size << 16;
 		  toltal_sizex += lastx_size;
 		  break;
@@ -332,7 +329,7 @@ int main(int argc, char **argv)
 	  tile[i+tilex_count] = i* effective_tiley_size  | (tiley_size << 16);
 	  if(i* effective_tiley_size + tiley_size >= grid_size_y){
 		  int lasty_size = grid_size_y - i* effective_tiley_size;
-		  tile[i+tilex_count] = (grid_size_y - lasty_size)  | lasty_size << 16;
+		  tile[i+tilex_count] = (grid_size_y - lasty_size)  | (lasty_size << 16);
 		  toltal_sizey += lasty_size;
 		  break;
 	  }
@@ -364,7 +361,8 @@ int main(int argc, char **argv)
   copy_grid(grid_u1, grid_u1_d, data_size_bytes);
   split_grid(grid_u1, grid_u1_d8, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
 
-
+  printf("\n after split grid\n");
+  fflush(stdout);
   //OPENCL HOST CODE AREA START
 
     auto binaryFile = argv[1];
@@ -397,6 +395,7 @@ int main(int argc, char **argv)
     auto end_p = std::chrono::high_resolution_clock::now();
     auto dur_p = end_p -start_p;
     printf("time to program FPGA is %f\n", dur_p.count());
+    fflush(stdout);
 
 
     //Allocate Buffer in Global Memory
@@ -405,18 +404,14 @@ int main(int argc, char **argv)
     OCL_CHECK(err,cl::Buffer buffer_input2(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, data_size_bytes_div8, grid_u1_d8[2], &err));
     OCL_CHECK(err,cl::Buffer buffer_input3(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, data_size_bytes_div8, grid_u1_d8[3], &err));
     OCL_CHECK(err,cl::Buffer buffer_input4(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, data_size_bytes_div8, grid_u1_d8[4], &err));
-    OCL_CHECK(err,cl::Buffer buffer_input5(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, data_size_bytes_div8, grid_u1_d8[5], &err));
-    OCL_CHECK(err,cl::Buffer buffer_input6(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, data_size_bytes_div8, grid_u1_d8[6], &err));
-    OCL_CHECK(err,cl::Buffer buffer_input7(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, data_size_bytes_div8, grid_u1_d8[7], &err));
+
 
     OCL_CHECK(err, cl::Buffer buffer_output0(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, data_size_bytes_div8, grid_u2_d8[0], &err));
     OCL_CHECK(err, cl::Buffer buffer_output1(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, data_size_bytes_div8, grid_u2_d8[1], &err));
     OCL_CHECK(err, cl::Buffer buffer_output2(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, data_size_bytes_div8, grid_u2_d8[2], &err));
     OCL_CHECK(err, cl::Buffer buffer_output3(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, data_size_bytes_div8, grid_u2_d8[3], &err));
     OCL_CHECK(err, cl::Buffer buffer_output4(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, data_size_bytes_div8, grid_u2_d8[4], &err));
-    OCL_CHECK(err, cl::Buffer buffer_output5(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, data_size_bytes_div8, grid_u2_d8[5], &err));
-    OCL_CHECK(err, cl::Buffer buffer_output6(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, data_size_bytes_div8, grid_u2_d8[6], &err));
-    OCL_CHECK(err, cl::Buffer buffer_output7(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, data_size_bytes_div8, grid_u2_d8[7], &err));
+
 
 
     OCL_CHECK(err, cl::Buffer buffer_tile(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, tile_count*sizeof(unsigned int), tile, &err));
@@ -437,12 +432,6 @@ int main(int argc, char **argv)
     OCL_CHECK(err, err = krnl_stencil_Read_Write.setArg(narg++, buffer_output3));
     OCL_CHECK(err, err = krnl_stencil_Read_Write.setArg(narg++, buffer_input4));
     OCL_CHECK(err, err = krnl_stencil_Read_Write.setArg(narg++, buffer_output4));
-    OCL_CHECK(err, err = krnl_stencil_Read_Write.setArg(narg++, buffer_input5));
-    OCL_CHECK(err, err = krnl_stencil_Read_Write.setArg(narg++, buffer_output5));
-    OCL_CHECK(err, err = krnl_stencil_Read_Write.setArg(narg++, buffer_input6));
-    OCL_CHECK(err, err = krnl_stencil_Read_Write.setArg(narg++, buffer_output6));
-    OCL_CHECK(err, err = krnl_stencil_Read_Write.setArg(narg++, buffer_input7));
-    OCL_CHECK(err, err = krnl_stencil_Read_Write.setArg(narg++, buffer_output7));
 
     OCL_CHECK(err, err = krnl_stencil_Read_Write.setArg(narg++, buffer_tile));
     OCL_CHECK(err, err = krnl_stencil_Read_Write.setArg(narg++, tilex_count));
@@ -483,7 +472,7 @@ int main(int argc, char **argv)
 
     OCL_CHECK(err,
               err = q.enqueueMigrateMemObjects({buffer_input0, buffer_input1, buffer_input2, buffer_input3,
-    										buffer_input4, buffer_input5, buffer_input6, buffer_input7, buffer_tile},
+    										buffer_input4, buffer_tile},
                                                0 /* 0 means from host*/));
 
     uint64_t nsduration, startns, endns;
@@ -579,11 +568,11 @@ int main(int argc, char **argv)
 
     auto finish = std::chrono::high_resolution_clock::now();
     OCL_CHECK(err,
-              err = q.enqueueMigrateMemObjects({buffer_input0, buffer_input1, buffer_input2, buffer_input3, buffer_input4, buffer_input5, buffer_input6, buffer_input7},
+              err = q.enqueueMigrateMemObjects({buffer_input0, buffer_input1, buffer_input2, buffer_input3, buffer_input4},
                                        	   	   	   CL_MIGRATE_MEM_OBJECT_HOST));
 
     OCL_CHECK(err,
-                  err = q.enqueueMigrateMemObjects({buffer_output0, buffer_output1, buffer_output2, buffer_output3, buffer_output4, buffer_output5, buffer_output6, buffer_output7},
+                  err = q.enqueueMigrateMemObjects({buffer_output0, buffer_output1, buffer_output2, buffer_output3, buffer_output4},
                                                    CL_MIGRATE_MEM_OBJECT_HOST));
 
     q.finish();
@@ -591,7 +580,7 @@ int main(int argc, char **argv)
     merge_grid(grid_u1_d8, grid_u1_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
     merge_grid(grid_u2_d8, grid_u2_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
 
-  for(int itr = 0; itr < 3*n_iter; itr++){
+  for(int itr = 0; itr < 6*n_iter; itr++){
       stencil_computation(grid_u1, grid_u2, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
       stencil_computation(grid_u2, grid_u1, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_z);
   }
@@ -601,9 +590,8 @@ int main(int argc, char **argv)
 
 
   printf("Profiling time is %f\n", k_time);
-  float predicted_time = (toltal_sizex/64.0)* toltal_sizey * (grid_size_z + 3)*n_iter*2/(229000000);
-  printf("predicted Runtime on FPGA is %f seconds\n", predicted_time);
-  printf("Actual Runtime on FPGA is %f seconds\n", k_time);
+
+  printf("Runtime on FPGA is %f seconds\n", k_time);
   double error = square_error(grid_u1, grid_u1_d, act_sizex, act_sizey, act_sizez, grid_size_x, grid_size_y, grid_size_x);
   float bandwidth = (logical_size_x * logical_size_y * logical_size_z * sizeof(float) * 4.0 * n_iter*3)/(k_time * 1000.0 * 1000 * 1000);
   float logic_bandwidthR = (total_plane_sizeR * act_sizez * sizeof(float) * 2.0 * n_iter*3)/(k_time * 1000.0 * 1000 * 1000);
